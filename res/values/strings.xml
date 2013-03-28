@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Agilefant</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="username">UserName</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="all_backlogs">All Backlogs</string>
+
+</resources>
