@@ -8,7 +8,6 @@ import android.content.Intent;
 
 import com.google.inject.Inject;
 import com.monits.agilefant.activity.AllBackLogsActivity;
-import com.monits.agilefant.connector.HttpConnection;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.service.AgilefantService;
 import com.monits.agilefant.service.UserService;
@@ -25,6 +24,8 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 	private String password;
 
 	private ProgressDialog progressDialog;
+
+	private boolean login;
 
 	@Inject
 	protected LoginAsyncTask(Context context) {
@@ -44,8 +45,8 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 	@Override
 	public String call() {
 		try {
-			String  login = userService.login(userName, password);
-			if (login.equals(HttpConnection.LOGIN)) {
+			login = userService.login(userName, password);
+			if (login) {
 				Intent intent = new Intent(this.context, AllBackLogsActivity.class);
 				this.context.startActivity(intent);
 			}
@@ -66,5 +67,4 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 		progressDialog.dismiss();
 
 	}
-
 }

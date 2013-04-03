@@ -9,7 +9,7 @@ public class UserServiceImpl implements UserService {
 	private AgilefantService agilefantService;
 
 	@Override
-	public String login(String userName, String password) throws RequestException {
+	public boolean login(String userName, String password) throws RequestException {
 		return agilefantService.login(userName, password);
 	}
 

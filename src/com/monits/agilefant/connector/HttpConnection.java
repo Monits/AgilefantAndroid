@@ -20,8 +20,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -29,8 +29,6 @@ import org.apache.http.params.HttpConnectionParams;
 
 import roboguice.util.Ln;
 import android.util.Log;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 
 import com.monits.agilefant.exception.RequestException;
 
@@ -57,6 +55,7 @@ public class HttpConnection {
 
 	static {
 		client = new DefaultHttpClient();
+		client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		HttpConnectionParams.setSoTimeout(client.getParams(), TIMEOUT);
 	}
 
@@ -67,23 +66,12 @@ public class HttpConnection {
 	 * @return Server response
 	 * @throws RequestException
 	 */
-	public String executeGet(String url, boolean saveCookies) throws RequestException {
+	public String executeGet(String url) throws RequestException {
 		StringBuffer getUrl = new StringBuffer(url)
 			.append("?")
 			.append(URLEncodedUtils.format(params, "UTF-8"));
 		HttpGet get = new HttpGet(getUrl.toString());
-		return execute(get, saveCookies);
-	}
-
-	/**
-	 * Method get
-	 *
-	 * @param url The URL to GET
-	 * @return Server response
-	 * @throws RequestException
-	 */
-	public String executeGet(String url) throws RequestException {
-		return executeGet(url, false);
+		return execute(get);
 	}
 
 	/**
@@ -129,43 +117,40 @@ public class HttpConnection {
 	}
 
 	/**
+	 * Method post
+	 *
+	 * @param url The URL to POST
+	 * @return Server response
+	 * @throws RequestException
+	 */
+	public String executePost(String url) throws RequestException {
+		StringBuffer getUrl = new StringBuffer(url)
+			.append("?")
+			.append(URLEncodedUtils.format(params, "UTF-8"));
+		HttpPost post = new HttpPost(getUrl.toString());
+		return execute(post);
+	}
+
+	/**
 	 * Execute the method
 	 *
 	 * @param  Method to be executed
 	 * @return Server response
 	 * @throws RequestException
 	 */
-	private String execute(HttpRequestBase method, int reattempts, boolean getCookies) throws RequestException {
+	private String execute(HttpRequestBase method, int reattempts) throws RequestException {
 		try {
+
 			HttpResponse res = client.execute(method);
-
-			if (getCookies) {
-				List<Cookie> cookies = client.getCookieStore().getCookies();
-
-				if(cookies != null)
-				{
-					for(Cookie cookie : cookies)
-					{
-						String cookieString = cookie.getName() + "=" + cookie.getValue() + "; domain=" + cookie.getDomain();
-						CookieManager.getInstance().setCookie(cookie.getDomain(), cookieString);
-					}
-				}
-				CookieSyncManager.getInstance().sync();
-			}
 
 			StatusLine statusLine = res.getStatusLine();
 
 			switch (statusLine.getStatusCode()) {
 			case HTTP_200:
-
-				if (getCookies) {
-					return LOGIN;
-				} else {
-					return convertStreamToString(res.getEntity().getContent());
-				}
+				return convertStreamToString(res.getEntity().getContent());
 
 			case HTTP_302:
-				return null;
+				return res.getFirstHeader("Location").getValue();
 
 			case HTTP_304:
 				return null;
@@ -192,7 +177,7 @@ public class HttpConnection {
 			Log.e(HTTP_CONNECTION_IMPL, "IO Exception ",e);
 
 			if (reattempts > 1) {
-				return execute(method, reattempts - 1, getCookies);
+				return execute(method, reattempts - 1);
 			}
 
 			throw new RequestException(e);
@@ -208,11 +193,7 @@ public class HttpConnection {
 	 * @throws RequestException
 	 */
 	private String execute(HttpRequestBase method) throws RequestException {
-		return execute(method, DEFAULT_REATTEMPTS, false);
-	}
-
-	private String execute(HttpRequestBase method, boolean getCookies) throws RequestException {
-		return execute(method, DEFAULT_REATTEMPTS, getCookies);
+		return execute(method, DEFAULT_REATTEMPTS);
 	}
 
 	/**
