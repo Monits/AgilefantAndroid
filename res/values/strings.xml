@@ -8,5 +8,6 @@
     <string name="password">Password</string>
     <string name="log_in">Log In</string>
     <string name="all_backlogs">All Backlogs</string>
+    <string name="login_error">Invalid username or password, please try again.</string>
 
 </resources>
