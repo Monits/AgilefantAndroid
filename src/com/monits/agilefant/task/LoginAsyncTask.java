@@ -3,7 +3,6 @@ package com.monits.agilefant.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.util.Ln;
 import roboguice.util.RoboAsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -47,7 +46,7 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 		progressDialog = new ProgressDialog(context);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setCancelable(false);
-		progressDialog.setMessage("Cargando");
+		progressDialog.setMessage(getContext().getString(R.string.loading));
 		progressDialog.show();
 		super.onPreExecute();
 	}
@@ -62,7 +61,7 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 			}
 
 		} catch (RequestException e) {
-			Ln.e(e);
+			onException(e);
 		}
 		return null;
 	}

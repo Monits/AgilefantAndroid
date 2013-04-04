@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:label="@string/app_name" android:name=".activity.AllBackLogsActivity" android:theme="@android:style/Theme.Black.NoTitleBar"/>
+        <activity android:label="@string/app_name" android:name=".activity.IterationActivity" android:theme="@android:style/Theme.Black.NoTitleBar"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

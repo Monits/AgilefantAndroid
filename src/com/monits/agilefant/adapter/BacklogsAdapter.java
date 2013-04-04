@@ -2,6 +2,7 @@ package com.monits.agilefant.adapter;
 
 import java.util.List;
 
+import roboguice.RoboGuice;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +12,17 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
 import com.monits.agilefant.R;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
+import com.monits.agilefant.task.GetIteration;
 import com.monits.agilefant.view.ProductExpandableListView;
 
 public class BacklogsAdapter extends BaseExpandableListAdapter{
+
+	@Inject
+	private GetIteration getIteration;
 
 	private List<Product> productList;
 	private Context context;
@@ -31,6 +38,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		this.topExpList = topExpList;
 		this.listViewCache = new ProductExpandableListView[productList.size()];
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		RoboGuice.injectMembers(context, this);
 	}
 
 	@Override
@@ -44,7 +52,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition,
+	public View getChildView(final int groupPosition, int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
 		View v;
 
@@ -62,6 +70,9 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 				@Override
 				public boolean onChildClick(ExpandableListView parent, View v,
 						int groupLevel2Position, int childPosition, long id) {
+					Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
+					getIteration.configure(iteration.getId());
+					getIteration.execute();
 					return true;
 				}
 			});

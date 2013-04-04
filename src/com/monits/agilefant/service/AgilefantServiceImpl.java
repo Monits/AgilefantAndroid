@@ -7,8 +7,6 @@ import com.monits.agilefant.exception.RequestException;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
-
-
 	@Inject @Named("HOST")
 	private String HOST;
 
@@ -18,6 +16,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String USERNAME = "j_username";
 
 	private static final String LOGIN_OK = "/index.jsp";
+
+	private static final String GET_ITERATION = "/ajax/iterationData.action";
+	private static final String ITERATION_ID = "iterationId";
 
 	@Override
 	public boolean login(String userName, String password) throws RequestException {
@@ -37,5 +38,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public String getAllBacklogs() throws RequestException {
 		HttpConnection connection = new HttpConnection();
 		return connection.executeGet(HOST + GET_ALL_BACKLOGS_URL);
+	}
+
+	@Override
+	public String getIteration(long id) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(ITERATION_ID, String.valueOf(id));
+		return connection.executeGet(HOST + GET_ITERATION);
 	}
 }
