@@ -10,7 +10,7 @@ public class Project implements Serializable{
 	private static final long serialVersionUID = 3724474795941262305L;
 
 	@SerializedName("id")
-	private int id;
+	private long id;
 
 	@SerializedName("title")
 	private String title;
@@ -24,7 +24,7 @@ public class Project implements Serializable{
 	 * @param title The project title
 	 * @param iterationList Iteration List
 	 */
-	public Project(int id, String title, List<Iteration> iterationList) {
+	public Project(long id, String title, List<Iteration> iterationList) {
 		this.id = id;
 		this.title = title;
 		this.iterationList = iterationList;
@@ -33,14 +33,14 @@ public class Project implements Serializable{
 	/**
 	 * @return The project id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id The project id to set
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

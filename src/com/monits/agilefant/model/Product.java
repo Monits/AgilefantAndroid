@@ -10,7 +10,7 @@ public class Product implements Serializable{
 	private static final long serialVersionUID = 2998260609210275811L;
 
 	@SerializedName("id")
-	private int id;
+	private long id;
 
 	@SerializedName("title")
 	private String title;
@@ -24,7 +24,7 @@ public class Product implements Serializable{
 	 * @param title The product title
 	 * @param projectList Project List
 	 */
-	public Product(int id, String title, List<Project> projectList) {
+	public Product(long id, String title, List<Project> projectList) {
 		this.id = id;
 		this.title = title;
 		this.projectList = projectList;
@@ -33,14 +33,14 @@ public class Product implements Serializable{
 	/**
 	 * @return The product id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id The product id to set
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
