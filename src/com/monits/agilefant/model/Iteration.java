@@ -26,6 +26,12 @@ public class Iteration implements Serializable{
 	@SerializedName("rankedStories")
 	private List<Storie> stories;
 
+	@SerializedName("startDate")
+	private long startDate;
+
+	@SerializedName("endDate")
+	private long endDate;
+
 	/**
 	 * Constructor
 	 * @param id The iteration id
@@ -90,5 +96,33 @@ public class Iteration implements Serializable{
 	 */
 	public void setStories(List<Storie> stories) {
 		this.stories = stories;
+	}
+
+	/**
+	 * @return the startDate
+	 */
+	public long getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(long startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public long getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(long endDate) {
+		this.endDate = endDate;
 	}
 }

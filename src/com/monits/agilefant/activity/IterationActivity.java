@@ -11,10 +11,12 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.task.GetIteration;
+import com.monits.agilefant.util.DateUtils;
 
 @ContentView(R.layout.activity_iteration)
 public class IterationActivity extends RoboActivity{
 
+	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 	@InjectView(R.id.iteration_name)
 	private TextView name;
 	@InjectView(R.id.iteration_start_date)
@@ -34,6 +36,8 @@ public class IterationActivity extends RoboActivity{
 
 		if (iteration != null) {
 			name.setText(iteration.getName());
+			startDate.setText(DateUtils.formatDate(iteration.getStartDate(), DATE_PATTERN));
+			endDate.setText(DateUtils.formatDate(iteration.getEndDate(), DATE_PATTERN));
 			stories.setAdapter(new StoriesAdapter(this, iteration.getStories()));
 		}
 

@@ -12,11 +12,9 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.model.Storie;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.util.HoursUltis;
 
 public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
-
-	private static final int MINUTES = 60;
-
 
 	public StoriesAdapter(Context context, List<Storie> storieList) {
 		super(context);
@@ -65,9 +63,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 		}
 
 		holder.responsibles.setText(sb.toString());
-		holder.effortLeft.setText(String.valueOf(task.getEffortLeft() / MINUTES) + "h");
-		holder.originalEstimate.setText(String.valueOf(task.getOriginalEstimate() / MINUTES) + "h");
-		holder.spendEffort.setText(String.valueOf(task.getEffortSpent() / MINUTES) + "h");
+		holder.effortLeft.setText(HoursUltis.convertMinutesToHours(task.getEffortLeft()));
+		holder.originalEstimate.setText(HoursUltis.convertMinutesToHours(task.getOriginalEstimate()));
+		holder.spendEffort.setText(HoursUltis.convertMinutesToHours(task.getEffortSpent()));
 
 		return convertView;
 	}
@@ -105,9 +103,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 		}
 
 		holder.responsibles.setText(sb.toString());
-		holder.effortLeft.setText(String.valueOf(storie.getMetrics().getEffortLeft() / MINUTES) + "h");
-		holder.originalEstimate.setText(String.valueOf(storie.getMetrics().getOriginalEstimate() / MINUTES) + "h");
-		holder.spendEffort.setText(String.valueOf(storie.getMetrics().getEffortSpent() / MINUTES) + "h");
+		holder.effortLeft.setText(HoursUltis.convertMinutesToHours(storie.getMetrics().getEffortLeft()));
+		holder.originalEstimate.setText(HoursUltis.convertMinutesToHours(storie.getMetrics().getOriginalEstimate()));
+		holder.spendEffort.setText(HoursUltis.convertMinutesToHours(storie.getMetrics().getEffortSpent()));
 
 		return convertView;
 	}
