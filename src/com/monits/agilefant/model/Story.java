@@ -27,6 +27,9 @@ public class Story implements Serializable{
 	@SerializedName("tasks")
 	private List<Task> tasks;
 
+	@SerializedName("rank")
+	private int rank;
+
 	/**
 	 * @return the id
 	 */
@@ -109,5 +112,19 @@ public class Story implements Serializable{
 	 */
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
+	}
+
+	/**
+	 * @return the rank
+	 */
+	public int  getRank() {
+		return rank;
+	}
+
+	/**
+	 * @param rank the rank to set
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 }

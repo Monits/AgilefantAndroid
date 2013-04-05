@@ -1,5 +1,6 @@
 package com.monits.agilefant.adapter;
 
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -13,15 +14,19 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.util.HoursUltis;
+import com.monits.agilefant.util.StoryRankComparator;
+import com.monits.agilefant.util.TaskRankComparator;
 
 public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 
 	public StoriesAdapter(Context context, List<Story> stories) {
 		super(context);
+		Collections.sort(stories, new StoryRankComparator());
 		for (Story storie : stories) {
 			super.addGroup(storie);
-
-			for (Task task : storie.getTasks()) {
+			List<Task> tasks = storie.getTasks();
+			Collections.sort(tasks, new TaskRankComparator());
+			for (Task task : tasks) {
 				super.addChildToGroup(storie, task);
 			}
 		}

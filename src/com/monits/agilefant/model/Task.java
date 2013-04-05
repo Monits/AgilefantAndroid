@@ -30,6 +30,9 @@ public class Task implements Serializable{
 	@SerializedName("state")
 	private String state;
 
+	@SerializedName("rank")
+	private int rank;
+
 	/**
 	 * @return the effortLeft
 	 */
@@ -126,5 +129,19 @@ public class Task implements Serializable{
 	 */
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	/**
+	 * @return the rank
+	 */
+	public int  getRank() {
+		return rank;
+	}
+
+	/**
+	 * @param rank the rank to set
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 }
