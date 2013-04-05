@@ -63,6 +63,10 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 			delv.setRows(calculateRowCount(groupPosition, null));
 			delv.setAdapter(new ProjectAdapter(context, productList.get(groupPosition).getProjectList()));
 			delv.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);
+
+			delv.setDivider(null);
+			delv.setChildDivider(null);
+
 			delv.setOnGroupClickListener(new Level2GroupExpandListener(groupPosition));
 
 			delv.setOnChildClickListener(new OnChildClickListener() {

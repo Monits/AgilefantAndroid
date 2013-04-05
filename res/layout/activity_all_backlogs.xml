@@ -15,6 +15,8 @@
         android:layout_width="match_parent"
         android:groupIndicator="@null"
         android:layout_height="wrap_content"
+        android:divider="@null"
+        android:childDivider="@null"
         android:cacheColorHint="@android:color/transparent" />
 
 </LinearLayout>
