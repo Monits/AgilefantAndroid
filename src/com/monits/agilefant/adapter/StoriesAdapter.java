@@ -82,7 +82,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 		HolderGroup holder;
 		if (null == convertView) {
 			holder = new HolderGroup();
-			View inflate = inflater.inflate(R.layout.storie_item, null);
+			View inflate = inflater.inflate(R.layout.stories_item, null);
 			holder.name = (TextView) inflate.findViewById(R.id.storie_name);
 			holder.state = (TextView) inflate.findViewById(R.id.storie_state);
 			holder.responsibles = (TextView) inflate.findViewById(R.id.storie_responsibles);

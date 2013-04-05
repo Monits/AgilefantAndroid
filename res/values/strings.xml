@@ -14,5 +14,10 @@
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
     <string name="domain">Domain</string>
+    <string name="state">State</string>
+    <string name="responsibles">Responsibles</string>
+    <string name="_el_">Σ(EL)</string>
+    <string name="_oe_">Σ(OE)</string>
+    <string name="es">ES</string>
 
 </resources>
