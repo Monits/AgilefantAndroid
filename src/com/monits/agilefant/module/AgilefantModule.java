@@ -2,7 +2,6 @@ package com.monits.agilefant.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import com.monits.agilefant.parser.BacklogParser;
 import com.monits.agilefant.parser.BacklogParserImpl;
 import com.monits.agilefant.parser.IterationParser;
@@ -18,8 +17,6 @@ import com.monits.agilefant.service.UserServiceImpl;
 
 public class AgilefantModule extends AbstractModule{
 
-	private final String HOST = "http://agilefant.monits.com";
-
 	@Override
 	protected void configure() {
 		bind(AgilefantService.class).to(AgilefantServiceImpl.class).in(Singleton.class);
@@ -28,6 +25,5 @@ public class AgilefantModule extends AbstractModule{
 		bind(BacklogParser.class).to(BacklogParserImpl.class).in(Singleton.class);
 		bind(IterationParser.class).to(IterationParserImpl.class).in(Singleton.class);
 		bind(IterationService.class).to(IterationServiceImpl.class).in(Singleton.class);
-		bind(String.class).annotatedWith(Names.named("HOST")).toInstance(HOST);
 	}
 }

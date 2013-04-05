@@ -1,14 +1,13 @@
 package com.monits.agilefant.service;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.monits.agilefant.connector.HttpConnection;
 import com.monits.agilefant.exception.RequestException;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
-	@Inject @Named("HOST")
-	private String HOST;
+	private static final String HTTP = "http://";
+
+	private String host;
 
 	private static final String GET_ALL_BACKLOGS_URL = "/ajax/menuData.action";
 	private static final String LOGIN_URL = "/j_spring_security_check";
@@ -25,9 +24,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 		HttpConnection connection = new HttpConnection();
 		connection.addParameter(USERNAME, userName);
 		connection.addParameter(PASSWORD, password);
-		String response = connection.executePost(HOST + LOGIN_URL);
+		String response = connection.executePost(host + LOGIN_URL);
 
-		if (response.split(";")[0].equals(HOST + LOGIN_OK)) {
+		if (response.split(";")[0].equals(host + LOGIN_OK)) {
 			return true;
 		} else {
 			return false;
@@ -37,13 +36,22 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public String getAllBacklogs() throws RequestException {
 		HttpConnection connection = new HttpConnection();
-		return connection.executeGet(HOST + GET_ALL_BACKLOGS_URL);
+		return connection.executeGet(host + GET_ALL_BACKLOGS_URL);
 	}
 
 	@Override
 	public String getIteration(long id) throws RequestException {
 		HttpConnection connection = new HttpConnection();
 		connection.addParameter(ITERATION_ID, String.valueOf(id));
-		return connection.executeGet(HOST + GET_ITERATION);
+		return connection.executeGet(host + GET_ITERATION);
+	}
+
+	@Override
+	public void setDomain(String domain) {
+		if (domain.startsWith(HTTP)) {
+			this.host = domain;
+		} else {
+			this.host = HTTP + domain;
+		}
 	}
 }
