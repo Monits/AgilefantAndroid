@@ -36,6 +36,8 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 
 	private List<Product> allBacklogs;
 
+	private String domain;
+
 	@Inject
 	protected LoginAsyncTask(Context context) {
 		super(context);
@@ -54,7 +56,7 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 	@Override
 	public String call() {
 		try {
-			isLoggedIn = userService.login(userName, password);
+			isLoggedIn = userService.login(domain, userName, password);
 
 			if (isLoggedIn) {
 				allBacklogs = backlogService.getAllBacklogs();
@@ -66,9 +68,10 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 		return null;
 	}
 
-	public void configure(String userName, String password) {
+	public void configure(String domain, String userName, String password) {
 		this.userName = userName;
 		this.password = password;
+		this.domain = domain;
 	}
 
 	@Override

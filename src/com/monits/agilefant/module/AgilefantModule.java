@@ -1,5 +1,7 @@
 package com.monits.agilefant.module;
 
+import roboguice.inject.SharedPreferencesName;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.monits.agilefant.parser.BacklogParser;
@@ -25,5 +27,6 @@ public class AgilefantModule extends AbstractModule{
 		bind(BacklogParser.class).to(BacklogParserImpl.class).in(Singleton.class);
 		bind(IterationParser.class).to(IterationParserImpl.class).in(Singleton.class);
 		bind(IterationService.class).to(IterationServiceImpl.class).in(Singleton.class);
+		bindConstant().annotatedWith(SharedPreferencesName.class).to("default");
 	}
 }
