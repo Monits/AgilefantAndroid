@@ -30,16 +30,16 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	@Override
 	public View getChildView(int groupPosition, int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
-		holderChild holder;
+		HolderChild holder;
 		if (null == convertView) {
-			holder = new holderChild();
+			holder = new HolderChild();
 			View inflate = inflater.inflate(R.layout.iteration_item, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
 
 			convertView = inflate;
 			convertView.setTag(holder);
 		} else {
-			holder = (holderChild) convertView.getTag();
+			holder = (HolderChild) convertView.getTag();
 		}
 
 		Iteration iteration = (Iteration) getChild(groupPosition, childPosition);
@@ -53,16 +53,16 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
 
-		holderGroup holder;
+		HolderGroup holder;
 		if (null == convertView) {
-			holder = new holderGroup();
+			holder = new HolderGroup();
 			View inflate = inflater.inflate(R.layout.project_item, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
 
 			convertView = inflate;
 			convertView.setTag(holder);
 		} else {
-			holder = (holderGroup) convertView.getTag();
+			holder = (HolderGroup) convertView.getTag();
 		}
 
 		Project project = (Project) getGroup(groupPosition);
@@ -77,11 +77,11 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		return true;
 	}
 
-	class holderGroup {
+	class HolderGroup {
 		public TextView title;
 	}
 
-	class holderChild {
+	class HolderChild {
 		public TextView title;
 	}
 }

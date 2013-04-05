@@ -19,7 +19,7 @@ import com.monits.agilefant.service.UserService;
 
 public class LoginAsyncTask extends RoboAsyncTask<String>{
 
-	public static final String ALL_BACK_LOGS = "allBackLogs";
+	public static final String ALL_BACKLOGS = "allBackLogs";
 
 	@Inject
 	private UserService userService;
@@ -32,7 +32,7 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 
 	private ProgressDialog progressDialog;
 
-	private boolean isLogin;
+	private boolean isLoggedIn;
 
 	private List<Product> allBacklogs;
 
@@ -54,9 +54,9 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 	@Override
 	public String call() {
 		try {
-			isLogin = userService.login(userName, password);
+			isLoggedIn = userService.login(userName, password);
 
-			if (isLogin) {
+			if (isLoggedIn) {
 				allBacklogs = backlogService.getAllBacklogs();
 			}
 
@@ -75,9 +75,9 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 	protected void onFinally() throws RuntimeException {
 		super.onFinally();
 		progressDialog.dismiss();
-		if (isLogin) {
+		if (isLoggedIn) {
 			Intent intent = new Intent(this.context, AllBackLogsActivity.class);
-			intent.putExtra(ALL_BACK_LOGS,new ArrayList<Product>(allBacklogs));
+			intent.putExtra(ALL_BACKLOGS,new ArrayList<Product>(allBacklogs));
 			this.context.startActivity(intent);
 		} else {
 			Toast.makeText(context, context.getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();

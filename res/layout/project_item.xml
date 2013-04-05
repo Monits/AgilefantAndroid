@@ -10,6 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:padding="5dp"
-        android:textColor="@color/blue" />
+        android:textColor="@color/all_backlogs_child_text_color" />
 
 </LinearLayout>

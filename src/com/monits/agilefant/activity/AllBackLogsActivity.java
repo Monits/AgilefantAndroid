@@ -27,7 +27,7 @@ public class AllBackLogsActivity extends RoboActivity{
 		super.onCreate(savedInstanceState);
 
 		Bundle extras = getIntent().getExtras();
-		productList = (List<Product>) extras.getSerializable(LoginAsyncTask.ALL_BACK_LOGS);
+		productList = (List<Product>) extras.getSerializable(LoginAsyncTask.ALL_BACKLOGS);
 
 		if (productList != null) {
 			allbackLogs.setAdapter(new BacklogsAdapter(this, allbackLogs, productList));

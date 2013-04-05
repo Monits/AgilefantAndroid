@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue">#1E5EEE</color>
+    <color name="all_backlogs_child_text_color">#1E5EEE</color>
     <color name="storie_background_color">#e9eeff</color>
     <color name="task_background_color">#eeeeee</color>
     

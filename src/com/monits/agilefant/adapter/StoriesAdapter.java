@@ -35,9 +35,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 	@Override
 	public View getChildView(int groupPosition, int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
-		holderChild holder;
+		HolderChild holder;
 		if (null == convertView) {
-			holder = new holderChild();
+			holder = new HolderChild();
 			View inflate = inflater.inflate(R.layout.task_item, null);
 			holder.name = (TextView) inflate.findViewById(R.id.task_name);
 			holder.state = (TextView) inflate.findViewById(R.id.task_state);
@@ -49,7 +49,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 			convertView = inflate;
 			convertView.setTag(holder);
 		} else {
-			holder = (holderChild) convertView.getTag();
+			holder = (HolderChild) convertView.getTag();
 		}
 
 		Task task = (Task) getChild(groupPosition, childPosition);
@@ -75,9 +75,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
-		holderGroup holder;
+		HolderGroup holder;
 		if (null == convertView) {
-			holder = new holderGroup();
+			holder = new HolderGroup();
 			View inflate = inflater.inflate(R.layout.storie_item, null);
 			holder.name = (TextView) inflate.findViewById(R.id.storie_name);
 			holder.state = (TextView) inflate.findViewById(R.id.storie_state);
@@ -89,7 +89,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 			convertView = inflate;
 			convertView.setTag(holder);
 		} else {
-			holder = (holderGroup) convertView.getTag();
+			holder = (HolderGroup) convertView.getTag();
 		}
 
 		Storie storie = (Storie) getGroup(groupPosition);
@@ -112,7 +112,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 		return convertView;
 	}
 
-	class holderGroup {
+	class HolderGroup {
 		public TextView name;
 		public TextView state;
 		public TextView responsibles;
@@ -121,7 +121,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 		public TextView spendEffort;
 	}
 
-	class holderChild {
+	class HolderChild {
 		public TextView name;
 		public TextView state;
 		public TextView responsibles;

@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:padding="5dp"
-        android:textColor="@color/blue" />
+        android:textColor="@color/all_backlogs_child_text_color" />
 
 </LinearLayout>

@@ -106,16 +106,16 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 
 	@Override
 	public View getGroupView(int position, boolean a, View convertView, ViewGroup parent) {
-		holder holder;
+		Holder holder;
 		if (null == convertView) {
-			holder = new holder();
+			holder = new Holder();
 			View inflate = inflater.inflate(R.layout.product_item, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
 
 			convertView = inflate;
 			convertView.setTag(holder);
 		} else {
-			holder = (holder) convertView.getTag();
+			holder = (Holder) convertView.getTag();
 		}
 
 		Product product = (Product) getGroup(position);
@@ -135,7 +135,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		return true;
 	}
 
-	class holder {
+	class Holder {
 		public TextView title;
 	}
 
