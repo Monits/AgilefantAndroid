@@ -24,7 +24,7 @@ public class Iteration implements Serializable{
 	private String name;
 
 	@SerializedName("rankedStories")
-	private List<Storie> stories;
+	private List<Story> stories;
 
 	@SerializedName("startDate")
 	private long startDate;
@@ -87,14 +87,14 @@ public class Iteration implements Serializable{
 	/**
 	 * @return the stories
 	 */
-	public List<Storie> getStories() {
+	public List<Story> getStories() {
 		return stories;
 	}
 
 	/**
 	 * @param stories the stories to set
 	 */
-	public void setStories(List<Storie> stories) {
+	public void setStories(List<Story> stories) {
 		this.stories = stories;
 	}
 

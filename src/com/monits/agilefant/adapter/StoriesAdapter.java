@@ -9,17 +9,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
-import com.monits.agilefant.model.Storie;
+import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.util.HoursUltis;
 
-public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
+public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 
-	public StoriesAdapter(Context context, List<Storie> storieList) {
+	public StoriesAdapter(Context context, List<Story> stories) {
 		super(context);
-		for (Storie storie : storieList) {
+		for (Story storie : stories) {
 			super.addGroup(storie);
+
 			for (Task task : storie.getTasks()) {
 				super.addChildToGroup(storie, task);
 			}
@@ -90,7 +91,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Storie, Task>{
 			holder = (HolderGroup) convertView.getTag();
 		}
 
-		Storie storie = (Storie) getGroup(groupPosition);
+		Story storie = (Story) getGroup(groupPosition);
 
 		holder.name.setText(storie.getName());
 		holder.state.setText(storie.getState());

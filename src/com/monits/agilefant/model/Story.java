@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Storie implements Serializable{
+public class Story implements Serializable{
 
 	private static final long serialVersionUID = -3498965706027533482L;
 
