@@ -21,5 +21,6 @@
     <string name="es">ES</string>
     <string name="stories">Stories</string>
     <string name="task_without_story">Task without story</string>
+    <string name="agilefant_login">Agilefant login</string>
 
 </resources>
