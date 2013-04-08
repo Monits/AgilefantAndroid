@@ -19,5 +19,7 @@
     <string name="_el_">Σ(EL)</string>
     <string name="_oe_">Σ(OE)</string>
     <string name="es">ES</string>
+    <string name="stories">Stories</string>
+    <string name="task_without_story">Task without story</string>
 
 </resources>

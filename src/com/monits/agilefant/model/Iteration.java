@@ -32,6 +32,9 @@ public class Iteration implements Serializable{
 	@SerializedName("endDate")
 	private long endDate;
 
+	@SerializedName("tasks")
+	private List<Task> tasksWithoutStory;
+
 	/**
 	 * Constructor
 	 * @param id The iteration id
@@ -124,5 +127,19 @@ public class Iteration implements Serializable{
 	 */
 	public void setEndDate(long endDate) {
 		this.endDate = endDate;
+	}
+
+	/**
+	 * @return the tasksWithoutStory
+	 */
+	public List<Task> getTasksWithoutStory() {
+		return tasksWithoutStory;
+	}
+
+	/**
+	 * @param tasksWithoutStory the tasksWithoutStory to set
+	 */
+	public void setTasksWithoutStory(List<Task> tasksWithoutStory) {
+		this.tasksWithoutStory = tasksWithoutStory;
 	}
 }

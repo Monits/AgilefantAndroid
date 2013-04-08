@@ -50,6 +50,17 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/end_date"
             android:layout_toRightOf="@id/end_date" />
+
+        <ToggleButton
+            android:id="@+id/next_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/stories_toggle_button"
+            android:textOn="@string/stories"
+            android:textOff="@string/task_without_story"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <LinearLayout
@@ -107,12 +118,26 @@
             android:textColor="@android:color/black" />
     </LinearLayout>
 
-    <ExpandableListView
-        android:id="@+id/stories"
+    <ViewSwitcher
+        android:id="@+id/switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="@android:color/transparent"
-        android:groupIndicator="@null" >
-    </ExpandableListView>
+        android:layout_height="wrap_content" >
+
+        <ExpandableListView
+            android:id="@+id/stories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:groupIndicator="@null" >
+        </ExpandableListView>
+
+        <ListView
+            android:id="@+id/task_without_story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:groupIndicator="@null" >
+        </ListView>
+    </ViewSwitcher>
 
 </LinearLayout>
