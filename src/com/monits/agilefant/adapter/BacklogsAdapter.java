@@ -59,7 +59,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		if (listViewCache[groupPosition] != null) {
 			v = listViewCache[groupPosition];
 		} else {
-			ProductExpandableListView delv = new ProductExpandableListView(context, 25);
+			ProductExpandableListView delv = new ProductExpandableListView(context, context.getResources().getDimensionPixelSize(R.dimen.dimenProductAdapter));
 			delv.setRows(calculateRowCount(groupPosition, null));
 			delv.setAdapter(new ProjectAdapter(context, productList.get(groupPosition).getProjectList()));
 			delv.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);

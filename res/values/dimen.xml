@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dimenProductAdapter">23dp</dimen>
+    <dimen name="dimenProductAdapter">30dp</dimen>
     <dimen name="iteration_titles">75dp</dimen>
 </resources>
