@@ -22,5 +22,6 @@
     <string name="stories">Stories</string>
     <string name="task_without_story">Task without story</string>
     <string name="agilefant_login">Agilefant login</string>
+    <string name="logout">Logout</string>
 
 </resources>

@@ -6,17 +6,30 @@
     android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:padding="10dp"
+        android:text="@string/logout"
+        android:textColor="@color/all_backlogs_child_text_color" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/all_backlogs" />
+        android:background="@color/all_backlogs_title_background_color"
+        android:padding="5dp"
+        android:text="@string/all_backlogs"
+        android:textColor="@color/all_backlogs_title_text_color"
+        android:textSize="18sp" />
 
     <ExpandableListView
         android:id="@+id/all_backlogs"
         android:layout_width="match_parent"
-        android:groupIndicator="@null"
         android:layout_height="wrap_content"
-        android:divider="@null"
+        android:cacheColorHint="@android:color/transparent"
         android:childDivider="@null"
-        android:cacheColorHint="@android:color/transparent" />
+        android:divider="@null"
+        android:groupIndicator="@null" />
 
 </LinearLayout>

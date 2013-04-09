@@ -37,12 +37,20 @@ public class HomeActivity extends RoboActivity {
 	@Inject
 	private SharedPreferences sharedPreferences;
 
+	@Inject
+	private UserService userService;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (userService.isLoggedIn()) {
+			loginAsyncTask.configure(sharedPreferences.getString(UserService.DOMAIN_KEY, ""), sharedPreferences.getString(UserService.USER_NAME_KEY, ""), sharedPreferences.getString(UserService.PASSWORD_KEY, ""));
+			loginAsyncTask.execute();
+		}
 		domain.setText(sharedPreferences.getString(UserService.DOMAIN_KEY, ""));
 		userName.setText(sharedPreferences.getString(UserService.USER_NAME_KEY, ""));
+		password.setText(sharedPreferences.getString(UserService.PASSWORD_KEY, ""));
 
 		login.setOnClickListener(new OnClickListener() {
 
