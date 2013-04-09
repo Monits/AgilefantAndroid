@@ -50,94 +50,12 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/end_date"
             android:layout_toRightOf="@id/end_date" />
-
-        <ToggleButton
-            android:id="@+id/next_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/stories_toggle_button"
-            android:textOn="@string/stories"
-            android:textOff="@string/task_without_story"
-            android:visibility="gone" />
     </RelativeLayout>
 
-    <LinearLayout
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp" >
-
-        <TextView
-            android:id="@+id/storie_name"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/name"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/storie_state"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/state"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/storie_responsibles"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/responsibles"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/storie_effort_left"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/_el_"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/storie_original_estimate"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/_oe_"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/storie_spend_effort"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/es"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
-
-    <ViewSwitcher
-        android:id="@+id/switcher"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ExpandableListView
-            android:id="@+id/stories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cacheColorHint="@android:color/transparent"
-            android:groupIndicator="@null" >
-        </ExpandableListView>
-
-        <ListView
-            android:id="@+id/task_without_story"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cacheColorHint="@android:color/transparent"
-            android:groupIndicator="@null" >
-        </ListView>
-    </ViewSwitcher>
+        android:layout_height="match_parent" />
 
 </LinearLayout>
