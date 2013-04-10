@@ -90,6 +90,9 @@ public class Story implements Serializable{
 	 * @return the metrics
 	 */
 	public Metrics getMetrics() {
+		if (metrics == null) {
+			metrics = new Metrics();
+		}
 		return metrics;
 	}
 
