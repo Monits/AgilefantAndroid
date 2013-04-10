@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.model.User;
 import com.monits.agilefant.util.HoursUltis;
+import com.monits.agilefant.util.IterationUtils;
 
 public class TaskWithoutStoryAdaptar extends BaseAdapter{
 
@@ -63,16 +63,13 @@ public class TaskWithoutStoryAdaptar extends BaseAdapter{
 		Task task = (Task) getItem(position);
 
 		holder.name.setText(task.getName());
-		holder.state.setText(task.getState());
 
-		StringBuilder sb = new StringBuilder();
+		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
+		holder.state.setText(IterationUtils.getStateName(task.getState().toString()));
+		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(task.getState())));
 
-		for (User user : task.getResponsibles()) {
-			sb.append(user.getInitials());
-			sb.append(" ");
-		}
 
-		holder.responsibles.setText(sb.toString());
+		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(task.getResponsibles()));
 		holder.effortLeft.setText(HoursUltis.convertMinutesToHours(task.getEffortLeft()));
 		holder.originalEstimate.setText(HoursUltis.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUltis.convertMinutesToHours(task.getEffortSpent()));

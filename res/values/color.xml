@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="all_backlogs_child_text_color">#1E5EEE</color>
     <color name="all_backlogs_title_background_color">#d0e6f6</color>
     <color name="all_backlogs_title_text_color">#e17009</color>
     <color name="storie_background_color">#e9eeff</color>
     <color name="task_background_color">#eeeeee</color>
     <color name="task_stories_header_background_color">#cccccc</color>
-    
-    
+
 </resources>

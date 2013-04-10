@@ -31,7 +31,7 @@ public class StoriesFragment extends RoboFragment{
 
 		storiesListView = (ExpandableListView)rootView.findViewById(R.id.stories);
 		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
-		storiesListView.setAdapter(new StoriesAdapter(getActivity(), stories));
+		storiesListView.setAdapter(new StoriesAdapter(rootView.getContext(), stories));
 		return rootView;
 	}
 

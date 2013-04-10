@@ -1,51 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/storie_background_color"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/story_item"
     android:orientation="horizontal"
-    android:padding="5dp" >
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp" >
 
     <TextView
         android:id="@+id/storie_name"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_weight="0.7"
         android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/storie_state"
-        android:layout_width="70dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_weight="0.85"
+        android:gravity="center"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/storie_responsibles"
-        android:layout_width="50dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_weight="0.95"
         android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/storie_effort_left"
-        android:layout_width="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_weight="1"
         android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/storie_original_estimate"
-        android:layout_width="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_weight="1"
         android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/storie_spend_effort"
-        android:layout_width="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_weight="1"
         android:textColor="@android:color/black" />
 
 </LinearLayout>

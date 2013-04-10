@@ -2,15 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@android:color/white"
+    android:paddingLeft="@dimen/margin_stories_task"
+    android:paddingRight="@dimen/margin_stories_task" >
 
     <LinearLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/gradient_login_title"
+        android:layout_marginBottom="@dimen/divider_stories_task"
+        android:layout_marginTop="@dimen/divider_stories_task"
+        android:background="@drawable/gradient_stories_title"
         android:orientation="horizontal" >
 
         <TextView
@@ -26,21 +29,27 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title" >
+        android:layout_below="@id/title"
+        android:layout_marginLeft="@dimen/margin_stories_task"
+        android:layout_marginRight="@dimen/margin_stories_task" >
 
         <include
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/divider_stories_task"
             layout="@layout/task_stories_header" />
 
         <ExpandableListView
             android:id="@+id/stories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/header"
             android:cacheColorHint="@android:color/transparent"
+            android:childDivider="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="@dimen/divider_stories_task"
             android:groupIndicator="@null" >
         </ExpandableListView>
 

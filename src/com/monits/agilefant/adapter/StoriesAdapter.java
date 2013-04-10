@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.model.User;
 import com.monits.agilefant.util.HoursUltis;
+import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.StoryRankComparator;
 import com.monits.agilefant.util.TaskRankComparator;
 
@@ -59,16 +59,13 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 		Task task = (Task) getChild(groupPosition, childPosition);
 
 		holder.name.setText(task.getName());
-		holder.state.setText(task.getState());
 
-		StringBuilder sb = new StringBuilder();
+		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
+		holder.state.setText(IterationUtils.getStateName(task.getState().toString()));
+		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(task.getState())));
 
-		for (User user : task.getResponsibles()) {
-			sb.append(user.getInitials());
-			sb.append(" ");
-		}
 
-		holder.responsibles.setText(sb.toString());
+		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(task.getResponsibles()));
 		holder.effortLeft.setText(HoursUltis.convertMinutesToHours(task.getEffortLeft()));
 		holder.originalEstimate.setText(HoursUltis.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUltis.convertMinutesToHours(task.getEffortSpent()));
@@ -99,16 +96,13 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 		Story storie = (Story) getGroup(groupPosition);
 
 		holder.name.setText(storie.getName());
-		holder.state.setText(storie.getState());
 
-		StringBuilder sb = new StringBuilder();
+		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(storie.getState())));
+		holder.state.setText(IterationUtils.getStateName(storie.getState().toString()));
+		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(storie.getState())));
 
-		for (User user : storie.getResponsibles()) {
-			sb.append(user.getInitials());
-			sb.append(" ");
-		}
+		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(storie.getResponsibles()));
 
-		holder.responsibles.setText(sb.toString());
 		holder.effortLeft.setText(HoursUltis.convertMinutesToHours(storie.getMetrics().getEffortLeft()));
 		holder.originalEstimate.setText(HoursUltis.convertMinutesToHours(storie.getMetrics().getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUltis.convertMinutesToHours(storie.getMetrics().getEffortSpent()));

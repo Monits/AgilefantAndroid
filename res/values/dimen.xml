@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="dimenProductAdapter">30dp</dimen>
     <dimen name="iteration_titles">75dp</dimen>
+    <dimen name="margin_stories_task">5dp</dimen>
+    <dimen name="divider_stories_task">2dp</dimen>
+
 </resources>
