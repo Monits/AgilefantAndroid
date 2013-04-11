@@ -6,7 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.monits.agilefant.fragment.iteration.StoriesFragment;
+
 public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter{
+
+	private static final String TASK_WITHOUT_STORIES = "Task Without stories";
+	private static final String STORIES = "Stories";
 
 	private List<Fragment> fragments;
 
@@ -25,4 +30,12 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter{
 		return fragments.size();
 	}
 
+	@Override
+	public CharSequence getPageTitle(int position) {
+		if (getItem(position) instanceof StoriesFragment) {
+			return STORIES;
+		} else {
+			return TASK_WITHOUT_STORIES;
+		}
+	}
 }

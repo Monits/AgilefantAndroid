@@ -6,26 +6,6 @@
     android:paddingLeft="@dimen/margin_stories_task"
     android:paddingRight="@dimen/margin_stories_task" >
 
-    <LinearLayout
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/divider_stories_task"
-        android:layout_marginTop="@dimen/divider_stories_task"
-        android:background="@drawable/gradient_stories_title"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="4dp"
-            android:text="@string/stories"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
