@@ -54,4 +54,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 			this.host = HTTP + domain;
 		}
 	}
+
+	@Override
+	public String getHost() {
+		return host;
+	}
 }

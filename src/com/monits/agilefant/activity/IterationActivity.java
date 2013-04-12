@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
+import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
 import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
@@ -62,6 +63,7 @@ public class IterationActivity extends RoboFragmentActivity implements OnPageCha
 			List<Fragment> fragments = new ArrayList<Fragment>();
 			fragments.add(new StoriesFragment(iteration.getStories()));
 			fragments.add(new TaskWithoutStoryFragment(iteration.getTasksWithoutStory()));
+			fragments.add(new IterationBurndownFragment(iteration.getId()));
 
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(fragmentManager, fragments));
 			this.viewPager.setOnPageChangeListener(this);
@@ -86,8 +88,13 @@ public class IterationActivity extends RoboFragmentActivity implements OnPageCha
 
 		if (fragment instanceof StoriesFragment) {
 			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));
-		} else {
+			pagerTabStrip.setTextColor(getResources().getColor(android.R.color.white));
+		} else if (fragment instanceof TaskWithoutStoryFragment) {
 			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_task_without_story_title));
+			pagerTabStrip.setTextColor(getResources().getColor(android.R.color.white));
+		} else {
+			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_burndown_title));
+			pagerTabStrip.setTextColor(getResources().getColor(R.color.all_backlogs_child_text_color));
 		}
 	}
 }

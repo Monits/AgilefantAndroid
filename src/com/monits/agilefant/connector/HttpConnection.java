@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -53,6 +54,8 @@ public class HttpConnection {
 	private static final DefaultHttpClient client;
 	private static final int DEFAULT_REATTEMPTS = 5;
 
+	public static String cookie;
+
 	static {
 		client = new DefaultHttpClient();
 		client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
@@ -68,8 +71,8 @@ public class HttpConnection {
 	 */
 	public String executeGet(String url) throws RequestException {
 		StringBuffer getUrl = new StringBuffer(url)
-			.append("?")
-			.append(URLEncodedUtils.format(params, "UTF-8"));
+		.append("?")
+		.append(URLEncodedUtils.format(params, "UTF-8"));
 		HttpGet get = new HttpGet(getUrl.toString());
 		return execute(get);
 	}
@@ -125,8 +128,8 @@ public class HttpConnection {
 	 */
 	public String executePost(String url) throws RequestException {
 		StringBuffer getUrl = new StringBuffer(url)
-			.append("?")
-			.append(URLEncodedUtils.format(params, "UTF-8"));
+		.append("?")
+		.append(URLEncodedUtils.format(params, "UTF-8"));
 		HttpPost post = new HttpPost(getUrl.toString());
 		return execute(post);
 	}
@@ -142,6 +145,15 @@ public class HttpConnection {
 		try {
 
 			HttpResponse res = client.execute(method);
+
+			List<Cookie> cookies = client.getCookieStore().getCookies();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("JSESSIONID") && HttpConnection.cookie == null) {
+						HttpConnection.cookie = cookie.getValue();
+					}
+				}
+			}
 
 			StatusLine statusLine = res.getStatusLine();
 
