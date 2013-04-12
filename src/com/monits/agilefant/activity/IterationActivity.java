@@ -63,7 +63,7 @@ public class IterationActivity extends RoboFragmentActivity implements OnPageCha
 			List<Fragment> fragments = new ArrayList<Fragment>();
 			fragments.add(new StoriesFragment(iteration.getStories()));
 			fragments.add(new TaskWithoutStoryFragment(iteration.getTasksWithoutStory()));
-			fragments.add(new IterationBurndownFragment(iteration.getId()));
+			fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(fragmentManager, fragments));
 			this.viewPager.setOnPageChangeListener(this);

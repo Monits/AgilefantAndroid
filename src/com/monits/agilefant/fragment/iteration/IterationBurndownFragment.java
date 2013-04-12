@@ -16,41 +16,59 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.connector.HttpConnection;
 import com.monits.agilefant.service.AgilefantService;
 
-public class IterationBurndownFragment extends RoboFragment{
+public class IterationBurndownFragment extends RoboFragment {
 
+
+	private static final String PARAMS_ID = "id";
 
 	private static final String URL = "/drawIterationBurndown.action?backlogId=%backlogId%&timeZoneOffset=-180";
 
+	private long id;
 	private ImageView burndown;
 
 	@Inject
 	private AgilefantService agilefantService;
 
-	private long id;
+	public static IterationBurndownFragment newInstance(long id) {
+		Bundle bundle = new Bundle();
+		bundle.putLong(PARAMS_ID, id);
 
-	public IterationBurndownFragment(long id) {
-		this.id = id;
+		IterationBurndownFragment iterationBurndownFragment = new IterationBurndownFragment();
+		iterationBurndownFragment.setArguments(bundle);
+
+		return iterationBurndownFragment;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		if (savedInstanceState == null) {
+			Bundle arguments = getArguments();
+
+			id = arguments.getLong(PARAMS_ID, 0);
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_iteration_burndown, container, false);
+		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_iteration_burndown, null);
 		burndown = (ImageView) rootView.findViewById(R.id.burndown);
 
 		AQuery burndownQ = new AQuery(burndown);
 		Drawable preset = getResources().getDrawable(R.drawable.agilefant_logo_home);
 
-		BitmapAjaxCallback.setReuseHttpClient(true);
-		BitmapAjaxCallback.clearCache();
 		BitmapAjaxCallback bitmapAjaxCallback = new BitmapAjaxCallback();
-		bitmapAjaxCallback.memCache(false);
+		bitmapAjaxCallback.memCache(true);
 		bitmapAjaxCallback.cookie("JSESSIONID", HttpConnection.cookie);
 		bitmapAjaxCallback.fallback(R.drawable.agilefant_logo_home);
 		bitmapAjaxCallback.preset(((BitmapDrawable) preset).getBitmap());
 		String url = agilefantService.getHost() + URL.replace("%backlogId%", String.valueOf(id));
-		bitmapAjaxCallback.networkUrl(url);
+		bitmapAjaxCallback.url(url);
+
 		burndownQ.image(bitmapAjaxCallback);
+
 		return rootView;
 	}
 }
