@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="40dp"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content"
+    android:padding="5dp" >
+
+    <View
+        android:id="@+id/line_v_a"
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:background="#e3e3e3" />
+
+    <View
+        android:id="@+id/line_v_b"
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="45dp"
+        android:background="#e3e3e3" />
+
+    <View
+        android:id="@+id/line_h"
+        android:layout_width="20dp"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@id/line_v_b"
+        android:background="#e3e3e3" />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:padding="5dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/line_h"
         android:textColor="@color/all_backlogs_child_text_color" />
 
-</LinearLayout>
+</RelativeLayout>

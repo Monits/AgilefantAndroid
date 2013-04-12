@@ -58,6 +58,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 			holder = new HolderGroup();
 			View inflate = inflater.inflate(R.layout.project_item, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
+			holder.icon = (TextView) inflate.findViewById(R.id.icon);
 
 			convertView = inflate;
 			convertView.setTag(holder);
@@ -69,6 +70,12 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 
 		holder.title.setText(project.getTitle());
 
+		if (isExpanded) {
+			holder.icon.setText("-");
+		} else {
+			holder.icon.setText("+");
+		}
+
 		return convertView;
 	}
 
@@ -79,6 +86,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 
 	class HolderGroup {
 		public TextView title;
+		public TextView icon;
 	}
 
 	class HolderChild {
