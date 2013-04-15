@@ -55,8 +55,6 @@ public class HttpConnection {
 	private static final DefaultHttpClient client;
 	private static final int DEFAULT_REATTEMPTS = 5;
 
-	private static Cookie cookieSessionAgilefant;
-
 	static {
 		client = new DefaultHttpClient();
 		client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
@@ -146,15 +144,6 @@ public class HttpConnection {
 		try {
 
 			HttpResponse res = client.execute(method);
-
-			List<Cookie> cookies = client.getCookieStore().getCookies();
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().equals(COOKIE_NAME_SESSION_AGILEFANT)) {
-						setCookieSessionAgilefant(cookie);
-					}
-				}
-			}
 
 			StatusLine statusLine = res.getStatusLine();
 
@@ -255,13 +244,11 @@ public class HttpConnection {
 	 * @return the cookieSessionAgilefant
 	 */
 	public static Cookie getCookieSessionAgilefant() {
-		return HttpConnection.cookieSessionAgilefant;
-	}
-
-	/**
-	 * @param cookieSessionAgilefant the cookieSessionAgilefant to set
-	 */
-	public static void setCookieSessionAgilefant(Cookie cookieSessionAgilefant) {
-		HttpConnection.cookieSessionAgilefant = cookieSessionAgilefant;
+		for (Cookie cookie : client.getCookieStore().getCookies()) {
+			if (cookie.getName().equals(COOKIE_NAME_SESSION_AGILEFANT)) {
+				return cookie;
+			}
+		}
+		return null;
 	}
 }
