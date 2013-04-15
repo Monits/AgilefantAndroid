@@ -3,7 +3,6 @@ package com.monits.agilefant.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.os.Bundle;
@@ -25,7 +24,7 @@ import com.monits.agilefant.task.GetIteration;
 import com.monits.agilefant.util.DateUtils;
 
 @ContentView(R.layout.activity_iteration)
-public class IterationActivity extends RoboFragmentActivity implements OnPageChangeListener{
+public class IterationActivity extends BaseActivity  implements OnPageChangeListener {
 
 	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 	@InjectView(R.id.iteration_name)
