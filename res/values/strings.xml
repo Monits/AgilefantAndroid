@@ -27,5 +27,6 @@
     <string name="iteration_without_task">iteration without task</string>
     <string name="no_title">No title</string>
     <string name="burndown">Burndown</string>
+    <string name="iteration_">"Iteration: "</string>
 
 </resources>

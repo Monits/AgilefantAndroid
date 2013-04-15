@@ -35,6 +35,9 @@ public class Iteration implements Serializable{
 	@SerializedName("tasks")
 	private List<Task> tasksWithoutStory;
 
+	@SerializedName("root")
+	private RootIteration rootIteration;
+
 	/**
 	 * Constructor
 	 * @param id The iteration id
@@ -141,5 +144,19 @@ public class Iteration implements Serializable{
 	 */
 	public void setTasksWithoutStory(List<Task> tasksWithoutStory) {
 		this.tasksWithoutStory = tasksWithoutStory;
+	}
+
+	/**
+	 * @return the rootIteration
+	 */
+	public RootIteration getRootIteration() {
+		return rootIteration;
+	}
+
+	/**
+	 * @param rootIteration the rootIteration to set
+	 */
+	public void setRootIteration(RootIteration rootIteration) {
+		this.rootIteration = rootIteration;
 	}
 }

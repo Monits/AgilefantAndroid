@@ -75,7 +75,8 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 				public boolean onChildClick(ExpandableListView parent, View v,
 						int groupLevel2Position, int childPosition, long id) {
 					Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
-					getIteration.configure(iteration.getId());
+					String projectName = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getTitle();
+					getIteration.configure(projectName, iteration.getId());
 					getIteration.execute();
 					return true;
 				}

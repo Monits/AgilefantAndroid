@@ -43,8 +43,17 @@ public class IterationActivity extends BaseActivity  implements OnPageChangeList
 	@InjectView(R.id.pager_header)
 	private PagerTitleStrip pagerTabStrip;
 
+	@InjectView(R.id.product)
+	private TextView product;
+
+	@InjectView(R.id.project)
+	private TextView project;
+
+	@InjectView(R.id.iteration_name_tree)
+	private TextView iterationNameTree;
 
 	private Iteration iteration;
+	private String projectName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +61,14 @@ public class IterationActivity extends BaseActivity  implements OnPageChangeList
 
 		Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration)bundle.getSerializable(GetIteration.ITERATION);
+		projectName = bundle.getString(GetIteration.PROJECTNAME);
 
-		if (iteration != null) {
+		if (iteration != null && projectName != null) {
 
+			product.setText(iteration.getRootIteration().getName());
+			project.setText(projectName);
 			name.setText(iteration.getName());
+			iterationNameTree.setText(iteration.getName());
 			startDate.setText(DateUtils.formatDate(iteration.getStartDate(), DATE_PATTERN));
 			endDate.setText(DateUtils.formatDate(iteration.getEndDate(), DATE_PATTERN));
 

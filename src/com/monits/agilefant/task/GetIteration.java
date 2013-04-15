@@ -14,6 +14,8 @@ import com.monits.agilefant.service.IterationService;
 
 public class GetIteration extends RoboAsyncTask<String>{
 
+	public static final String PROJECTNAME = "PROJECTNAME";
+
 	public static final String ITERATION = "ITERATION";
 
 	@Inject
@@ -22,6 +24,8 @@ public class GetIteration extends RoboAsyncTask<String>{
 	private long id;
 
 	private ProgressDialog progressDialog;
+
+	private String projectName;
 
 	@Override
 	protected void onPreExecute() throws Exception {
@@ -46,6 +50,7 @@ public class GetIteration extends RoboAsyncTask<String>{
 
 			Intent intent = new Intent(this.context, IterationActivity.class);
 			intent.putExtra(ITERATION, iteration);
+			intent.putExtra(PROJECTNAME, projectName);
 			this.context.startActivity(intent);
 		} catch (RequestException e) {
 			onException(e);
@@ -59,7 +64,8 @@ public class GetIteration extends RoboAsyncTask<String>{
 		progressDialog.dismiss();
 	}
 
-	public void configure(long id) {
+	public void configure(String projectName, long id) {
+		this.projectName = projectName;
 		this.id = id;
 	}
 }
