@@ -1,5 +1,7 @@
 package com.monits.agilefant.fragment.iteration;
 
+import java.util.TimeZone;
+
 import roboguice.fragment.RoboFragment;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -21,7 +23,7 @@ public class IterationBurndownFragment extends RoboFragment {
 
 	private static final String PARAMS_ID = "id";
 
-	private static final String URL = "/drawIterationBurndown.action?backlogId=%backlogId%&timeZoneOffset=-180";
+	private static final String URL = "/drawIterationBurndown.action?backlogId=%backlogId%&timeZoneOffset=%timeZone%";
 
 	private long id;
 	private ImageView burndown;
@@ -61,10 +63,15 @@ public class IterationBurndownFragment extends RoboFragment {
 
 		BitmapAjaxCallback bitmapAjaxCallback = new BitmapAjaxCallback();
 		bitmapAjaxCallback.memCache(true);
-		bitmapAjaxCallback.cookie("JSESSIONID", HttpConnection.cookie);
+		bitmapAjaxCallback.cookie(HttpConnection.getCookieSessionAgilefant().getName(), HttpConnection.getCookieSessionAgilefant().getValue());
 		bitmapAjaxCallback.fallback(R.drawable.agilefant_logo_home);
 		bitmapAjaxCallback.preset(((BitmapDrawable) preset).getBitmap());
+
+		int timeZone = TimeZone.getDefault().getRawOffset() /(60 * 1000);
+
 		String url = agilefantService.getHost() + URL.replace("%backlogId%", String.valueOf(id));
+		url = url.replace("%timeZone%", String.valueOf(timeZone));
+
 		bitmapAjaxCallback.url(url);
 
 		burndownQ.image(bitmapAjaxCallback);

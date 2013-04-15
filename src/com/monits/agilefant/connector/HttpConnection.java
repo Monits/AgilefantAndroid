@@ -39,6 +39,7 @@ import com.monits.agilefant.exception.RequestException;
  */
 public class HttpConnection {
 
+	private static final String COOKIE_NAME_SESSION_AGILEFANT = "JSESSIONID";
 	public static final String LOGIN = "LOGIN";
 	private static final String HTTP_CONNECTION_IMPL = "HttpConnectionImpl";
 	private final int HTTP_200 = 200;
@@ -54,7 +55,7 @@ public class HttpConnection {
 	private static final DefaultHttpClient client;
 	private static final int DEFAULT_REATTEMPTS = 5;
 
-	public static String cookie;
+	private static Cookie cookieSessionAgilefant;
 
 	static {
 		client = new DefaultHttpClient();
@@ -149,8 +150,8 @@ public class HttpConnection {
 			List<Cookie> cookies = client.getCookieStore().getCookies();
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
-					if (cookie.getName().equals("JSESSIONID") && HttpConnection.cookie == null) {
-						HttpConnection.cookie = cookie.getValue();
+					if (cookie.getName().equals(COOKIE_NAME_SESSION_AGILEFANT)) {
+						setCookieSessionAgilefant(cookie);
 					}
 				}
 			}
@@ -248,5 +249,19 @@ public class HttpConnection {
 	 */
 	public void cleanParameters(){
 		this.params.clear();
+	}
+
+	/**
+	 * @return the cookieSessionAgilefant
+	 */
+	public static Cookie getCookieSessionAgilefant() {
+		return HttpConnection.cookieSessionAgilefant;
+	}
+
+	/**
+	 * @param cookieSessionAgilefant the cookieSessionAgilefant to set
+	 */
+	public static void setCookieSessionAgilefant(Cookie cookieSessionAgilefant) {
+		HttpConnection.cookieSessionAgilefant = cookieSessionAgilefant;
 	}
 }

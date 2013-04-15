@@ -64,7 +64,7 @@ public class IterationActivity extends BaseActivity  implements OnPageChangeList
 			fragments.add(new TaskWithoutStoryFragment(iteration.getTasksWithoutStory()));
 			fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
-			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(fragmentManager, fragments));
+			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(this, fragmentManager, fragments));
 			this.viewPager.setOnPageChangeListener(this);
 
 			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));

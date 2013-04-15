@@ -25,5 +25,7 @@
     <string name="logout">Logout</string>
     <string name="iteration_without_stories">iteration without stories</string>
     <string name="iteration_without_task">iteration without task</string>
+    <string name="no_title">No title</string>
+    <string name="burndown">Burndown</string>
 
 </resources>
