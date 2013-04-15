@@ -18,6 +18,7 @@
             android:name="com.monits.agilefant.activity.SplashActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
