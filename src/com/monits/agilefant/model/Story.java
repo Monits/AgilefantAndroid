@@ -3,9 +3,12 @@ package com.monits.agilefant.model;
 import java.io.Serializable;
 import java.util.List;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Story implements Serializable{
+public class Story implements Serializable, Parcelable{
 
 	private static final long serialVersionUID = -3498965706027533482L;
 
@@ -129,5 +132,15 @@ public class Story implements Serializable{
 	 */
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeSerializable(this);
 	}
 }

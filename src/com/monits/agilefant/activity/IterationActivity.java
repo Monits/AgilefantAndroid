@@ -20,12 +20,15 @@ import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
 import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.Task;
 import com.monits.agilefant.task.GetIteration;
 import com.monits.agilefant.util.DateUtils;
 
 @ContentView(R.layout.activity_iteration)
 public class IterationActivity extends BaseActivity  implements OnPageChangeListener {
 
+	private static final String VIEWPAGERPOSITION = "VIEWPAGERPOSITION";
 	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 	@InjectView(R.id.iteration_name)
 	private TextView name;
@@ -73,14 +76,25 @@ public class IterationActivity extends BaseActivity  implements OnPageChangeList
 			endDate.setText(DateUtils.formatDate(iteration.getEndDate(), DATE_PATTERN));
 
 			List<Fragment> fragments = new ArrayList<Fragment>();
-			fragments.add(new StoriesFragment(iteration.getStories()));
-			fragments.add(new TaskWithoutStoryFragment(iteration.getTasksWithoutStory()));
+
+			ArrayList<Story> storiesArray = new ArrayList<Story>();
+			storiesArray.addAll(iteration.getStories());
+
+			ArrayList<Task> tasksWithoutStory = new ArrayList<Task>();
+			tasksWithoutStory.addAll(iteration.getTasksWithoutStory());
+
+			fragments.add(StoriesFragment.newInstance(storiesArray));
+			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
 			fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(this, fragmentManager, fragments));
 			this.viewPager.setOnPageChangeListener(this);
 
 			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));
+		}
+
+		if (savedInstanceState != null) {
+			viewPager.setCurrentItem(savedInstanceState.getInt(VIEWPAGERPOSITION));
 		}
 
 	}
@@ -108,5 +122,10 @@ public class IterationActivity extends BaseActivity  implements OnPageChangeList
 			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_burndown_title));
 			pagerTabStrip.setTextColor(getResources().getColor(R.color.all_backlogs_child_text_color));
 		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putInt(VIEWPAGERPOSITION, viewPager.getCurrentItem());
 	}
 }

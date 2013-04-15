@@ -1,5 +1,6 @@
 package com.monits.agilefant.fragment.iteration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
@@ -15,14 +16,32 @@ import com.monits.agilefant.model.Story;
 
 public class StoriesFragment extends RoboFragment{
 
+	private static final String STORIES = "STORIES";
+
 	private List<Story> stories;
 
 	private ExpandableListView storiesListView;
 
-	public StoriesFragment(List<Story> stories) {
-		this.stories = stories;
+	public static StoriesFragment newInstance(ArrayList<Story> stories){
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList(STORIES, stories);
+
+		StoriesFragment storiesFragment = new StoriesFragment();
+		storiesFragment.setArguments(bundle);
+
+		return storiesFragment;
 	}
 
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		if (savedInstanceState == null) {
+			Bundle arguments = getArguments();
+
+			this.stories= arguments.getParcelableArrayList(STORIES);
+		}
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

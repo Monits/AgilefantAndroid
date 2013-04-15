@@ -1,5 +1,6 @@
 package com.monits.agilefant.fragment.iteration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
@@ -19,8 +20,26 @@ public class TaskWithoutStoryFragment extends RoboFragment{
 
 	private ListView taskWithoutStoryListView;
 
-	public TaskWithoutStoryFragment(List<Task> taskWithoutStory) {
-		this.taskWithoutStory = taskWithoutStory;
+
+	public static TaskWithoutStoryFragment newInstance(ArrayList<Task> taskWithoutStory) {
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList("TASK_WITHOUT_STORIES", taskWithoutStory);
+
+		TaskWithoutStoryFragment taskWithoutStoryFragment = new TaskWithoutStoryFragment();
+		taskWithoutStoryFragment.setArguments(bundle);
+
+		return taskWithoutStoryFragment;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		if (savedInstanceState == null) {
+			Bundle arguments = getArguments();
+
+			this.taskWithoutStory= arguments.getParcelableArrayList("TASK_WITHOUT_STORIES");
+		}
 	}
 
 	@Override
