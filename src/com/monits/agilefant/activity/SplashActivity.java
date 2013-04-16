@@ -47,7 +47,9 @@ public class SplashActivity extends RoboActivity {
 
 	@Override
 	protected void onPause() {
-		loginTask.cancel(true);
+		if (loginTask != null) {
+			loginTask.cancel(true);
+		}
 		super.onPause();
 	}
 
