@@ -7,5 +7,10 @@ import com.monits.agilefant.model.Product;
 
 public interface BacklogService {
 
+	/**
+	 * Get All backlogs
+	 * @return A list of products
+	 * @throws RequestException
+	 */
 	List<Product> getAllBacklogs() throws RequestException;
 }
