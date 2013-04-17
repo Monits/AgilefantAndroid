@@ -19,7 +19,7 @@ public class Story implements Serializable, Parcelable{
 	private String name;
 
 	@SerializedName("state")
-	private String state;
+	private StateKey state;
 
 	@SerializedName("responsibles")
 	private List<User> responsibles;
@@ -64,14 +64,14 @@ public class Story implements Serializable, Parcelable{
 	/**
 	 * @return the state
 	 */
-	public String getState() {
+	public StateKey getState() {
 		return state;
 	}
 
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(String state) {
+	public void setState(StateKey state) {
 		this.state = state;
 	}
 

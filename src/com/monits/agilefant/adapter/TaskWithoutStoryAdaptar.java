@@ -65,7 +65,7 @@ public class TaskWithoutStoryAdaptar extends BaseAdapter{
 		holder.name.setText(task.getName());
 
 		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
-		holder.state.setText(IterationUtils.getStateName(task.getState().toString()));
+		holder.state.setText(IterationUtils.getStateName(task.getState()));
 		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(task.getState())));
 
 

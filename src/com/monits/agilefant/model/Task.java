@@ -31,7 +31,7 @@ public class Task implements Serializable, Parcelable {
 	private List<User> responsibles;
 
 	@SerializedName("state")
-	private String state;
+	private StateKey state;
 
 	@SerializedName("rank")
 	private int rank;
@@ -123,14 +123,14 @@ public class Task implements Serializable, Parcelable {
 	/**
 	 * @return the state
 	 */
-	public String getState() {
+	public StateKey getState() {
 		return state;
 	}
 
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(String state) {
+	public void setState(StateKey state) {
 		this.state = state;
 	}
 

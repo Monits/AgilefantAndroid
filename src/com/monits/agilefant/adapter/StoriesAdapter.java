@@ -61,7 +61,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 		holder.name.setText(task.getName());
 
 		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
-		holder.state.setText(IterationUtils.getStateName(task.getState().toString()));
+		holder.state.setText(IterationUtils.getStateName(task.getState()));
 		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(task.getState())));
 
 
@@ -98,7 +98,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 		holder.name.setText(storie.getName());
 
 		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(storie.getState())));
-		holder.state.setText(IterationUtils.getStateName(storie.getState().toString()));
+		holder.state.setText(IterationUtils.getStateName(storie.getState()));
 		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(storie.getState())));
 
 		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(storie.getResponsibles()));
