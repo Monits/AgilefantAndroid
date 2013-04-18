@@ -2,8 +2,22 @@ package com.monits.agilefant.service;
 
 import com.monits.agilefant.connector.HttpConnection;
 import com.monits.agilefant.exception.RequestException;
+import com.monits.agilefant.model.StateKey;
 
 public class AgilefantServiceImpl implements AgilefantService {
+
+	private static final String TASK_ORIGINAL_ESTIMATE = "task.originalEstimate";
+	private static final String TASK_EFFORT_LEFT = "task.effortLeft";
+	private static final String STORE_TASK_ACTION = "/ajax/storeTask.action";
+	private static final String TASK_ID = "taskId";
+	private static final String TASK_STATE = "task.state";
+
+	private static final String LOG_TASK_EFFORT_ACTION = "/ajax/logTaskEffort.action";
+	private static final String USER_IDS = "userIds";
+	private static final String PARENT_OBJECT_ID = "parentObjectId";
+	private static final String HOUR_ENTRY_DESCRIPTION = "hourEntry.description";
+	private static final String HOUR_ENTRY_MINUTES_SPENT = "hourEntry.minutesSpent";
+	private static final String HOUR_ENTRY_DATE = "hourEntry.date";
 
 	private static final String HTTP = "http://";
 
@@ -58,5 +72,45 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public String getHost() {
 		return host;
+	}
+
+	@Override
+	public void taskChangeSpentEffort(long date, long minutesSpent,
+			String description, long taskId, long userId) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(HOUR_ENTRY_DATE, String.valueOf(date));
+		connection.addParameter(HOUR_ENTRY_MINUTES_SPENT, String.valueOf(minutesSpent));
+		connection.addParameter(HOUR_ENTRY_DESCRIPTION, description);
+		connection.addParameter(PARENT_OBJECT_ID, String.valueOf(taskId));
+		connection.addParameter(USER_IDS, String.valueOf(userId));
+
+		connection.executePost(host + LOG_TASK_EFFORT_ACTION);
+	}
+
+	@Override
+	public String taskChangeState(StateKey state, long taskId) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(TASK_STATE, state.getState());
+		connection.addParameter(TASK_ID, String.valueOf(taskId));
+
+		return connection.executePost(host + STORE_TASK_ACTION);
+	}
+
+	@Override
+	public String changeEffortLeft(int effortLeft, long taskId) throws RequestException{
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(TASK_EFFORT_LEFT, String.valueOf(effortLeft));
+		connection.addParameter(TASK_ID, String.valueOf(taskId));
+
+		return connection.executePost(host + STORE_TASK_ACTION);
+	}
+
+	@Override
+	public String changeOriginalEstimate(int origalEstimate, long taskId) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(TASK_ORIGINAL_ESTIMATE, String.valueOf(origalEstimate));
+		connection.addParameter(TASK_ID, String.valueOf(taskId));
+
+		return connection.executePost(host + STORE_TASK_ACTION);
 	}
 }
