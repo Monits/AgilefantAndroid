@@ -45,11 +45,8 @@ public class IterationBurndownFragment extends RoboFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState == null) {
-			Bundle arguments = getArguments();
-
-			id = arguments.getLong(PARAMS_ID, 0);
-		}
+		Bundle arguments = getArguments();
+		id = arguments.getLong(PARAMS_ID, 0);
 	}
 
 	@Override

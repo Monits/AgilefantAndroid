@@ -1,59 +1,16 @@
 package com.monits.agilefant.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerTitleStrip;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.widget.TextView;
+import android.support.v4.app.FragmentTransaction;
 
-import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
-import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
-import com.monits.agilefant.fragment.iteration.StoriesFragment;
-import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
+import com.monits.agilefant.fragment.iteration.IterationFragment;
 import com.monits.agilefant.model.Iteration;
-import com.monits.agilefant.model.Story;
-import com.monits.agilefant.model.Task;
 import com.monits.agilefant.task.GetIteration;
-import com.monits.agilefant.util.DateUtils;
 
 @ContentView(R.layout.activity_iteration)
-public class IterationActivity extends BaseActivity  implements OnPageChangeListener {
-
-	private static final String VIEWPAGERPOSITION = "VIEWPAGERPOSITION";
-	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
-	@InjectView(R.id.iteration_name)
-	private TextView name;
-	@InjectView(R.id.iteration_start_date)
-	private TextView startDate;
-	@InjectView(R.id.iteration_end_date)
-	private TextView endDate;
-
-	@Inject
-	private FragmentManager fragmentManager;
-
-	@InjectView(R.id.pager)
-	private ViewPager viewPager;
-
-	@InjectView(R.id.pager_header)
-	private PagerTitleStrip pagerTabStrip;
-
-	@InjectView(R.id.product)
-	private TextView product;
-
-	@InjectView(R.id.project)
-	private TextView project;
-
-	@InjectView(R.id.iteration_name_tree)
-	private TextView iterationNameTree;
+public class IterationActivity extends BaseActivity {
 
 	private Iteration iteration;
 	private String projectName;
@@ -62,70 +19,17 @@ public class IterationActivity extends BaseActivity  implements OnPageChangeList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (savedInstanceState != null) {
+			return;
+		}
+
 		Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration)bundle.getSerializable(GetIteration.ITERATION);
 		projectName = bundle.getString(GetIteration.PROJECTNAME);
 
-		if (iteration != null && projectName != null) {
-
-			product.setText(iteration.getRootIteration().getName());
-			project.setText(projectName);
-			name.setText(iteration.getName());
-			iterationNameTree.setText(iteration.getName());
-			startDate.setText(DateUtils.formatDate(iteration.getStartDate(), DATE_PATTERN));
-			endDate.setText(DateUtils.formatDate(iteration.getEndDate(), DATE_PATTERN));
-
-			List<Fragment> fragments = new ArrayList<Fragment>();
-
-			ArrayList<Story> storiesArray = new ArrayList<Story>();
-			storiesArray.addAll(iteration.getStories());
-
-			ArrayList<Task> tasksWithoutStory = new ArrayList<Task>();
-			tasksWithoutStory.addAll(iteration.getTasksWithoutStory());
-
-			fragments.add(StoriesFragment.newInstance(storiesArray));
-			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
-			fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
-
-			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(this, fragmentManager, fragments));
-			this.viewPager.setOnPageChangeListener(this);
-
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));
-		}
-
-		if (savedInstanceState != null) {
-			viewPager.setCurrentItem(savedInstanceState.getInt(VIEWPAGERPOSITION));
-		}
-
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		transaction.replace(R.id.container, IterationFragment.newInstance(projectName, iteration));
+		transaction.commit();
 	}
 
-	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-		ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter)this.viewPager.getAdapter();
-		Fragment fragment = pagerAdapter.getItem(position);
-
-		if (fragment instanceof StoriesFragment) {
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));
-			pagerTabStrip.setTextColor(getResources().getColor(android.R.color.white));
-		} else if (fragment instanceof TaskWithoutStoryFragment) {
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_task_without_story_title));
-			pagerTabStrip.setTextColor(getResources().getColor(android.R.color.white));
-		} else {
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_burndown_title));
-			pagerTabStrip.setTextColor(getResources().getColor(R.color.all_backlogs_child_text_color));
-		}
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt(VIEWPAGERPOSITION, viewPager.getCurrentItem());
-	}
 }

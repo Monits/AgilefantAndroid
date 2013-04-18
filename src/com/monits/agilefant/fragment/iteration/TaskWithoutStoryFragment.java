@@ -35,11 +35,8 @@ public class TaskWithoutStoryFragment extends RoboFragment{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState == null) {
-			Bundle arguments = getArguments();
-
-			this.taskWithoutStory= arguments.getParcelableArrayList("TASK_WITHOUT_STORIES");
-		}
+		Bundle arguments = getArguments();
+		this.taskWithoutStory= arguments.getParcelableArrayList("TASK_WITHOUT_STORIES");
 	}
 
 	@Override

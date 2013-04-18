@@ -36,22 +36,18 @@ public class StoriesFragment extends RoboFragment{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState == null) {
-			Bundle arguments = getArguments();
-
-			this.stories= arguments.getParcelableArrayList(STORIES);
-		}
+		Bundle arguments = getArguments();
+		this.stories= arguments.getParcelableArrayList(STORIES);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
 		storiesListView = (ExpandableListView)rootView.findViewById(R.id.stories);
 		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
 		storiesListView.setAdapter(new StoriesAdapter(rootView.getContext(), stories));
+
 		return rootView;
 	}
-
 }
