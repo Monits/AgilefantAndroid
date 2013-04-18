@@ -19,6 +19,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String HOUR_ENTRY_MINUTES_SPENT = "hourEntry.minutesSpent";
 	private static final String HOUR_ENTRY_DATE = "hourEntry.date";
 
+	private static final String HTTP_REXEG = "^https?://.*$";
 	private static final String HTTP = "http://";
 
 	private String host;
@@ -62,7 +63,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void setDomain(String domain) {
-		if (domain.startsWith(HTTP)) {
+		if (domain.matches(HTTP_REXEG)) {
 			this.host = domain;
 		} else {
 			this.host = HTTP + domain;
