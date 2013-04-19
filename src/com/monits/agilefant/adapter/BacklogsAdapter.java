@@ -33,12 +33,19 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	private static final int MAX_CHILDREN = 1024;
 
 	public BacklogsAdapter(Context context,ExpandableListView topExpList, List<Product> productList) {
+		if (productList != null) {
+			this.productList = productList;
+			this.listViewCache = new ProductExpandableListView[productList.size()];
+		}
+
 		this.context = context;
-		this.productList = productList;
 		this.topExpList = topExpList;
-		this.listViewCache = new ProductExpandableListView[productList.size()];
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		RoboGuice.injectMembers(context, this);
+	}
+
+	public BacklogsAdapter(Context context, ExpandableListView topExpList) {
+		this(context, topExpList, null);
 	}
 
 	@Override
@@ -96,17 +103,17 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 
 	@Override
 	public Object getGroup(int position) {
-		return productList.get(position);
+		return productList != null ? productList.get(position) : null;
 	}
 
 	@Override
 	public int getGroupCount() {
-		return productList.size();
+		return productList != null ? productList.size() : 0;
 	}
 
 	@Override
 	public long getGroupId(int position) {
-		return productList.get(position).getId();
+		return productList != null ? productList.get(position).getId() : -1;
 	}
 
 	@Override
@@ -188,5 +195,11 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 
 			return true;
 		}
+	}
+
+	public void setBacklogs(List<Product> productList) {
+		this.productList = productList;
+		this.listViewCache = new ProductExpandableListView[productList.size()];
+		notifyDataSetChanged();
 	}
 }

@@ -1,42 +1,30 @@
 package com.monits.agilefant.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.util.RoboAsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.activity.AllBackLogsActivity;
-import com.monits.agilefant.exception.RequestException;
-import com.monits.agilefant.model.Product;
-import com.monits.agilefant.service.BacklogService;
+import com.monits.agilefant.listeners.TaskCallback;
+import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
 
-public class LoginAsyncTask extends RoboAsyncTask<String>{
-
-	public static final String ALL_BACKLOGS = "allBackLogs";
+public class LoginAsyncTask extends RoboAsyncTask<User> {
 
 	@Inject
 	private UserService userService;
 
-	@Inject
-	private BacklogService backlogService;
-
+	private String domain;
 	private String userName;
 	private String password;
 
 	private ProgressDialog progressDialog;
+	private TaskCallback<User> callback;
 
-	private boolean isLoggedIn;
-
-	private List<Product> allBacklogs;
-
-	private String domain;
+	private boolean successfullyLoggedIn;
+	private boolean showProgressDialog;
+	private boolean isInterrupted;
 
 	@Inject
 	protected LoginAsyncTask(Context context) {
@@ -45,46 +33,87 @@ public class LoginAsyncTask extends RoboAsyncTask<String>{
 
 	@Override
 	protected void onPreExecute() throws Exception {
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setCancelable(false);
-		progressDialog.setMessage(getContext().getString(R.string.loading));
-		progressDialog.show();
+		isInterrupted = false;
+
+		if (showProgressDialog) {
+			progressDialog = new ProgressDialog(context);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setCancelable(false);
+			progressDialog.setMessage(getContext().getString(R.string.loading));
+			progressDialog.show();
+		}
+
 		super.onPreExecute();
 	}
 
 	@Override
-	public String call() {
-		try {
-			isLoggedIn = userService.login(domain, userName, password);
+	public User call() throws Exception {
+		successfullyLoggedIn = userService.login(domain, userName, password);
 
-			if (isLoggedIn) {
-				allBacklogs = backlogService.getAllBacklogs();
-			}
-
-		} catch (RequestException e) {
-			onException(e);
+		if (successfullyLoggedIn) {
+			return userService.retrieveUser();
 		}
+
 		return null;
 	}
 
-	public void configure(String domain, String userName, String password) {
+	/**
+	 * Initializes the parameters to execute task.
+	 * 
+	 * @param domain the domain to login.
+	 * @param userName the user login name.
+	 * @param password the user password.
+	 * @param showProgressDialog whether this task should display a progress dialog or not.
+	 * @param callback the listener to be called as callback.
+	 */
+	public void configure(String domain, String userName, String password,
+			boolean showProgressDialog, TaskCallback<User> callback) {
+		this.callback = callback;
+		this.showProgressDialog = showProgressDialog;
 		this.userName = userName;
 		this.password = password;
 		this.domain = domain;
 	}
 
 	@Override
+	protected void onSuccess(User user) throws Exception {
+		super.onSuccess(user);
+
+		if (!isInterrupted) {
+			if (user != null ) {
+				userService.storeLoggedUser(user);
+
+				if (callback != null) {
+					callback.onSuccess(user);
+				}
+
+			} else {
+				if (callback != null) {
+					callback.onError();
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void onException(Exception e) throws RuntimeException {
+		super.onException(e);
+
+		if (callback != null) {
+			callback.onError();
+		}
+	}
+
+	@Override
 	protected void onFinally() throws RuntimeException {
-		super.onFinally();
-		progressDialog.dismiss();
-		if (isLoggedIn) {
-			Intent intent = new Intent(this.context, AllBackLogsActivity.class);
-			intent.putExtra(ALL_BACKLOGS,new ArrayList<Product>(allBacklogs));
-			this.context.startActivity(intent);
-		} else {
-			Toast.makeText(context, context.getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();
+		if (progressDialog.isShowing()) {
+			progressDialog.dismiss();
 		}
 
+		super.onFinally();
+	}
+
+	public void interrupt() {
+		isInterrupted = true;
 	}
 }

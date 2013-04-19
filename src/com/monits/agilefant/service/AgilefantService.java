@@ -75,4 +75,13 @@ public interface AgilefantService {
 	 * @throws RequestException
 	 */
 	String changeOriginalEstimate(int origalEstimate, long taskId) throws RequestException;
+
+	/**
+	 * Retrieves the user with the given id.
+	 * 
+	 * @param id <b>(Optional)</b> the user's id.
+	 * @return user in JSON format. Logged user in case no id was given.
+	 * @throws RequestException
+	 */
+	String retrieveUser(Long id) throws RequestException;
 }

@@ -22,11 +22,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import roboguice.util.Ln;
 import android.util.Log;
@@ -56,9 +59,24 @@ public class HttpConnection {
 	private static final int DEFAULT_REATTEMPTS = 5;
 
 	static {
-		client = new DefaultHttpClient();
+		client = getThreadSafeClient();
 		client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		HttpConnectionParams.setSoTimeout(client.getParams(), TIMEOUT);
+	}
+
+
+	/**
+	 * @return an instance of a thread safe client.
+	 */
+	private static DefaultHttpClient getThreadSafeClient() {
+		DefaultHttpClient client = new DefaultHttpClient();
+		ClientConnectionManager connManager = client.getConnectionManager();
+		HttpParams params = client.getParams();
+		client = new DefaultHttpClient(
+				new ThreadSafeClientConnManager(params, connManager.getSchemeRegistry()),
+				params);
+
+		return client;
 	}
 
 	/**

@@ -10,6 +10,8 @@ import com.monits.agilefant.parser.IterationParser;
 import com.monits.agilefant.parser.IterationParserImpl;
 import com.monits.agilefant.parser.TaskParser;
 import com.monits.agilefant.parser.TaskParserImpl;
+import com.monits.agilefant.parser.UserParser;
+import com.monits.agilefant.parser.UserParserImpl;
 import com.monits.agilefant.service.AgilefantService;
 import com.monits.agilefant.service.AgilefantServiceImpl;
 import com.monits.agilefant.service.BacklogService;
@@ -34,5 +36,7 @@ public class AgilefantModule extends AbstractModule{
 		bindConstant().annotatedWith(SharedPreferencesName.class).to("default");
 		bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 		bind(TaskParser.class).to(TaskParserImpl.class).in(Singleton.class);
+		bind(UserParser.class).to(UserParserImpl.class).in(Singleton.class);
+		bind(UserService.class).to(UserServiceImpl.class).in(Singleton.class);
 	}
 }

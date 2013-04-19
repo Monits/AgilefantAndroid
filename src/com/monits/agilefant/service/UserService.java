@@ -1,6 +1,7 @@
 package com.monits.agilefant.service;
 
 import com.monits.agilefant.exception.RequestException;
+import com.monits.agilefant.model.User;
 
 public interface UserService {
 
@@ -25,6 +26,21 @@ public interface UserService {
 	public static final String ISLOGGEDIN_KEY = "ISLOGGEDIN_KEY";
 
 	/**
+	 * SharedPreferences user fullName key
+	 */
+	public static final String FULLNAME_KEY = "USER_FULLNAME_KEY";
+
+	/**
+	 * SharedPreferences user id key
+	 */
+	public static final String USER_ID_KEY = "USER_ID_KEY";
+
+	/**
+	 * SharedPreferences user initials key
+	 */
+	public static final String USER_INITIALS_KEY = "USER_INITIALS_KEY";
+
+	/**
 	 * Login in Agilefant
 	 * @param domain Agilefant domain
 	 * @param userName User name
@@ -43,4 +59,35 @@ public interface UserService {
 	 * Logout in Agilefant
 	 */
 	void logout();
+
+	/**
+	 * Retrieves the user identified by the given id. If id is null, It'll retrieve the user bound
+	 * to the current agilefant session.
+	 * 
+	 * @return the user with this id if provided, otherwise the logged user. returns null if no user was found.
+	 */
+	User retrieveUser(Long id) throws RequestException;
+
+	/**
+	 * Retrieves the current session user.
+	 * <blockquote>
+	 * This is a convenience for .retrieveUser(null)
+	 * </blockquote>
+	 * @return the logged user.
+	 */
+	User retrieveUser() throws RequestException;
+
+	/**
+	 * saves the user in the shared preferences.
+	 * 
+	 * @param user the user to be stored.
+	 */
+	void storeLoggedUser(User user);
+
+	/**
+	 * Retrieves the logged user.
+	 * 
+	 * @return the logged user.
+	 */
+	User getLoggedUser();
 }

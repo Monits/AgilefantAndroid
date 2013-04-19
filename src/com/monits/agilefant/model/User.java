@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 2083552426069779695L;
 
@@ -13,6 +13,9 @@ public class User implements Serializable{
 
 	@SerializedName("initials")
 	private String initials;
+
+	@SerializedName("fullName")
+	private String fullName;
 
 	/**
 	 * @return the id
@@ -40,5 +43,13 @@ public class User implements Serializable{
 	 */
 	public void setInitials(String initials) {
 		this.initials = initials;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }

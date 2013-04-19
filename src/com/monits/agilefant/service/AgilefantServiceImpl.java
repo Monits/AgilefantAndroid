@@ -34,6 +34,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String GET_ITERATION = "/ajax/iterationData.action";
 	private static final String ITERATION_ID = "iterationId";
 
+	private static final String RETRIEVE_USER_ACTION = "/ajax/retrieveUser.action";
+	private static final String USER_ID = "userId";
+
 	@Override
 	public boolean login(String userName, String password) throws RequestException {
 		HttpConnection connection = new HttpConnection();
@@ -113,5 +116,16 @@ public class AgilefantServiceImpl implements AgilefantService {
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
 		return connection.executePost(host + STORE_TASK_ACTION);
+	}
+
+	@Override
+	public String retrieveUser(Long id) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+
+		if (id != null) {
+			connection.addParameter(USER_ID, String.valueOf(id));
+		}
+
+		return connection.executeGet(host + RETRIEVE_USER_ACTION);
 	}
 }

@@ -3,6 +3,7 @@ package com.monits.agilefant.activity;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
+import com.monits.agilefant.listeners.TaskCallback;
+import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.task.LoginAsyncTask;
 
@@ -52,7 +55,26 @@ public class HomeActivity extends RoboActivity {
 				if (domain.getText() == null || userName.getText() == null || password.getText() == null) {
 					Toast.makeText(HomeActivity.this, "All the fields are required", Toast.LENGTH_LONG).show();
 				} else {
-					loginAsyncTask.configure(domain.getText().toString(), userName.getText().toString(), password.getText().toString());
+
+					loginAsyncTask.configure(
+							domain.getText().toString(),
+							userName.getText().toString(),
+							password.getText().toString(),
+							true,
+							new TaskCallback<User>() {
+
+								@Override
+								public void onSuccess(User user) {
+									Intent intent = new Intent(HomeActivity.this, AllBackLogsActivity.class);
+									HomeActivity.this.startActivity(intent);
+								}
+
+								@Override
+								public void onError() {
+									Toast.makeText(HomeActivity.this, getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();
+								}
+							});
+
 					loginAsyncTask.execute();
 				}
 			}
