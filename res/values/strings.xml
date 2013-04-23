@@ -37,5 +37,8 @@
     <string name="error_retrieve_backlogs">Failed to retrieve backlogs.</string>
     <string name="login_error">Invalid username or password, please try again.</string>
     <string name="error_validation_date">Date : Invalid format (yyyy-mm-dd hh:mm)</string>
+    <string name="dialog_datetime_title">Select date and time</string>
+    <string name="dialog_datetime_positive">Set</string>
+    <string name="dialog_datetime_negative">Cancel</string>
 
 </resources>

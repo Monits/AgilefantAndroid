@@ -13,11 +13,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
+import com.monits.agilefant.dialog.DateTimePickerDialogFragment;
+import com.monits.agilefant.dialog.DateTimePickerDialogFragment.OnDateSetListener;
 import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.UserService;
@@ -45,6 +48,7 @@ public class SpentEffortFragment extends RoboFragment {
 
 	private Task task;
 	private SimpleDateFormat dateFormatter;
+	private ImageButton mTriggerPickerButton;
 
 	public static SpentEffortFragment newInstance(Task task) {
 		Bundle arguments = new Bundle();
@@ -79,6 +83,25 @@ public class SpentEffortFragment extends RoboFragment {
 		mHoursInput = (EditText) view.findViewById(R.id.effort_spent);
 
 		mCommentInput = (EditText) view.findViewById(R.id.comment);
+
+		mTriggerPickerButton = (ImageButton) view.findViewById(R.id.datepicker_button);
+		mTriggerPickerButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				DateTimePickerDialogFragment dateTimePickerDialogFragment = DateTimePickerDialogFragment.newInstance();
+				dateTimePickerDialogFragment.setOnDateSetListener(new OnDateSetListener() {
+
+					@Override
+					public void onDateSet(Date date) {
+						String formattedDate = DateUtils.formatDate(date, DATE_PATTERN);
+						mDateInput.setText(formattedDate);
+					}
+				});
+
+				dateTimePickerDialogFragment.show(SpentEffortFragment.this.getFragmentManager(), "datePickerDialog");
+			}
+		});
 
 		mSubmitButton = (Button) view.findViewById(R.id.submit_btn);
 		mSubmitButton.setOnClickListener(new OnClickListener() {

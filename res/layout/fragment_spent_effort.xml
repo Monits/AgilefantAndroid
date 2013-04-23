@@ -71,11 +71,19 @@
 
                         <EditText
                             android:id="@+id/date"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="@string/date"
                             android:inputType="datetime"
+                            android:textSize="12sp"
                             android:singleLine="true" />
+
+                        <ImageButton 
+                            android:id="@+id/datepicker_button"
+                            android:background="@android:color/transparent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_calendar" />
                     </TableRow>
 
                     <TableRow
@@ -95,6 +103,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:editable="false"
+                            android:textSize="12sp"
                             android:hint="@string/responsibles" />
                     </TableRow>
 
@@ -115,6 +124,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:digits="0123456789."
+                            android:textSize="12sp"
                             android:inputType="number" />
                     </TableRow>
 
@@ -135,6 +145,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/comment"
+                            android:textSize="12sp"
                             android:singleLine="true" />
                     </TableRow>
                 </TableLayout>
