@@ -1,6 +1,6 @@
 package com.monits.agilefant.util;
 
-public class HoursUltis {
+public class HoursUtils {
 
 	private static final int MINUTES_OF_A_HOUR = 60;
 
@@ -17,5 +17,23 @@ public class HoursUltis {
 		} else {
 			return String.valueOf((float)minutes / MINUTES_OF_A_HOUR) + "h";
 		}
+	}
+
+	/**
+	 * Converts the string that represents the hours to it's equivalent value in minutes.
+	 * 
+	 * @param hours the hours to be converted
+	 * 
+	 * @return the minutes.
+	 */
+	public static long convertHoursStringToMinutes(String hours) {
+		Double ret = 0.0;
+		if (hours != null && !hours.equals("")) {
+			ret = Double.valueOf(hours);
+		}
+
+		ret *= 60;
+
+		return ret.longValue();
 	}
 }

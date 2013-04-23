@@ -27,9 +27,15 @@
     <string name="no_title">No title</string>
     <string name="burndown">Burndown</string>
     <string name="iteration_">Iteration: </string>
+    <string name="comment">Comment</string>
+    <string name="effort_spent">Effort Spent</string>
+    <string name="spent_effort">Spent effort</string>
+    <string name="date">Date</string>
+    <string name="save">Save</string>
 
     <!-- Errors -->
     <string name="error_retrieve_backlogs">Failed to retrieve backlogs.</string>
     <string name="login_error">Invalid username or password, please try again.</string>
+    <string name="error_validation_date">Date : Invalid format (yyyy-mm-dd hh:mm)</string>
 
 </resources>

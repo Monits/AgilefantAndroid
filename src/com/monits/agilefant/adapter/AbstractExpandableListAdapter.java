@@ -17,7 +17,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	protected Context context;
 
 	protected ArrayList<Tgroup> groups;
-	
+
 	protected ArrayList<ArrayList<Tchildren>> children;
 
 	/**
@@ -29,11 +29,11 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 		this.context = context;
 		this.groups = new ArrayList<Tgroup>();
 		this.children = new ArrayList<ArrayList<Tchildren>>();
-		
+
 	}
 
 	/**
-	 * Constructor 
+	 * Constructor
 	 * @param context Context
 	 * @param groups Groups
 	 * @param children Children
@@ -60,7 +60,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	}
 
 	@Override
-	public Object getChild(int groupPosition, int childPosition) {
+	public Tchildren getChild(int groupPosition, int childPosition) {
 		return children.get(groupPosition).get(childPosition);
 	}
 
@@ -75,7 +75,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	}
 
 	@Override
-	public Object getGroup(int groupPosition) {
+	public Tgroup getGroup(int groupPosition) {
 		return groups.get(groupPosition);
 	}
 
@@ -89,7 +89,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 		return groupPosition;
 	}
 
-	
+
 	@Override
 	public boolean hasStableIds() {
 		return true;
@@ -105,7 +105,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	{
 		return true;
 	}
-	
+
 	protected void addGroup(Tgroup group) {
 		this.groups.add(group);
 		this.children.add(new ArrayList<Tchildren>());
@@ -121,7 +121,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 			children.add(new ArrayList<Tchildren>());
 		}
 		children.get(index).add(child);
-		
-		
+
+
 	}
 }

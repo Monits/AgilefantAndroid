@@ -2,13 +2,14 @@ package com.monits.agilefant.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Observable;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task implements Serializable, Parcelable {
+public class Task extends Observable implements Serializable, Parcelable {
 
 	private static final long serialVersionUID = 5089050545685421289L;
 
@@ -48,6 +49,8 @@ public class Task implements Serializable, Parcelable {
 	 */
 	public void setEffortLeft(long effortLeft) {
 		this.effortLeft = effortLeft;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -62,6 +65,8 @@ public class Task implements Serializable, Parcelable {
 	 */
 	public void setEffortSpent(long effortSpent) {
 		this.effortSpent = effortSpent;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -118,6 +123,8 @@ public class Task implements Serializable, Parcelable {
 	 */
 	public void setResponsibles(List<User> responsibles) {
 		this.responsibles = responsibles;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -132,6 +139,8 @@ public class Task implements Serializable, Parcelable {
 	 */
 	public void setState(StateKey state) {
 		this.state = state;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -146,6 +155,8 @@ public class Task implements Serializable, Parcelable {
 	 */
 	public void setRank(int rank) {
 		this.rank = rank;
+		setChanged();
+		notifyObservers();
 	}
 
 	@Override

@@ -8,5 +8,6 @@
     <color name="task_background_color">#eeeeee</color>
     <color name="task_stories_header_background_color">#cccccc</color>
     <color name="iteration_title">#2e6e9e</color>
-    
+    <color name="traslucent_black">#DD000000</color>
+
 </resources>

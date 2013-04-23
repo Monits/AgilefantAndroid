@@ -1,6 +1,7 @@
 package com.monits.agilefant.service;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import com.google.inject.Inject;
 import com.monits.agilefant.exception.RequestException;

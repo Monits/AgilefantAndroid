@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.util.HoursUltis;
+import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
 
 public class TaskWithoutStoryAdaptar extends BaseAdapter{
@@ -70,9 +70,9 @@ public class TaskWithoutStoryAdaptar extends BaseAdapter{
 
 
 		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(task.getResponsibles()));
-		holder.effortLeft.setText(HoursUltis.convertMinutesToHours(task.getEffortLeft()));
-		holder.originalEstimate.setText(HoursUltis.convertMinutesToHours(task.getOriginalEstimate()));
-		holder.spendEffort.setText(HoursUltis.convertMinutesToHours(task.getEffortSpent()));
+		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(task.getEffortLeft()));
+		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
+		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
 
 		return convertView;
 	}
