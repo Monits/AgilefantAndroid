@@ -40,6 +40,8 @@ public class BaseActivity extends RoboFragmentActivity {
 
 	@Override
 	protected void onDestroy() {
+		super.onDestroy();
+
 		if (isTaskRoot()) {
 			AQUtility.cleanCacheAsync(this);
 		}
