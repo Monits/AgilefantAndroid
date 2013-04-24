@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
@@ -172,6 +173,8 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 	@Override
 	public void update(Observable observable, Object data) {
+		BitmapAjaxCallback.clearCache();
+
 		if (isVisible()) {
 			storiesAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);

@@ -60,6 +60,7 @@ public class IterationBurndownFragment extends RoboFragment {
 
 		BitmapAjaxCallback bitmapAjaxCallback = new BitmapAjaxCallback();
 		bitmapAjaxCallback.memCache(true);
+		bitmapAjaxCallback.fileCache(false);
 		bitmapAjaxCallback.cookie(HttpConnection.getCookieSessionAgilefant().getName(), HttpConnection.getCookieSessionAgilefant().getValue());
 		bitmapAjaxCallback.fallback(R.drawable.agilefant_logo_home);
 		bitmapAjaxCallback.preset(((BitmapDrawable) preset).getBitmap());

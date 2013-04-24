@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.androidquery.util.AQUtility;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.UserService;
@@ -34,6 +35,13 @@ public class BaseActivity extends RoboFragmentActivity {
 
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (isTaskRoot()) {
+			AQUtility.cleanCacheAsync(this);
 		}
 	}
 }
