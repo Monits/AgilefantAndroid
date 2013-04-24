@@ -41,5 +41,6 @@
     <string name="dialog_datetime_positive">Set</string>
     <string name="dialog_datetime_negative">Cancel</string>
     <string name="dialog_effortleft_title">Effort left</string>
+    <string name="dialog_state_title">Select state</string>
 
 </resources>

@@ -2,13 +2,13 @@ package com.monits.agilefant.model;
 
 public enum StateKey {
 
-	IMPLEMENTED("IMPLEMENTED"),
-	BLOCKED("BLOCKED"),
-	PENDING("PENDING"),
-	DONE("DONE"),
-	NOT_STARTED("NOT_STARTED"),
-	STARTED("STARTED"),
-	DEFERRED("DEFERRED");
+	NOT_STARTED("Not Started"),
+	STARTED("Started"),
+	PENDING("Pending"),
+	BLOCKED("Blocked"),
+	IMPLEMENTED("Ready"),
+	DONE("Done"),
+	DEFERRED("Deferred");
 
 	private String state;
 
@@ -26,4 +26,18 @@ public enum StateKey {
 	public String getState() {
 		return state;
 	}
+
+	/**
+	 * @return returns a list with the {@link StateKey} values, in human readable form to display.
+	 */
+	public static String[] getDisplayStates() {
+		StateKey[] stateKeys = StateKey.values();
+		String [] taskStates = new String[stateKeys.length];
+		for (int i = 0 ; i < stateKeys.length ; i++) {
+			taskStates[i] = stateKeys[i].getState();
+		}
+
+		return taskStates;
+	}
+
 }

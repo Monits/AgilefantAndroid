@@ -159,6 +159,22 @@ public class Task extends Observable implements Serializable, Parcelable {
 		notifyObservers();
 	}
 
+	/**
+	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
+	 * views to render multiple times.
+	 * 
+	 * @param task the updated task.
+	 */
+	public void updateValues(Task task) {
+		this.effortLeft = task.getEffortLeft();
+		this.effortSpent = task.getEffortSpent();
+		this.originalEstimate = task.getOriginalEstimate();
+		this.state = task.getState();
+		this.responsibles = task.getResponsibles();
+		setChanged();
+		notifyObservers();
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;

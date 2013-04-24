@@ -94,7 +94,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public String taskChangeState(StateKey state, long taskId) throws RequestException {
 		HttpConnection connection = new HttpConnection();
-		connection.addParameter(TASK_STATE, state.getState());
+		connection.addParameter(TASK_STATE, state.name());
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
 		return connection.executePost(host + STORE_TASK_ACTION);

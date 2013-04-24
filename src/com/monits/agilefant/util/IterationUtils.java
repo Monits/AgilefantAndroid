@@ -13,31 +13,17 @@ public class IterationUtils {
 
 	private static final String NONE = "(none)";
 
-	private static final String READY_VALUE = "Ready";
-
-	private static final String BLOCKED_VALUE = "Blocked";
-
-	private static final String PENDING_VALUE = "Pending";
-
-	private static final String DONE_VALUE = "Done";
-
-	private static final String NOT_STARTED_VALUE = "Not Started";
-
-	private static final String STARTED_VALUE = "Started";
-
-	private static final String DEFERRED_VALUE = "Deferred";
-
 	private static Map<StateKey, State> states;
 
 	static {
 		states = new HashMap<StateKey, State>();
-		states.put(StateKey.IMPLEMENTED, new State(READY_VALUE, R.drawable.state_light_green, android.R.color.black));
-		states.put(StateKey.BLOCKED, new State(BLOCKED_VALUE, R.drawable.state_red, android.R.color.white));
-		states.put(StateKey.PENDING, new State(PENDING_VALUE, R.drawable.state_cyan, android.R.color.black));
-		states.put(StateKey.DONE, new State(DONE_VALUE, R.drawable.state_green, android.R.color.white));
-		states.put(StateKey.NOT_STARTED, new State(NOT_STARTED_VALUE, R.drawable.state_gray, android.R.color.black));
-		states.put(StateKey.STARTED, new State(STARTED_VALUE, R.drawable.state_yellow, android.R.color.black));
-		states.put(StateKey.DEFERRED, new State(DEFERRED_VALUE, R.drawable.state_black, android.R.color.white));
+		states.put(StateKey.IMPLEMENTED, new State(StateKey.IMPLEMENTED.getState(), R.drawable.state_light_green, android.R.color.black));
+		states.put(StateKey.BLOCKED, new State(StateKey.BLOCKED.getState(), R.drawable.state_red, android.R.color.white));
+		states.put(StateKey.PENDING, new State(StateKey.PENDING.getState(), R.drawable.state_cyan, android.R.color.black));
+		states.put(StateKey.DONE, new State(StateKey.DONE.getState(), R.drawable.state_green, android.R.color.white));
+		states.put(StateKey.NOT_STARTED, new State(StateKey.NOT_STARTED.getState(), R.drawable.state_gray, android.R.color.black));
+		states.put(StateKey.STARTED, new State(StateKey.STARTED.getState(), R.drawable.state_yellow, android.R.color.black));
+		states.put(StateKey.DEFERRED, new State(StateKey.DEFERRED.getState(), R.drawable.state_black, android.R.color.white));
 	}
 
 	public static String getStateName (StateKey state) {

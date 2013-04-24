@@ -6,6 +6,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import roboguice.fragment.RoboFragment;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
@@ -22,14 +26,19 @@ import com.monits.agilefant.dialog.PromptDialogFragment;
 import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.listeners.TaskCallback;
+import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.task.UpdateEffortLeftTask;
+import com.monits.agilefant.task.UpdateStateTask;
 
 public class StoriesFragment extends RoboFragment implements Observer {
 
 	@Inject
 	private UpdateEffortLeftTask updateEffortLeftTask;
+
+	@Inject
+	private UpdateStateTask updateStateTask;
 
 	private static final String STORIES = "STORIES";
 
@@ -94,7 +103,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 								public void onSuccess(Task response) {
 									Toast.makeText(
 											getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
-									object.setEffortLeft(response.getEffortLeft());
+									object.updateValues(response);
 								}
 							});
 
@@ -116,11 +125,40 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 					break;
 
-				case R.id.task_original_estimate:
-
-					break;
-
 				case R.id.task_state:
+
+					OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							updateStateTask.configure(
+									StateKey.values()[which],
+									object.getId(),
+									new TaskCallback<Task>() {
+
+										@Override
+										public void onSuccess(Task response) {
+											object.updateValues(response);
+										}
+
+										@Override
+										public void onError() {
+											Toast.makeText(
+													getActivity(), "Failed to update the state", Toast.LENGTH_SHORT).show();
+										}
+									});
+
+							updateStateTask.execute();
+
+							dialog.dismiss();
+						}
+					};
+
+					AlertDialog.Builder builder = new Builder(getActivity());
+					builder.setTitle(R.string.dialog_state_title);
+					builder.setSingleChoiceItems(
+							StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
+					builder.show();
 
 					break;
 				}
