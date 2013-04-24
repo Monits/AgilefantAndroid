@@ -6,10 +6,12 @@ import java.util.List;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.HoursUtils;
@@ -17,7 +19,11 @@ import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.StoryRankComparator;
 import com.monits.agilefant.util.TaskRankComparator;
 
-public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
+public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
+
+	private LayoutInflater inflater;
+	private AdapterViewActionListener<Task> childActionListener;
+	private OnClickListener onClickListener;
 
 	public StoriesAdapter(Context context, List<Story> stories) {
 		super(context);
@@ -30,11 +36,22 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 				super.addChildToGroup(storie, task);
 			}
 		}
+
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		onClickListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
+				Integer childPosition = (Integer) v.getTag(R.id.tag_child_position);
+
+				if (childActionListener != null) {
+					childActionListener.onAction(v, getChild(groupPosition, childPosition));
+				}
+			}
+		};
 	}
-
-	private LayoutInflater inflater;
-
 
 	@Override
 	public View getChildView(int groupPosition, int childPosition,
@@ -51,12 +68,26 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 			holder.spendEffort = (TextView) inflate.findViewById(R.id.task_spend_effort);
 
 			convertView = inflate;
+
+			holder.spendEffort.setTag(R.id.tag_child_position, childPosition);
+			holder.spendEffort.setTag(R.id.tag_group_position, groupPosition);
+			holder.spendEffort.setOnClickListener(onClickListener);
+			holder.originalEstimate.setTag(R.id.tag_child_position, childPosition);
+			holder.originalEstimate.setTag(R.id.tag_group_position, groupPosition);
+			holder.originalEstimate.setOnClickListener(onClickListener);
+			holder.effortLeft.setTag(R.id.tag_child_position, childPosition);
+			holder.effortLeft.setTag(R.id.tag_group_position, groupPosition);
+			holder.effortLeft.setOnClickListener(onClickListener);
+			holder.state.setTag(R.id.tag_child_position, childPosition);
+			holder.state.setTag(R.id.tag_group_position, groupPosition);
+			holder.state.setOnClickListener(onClickListener);
+
 			convertView.setTag(holder);
 		} else {
 			holder = (HolderChild) convertView.getTag();
 		}
 
-		Task task = (Task) getChild(groupPosition, childPosition);
+		Task task = getChild(groupPosition, childPosition);
 
 		holder.name.setText(task.getName());
 
@@ -93,7 +124,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 			holder = (HolderGroup) convertView.getTag();
 		}
 
-		Story storie = (Story) getGroup(groupPosition);
+		Story storie = getGroup(groupPosition);
 
 		holder.name.setText(storie.getName());
 
@@ -108,6 +139,15 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task>{
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(storie.getMetrics().getEffortSpent()));
 
 		return convertView;
+	}
+
+	/**
+	 * Add a listener to intercept click events on group's children row's, children views
+	 * 
+	 * @param listener the listener to be set.
+	 */
+	public void setOnChildActionListener(AdapterViewActionListener<Task> listener) {
+		this.childActionListener = listener;
 	}
 
 	class HolderGroup {

@@ -41,7 +41,7 @@ public interface MetricsService {
 	 * @return Updated task
 	 * @throws RequestException
 	 */
-	Task changeEffortLeft(int effortLeft, long taskId) throws RequestException;
+	Task changeEffortLeft(double effortLeft, long taskId) throws RequestException;
 
 	/**
 	 * Change original estimate of task

@@ -101,7 +101,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String changeEffortLeft(int effortLeft, long taskId) throws RequestException{
+	public String changeEffortLeft(double effortLeft, long taskId) throws RequestException{
 		HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_EFFORT_LEFT, String.valueOf(effortLeft));
 		connection.addParameter(TASK_ID, String.valueOf(taskId));

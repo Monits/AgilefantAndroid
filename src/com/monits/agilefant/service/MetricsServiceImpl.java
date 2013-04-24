@@ -35,7 +35,7 @@ public class MetricsServiceImpl implements MetricsService {
 	}
 
 	@Override
-	public Task changeEffortLeft(int effortLeft, long taskId) throws RequestException {
+	public Task changeEffortLeft(double effortLeft, long taskId) throws RequestException {
 		Task task = taskParser.taskParser(agilefantService.changeEffortLeft(effortLeft, taskId));
 		return task;
 	}

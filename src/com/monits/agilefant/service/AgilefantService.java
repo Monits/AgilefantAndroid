@@ -60,12 +60,12 @@ public interface AgilefantService {
 
 	/**
 	 * Change effort Left of task
-	 * @param effortLeft Hour to enter
+	 * @param effortLeft Hour to enter. This value is converted into minutes from the api side.
 	 * @param taskId Task id
 	 * @return Updated task in JSON format
 	 * @throws RequestException
 	 */
-	String changeEffortLeft(int effortLeft, long taskId) throws RequestException;
+	String changeEffortLeft(double effortLeft, long taskId) throws RequestException;
 
 	/**
 	 * Change original estimate of task
