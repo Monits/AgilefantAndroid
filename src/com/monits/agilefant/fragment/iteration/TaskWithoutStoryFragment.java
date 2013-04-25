@@ -91,7 +91,12 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 						@Override
 						public void onAccept(String inputValue) {
-							updateEffortLeftTask.configure(object.getId(), Long.parseLong(inputValue), new TaskCallback<Task>() {
+							double el = 0;
+							if (!inputValue.trim().equals("")) {
+								el = Double.valueOf(inputValue.trim());
+							}
+
+							updateEffortLeftTask.configure(object.getId(), el, new TaskCallback<Task>() {
 
 								@Override
 								public void onError() {

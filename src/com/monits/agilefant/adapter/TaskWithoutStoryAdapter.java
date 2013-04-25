@@ -72,17 +72,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 			holder.spendEffort = (TextView) inflate.findViewById(R.id.task_spend_effort);
 
 			convertView = inflate;
-
 			convertView.setTag(holder);
 
-			holder.spendEffort.setTag(position);
-			holder.spendEffort.setOnClickListener(onClickListener);
-			holder.originalEstimate.setTag(position);
-			holder.originalEstimate.setOnClickListener(onClickListener);
-			holder.effortLeft.setTag(position);
-			holder.effortLeft.setOnClickListener(onClickListener);
-			holder.state.setTag(position);
-			holder.state.setOnClickListener(onClickListener);
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
@@ -99,6 +90,15 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(task.getEffortLeft()));
 		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
+
+		holder.spendEffort.setTag(position);
+		holder.spendEffort.setOnClickListener(onClickListener);
+		holder.originalEstimate.setTag(position);
+		holder.originalEstimate.setOnClickListener(onClickListener);
+		holder.effortLeft.setTag(position);
+		holder.effortLeft.setOnClickListener(onClickListener);
+		holder.state.setTag(position);
+		holder.state.setOnClickListener(onClickListener);
 
 		return convertView;
 	}

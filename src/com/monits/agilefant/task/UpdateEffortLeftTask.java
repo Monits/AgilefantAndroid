@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.monits.agilefant.task;
 
@@ -20,7 +20,7 @@ public class UpdateEffortLeftTask extends RoboAsyncTask<Task> {
 	@Inject
 	private MetricsService metricsService;
 
-	private long effortLeft;
+	private double effortLeft;
 	private long taskId;
 
 	private TaskCallback<com.monits.agilefant.model.Task> callback;
@@ -53,7 +53,7 @@ public class UpdateEffortLeftTask extends RoboAsyncTask<Task> {
 		}
 	}
 
-	public void configure(long taskId, long effortLeft, TaskCallback<com.monits.agilefant.model.Task> callback) {
+	public void configure(long taskId, double effortLeft, TaskCallback<com.monits.agilefant.model.Task> callback) {
 		this.effortLeft = effortLeft;
 		this.taskId = taskId;
 		this.callback = callback;

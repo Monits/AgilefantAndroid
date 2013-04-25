@@ -28,12 +28,12 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	public StoriesAdapter(Context context, List<Story> stories) {
 		super(context);
 		Collections.sort(stories, new StoryRankComparator());
-		for (Story storie : stories) {
-			super.addGroup(storie);
-			List<Task> tasks = storie.getTasks();
+		for (Story story : stories) {
+			super.addGroup(story);
+			List<Task> tasks = story.getTasks();
 			Collections.sort(tasks, new TaskRankComparator());
 			for (Task task : tasks) {
-				super.addChildToGroup(storie, task);
+				super.addChildToGroup(story, task);
 			}
 		}
 
@@ -68,20 +68,6 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 			holder.spendEffort = (TextView) inflate.findViewById(R.id.task_spend_effort);
 
 			convertView = inflate;
-
-			holder.spendEffort.setTag(R.id.tag_child_position, childPosition);
-			holder.spendEffort.setTag(R.id.tag_group_position, groupPosition);
-			holder.spendEffort.setOnClickListener(onClickListener);
-			holder.originalEstimate.setTag(R.id.tag_child_position, childPosition);
-			holder.originalEstimate.setTag(R.id.tag_group_position, groupPosition);
-			holder.originalEstimate.setOnClickListener(onClickListener);
-			holder.effortLeft.setTag(R.id.tag_child_position, childPosition);
-			holder.effortLeft.setTag(R.id.tag_group_position, groupPosition);
-			holder.effortLeft.setOnClickListener(onClickListener);
-			holder.state.setTag(R.id.tag_child_position, childPosition);
-			holder.state.setTag(R.id.tag_group_position, groupPosition);
-			holder.state.setOnClickListener(onClickListener);
-
 			convertView.setTag(holder);
 		} else {
 			holder = (HolderChild) convertView.getTag();
@@ -100,6 +86,19 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(task.getEffortLeft()));
 		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
+
+		holder.spendEffort.setTag(R.id.tag_child_position, childPosition);
+		holder.spendEffort.setTag(R.id.tag_group_position, groupPosition);
+		holder.spendEffort.setOnClickListener(onClickListener);
+		holder.originalEstimate.setTag(R.id.tag_child_position, childPosition);
+		holder.originalEstimate.setTag(R.id.tag_group_position, groupPosition);
+		holder.originalEstimate.setOnClickListener(onClickListener);
+		holder.effortLeft.setTag(R.id.tag_child_position, childPosition);
+		holder.effortLeft.setTag(R.id.tag_group_position, groupPosition);
+		holder.effortLeft.setOnClickListener(onClickListener);
+		holder.state.setTag(R.id.tag_child_position, childPosition);
+		holder.state.setTag(R.id.tag_group_position, groupPosition);
+		holder.state.setOnClickListener(onClickListener);
 
 		return convertView;
 	}
@@ -124,19 +123,21 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 			holder = (HolderGroup) convertView.getTag();
 		}
 
-		Story storie = getGroup(groupPosition);
+		Story story = getGroup(groupPosition);
+		// FIXME: Find a way to make this more automagic, and remove this onDemand call.
+		story.attachTasksObservers();
 
-		holder.name.setText(storie.getName());
+		holder.name.setText(story.getName());
 
-		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(storie.getState())));
-		holder.state.setText(IterationUtils.getStateName(storie.getState()));
-		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(storie.getState())));
+		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(story.getState())));
+		holder.state.setText(IterationUtils.getStateName(story.getState()));
+		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(story.getState())));
 
-		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(storie.getResponsibles()));
+		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(story.getResponsibles()));
 
-		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(storie.getMetrics().getEffortLeft()));
-		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(storie.getMetrics().getOriginalEstimate()));
-		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(storie.getMetrics().getEffortSpent()));
+		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getEffortLeft()));
+		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getOriginalEstimate()));
+		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getEffortSpent()));
 
 		return convertView;
 	}

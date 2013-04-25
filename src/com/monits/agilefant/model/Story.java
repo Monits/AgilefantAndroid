@@ -2,13 +2,15 @@ package com.monits.agilefant.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Story implements Serializable, Parcelable{
+public class Story implements Serializable, Parcelable, Observer {
 
 	private static final long serialVersionUID = -3498965706027533482L;
 
@@ -142,5 +144,33 @@ public class Story implements Serializable, Parcelable{
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeSerializable(this);
+	}
+
+	/**
+	 * Attach Observers story's tasks.
+	 */
+	public void attachTasksObservers() {
+		if (tasks != null) {
+			for (Task task : tasks) {
+				task.addObserver(this);
+			}
+		}
+	}
+
+	@Override
+	public void update(Observable observable, Object data) {
+		if (observable instanceof Task) {
+			long el = 0;
+			long es = 0;
+			long oe = 0;
+
+			for (Task task : tasks) {
+				el += task.getEffortLeft();
+				es += task.getEffortSpent();
+				oe += task.getOriginalEstimate();
+			}
+
+			this.metrics = new Metrics(el, es, oe);
+		}
 	}
 }

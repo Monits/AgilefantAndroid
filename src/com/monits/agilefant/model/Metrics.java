@@ -18,6 +18,26 @@ public class Metrics implements Serializable{
 	private long originalEstimate;
 
 	/**
+	 * Default constructor
+	 */
+	public Metrics() {
+	}
+
+	/**
+	 * Constructor using fields
+	 *
+	 * @param effortLeft
+	 * @param effortSpent
+	 * @param originalEstimate
+	 */
+	public Metrics(long effortLeft, long effortSpent, long originalEstimate) {
+		super();
+		this.effortLeft = effortLeft;
+		this.effortSpent = effortSpent;
+		this.originalEstimate = originalEstimate;
+	}
+
+	/**
 	 * @return the effortLeft
 	 */
 	public long getEffortLeft() {
