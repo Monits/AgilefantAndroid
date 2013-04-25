@@ -46,7 +46,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 				Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
 				Integer childPosition = (Integer) v.getTag(R.id.tag_child_position);
 
-				if (childActionListener != null) {
+				if (childActionListener != null && groupPosition != null && childPosition != null) {
 					childActionListener.onAction(v, getChild(groupPosition, childPosition));
 				}
 			}
@@ -143,7 +143,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 	/**
 	 * Add a listener to intercept click events on group's children row's, children views
-	 * 
+	 *
 	 * @param listener the listener to be set.
 	 */
 	public void setOnChildActionListener(AdapterViewActionListener<Task> listener) {

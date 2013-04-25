@@ -5,25 +5,42 @@ import java.util.List;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
 
-public class TaskWithoutStoryAdaptar extends BaseAdapter{
+public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<Task> tasks;
 	private LayoutInflater inflater;
 
-	public TaskWithoutStoryAdaptar(Context context, List<Task> tasks) {
+	private AdapterViewActionListener<Task> actionListener;
+	private OnClickListener onClickListener;
+
+	public TaskWithoutStoryAdapter(Context context, List<Task> tasks) {
 		this.context = context;
 		this.tasks = tasks;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		onClickListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Integer position = (Integer) v.getTag();
+
+				if (actionListener != null && position != null) {
+					actionListener.onAction(v, getItem(position));
+				}
+			}
+		};
 	}
 
 	@Override
@@ -32,7 +49,7 @@ public class TaskWithoutStoryAdaptar extends BaseAdapter{
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Task getItem(int position) {
 		return tasks.get(position);
 	}
 
@@ -55,12 +72,22 @@ public class TaskWithoutStoryAdaptar extends BaseAdapter{
 			holder.spendEffort = (TextView) inflate.findViewById(R.id.task_spend_effort);
 
 			convertView = inflate;
+
 			convertView.setTag(holder);
+
+			holder.spendEffort.setTag(position);
+			holder.spendEffort.setOnClickListener(onClickListener);
+			holder.originalEstimate.setTag(position);
+			holder.originalEstimate.setOnClickListener(onClickListener);
+			holder.effortLeft.setTag(position);
+			holder.effortLeft.setOnClickListener(onClickListener);
+			holder.state.setTag(position);
+			holder.state.setOnClickListener(onClickListener);
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
 
-		Task task = (Task) getItem(position);
+		Task task = getItem(position);
 
 		holder.name.setText(task.getName());
 
@@ -68,13 +95,21 @@ public class TaskWithoutStoryAdaptar extends BaseAdapter{
 		holder.state.setText(IterationUtils.getStateName(task.getState()));
 		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(task.getState())));
 
-
 		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(task.getResponsibles()));
 		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(task.getEffortLeft()));
 		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
 
 		return convertView;
+	}
+
+	/**
+	 * Add a listener to intercept click events within row views separately.
+	 *
+	 * @param listener the listener to be set.
+	 */
+	public void setOnActionListener(AdapterViewActionListener<Task> listener) {
+		this.actionListener = listener;
 	}
 
 	class Holder {
