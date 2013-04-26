@@ -30,7 +30,7 @@ public class AllBackLogsActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		backlogsAdapter = new BacklogsAdapter(this, allbackLogs);
+		backlogsAdapter = new BacklogsAdapter(this);
 		allbackLogs.setAdapter(backlogsAdapter);
 
 		getBacklogsTask.configure(new TaskCallback<List<Product>>() {

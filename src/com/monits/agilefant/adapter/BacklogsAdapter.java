@@ -27,25 +27,23 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	private List<Product> productList;
 	private Context context;
 	private LayoutInflater inflater;
-	private ExpandableListView topExpList;
 	private ProductExpandableListView listViewCache[];
 
 	private static final int MAX_CHILDREN = 1024;
 
-	public BacklogsAdapter(Context context,ExpandableListView topExpList, List<Product> productList) {
+	public BacklogsAdapter(Context context, List<Product> productList) {
 		if (productList != null) {
 			this.productList = productList;
 			this.listViewCache = new ProductExpandableListView[productList.size()];
 		}
 
 		this.context = context;
-		this.topExpList = topExpList;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		RoboGuice.injectMembers(context, this);
 	}
 
-	public BacklogsAdapter(Context context, ExpandableListView topExpList) {
-		this(context, topExpList, null);
+	public BacklogsAdapter(Context context) {
+		this(context, null);
 	}
 
 	@Override
@@ -66,15 +64,12 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		if (listViewCache[groupPosition] != null) {
 			v = listViewCache[groupPosition];
 		} else {
-			ProductExpandableListView delv = new ProductExpandableListView(context, context.getResources().getDimensionPixelSize(R.dimen.dimenProductAdapter));
-			delv.setRows(calculateRowCount(groupPosition, null));
+			ProductExpandableListView delv = new ProductExpandableListView(context);
 			delv.setAdapter(new ProjectAdapter(context, productList.get(groupPosition).getProjectList()));
 			delv.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);
 
 			delv.setDivider(null);
 			delv.setChildDivider(null);
-
-			delv.setOnGroupClickListener(new Level2GroupExpandListener(groupPosition));
 
 			delv.setOnChildClickListener(new OnChildClickListener() {
 
@@ -157,44 +152,6 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	class Holder {
 		public TextView title;
 		public TextView icon;
-	}
-
-	private int calculateRowCount(int level1, ExpandableListView level2view) {
-		int level2GroupCount = productList.get(level1).getProjectList().size();
-		int rowCtr = 0;
-		for (int i = 0; i < level2GroupCount; i++) {
-			rowCtr++;	   // for the group row
-			if (level2view != null && level2view.isGroupExpanded(i)) {
-				rowCtr += productList.get(level1).getProjectList().get(i).getIterationList().size();	// then add the children too
-			}
-		}
-		return rowCtr;
-	}
-
-	class Level2GroupExpandListener implements ExpandableListView.OnGroupClickListener {
-		private int level1GroupPosition;
-
-		public Level2GroupExpandListener(int level1GroupPosition) {
-			this.level1GroupPosition = level1GroupPosition;
-		}
-
-		@Override
-		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-			if (parent.isGroupExpanded(groupPosition)) {
-				parent.collapseGroup(groupPosition);
-			} else {
-				parent.expandGroup( groupPosition );
-			}
-
-			if (parent instanceof ProductExpandableListView) {
-				ProductExpandableListView dev = (ProductExpandableListView) parent;
-				dev.setRows(calculateRowCount(level1GroupPosition, parent));
-			}
-
-			topExpList.requestLayout();
-
-			return true;
-		}
 	}
 
 	public void setBacklogs(List<Product> productList) {
