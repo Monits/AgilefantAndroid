@@ -27,6 +27,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/header"
             android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/divider_stories_task"
             android:groupIndicator="@null" >

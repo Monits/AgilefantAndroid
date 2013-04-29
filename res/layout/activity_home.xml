@@ -45,7 +45,7 @@
                 android:hint="@string/domain"
                 android:inputType="textUri"
                 android:padding="10dp"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <ImageView
@@ -65,7 +65,7 @@
             android:layout_marginRight="20dp"
             android:layout_toRightOf="@id/icon"
             android:hint="@string/username"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/password"
@@ -75,8 +75,8 @@
             android:layout_marginRight="20dp"
             android:layout_toRightOf="@id/icon"
             android:hint="@string/password"
-            android:password="true"
-            android:textSize="14dp" />
+            android:inputType="textPassword"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/login"
@@ -86,7 +86,7 @@
             android:layout_marginTop="20dp"
             android:layout_toRightOf="@id/icon"
             android:text="@string/log_in"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
     </RelativeLayout>
 
 </LinearLayout>

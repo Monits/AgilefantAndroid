@@ -31,7 +31,6 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 
-	private TextView name;
 	private TextView startDate;
 	private TextView endDate;
 
@@ -68,7 +67,6 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_iteration, null);
 
-		name = (TextView) view.findViewById(R.id.iteration_name);
 		startDate = (TextView) view.findViewById(R.id.iteration_start_date);
 		endDate = (TextView) view.findViewById(R.id.iteration_end_date);
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
@@ -81,7 +79,6 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 			product.setText(mIteration.getRootIteration().getName());
 			project.setText(mProjectName);
-			name.setText(mIteration.getName());
 			iterationNameTree.setText(mIteration.getName());
 			startDate.setText(DateUtils.formatDate(mIteration.getStartDate(), DATE_PATTERN));
 			endDate.setText(DateUtils.formatDate(mIteration.getEndDate(), DATE_PATTERN));

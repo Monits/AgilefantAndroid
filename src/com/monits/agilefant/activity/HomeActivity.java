@@ -46,7 +46,6 @@ public class HomeActivity extends RoboActivity {
 
 		domain.setText(sharedPreferences.getString(UserService.DOMAIN_KEY, ""));
 		userName.setText(sharedPreferences.getString(UserService.USER_NAME_KEY, ""));
-		password.setText(sharedPreferences.getString(UserService.PASSWORD_KEY, ""));
 
 		login.setOnClickListener(new OnClickListener() {
 
