@@ -165,9 +165,13 @@ public class Story implements Serializable, Parcelable, Observer {
 			long oe = 0;
 
 			for (Task task : tasks) {
-				el += task.getEffortLeft();
+				// Agilefant's stories don't consider this states on it's metrics.
+				if (!task.getState().equals(StateKey.DEFERRED)) {
+					oe += task.getOriginalEstimate();
+					el += task.getEffortLeft();
+				}
+
 				es += task.getEffortSpent();
-				oe += task.getOriginalEstimate();
 			}
 
 			this.metrics = new Metrics(el, es, oe);

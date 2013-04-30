@@ -22,8 +22,12 @@ public class UpdateStateTask extends RoboAsyncTask<Task> {
 	private MetricsService metricsService;
 
 	private StateKey state;
-	private long taskId;
+	private com.monits.agilefant.model.Task task;
 	private TaskCallback<com.monits.agilefant.model.Task> callback;
+
+	private boolean isSuccess;
+	private com.monits.agilefant.model.Task fallbackTask;
+
 
 	@Inject
 	protected UpdateStateTask(Context context) {
@@ -31,8 +35,16 @@ public class UpdateStateTask extends RoboAsyncTask<Task> {
 	}
 
 	@Override
+	protected void onPreExecute() throws Exception {
+		super.onPreExecute();
+
+		fallbackTask = task.clone();
+		task.setState(state, true);
+	}
+
+	@Override
 	public com.monits.agilefant.model.Task call() throws Exception {
-		return metricsService.taskChangeState(state, taskId);
+		return metricsService.taskChangeState(state, task.getId());
 	}
 
 	@Override
@@ -40,23 +52,38 @@ public class UpdateStateTask extends RoboAsyncTask<Task> {
 			throws Exception {
 		super.onSuccess(t);
 
-		if (callback != null) {
-			callback.onSuccess(t);
-		}
+		isSuccess = true;
+		task.updateValues(t);
 	}
 
 	@Override
 	protected void onException(Exception e) throws RuntimeException {
 		super.onException(e);
 
-		if (callback != null) {
-			callback.onError();
-		}
+		isSuccess = false;
 	}
 
-	public void configure(StateKey state, long taskId, TaskCallback<com.monits.agilefant.model.Task> callback) {
+	@Override
+	protected void onFinally() throws RuntimeException {
+		super.onFinally();
+
+		if (isSuccess) {
+			if (callback != null) {
+				callback.onSuccess(task);
+			}
+		} else {
+			task.updateValues(fallbackTask);
+
+			if (callback != null) {
+				callback.onError();
+			}
+		}
+
+	}
+
+	public void configure(StateKey state, com.monits.agilefant.model.Task task, TaskCallback<com.monits.agilefant.model.Task> callback) {
 		this.state = state;
-		this.taskId = taskId;
+		this.task = task;
 		this.callback = callback;
 	}
 }

@@ -37,6 +37,33 @@ public class Task extends Observable implements Serializable, Parcelable {
 	@SerializedName("rank")
 	private int rank;
 
+	public Task() {
+	}
+
+	/**
+	 * @param effortLeft
+	 * @param effortSpent
+	 * @param originalEstimate
+	 * @param name
+	 * @param id
+	 * @param responsibles
+	 * @param state
+	 * @param rank
+	 */
+	public Task(long effortLeft, long effortSpent, long originalEstimate,
+			String name, long id, List<User> responsibles, StateKey state,
+			int rank) {
+		super();
+		this.effortLeft = effortLeft;
+		this.effortSpent = effortSpent;
+		this.originalEstimate = originalEstimate;
+		this.name = name;
+		this.id = id;
+		this.responsibles = responsibles;
+		this.state = state;
+		this.rank = rank;
+	}
+
 	/**
 	 * @return the effortLeft
 	 */
@@ -138,7 +165,20 @@ public class Task extends Observable implements Serializable, Parcelable {
 	 * @param state the state to set
 	 */
 	public void setState(StateKey state) {
+		setState(state, false);
+	}
+
+	/**
+	 * @param state the state to set
+	 * @param resetELIfDone whether if effort left should be reset to zero, if {@link StateKey} is done.
+	 */
+	public void setState(StateKey state, boolean resetELIfDone) {
 		this.state = state;
+
+		if (state.equals(StateKey.DONE) && resetELIfDone) {
+			this.effortLeft = 0;
+		}
+
 		setChanged();
 		notifyObservers();
 	}
@@ -183,5 +223,10 @@ public class Task extends Observable implements Serializable, Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeSerializable(this);
+	}
+
+	@Override
+	public Task clone() {
+		return new Task(effortLeft, effortSpent, originalEstimate, name, id, responsibles, state, rank);
 	}
 }

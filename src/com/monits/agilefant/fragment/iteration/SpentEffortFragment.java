@@ -117,19 +117,19 @@ public class SpentEffortFragment extends RoboFragment {
 							DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
 							minutes,
 							mCommentInput.getText().toString(),
-							task.getId(),
+							task,
 							userService.getLoggedUser().getId(),
 							new TaskCallback<Boolean>() {
 
 								@Override
 								public void onError() {
 									Toast.makeText(getActivity(), "Failed to update!", Toast.LENGTH_SHORT).show();
+									getFragmentManager().popBackStack();
 								}
 
 								@Override
 								public void onSuccess(Boolean response) {
 									Toast.makeText(getActivity(), "Succesfully updated!", Toast.LENGTH_SHORT).show();
-									task.setEffortSpent(task.getEffortSpent() + minutes);
 									getFragmentManager().popBackStack();
 								}
 							});

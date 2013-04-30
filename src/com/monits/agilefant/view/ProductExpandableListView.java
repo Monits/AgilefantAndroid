@@ -20,14 +20,12 @@ public class ProductExpandableListView extends ExpandableListView {
 		super(context);
 	}
 
-	public boolean isExpanded()
-	{
+	public boolean isExpanded() {
 		return expanded;
 	}
 
 	@Override
-	public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
+	public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		// HACK! TAKE THAT ANDROID!
 		if (isExpanded()) {
 			// Calculate entire height by providing a very large height hint.
@@ -45,8 +43,7 @@ public class ProductExpandableListView extends ExpandableListView {
 		}
 	}
 
-	public void setExpanded(boolean expanded)
-	{
+	public void setExpanded(boolean expanded) {
 		this.expanded = expanded;
 	}
 }

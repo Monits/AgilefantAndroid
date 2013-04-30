@@ -24,9 +24,12 @@ public class UpdateSpentEffortTask extends RoboAsyncTask<Boolean> {
 	private Date date;
 	private long minuteSpent;
 	private String description;
-	private long taskId;
 	private long userId;
 	private TaskCallback<Boolean> callback;
+	private com.monits.agilefant.model.Task task;
+
+	private boolean isSuccess;
+	private com.monits.agilefant.model.Task mFallbackTask;
 
 	@Inject
 	protected UpdateSpentEffortTask(Context context) {
@@ -34,11 +37,19 @@ public class UpdateSpentEffortTask extends RoboAsyncTask<Boolean> {
 	}
 
 	@Override
+	protected void onPreExecute() throws Exception {
+		super.onPreExecute();
+		mFallbackTask = task.clone();
+		task.setEffortSpent(task.getEffortSpent() + minuteSpent);
+	}
+
+	@Override
 	public Boolean call() {
 		try {
-			metricsService.taskChangeSpentEffort(date, minuteSpent, description, taskId, userId);
+			metricsService.taskChangeSpentEffort(date, minuteSpent, description, task.getId(), userId);
 
 			return true;
+
 		} catch (Exception e) {
 			onException(e);
 		}
@@ -49,21 +60,38 @@ public class UpdateSpentEffortTask extends RoboAsyncTask<Boolean> {
 	@Override
 	protected void onSuccess(Boolean t) throws Exception {
 		super.onSuccess(t);
-		callback.onSuccess(t);
+		isSuccess = t;
 	}
 
 	@Override
 	protected void onException(Exception e) throws RuntimeException {
 		super.onException(e);
-		callback.onError();
+		isSuccess = false;
 	}
 
-	public void configure(Date date, long minutesSpent, String description, long taskId, long userId, TaskCallback<Boolean> callback) {
+	@Override
+	protected void onFinally() throws RuntimeException {
+		super.onFinally();
+
+		if (isSuccess) {
+			if (callback != null) {
+				callback.onSuccess(true);
+			}
+		} else {
+			task.updateValues(mFallbackTask);
+
+			if (callback != null) {
+				callback.onError();
+			}
+		}
+	}
+
+	public void configure(Date date, long minutesSpent, String description, com.monits.agilefant.model.Task task, long userId, TaskCallback<Boolean> callback) {
 		this.callback = callback;
 		this.date = date;
 		this.minuteSpent = minutesSpent;
 		this.description = description;
-		this.taskId = taskId;
+		this.task = task;
 		this.userId = userId;
 	}
 }

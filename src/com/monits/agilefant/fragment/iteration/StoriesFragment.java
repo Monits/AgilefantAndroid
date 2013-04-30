@@ -83,42 +83,44 @@ public class StoriesFragment extends RoboFragment implements Observer {
 				switch (view.getId()) {
 				case R.id.task_effort_left:
 
-					PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
-							R.string.dialog_effortleft_title,
-							String.valueOf(object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
-							InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
+					// Agilefant's tasks that are already done, can't have it's EL changed.
+					if (!object.getState().equals(StateKey.DONE)) {
 
-					dialogFragment.setPromptDialogListener(new PromptDialogListener() {
+						PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
+								R.string.dialog_effortleft_title,
+								String.valueOf((float) object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
+								InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
 
-						@Override
-						public void onAccept(String inputValue) {
-							double el = 0;
-							if (!inputValue.trim().equals("")) {
-								el = Double.valueOf(inputValue.trim());
+						dialogFragment.setPromptDialogListener(new PromptDialogListener() {
+
+							@Override
+							public void onAccept(String inputValue) {
+								double el = 0;
+								if (!inputValue.trim().equals("")) {
+									el = Double.valueOf(inputValue.trim());
+								}
+
+								updateEffortLeftTask.configure(object, el, new TaskCallback<Task>() {
+
+									@Override
+									public void onError() {
+										Toast.makeText(
+												getActivity(), "Failed to update Effort Left.", Toast.LENGTH_SHORT).show();
+									}
+
+									@Override
+									public void onSuccess(Task response) {
+										Toast.makeText(
+												getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
+									}
+								});
+
+								updateEffortLeftTask.execute();
 							}
+						});
 
-							updateEffortLeftTask.configure(object.getId(), el, new TaskCallback<Task>() {
-
-								@Override
-								public void onError() {
-									Toast.makeText(
-											getActivity(), "Failed to update Effort Left.", Toast.LENGTH_SHORT).show();
-								}
-
-								@Override
-								public void onSuccess(Task response) {
-									Toast.makeText(
-											getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
-									object.updateValues(response);
-								}
-							});
-
-							updateEffortLeftTask.execute();
-
-						}
-					});
-
-					dialogFragment.show(getFragmentManager(), "effortLeftDialog");
+						dialogFragment.show(getFragmentManager(), "effortLeftDialog");
+					}
 
 					break;
 
@@ -139,12 +141,13 @@ public class StoriesFragment extends RoboFragment implements Observer {
 						public void onClick(DialogInterface dialog, int which) {
 							updateStateTask.configure(
 									StateKey.values()[which],
-									object.getId(),
+									object,
 									new TaskCallback<Task>() {
 
 										@Override
 										public void onSuccess(Task response) {
-											object.updateValues(response);
+											Toast.makeText(
+													getActivity(), "Successfully updated state", Toast.LENGTH_SHORT).show();
 										}
 
 										@Override
