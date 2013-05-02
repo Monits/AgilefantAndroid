@@ -31,6 +31,7 @@ import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.task.UpdateEffortLeftTask;
 import com.monits.agilefant.task.UpdateStateTask;
+import com.monits.agilefant.util.InputUtils;
 
 public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
@@ -94,25 +95,23 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 							@Override
 							public void onAccept(String inputValue) {
-								double el = 0;
-								if (!inputValue.trim().equals("")) {
-									el = Double.valueOf(inputValue.trim());
-								}
+								updateEffortLeftTask.configure(
+										object,
+										InputUtils.parseStringToDouble(inputValue),
+										new TaskCallback<Task>() {
 
-								updateEffortLeftTask.configure(object, el, new TaskCallback<Task>() {
+											@Override
+											public void onError() {
+												Toast.makeText(
+														getActivity(), "Failed to update Effort Left.", Toast.LENGTH_SHORT).show();
+											}
 
-									@Override
-									public void onError() {
-										Toast.makeText(
-												getActivity(), "Failed to update Effort Left.", Toast.LENGTH_SHORT).show();
-									}
-
-									@Override
-									public void onSuccess(Task response) {
-										Toast.makeText(
-												getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
-									}
-								});
+											@Override
+											public void onSuccess(Task response) {
+												Toast.makeText(
+														getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
+											}
+										});
 
 								updateEffortLeftTask.execute();
 

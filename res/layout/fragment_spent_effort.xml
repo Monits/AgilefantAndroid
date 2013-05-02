@@ -75,14 +75,14 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/date"
                             android:inputType="datetime"
-                            android:textSize="12sp"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:textSize="12sp" />
 
-                        <ImageButton 
+                        <ImageButton
                             android:id="@+id/datepicker_button"
-                            android:background="@android:color/transparent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:src="@drawable/ic_calendar" />
                     </TableRow>
 
@@ -105,8 +105,8 @@
                             android:editable="false"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
-                            android:textSize="12sp"
-                            android:hint="@string/responsibles" />
+                            android:hint="@string/responsibles"
+                            android:textSize="12sp" />
                     </TableRow>
 
                     <TableRow
@@ -126,8 +126,28 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:digits="0123456789."
-                            android:textSize="12sp"
-                            android:inputType="number" />
+                            android:inputType="number"
+                            android:textSize="12sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:paddingRight="5dp"
+                            android:text="@string/effort_left" />
+
+                        <EditText
+                            android:id="@+id/effort_left"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal|number"
+                            android:textSize="12sp" />
                     </TableRow>
 
                     <TableRow
@@ -147,8 +167,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/comment"
-                            android:textSize="12sp"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:textSize="12sp" />
                     </TableRow>
                 </TableLayout>
 

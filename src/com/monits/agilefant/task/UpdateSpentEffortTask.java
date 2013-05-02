@@ -23,6 +23,7 @@ public class UpdateSpentEffortTask extends RoboAsyncTask<Boolean> {
 
 	private Date date;
 	private long minuteSpent;
+	private double effortLeft;
 	private String description;
 	private long userId;
 	private TaskCallback<Boolean> callback;
@@ -41,11 +42,14 @@ public class UpdateSpentEffortTask extends RoboAsyncTask<Boolean> {
 		super.onPreExecute();
 		mFallbackTask = task.clone();
 		task.setEffortSpent(task.getEffortSpent() + minuteSpent);
+		task.setEffortLeft(Double.valueOf(effortLeft * 60).longValue());
 	}
 
 	@Override
 	public Boolean call() {
 		try {
+
+			metricsService.changeEffortLeft(effortLeft, task.getId());
 			metricsService.taskChangeSpentEffort(date, minuteSpent, description, task.getId(), userId);
 
 			return true;
@@ -86,10 +90,11 @@ public class UpdateSpentEffortTask extends RoboAsyncTask<Boolean> {
 		}
 	}
 
-	public void configure(Date date, long minutesSpent, String description, com.monits.agilefant.model.Task task, long userId, TaskCallback<Boolean> callback) {
+	public void configure(Date date, long minutesSpent, double effortLeft, String description, com.monits.agilefant.model.Task task, long userId, TaskCallback<Boolean> callback) {
 		this.callback = callback;
 		this.date = date;
 		this.minuteSpent = minutesSpent;
+		this.effortLeft = effortLeft;
 		this.description = description;
 		this.task = task;
 		this.userId = userId;

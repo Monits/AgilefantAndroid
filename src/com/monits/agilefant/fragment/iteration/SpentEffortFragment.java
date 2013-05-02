@@ -27,6 +27,7 @@ import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.task.UpdateSpentEffortTask;
 import com.monits.agilefant.util.DateUtils;
 import com.monits.agilefant.util.HoursUtils;
+import com.monits.agilefant.util.InputUtils;
 import com.monits.agilefant.util.ValidationUtils;
 
 public class SpentEffortFragment extends RoboFragment {
@@ -49,6 +50,7 @@ public class SpentEffortFragment extends RoboFragment {
 	private Task task;
 	private SimpleDateFormat dateFormatter;
 	private ImageButton mTriggerPickerButton;
+	private EditText mEffortLeftInput;
 
 	public static SpentEffortFragment newInstance(Task task) {
 		Bundle arguments = new Bundle();
@@ -81,6 +83,9 @@ public class SpentEffortFragment extends RoboFragment {
 		mResponsiblesInput.setText(userService.getLoggedUser().getInitials());
 
 		mHoursInput = (EditText) view.findViewById(R.id.effort_spent);
+
+		mEffortLeftInput = (EditText) view.findViewById(R.id.effort_left);
+		mEffortLeftInput.setText(String.valueOf((float) task.getEffortLeft() / 60));
 
 		mCommentInput = (EditText) view.findViewById(R.id.comment);
 
@@ -116,6 +121,7 @@ public class SpentEffortFragment extends RoboFragment {
 					updateSpentEffortTask.configure(
 							DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
 							minutes,
+							InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
 							mCommentInput.getText().toString(),
 							task,
 							userService.getLoggedUser().getId(),
