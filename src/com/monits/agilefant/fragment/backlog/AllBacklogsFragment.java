@@ -40,20 +40,22 @@ public class AllBacklogsFragment extends RoboFragment {
 		backlogsAdapter = new BacklogsAdapter(getActivity());
 		allbackLogs.setAdapter(backlogsAdapter);
 
-		getBacklogsTask.configure(new TaskCallback<List<Product>>() {
+		getBacklogsTask.configure(
+				view.findViewById(R.id.loading_view),
+				new TaskCallback<List<Product>>() {
 
-			@Override
-			public void onSuccess(List<Product> response) {
-				if (response != null) {
-					backlogsAdapter.setBacklogs(response);
-				}
-			}
+					@Override
+					public void onSuccess(List<Product> response) {
+						if (response != null) {
+							backlogsAdapter.setBacklogs(response);
+						}
+					}
 
-			@Override
-			public void onError() {
-				Toast.makeText(getActivity(), R.string.error_retrieve_backlogs, Toast.LENGTH_SHORT).show();
-			}
-		});
+					@Override
+					public void onError() {
+						Toast.makeText(getActivity(), R.string.error_retrieve_backlogs, Toast.LENGTH_SHORT).show();
+					}
+				});
 
 		getBacklogsTask.execute();
 	}

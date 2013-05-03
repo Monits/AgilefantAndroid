@@ -6,12 +6,11 @@ package com.monits.agilefant.task;
 import java.util.List;
 
 import roboguice.util.RoboAsyncTask;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import com.google.inject.Inject;
-import com.monits.agilefant.R;
 import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.service.BacklogService;
@@ -25,9 +24,9 @@ public class GetBacklogsTask extends RoboAsyncTask<List<Product>> {
 	@Inject
 	private BacklogService backlogService;
 
-	private ProgressDialog progressDialog;
-
 	private TaskCallback<List<Product>> callback;
+
+	private View loadingView;
 
 	@Inject
 	protected GetBacklogsTask(Context context) {
@@ -38,11 +37,7 @@ public class GetBacklogsTask extends RoboAsyncTask<List<Product>> {
 	protected void onPreExecute() throws Exception {
 		super.onPreExecute();
 
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setCancelable(false);
-		progressDialog.setMessage(getContext().getString(R.string.loading));
-		progressDialog.show();
+		loadingView.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -74,9 +69,7 @@ public class GetBacklogsTask extends RoboAsyncTask<List<Product>> {
 	protected void onFinally() throws RuntimeException {
 		super.onFinally();
 
-		if (progressDialog.isShowing()) {
-			progressDialog.dismiss();
-		}
+		loadingView.setVisibility(View.GONE);
 	}
 
 	/**
@@ -84,7 +77,8 @@ public class GetBacklogsTask extends RoboAsyncTask<List<Product>> {
 	 * 
 	 * @param callback the listener to be called as callback.
 	 */
-	public void configure(TaskCallback<List<Product>> callback) {
+	public void configure(View loadingView, TaskCallback<List<Product>> callback) {
+		this.loadingView = loadingView;
 		this.callback = callback;
 	}
 }

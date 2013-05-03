@@ -66,20 +66,22 @@ public class MyBacklogsFragment extends RoboFragment {
 			}
 		});
 
-		getMyBacklogsTask.configure(new TaskCallback<List<Project>>() {
+		getMyBacklogsTask.configure(
+				view.findViewById(R.id.loading_view),
+				new TaskCallback<List<Project>>() {
 
-			@Override
-			public void onSuccess(List<Project> response) {
-				if (response != null) {
-					backlogsAdapter.setProjects(response);
-				}
-			}
+					@Override
+					public void onSuccess(List<Project> response) {
+						if (response != null) {
+							backlogsAdapter.setProjects(response);
+						}
+					}
 
-			@Override
-			public void onError() {
-				Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
-			}
-		});
+					@Override
+					public void onError() {
+						Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
+					}
+				});
 
 		getMyBacklogsTask.execute();
 	}
