@@ -12,19 +12,31 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 
-public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Iteration>{
+public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Iteration> {
 
 	private LayoutInflater inflater;
+	private int groupResId;
+	private int childResId;
+
+	/**
+	 * @param context
+	 */
+	public ProjectAdapter(Context context) {
+		this(context, null);
+	}
 
 	public ProjectAdapter(Context context, List<Project> projectList) {
+		this(context, projectList, R.layout.default_project_item, R.layout.default_iteration_item);
+	}
+
+	public ProjectAdapter(Context context, List<Project> projectList, int groupResId, int childResId) {
 		super(context);
-		for (Project project : projectList) {
-			super.addGroup(project);
-			for (Iteration iteration : project.getIterationList()) {
-				super.addChildToGroup(project, iteration);
-			}
-		}
+
+		setProjects(projectList);
+
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.groupResId = groupResId;
+		this.childResId = childResId;
 	}
 
 	@Override
@@ -33,7 +45,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		HolderChild holder;
 		if (null == convertView) {
 			holder = new HolderChild();
-			View inflate = inflater.inflate(R.layout.iteration_item, null);
+			View inflate = inflater.inflate(childResId, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
 
 			convertView = inflate;
@@ -42,7 +54,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 			holder = (HolderChild) convertView.getTag();
 		}
 
-		Iteration iteration = (Iteration) getChild(groupPosition, childPosition);
+		Iteration iteration = getChild(groupPosition, childPosition);
 
 		holder.title.setText(iteration.getTitle());
 
@@ -56,7 +68,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		HolderGroup holder;
 		if (null == convertView) {
 			holder = new HolderGroup();
-			View inflate = inflater.inflate(R.layout.project_item, null);
+			View inflate = inflater.inflate(groupResId, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
 			holder.icon = (TextView) inflate.findViewById(R.id.icon);
 
@@ -66,7 +78,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 			holder = (HolderGroup) convertView.getTag();
 		}
 
-		Project project = (Project) getGroup(groupPosition);
+		Project project = getGroup(groupPosition);
 
 		holder.title.setText(project.getTitle());
 
@@ -82,6 +94,24 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	@Override
 	public boolean isChildSelectable(int arg0, int arg1) {
 		return true;
+	}
+
+	/**
+	 * set the projects to display.
+	 * 
+	 * @param projectList the projects.
+	 */
+	public void setProjects(List<Project> projectList) {
+		if (projectList != null) {
+			for (Project project : projectList) {
+				super.addGroup(project);
+				for (Iteration iteration : project.getIterationList()) {
+					super.addChildToGroup(project, iteration);
+				}
+			}
+		}
+
+		notifyDataSetChanged();
 	}
 
 	class HolderGroup {

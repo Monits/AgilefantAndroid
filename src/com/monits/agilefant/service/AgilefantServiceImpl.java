@@ -24,6 +24,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private String host;
 
+	private static final String GET_MY_BACKLOGS_URL = "/ajax/myAssignmentsMenuData.action";
 	private static final String GET_ALL_BACKLOGS_URL = "/ajax/menuData.action";
 	private static final String LOGIN_URL = "/j_spring_security_check";
 	private static final String PASSWORD = "j_password";
@@ -127,5 +128,11 @@ public class AgilefantServiceImpl implements AgilefantService {
 		}
 
 		return connection.executeGet(host + RETRIEVE_USER_ACTION);
+	}
+
+	@Override
+	public String getMyBacklogs() throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		return connection.executeGet(host + GET_MY_BACKLOGS_URL);
 	}
 }

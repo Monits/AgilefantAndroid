@@ -4,23 +4,25 @@
     android:layout_height="wrap_content"
     android:padding="5dp" >
 
-    <View
-        android:id="@+id/line_v_a"
-        android:layout_width="1dp"
+    <RelativeLayout
+        android:id="@+id/icon_container"
+        android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:background="#e3e3e3" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/backlogs_indicator" >
 
-    <View
-        android:id="@+id/line_v_b"
-        android:layout_width="1dp"
-        android:layout_height="10dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="40dp"
-        android:background="#e3e3e3" />
+        <TextView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="+"
+            android:textColor="@android:color/black" />
+    </RelativeLayout>
 
     <View
         android:id="@+id/line_h"
@@ -28,7 +30,7 @@
         android:layout_height="1dp"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
-        android:layout_toRightOf="@id/line_v_b"
+        android:layout_toRightOf="@id/icon_container"
         android:background="#e3e3e3" />
 
     <TextView

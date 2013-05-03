@@ -5,21 +5,12 @@
     android:padding="5dp" >
 
     <View
-        android:id="@+id/line_v_a"
-        android:layout_width="1dp"
-        android:layout_height="20dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:background="#e3e3e3" />
-
-    <View
         android:id="@+id/line_v_b"
         android:layout_width="1dp"
         android:layout_height="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="15dp"
         android:background="#e3e3e3" />
 
     <View

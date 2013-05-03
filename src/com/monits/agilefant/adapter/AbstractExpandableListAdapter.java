@@ -71,7 +71,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return children.get(groupPosition).size();
+		return children != null ? children.get(groupPosition).size() : 0;
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 
 	@Override
 	public int getGroupCount() {
-		return groups.size();
+		return groups != null ? groups.size() : 0;
 	}
 
 	@Override

@@ -1,54 +1,42 @@
 package com.monits.agilefant.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.os.Bundle;
-import android.widget.ExpandableListView;
-import android.widget.Toast;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 
-import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.BacklogsAdapter;
-import com.monits.agilefant.listeners.TaskCallback;
-import com.monits.agilefant.model.Product;
-import com.monits.agilefant.task.GetBacklogsTask;
+import com.monits.agilefant.adapter.BacklogsPagerAdapter;
+import com.monits.agilefant.fragment.backlog.AllBacklogsFragment;
+import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
 
 @ContentView(R.layout.activity_all_backlogs)
 public class AllBackLogsActivity extends BaseActivity {
 
-	@InjectView(R.id.all_backlogs)
-	private ExpandableListView allbackLogs;
+	@InjectView(R.id.pager)
+	private ViewPager viewPager;
 
-	@Inject
-	private GetBacklogsTask getBacklogsTask;
-
-	private BacklogsAdapter backlogsAdapter;
+	@InjectView(R.id.pager_header)
+	private PagerTabStrip pagerTabStrip;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		backlogsAdapter = new BacklogsAdapter(this);
-		allbackLogs.setAdapter(backlogsAdapter);
+		List<Fragment> fragments = new ArrayList<Fragment>();
+		fragments.add(MyBacklogsFragment.newInstance());
+		fragments.add(AllBacklogsFragment.newInstance());
 
-		getBacklogsTask.configure(new TaskCallback<List<Product>>() {
+		this.viewPager.setAdapter(
+				new BacklogsPagerAdapter(this, getSupportFragmentManager(), fragments));
 
-			@Override
-			public void onSuccess(List<Product> response) {
-				if (response != null) {
-					backlogsAdapter.setBacklogs(response);
-				}
-			}
-
-			@Override
-			public void onError() {
-				Toast.makeText(AllBackLogsActivity.this, R.string.error_retrieve_backlogs, Toast.LENGTH_SHORT).show();
-			}
-		});
-
-		getBacklogsTask.execute();
-
+		pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.color.all_backlogs_title_background_color));
+		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
+		pagerTabStrip.setDrawFullUnderline(true);
 	}
 }

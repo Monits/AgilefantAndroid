@@ -27,6 +27,12 @@ public interface AgilefantService {
 	String getAllBacklogs() throws RequestException;
 
 	/**
+	 * @return All backlogs which logged user is responsible in JSON format
+	 * @throws RequestException
+	 */
+	String getMyBacklogs() throws RequestException;
+
+	/**
 	 * @param Iteration id
 	 * @return Details of iteration in JSON format
 	 * @throws RequestException
