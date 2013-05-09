@@ -85,8 +85,14 @@ public class MyTasksAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					DailyWorkTask task = (DailyWorkTask) v.getTag();
 
+					String projectName = null;
+					com.monits.agilefant.model.Context iterationParent = task.getIteration().getParent();
+					if (iterationParent != null) {
+						projectName = iterationParent.getName();
+					}
+
 					getIteration.configure(
-							task.getIteration().getParent().getName(),
+							projectName,
 							task.getIteration().getId());
 
 					getIteration.execute();

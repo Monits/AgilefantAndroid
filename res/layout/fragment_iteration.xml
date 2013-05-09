@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/path_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -22,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text=">"
+            android:text="@string/path_separator"
             android:textColor="@android:color/black" />
 
         <TextView
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text=">"
+            android:text="@string/path_separator"
             android:textColor="@android:color/black" />
 
         <TextView

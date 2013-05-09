@@ -55,5 +55,6 @@
     <string name="empty_my_tasks">No tasks available.</string>
 	<string name="empty_backlogs_default">No backlogs available.</string>
 	<string name="empty_my_backlogs">No items assigned to you.</string>
+	<string name="path_separator">></string>
 	
 </resources>

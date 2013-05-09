@@ -75,11 +75,18 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 		project = (TextView) view.findViewById(R.id.project);
 		iterationNameTree = (TextView) view.findViewById(R.id.iteration_name_tree);
 
-		if (mIteration != null && mProjectName != null) {
+		if (mIteration != null) {
 
-			product.setText(mIteration.getRootIteration().getName());
-			project.setText(mProjectName);
-			iterationNameTree.setText(mIteration.getName());
+			if (mProjectName != null) {
+				view.findViewById(R.id.path_layout).setVisibility(View.VISIBLE);
+
+				product.setText(mIteration.getRootIteration().getName());
+				project.setText(mProjectName);
+				iterationNameTree.setText(mIteration.getName());
+			} else {
+				view.findViewById(R.id.path_layout).setVisibility(View.GONE);
+			}
+
 			startDate.setText(DateUtils.formatDate(mIteration.getStartDate(), DATE_PATTERN));
 			endDate.setText(DateUtils.formatDate(mIteration.getEndDate(), DATE_PATTERN));
 
@@ -98,7 +105,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
 			this.viewPager.setOnPageChangeListener(this);
 
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));
+			pagerTabStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 		}
 
 		return view;
@@ -118,13 +125,13 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 		Fragment fragment = pagerAdapter.getItem(position);
 
 		if (fragment instanceof StoriesFragment) {
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_stories_title));
+			pagerTabStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 			pagerTabStrip.setTextColor(getResources().getColor(android.R.color.white));
 		} else if (fragment instanceof TaskWithoutStoryFragment) {
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_task_without_story_title));
+			pagerTabStrip.setBackgroundResource(R.drawable.gradient_task_without_story_title);
 			pagerTabStrip.setTextColor(getResources().getColor(android.R.color.white));
 		} else {
-			pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_burndown_title));
+			pagerTabStrip.setBackgroundResource(R.drawable.gradient_burndown_title);
 			pagerTabStrip.setTextColor(getResources().getColor(R.color.all_backlogs_child_text_color));
 		}
 	}
