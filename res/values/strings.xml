@@ -33,6 +33,7 @@
     <string name="no_title">No title</string>
     <string name="burndown">Burndown</string>
     <string name="iteration_">Iteration: </string>
+    <string name="iteration">Iteration</string>
     <string name="comment">Comment</string>
     <string name="effort_spent">Effort Spent</string>
     <string name="spent_effort">Spent effort</string>
@@ -45,5 +46,14 @@
     <string name="dialog_state_title">Select state</string>
     <string name="effort_left">Effort left</string>
     <string name="my_stories">My Stories</string>
-
+    <string name="daily_work">Daily Work</string>
+    <string name="backlogs">Backlogs</string>
+    <string name="my_work_queue">My Work Queue</string>
+    <string name="context">Context</string>
+    <string name="empty_queued_tasks">No queued tasks yet.</string>
+    <string name="empty_my_stories">No Stories available.</string>
+    <string name="empty_my_tasks">No tasks available.</string>
+	<string name="empty_backlogs_default">No backlogs available.</string>
+	<string name="empty_my_backlogs">No items assigned to you.</string>
+	
 </resources>

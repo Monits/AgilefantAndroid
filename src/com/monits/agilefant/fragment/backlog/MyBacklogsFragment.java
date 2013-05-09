@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
@@ -43,13 +44,15 @@ public class MyBacklogsFragment extends RoboFragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		ExpandableListView allbackLogs = (ExpandableListView) view.findViewById(R.id.all_backlogs);
 
+		TextView emptyView = (TextView) view.findViewById(R.id.backlogs_empty);
+		emptyView.setText(R.string.empty_my_backlogs);
+
 		backlogsAdapter = new ProjectAdapter(getActivity());
 		allbackLogs.setAdapter(backlogsAdapter);
 		allbackLogs.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);
-
 		allbackLogs.setDivider(null);
 		allbackLogs.setChildDivider(null);
-
+		allbackLogs.setEmptyView(emptyView);
 		allbackLogs.setOnChildClickListener(new OnChildClickListener() {
 
 			@Override

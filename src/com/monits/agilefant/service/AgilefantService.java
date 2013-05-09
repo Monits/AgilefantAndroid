@@ -1,6 +1,7 @@
 package com.monits.agilefant.service;
 
 import com.monits.agilefant.exception.RequestException;
+import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.StateKey;
 
 public interface AgilefantService {
@@ -90,4 +91,13 @@ public interface AgilefantService {
 	 * @throws RequestException
 	 */
 	String retrieveUser(Long id) throws RequestException;
+
+	/**
+	 * Retrieves the daily work.
+	 *
+	 * @param id the logged user's id.
+	 * @return a {@link DailyWork} object, in JSON format.
+	 * @throws RequestException
+	 */
+	String getDailyWork(Long id) throws RequestException;
 }

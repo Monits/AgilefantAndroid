@@ -39,7 +39,7 @@ public class GetIteration extends RoboAsyncTask<String>{
 	}
 
 	@Inject
-	protected GetIteration(Context context) {
+	public GetIteration(Context context) {
 		super(context);
 	}
 

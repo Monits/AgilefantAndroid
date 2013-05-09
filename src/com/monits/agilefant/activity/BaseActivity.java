@@ -33,6 +33,11 @@ public class BaseActivity extends RoboFragmentActivity {
 
 			return true;
 
+		case R.id.actionbar_dailywork:
+			Intent toDailyWorkIntent = new Intent(this, DailyWorkActivity.class);
+			startActivity(toDailyWorkIntent);
+
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

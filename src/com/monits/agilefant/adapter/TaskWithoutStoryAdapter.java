@@ -84,7 +84,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
 		holder.state.setText(IterationUtils.getStateName(task.getState()));
-		holder.state.setBackgroundDrawable(context.getResources().getDrawable(IterationUtils.getStateBackground(task.getState())));
+		holder.state.setBackgroundResource(IterationUtils.getStateBackground(task.getState()));
 
 		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(task.getResponsibles()));
 		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(task.getEffortLeft()));

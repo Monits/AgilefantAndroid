@@ -38,6 +38,9 @@ public class Iteration implements Serializable{
 	@SerializedName("root")
 	private RootIteration rootIteration;
 
+	@SerializedName("parent")
+	private Context parent;
+
 	/**
 	 * Constructor
 	 * @param id The iteration id
@@ -158,5 +161,13 @@ public class Iteration implements Serializable{
 	 */
 	public void setRootIteration(RootIteration rootIteration) {
 		this.rootIteration = rootIteration;
+	}
+
+	public Context getParent() {
+		return parent;
+	}
+
+	public void setParent(Context parent) {
+		this.parent = parent;
 	}
 }

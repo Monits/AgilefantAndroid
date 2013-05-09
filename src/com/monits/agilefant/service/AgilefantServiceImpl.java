@@ -38,6 +38,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String RETRIEVE_USER_ACTION = "/ajax/retrieveUser.action";
 	private static final String USER_ID = "userId";
 
+	private static final String DAILY_WORK_ACTION = "/ajax/dailyWorkData.action";
+
 	@Override
 	public boolean login(String userName, String password) throws RequestException {
 		HttpConnection connection = new HttpConnection();
@@ -134,5 +136,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public String getMyBacklogs() throws RequestException {
 		HttpConnection connection = new HttpConnection();
 		return connection.executeGet(host + GET_MY_BACKLOGS_URL);
+	}
+
+	@Override
+	public String getDailyWork(Long id) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(USER_ID, String.valueOf(id));
+
+		return connection.executeGet(host + DAILY_WORK_ACTION);
 	}
 }

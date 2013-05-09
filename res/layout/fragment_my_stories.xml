@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp" >
+
+    <include layout="@layout/daily_work_header" />
+
+    <ExpandableListView
+        android:id="@+id/my_stories_expandable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/divider_stories_task"
+        android:cacheColorHint="@android:color/transparent"
+        android:childDivider="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/divider_stories_task"
+        android:groupIndicator="@null"
+        android:listSelector="@android:color/transparent"
+        android:paddingBottom="@dimen/divider_stories_task" />
+
+    <TextView
+        android:id="@+id/my_stories_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_my_stories"
+        android:visibility="gone" />
+
+</LinearLayout>
