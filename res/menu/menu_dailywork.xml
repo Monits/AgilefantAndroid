@@ -3,6 +3,7 @@
 
     <item
         android:id="@+id/actionbar_logout"
+        android:icon="@drawable/ic_logout"
         android:orderInCategory="1"
         android:showAsAction="ifRoom"
         android:title="@string/logout"/>

@@ -3,11 +3,13 @@
 
     <item
         android:id="@+id/actionbar_logout"
+        android:icon="@drawable/ic_logout"
         android:orderInCategory="2"
         android:showAsAction="ifRoom"
         android:title="@string/logout"/>
     <item
         android:id="@+id/actionbar_dailywork"
+        android:icon="@drawable/ic_dailywork"
         android:orderInCategory="1"
         android:showAsAction="ifRoom"
         android:title="@string/daily_work"/>
