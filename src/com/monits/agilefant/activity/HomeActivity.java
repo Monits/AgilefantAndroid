@@ -18,6 +18,7 @@ import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.task.LoginAsyncTask;
+import com.monits.agilefant.util.ValidationUtils;
 
 @ContentView(R.layout.activity_home)
 public class HomeActivity extends RoboActivity {
@@ -51,14 +52,18 @@ public class HomeActivity extends RoboActivity {
 
 			@Override
 			public void onClick(View v) {
-				if (domain.getText() == null || userName.getText() == null || password.getText() == null) {
+				String domainStr = domain.getText().toString();
+				String usernameStr = userName.getText().toString();
+				String passwordStr = password.getText().toString();
+
+				if (ValidationUtils.isNullOrEmpty(domainStr, usernameStr, passwordStr)) {
 					Toast.makeText(HomeActivity.this, "All the fields are required", Toast.LENGTH_LONG).show();
 				} else {
 
 					loginAsyncTask.configure(
-							domain.getText().toString(),
-							userName.getText().toString(),
-							password.getText().toString(),
+							domainStr,
+							usernameStr,
+							passwordStr,
 							true,
 							new TaskCallback<User>() {
 

@@ -24,4 +24,14 @@ public class ValidationUtils {
 			return false;
 		}
 	}
+
+	public static boolean isNullOrEmpty(String...strings) {
+		for (String string : strings) {
+			if (string == null || string.trim().equals("")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
