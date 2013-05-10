@@ -1,6 +1,7 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -10,7 +11,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Story implements Serializable, Parcelable, Observer {
+public class Story extends Observable implements Serializable, Parcelable, Observer {
 
 	private static final long serialVersionUID = -3498965706027533482L;
 
@@ -34,6 +35,41 @@ public class Story implements Serializable, Parcelable, Observer {
 
 	@SerializedName("rank")
 	private int rank;
+
+	@SerializedName("backlog")
+	private Context backlog;
+
+	@SerializedName("iteration")
+	private Iteration iteration;
+
+	public Story() {
+	}
+
+	/**
+	 * @param id
+	 * @param name
+	 * @param state
+	 * @param responsibles
+	 * @param metrics
+	 * @param tasks
+	 * @param rank
+	 * @param backlog
+	 * @param iteration
+	 */
+	public Story(long id, String name, StateKey state, List<User> responsibles,
+			Metrics metrics, List<Task> tasks, int rank, Context backlog,
+			Iteration iteration) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.state = state;
+		this.responsibles = responsibles;
+		this.metrics = metrics;
+		this.tasks = tasks;
+		this.rank = rank;
+		this.backlog = backlog;
+		this.iteration = iteration;
+	}
 
 	/**
 	 * @return the id
@@ -75,6 +111,9 @@ public class Story implements Serializable, Parcelable, Observer {
 	 */
 	public void setState(StateKey state) {
 		this.state = state;
+
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -136,6 +175,34 @@ public class Story implements Serializable, Parcelable, Observer {
 		this.rank = rank;
 	}
 
+	/**
+	 * @return the iteration
+	 */
+	public Iteration getIteration() {
+		return iteration;
+	}
+
+	/**
+	 * @param iteration the iteration to set
+	 */
+	public void setIteration(Iteration iteration) {
+		this.iteration = iteration;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public Context getBacklog() {
+		return backlog;
+	}
+
+	/**
+	 * @param backlog the context to set
+	 */
+	public void setBacklog(Context backlog) {
+		this.backlog = backlog;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -155,6 +222,11 @@ public class Story implements Serializable, Parcelable, Observer {
 				task.addObserver(this);
 			}
 		}
+	}
+
+	@Override
+	public Story clone() {
+		return new Story(id, name, state, responsibles, metrics, new LinkedList<Task>(tasks), rank, backlog, iteration);
 	}
 
 	@Override

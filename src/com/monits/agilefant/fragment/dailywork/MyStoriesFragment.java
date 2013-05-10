@@ -12,18 +12,18 @@ import android.widget.ExpandableListView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.MyStoriesAdapter;
-import com.monits.agilefant.model.DailyWorkStory;
+import com.monits.agilefant.model.Story;
 
 public class MyStoriesFragment extends RoboFragment {
 
 	private static final String STORIES_KEY = "STORIES";
-	private List<DailyWorkStory> mStories;
+	private List<Story> mStories;
 
-	public static MyStoriesFragment newInstance(List<DailyWorkStory> stories) {
+	public static MyStoriesFragment newInstance(List<Story> stories) {
 		MyStoriesFragment storiesFragment = new MyStoriesFragment();
 		Bundle arguments = new Bundle();
 
-		ArrayList<DailyWorkStory> myStories = new ArrayList<DailyWorkStory>();
+		ArrayList<Story> myStories = new ArrayList<Story>();
 		myStories.addAll(stories);
 		arguments.putParcelableArrayList(STORIES_KEY, myStories);
 

@@ -40,6 +40,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private static final String DAILY_WORK_ACTION = "/ajax/dailyWorkData.action";
 
+	private static final String STORE_STORY_ACTION = "/ajax/storeStory.action";
+	private static final String STORY_ID = "storyId";
+	private static final String STORY_STATE = "story.state";
+	private static final String TASKS_TO_DONE = "tasksToDone";
+	private static final String BACKLOG_ID = "backlogId";
+
 	@Override
 	public boolean login(String userName, String password) throws RequestException {
 		HttpConnection connection = new HttpConnection();
@@ -144,5 +150,18 @@ public class AgilefantServiceImpl implements AgilefantService {
 		connection.addParameter(USER_ID, String.valueOf(id));
 
 		return connection.executeGet(host + DAILY_WORK_ACTION);
+	}
+
+	@Override
+	public String changeStoryState(StateKey state, long storyId,
+			long backlogId, long iterationId, boolean tasksToDone) throws RequestException {
+		HttpConnection connection = new HttpConnection();
+		connection.addParameter(STORY_STATE, state.name());
+		connection.addParameter(STORY_ID, String.valueOf(storyId));
+		connection.addParameter(BACKLOG_ID, String.valueOf(backlogId));
+		connection.addParameter(ITERATION_ID, String.valueOf(iterationId));
+		connection.addParameter(TASKS_TO_DONE, String.valueOf(tasksToDone));
+
+		return connection.executePost(host + STORE_STORY_ACTION);
 	}
 }

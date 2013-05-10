@@ -24,6 +24,8 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	private LayoutInflater inflater;
 	private AdapterViewActionListener<Task> childActionListener;
 	private OnClickListener onClickListener;
+	private AdapterViewActionListener<Story> groupActionListener;
+	private OnClickListener onClickGroupListener;
 
 	public StoriesAdapter(Context context, List<Story> stories) {
 		super(context);
@@ -48,6 +50,18 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 				if (childActionListener != null && groupPosition != null && childPosition != null) {
 					childActionListener.onAction(v, getChild(groupPosition, childPosition));
+				}
+			}
+		};
+
+		onClickGroupListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
+
+				if (groupActionListener != null && groupPosition != null) {
+					groupActionListener.onAction(v, getGroup(groupPosition));
 				}
 			}
 		};
@@ -139,6 +153,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getEffortSpent()));
 
+		holder.state.setTag(R.id.tag_group_position, groupPosition);
+		holder.state.setOnClickListener(onClickGroupListener);
+
 		return convertView;
 	}
 
@@ -149,6 +166,15 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	 */
 	public void setOnChildActionListener(AdapterViewActionListener<Task> listener) {
 		this.childActionListener = listener;
+	}
+
+	/**
+	 * Add a listener to intercept click events on group's children views.
+	 *
+	 * @param listener the listener to be set.
+	 */
+	public void setOnGroupActionListener(AdapterViewActionListener<Story> listener) {
+		this.groupActionListener = listener;
 	}
 
 	class HolderGroup {

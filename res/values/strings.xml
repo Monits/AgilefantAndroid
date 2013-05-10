@@ -56,5 +56,7 @@
 	<string name="empty_backlogs_default">No backlogs available.</string>
 	<string name="empty_my_backlogs">No items assigned to you.</string>
 	<string name="path_separator">></string>
+	<string name="dialog_tasks_to_done_title">Set all tasks\' states to done?</string>
+	<string name="dialog_tasks_to_done_msg">Do you want to mark all tasks as done as well?</string>
 	
 </resources>

@@ -39,7 +39,7 @@ public class IterationUtils {
 	}
 
 	public static String getResposiblesDisplay (List<User> users) {
-		if (users.isEmpty()) {
+		if (users == null || users.isEmpty()) {
 			return NONE;
 		} else {
 			StringBuilder sb = new StringBuilder();

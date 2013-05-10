@@ -12,24 +12,24 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.model.DailyWorkStory;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.task.GetIteration;
 import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.StoryRankComparator;
 import com.monits.agilefant.util.TaskRankComparator;
 
-public class MyStoriesAdapter extends AbstractExpandableListAdapter<DailyWorkStory, Task> {
+public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 	@Inject
 	private GetIteration getIteration;
 
-	public MyStoriesAdapter(Context context, List<DailyWorkStory> stories) {
+	public MyStoriesAdapter(Context context, List<Story> stories) {
 		super(context);
 
 		Collections.sort(stories, new StoryRankComparator());
-		for (DailyWorkStory story : stories) {
+		for (Story story : stories) {
 			super.addGroup(story);
 			List<Task> tasks = story.getTasks();
 			Collections.sort(tasks, new TaskRankComparator());
@@ -87,7 +87,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<DailyWorkSto
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		DailyWorkStory story = getGroup(groupPosition);
+		Story story = getGroup(groupPosition);
 
 		holder.name.setText(story.getName());
 
@@ -104,7 +104,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<DailyWorkSto
 
 				@Override
 				public void onClick(View v) {
-					DailyWorkStory task = (DailyWorkStory) v.getTag();
+					Story task = (Story) v.getTag();
 
 					getIteration.configure(
 							task.getIteration().getParent().getName(),

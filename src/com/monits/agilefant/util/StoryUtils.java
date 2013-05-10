@@ -2,7 +2,7 @@ package com.monits.agilefant.util;
 
 import java.util.List;
 
-import com.monits.agilefant.model.DailyWorkStory;
+import com.monits.agilefant.model.Story;
 
 public class StoryUtils {
 
@@ -14,8 +14,8 @@ public class StoryUtils {
 	 * 
 	 * @return the story, null otherwise.
 	 */
-	public static DailyWorkStory findStoryById(List<DailyWorkStory> stories, long id) {
-		for (DailyWorkStory story : stories) {
+	public static Story findStoryById(List<Story> stories, long id) {
+		for (Story story : stories) {
 			if (story.getId() == id) {
 				return story;
 			}

@@ -6,8 +6,8 @@ package com.monits.agilefant.service;
 import com.google.inject.Inject;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
-import com.monits.agilefant.model.DailyWorkStory;
 import com.monits.agilefant.model.DailyWorkTask;
+import com.monits.agilefant.model.Story;
 import com.monits.agilefant.parser.DailyWorkParser;
 import com.monits.agilefant.util.StoryUtils;
 
@@ -46,7 +46,7 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 		if (dailyWork != null) {
 			for (DailyWorkTask queuedTask : dailyWork.getQueuedTasks()) {
 				if (queuedTask.getIteration() == null && queuedTask.getStory() != null) {
-					DailyWorkStory story =
+					Story story =
 							StoryUtils.findStoryById(dailyWork.getStories(), queuedTask.getStory().getId());
 
 					if (story != null) {

@@ -32,6 +32,7 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.task.UpdateEffortLeftTask;
 import com.monits.agilefant.task.UpdateStateTask;
+import com.monits.agilefant.task.UpdateStoryTask;
 
 public class StoriesFragment extends RoboFragment implements Observer {
 
@@ -41,12 +42,13 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	@Inject
 	private UpdateStateTask updateStateTask;
 
-	private static final String STORIES = "STORIES";
+	@Inject
+	private UpdateStoryTask updateStoryTask;
 
+	private static final String STORIES = "STORIES";
 	private List<Story> stories;
 
 	private ExpandableListView storiesListView;
-
 	private StoriesAdapter storiesAdapter;
 
 	public static StoriesFragment newInstance(ArrayList<Story> stories){
@@ -174,9 +176,95 @@ public class StoriesFragment extends RoboFragment implements Observer {
 			}
 		});
 
+		storiesAdapter.setOnGroupActionListener(new AdapterViewActionListener<Story>() {
+
+			@Override
+			public void onAction(View view, final Story object) {
+				object.addObserver(StoriesFragment.this);
+
+				switch (view.getId()) {
+				case R.id.storie_state:
+					OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							final StateKey state = StateKey.values()[which];
+
+							if (state == StateKey.DONE) {
+								AlertDialog.Builder builder = new Builder(getActivity());
+								builder.setTitle(R.string.dialog_tasks_to_done_title)
+								.setMessage(R.string.dialog_tasks_to_done_msg)
+								.setPositiveButton(android.R.string.yes, new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										executeUpdateStoryTask(state, object, true);
+									}
+								})
+								.setNegativeButton(android.R.string.no, new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										executeUpdateStoryTask(state, object, false);
+									}
+								});
+
+								builder.show();
+							} else {
+								executeUpdateStoryTask(state, object, false);
+							}
+
+							dialog.dismiss();
+						}
+					};
+
+					AlertDialog.Builder builder = new Builder(getActivity());
+					builder.setTitle(R.string.dialog_state_title);
+					builder.setSingleChoiceItems(
+							StateKey.getDisplayStates(), object.getState().ordinal(), onStoryStateSelectedListener);
+					builder.show();
+
+					break;
+
+				default:
+					break;
+				}
+			}
+		});
+
 		storiesListView.setAdapter(storiesAdapter);
 
 		return rootView;
+	}
+
+	/**
+	 * Configures and executes the {@link UpdateStoryTask}.
+	 * 
+	 * @param state
+	 * @param story
+	 * @param allTasksToDone
+	 */
+	private void executeUpdateStoryTask(StateKey state, Story story, boolean allTasksToDone) {
+		updateStoryTask.configure(
+				state,
+				story,
+				allTasksToDone,
+				new TaskCallback<Story>() {
+
+					@Override
+					public void onSuccess(Story response) {
+						Toast.makeText(
+								getActivity(), "Successfully saved story", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onError() {
+						Toast.makeText(
+								getActivity(), "Failed to save the story", Toast.LENGTH_SHORT).show();
+					}
+				});
+
+		updateStoryTask.execute();
 	}
 
 	@Override

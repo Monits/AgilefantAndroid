@@ -6,7 +6,9 @@ import java.util.Date;
 import com.google.inject.Inject;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.StateKey;
+import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.parser.StoryParser;
 import com.monits.agilefant.parser.TaskParser;
 
 /**
@@ -21,6 +23,9 @@ public class MetricsServiceImpl implements MetricsService {
 
 	@Inject
 	private TaskParser taskParser;
+
+	@Inject
+	private StoryParser storyParser;
 
 	@Override
 	public void taskChangeSpentEffort(Date date, long minutesSpent,
@@ -45,4 +50,13 @@ public class MetricsServiceImpl implements MetricsService {
 		Task task = taskParser.taskParser(agilefantService.changeOriginalEstimate(origalEstimate, taskId));
 		return task;
 	}
+
+	@Override
+	public Story changeStoryState(StateKey state, long storyId, long backlogId, long iterationId, boolean tasksToDone)
+			throws RequestException {
+
+		return storyParser.parseStory(
+				agilefantService.changeStoryState(state, storyId, backlogId, iterationId, tasksToDone));
+	}
+
 }

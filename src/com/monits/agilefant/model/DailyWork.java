@@ -13,7 +13,7 @@ public class DailyWork implements Serializable {
 	private List<DailyWorkTask> queuedTasks;
 
 	@SerializedName("stories")
-	private List<DailyWorkStory> stories;
+	private List<Story> stories;
 
 	@SerializedName("tasksWithoutStory")
 	private List<DailyWorkTask> taskWithoutStories;
@@ -35,14 +35,14 @@ public class DailyWork implements Serializable {
 	/**
 	 * @return the stories
 	 */
-	public List<DailyWorkStory> getStories() {
+	public List<Story> getStories() {
 		return stories;
 	}
 
 	/**
 	 * @param stories the stories to set
 	 */
-	public void setStories(List<DailyWorkStory> stories) {
+	public void setStories(List<Story> stories) {
 		this.stories = stories;
 	}
 

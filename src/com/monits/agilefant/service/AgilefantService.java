@@ -3,6 +3,7 @@ package com.monits.agilefant.service;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.StateKey;
+import com.monits.agilefant.model.Story;
 
 public interface AgilefantService {
 
@@ -100,4 +101,18 @@ public interface AgilefantService {
 	 * @throws RequestException
 	 */
 	String getDailyWork(Long id) throws RequestException;
+
+	/**
+	 * Changes the story state.
+	 * 
+	 * @param state State to set
+	 * @param storyId the story's id.
+	 * @param backlogId the backlog's id.
+	 * @param iterationId the iteration's id.
+	 * @param tasksToDone whether if all tasks should be also set as done.
+	 * @return a {@link Story} in JSON format.
+	 * @throws RequestException
+	 */
+	String changeStoryState(StateKey state, long storyId, long backlogId, long iterationId, boolean tasksToDone)
+			throws RequestException;
 }
