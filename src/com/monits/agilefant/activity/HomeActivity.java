@@ -61,7 +61,7 @@ public class HomeActivity extends RoboActivity {
 				} else {
 
 					loginAsyncTask.configure(
-							domainStr,
+							domainStr.trim(),
 							usernameStr,
 							passwordStr,
 							true,
