@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.monits.agilefant.dialog;
 
@@ -37,47 +37,47 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 		return new DateTimePickerDialogFragment();
 	}
 
-	public static DateTimePickerDialogFragment newInstance(Date date) {
-		Bundle arguments = new Bundle();
+	public static DateTimePickerDialogFragment newInstance(final Date date) {
+		final Bundle arguments = new Bundle();
 		arguments.putSerializable(DATE_KEY, date);
 
-		DateTimePickerDialogFragment dialogFragment = new DateTimePickerDialogFragment();
+		final DateTimePickerDialogFragment dialogFragment = new DateTimePickerDialogFragment();
 		dialogFragment.setArguments(arguments);
 
 		return dialogFragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mCalendar = Calendar.getInstance();
-		Bundle arguments = getArguments();
+		final Bundle arguments = getArguments();
 		if (arguments != null) {
-			Date date = (Date) arguments.getSerializable(DATE_KEY);
+			final Date date = (Date) arguments.getSerializable(DATE_KEY);
 			mCalendar.setTime(date);
 		}
 	}
 
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		View view = View.inflate(getActivity(), R.layout.dialog_datetime_picker, null);
+	public Dialog onCreateDialog(final Bundle savedInstanceState) {
+		final View view = View.inflate(getActivity(), R.layout.dialog_datetime_picker, null);
 
 		mDatePicker = (DatePicker) view.findViewById(R.id.datePicker);
 
 		mTimePicker = (TimePicker) view.findViewById(R.id.timePicker);
 		mTimePicker.setIs24HourView(true);
 		mTimePicker.setCurrentHour(mCalendar.get(Calendar.HOUR_OF_DAY));
-		mTimePicker.setCurrentHour(mCalendar.get(Calendar.MINUTE));
+		mTimePicker.setCurrentMinute(mCalendar.get(Calendar.MINUTE));
 
-		AlertDialog.Builder builder = new Builder(getActivity());
+		final AlertDialog.Builder builder = new Builder(getActivity());
 		builder.setTitle(R.string.dialog_datetime_title);
 		builder.setView(view);
 
 		builder.setPositiveButton(R.string.dialog_datetime_positive, new OnClickListener() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(final DialogInterface dialog, final int which) {
 				if (mListener != null) {
 					mListener.onDateSet(getDate());
 				}
@@ -86,7 +86,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 		builder.setNegativeButton(R.string.dialog_datetime_negative, new OnClickListener() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(final DialogInterface dialog, final int which) {
 				// Just dismiss
 			}
 		});
@@ -95,7 +95,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 	}
 
 	private Date getDate() {
-		Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance();
 		calendar.set(
 				mDatePicker.getYear(),
 				mDatePicker.getMonth(),
@@ -107,7 +107,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 		return calendar.getTime();
 	}
 
-	public void setOnDateSetListener(OnDateSetListener listener) {
+	public void setOnDateSetListener(final OnDateSetListener listener) {
 		this.mListener = listener;
 	}
 
