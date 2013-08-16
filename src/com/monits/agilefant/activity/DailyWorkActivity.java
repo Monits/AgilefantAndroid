@@ -12,10 +12,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.DailyWorkPagerAdapter;
@@ -44,7 +44,7 @@ public class DailyWorkActivity extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_dailywork, menu);
+		getSupportMenuInflater().inflate(R.menu.menu_dailywork, menu);
 		return true;
 	}
 

@@ -1,29 +1,32 @@
 package com.monits.agilefant.activity;
 
-import roboguice.activity.RoboFragmentActivity;
 import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.NavUtils;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.androidquery.util.AQUtility;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.UserService;
 
-public class BaseActivity extends RoboFragmentActivity {
+public class BaseActivity extends RoboSherlockFragmentActivity {
 
 	@Inject
 	private UserService userService;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_menu, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_menu, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			NavUtils.navigateUpTo(this, new Intent(this, AllBackLogsActivity.class));
+			return true;
 		case R.id.actionbar_logout:
 			userService.logout();
 			Intent intent = new Intent(this, HomeActivity.class);
