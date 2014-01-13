@@ -25,13 +25,13 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	private GetIteration getIteration;
 
 	private List<Product> productList;
-	private Context context;
-	private LayoutInflater inflater;
+	private final Context context;
+	private final LayoutInflater inflater;
 	private ProductExpandableListView listViewCache[];
 
 	private static final int MAX_CHILDREN = 1024;
 
-	public BacklogsAdapter(Context context, List<Product> productList) {
+	public BacklogsAdapter(final Context context, final List<Product> productList) {
 		if (productList != null) {
 			this.productList = productList;
 			this.listViewCache = new ProductExpandableListView[productList.size()];
@@ -42,43 +42,43 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		RoboGuice.injectMembers(context, this);
 	}
 
-	public BacklogsAdapter(Context context) {
+	public BacklogsAdapter(final Context context) {
 		this(context, null);
 	}
 
 	@Override
-	public Object getChild(int groupPosition, int childPosition) {
+	public Object getChild(final int groupPosition, final int childPosition) {
 		return productList.get(groupPosition).getProjectList().get(childPosition);
 	}
 
 	@Override
-	public long getChildId(int groupPosition, int childPosition) {
+	public long getChildId(final int groupPosition, final int childPosition) {
 		return (groupPosition * MAX_CHILDREN + childPosition);
 	}
 
 	@Override
-	public View getChildView(final int groupPosition, int childPosition,
-			boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getChildView(final int groupPosition, final int childPosition,
+			final boolean isLastChild, final View convertView, final ViewGroup parent) {
 		View v;
 
 		if (listViewCache[groupPosition] != null) {
 			v = listViewCache[groupPosition];
 		} else {
-			ProductExpandableListView delv = new ProductExpandableListView(context);
+			final ProductExpandableListView delv = new ProductExpandableListView(context);
 			delv.setAdapter(new ProjectAdapter(
 					context, productList.get(groupPosition).getProjectList(), R.layout.project_item, R.layout.iteration_item));
 			delv.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);
-
+			delv.setGroupIndicator(null);
 			delv.setDivider(null);
 			delv.setChildDivider(null);
 
 			delv.setOnChildClickListener(new OnChildClickListener() {
 
 				@Override
-				public boolean onChildClick(ExpandableListView parent, View v,
-						int groupLevel2Position, int childPosition, long id) {
-					Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
-					String projectName = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getTitle();
+				public boolean onChildClick(final ExpandableListView parent, final View v,
+						final int groupLevel2Position, final int childPosition, final long id) {
+					final Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
+					final String projectName = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getTitle();
 					getIteration.configure(projectName, iteration.getId());
 					getIteration.execute();
 					return true;
@@ -93,12 +93,12 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	}
 
 	@Override
-	public int getChildrenCount(int arg0) {
+	public int getChildrenCount(final int arg0) {
 		return 1;
 	}
 
 	@Override
-	public Object getGroup(int position) {
+	public Object getGroup(final int position) {
 		return productList != null ? productList.get(position) : null;
 	}
 
@@ -108,16 +108,16 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	}
 
 	@Override
-	public long getGroupId(int position) {
+	public long getGroupId(final int position) {
 		return productList != null ? productList.get(position).getId() : -1;
 	}
 
 	@Override
-	public View getGroupView(int position, boolean isExpanded, View convertView, ViewGroup parent) {
+	public View getGroupView(final int position, final boolean isExpanded, View convertView, final ViewGroup parent) {
 		Holder holder;
 		if (null == convertView) {
 			holder = new Holder();
-			View inflate = inflater.inflate(R.layout.product_item, null);
+			final View inflate = inflater.inflate(R.layout.product_item, null);
 			holder.title = (TextView) inflate.findViewById(R.id.title);
 			holder.icon = (TextView) inflate.findViewById(R.id.icon);
 
@@ -127,7 +127,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 			holder = (Holder) convertView.getTag();
 		}
 
-		Product product = (Product) getGroup(position);
+		final Product product = (Product) getGroup(position);
 
 		holder.title.setText(product.getTitle());
 
@@ -146,7 +146,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	}
 
 	@Override
-	public boolean isChildSelectable(int arg0, int arg1) {
+	public boolean isChildSelectable(final int arg0, final int arg1) {
 		return true;
 	}
 
@@ -155,7 +155,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		public TextView icon;
 	}
 
-	public void setBacklogs(List<Product> productList) {
+	public void setBacklogs(final List<Product> productList) {
 		this.productList = productList;
 		this.listViewCache = new ProductExpandableListView[productList.size()];
 		notifyDataSetChanged();
