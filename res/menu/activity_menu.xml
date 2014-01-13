@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:agilefant="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/actionbar_logout"
+        agilefant:showAsAction="ifRoom"
         android:icon="@drawable/ic_logout"
         android:orderInCategory="2"
-        android:showAsAction="ifRoom"
         android:title="@string/logout"/>
     <item
         android:id="@+id/actionbar_dailywork"
+        agilefant:showAsAction="ifRoom"
         android:icon="@drawable/ic_dailywork"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom"
         android:title="@string/daily_work"/>
 
 </menu>

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.monits.agilefant.activity;
 
@@ -12,10 +12,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.DailyWorkPagerAdapter;
@@ -43,13 +43,13 @@ public class DailyWorkActivity extends BaseActivity {
 	private GetDailyWorkTask getDailyWorkTask;
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.menu_dailywork, menu);
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_dailywork, menu);
 		return true;
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.color.all_backlogs_title_background_color));
@@ -59,11 +59,11 @@ public class DailyWorkActivity extends BaseActivity {
 		getDailyWorkTask.configure(new TaskCallback<DailyWork>() {
 
 			@Override
-			public void onSuccess(DailyWork response) {
+			public void onSuccess(final DailyWork response) {
 				viewPager.setCurrentItem(0);
 				viewPager.setVisibility(View.VISIBLE);
 
-				List<Fragment> fragments = new ArrayList<Fragment>();
+				final List<Fragment> fragments = new ArrayList<Fragment>();
 				fragments.add(MyQueueWorkFragment.newInstance(response.getQueuedTasks()));
 				fragments.add(MyStoriesFragment.newInstance(response.getStories()));
 				fragments.add(MyTasksFragment.newInstance(response.getTaskWithoutStories()));
