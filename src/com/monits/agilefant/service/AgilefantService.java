@@ -2,6 +2,7 @@ package com.monits.agilefant.service;
 
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
+import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 
@@ -86,7 +87,7 @@ public interface AgilefantService {
 
 	/**
 	 * Retrieves the user with the given id.
-	 * 
+	 *
 	 * @param id <b>(Optional)</b> the user's id.
 	 * @return user in JSON format. Logged user in case no id was given.
 	 * @throws RequestException
@@ -104,7 +105,7 @@ public interface AgilefantService {
 
 	/**
 	 * Changes the story state.
-	 * 
+	 *
 	 * @param state State to set
 	 * @param storyId the story's id.
 	 * @param backlogId the backlog's id.
@@ -115,4 +116,13 @@ public interface AgilefantService {
 	 */
 	String changeStoryState(StateKey state, long storyId, long backlogId, long iterationId, boolean tasksToDone)
 			throws RequestException;
+
+	/**
+	 * Retrieves the details of the project.
+	 *
+	 * @param projectId the id of the project.
+	 * @return a {@link Project} in JSON format.
+	 * @throws RequestException
+	 */
+	String getProjectDetails(long projectId) throws RequestException;
 }

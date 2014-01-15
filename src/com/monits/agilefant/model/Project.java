@@ -18,16 +18,39 @@ public class Project implements Serializable{
 	@SerializedName("children")
 	private List<Iteration> iterationList;
 
+	@SerializedName("startDate")
+	private long startDate;
+
+	@SerializedName("endDate")
+	private long endDate;
+
+	@SerializedName("assignees")
+	private List<User> assignees;
+
+	public Project() {
+	}
+
 	/**
 	 * Constructor
 	 * @param id The project id
 	 * @param title The project title
 	 * @param iterationList Iteration List
 	 */
-	public Project(long id, String title, List<Iteration> iterationList) {
+	public Project(final long id, final String title, final List<Iteration> iterationList) {
 		this.id = id;
 		this.title = title;
 		this.iterationList = iterationList;
+	}
+
+	public Project(final long id, final String title, final List<Iteration> iterationList,
+			final long startDate, final long endDate, final List<User> assignees) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.iterationList = iterationList;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.assignees = assignees;
 	}
 
 	/**
@@ -40,7 +63,7 @@ public class Project implements Serializable{
 	/**
 	 * @param id The project id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -54,7 +77,7 @@ public class Project implements Serializable{
 	/**
 	 * @param title The project title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -68,7 +91,31 @@ public class Project implements Serializable{
 	/**
 	 * @param iterationList The iterationList to set
 	 */
-	public void setIterationList(List<Iteration> iterationList) {
+	public void setIterationList(final List<Iteration> iterationList) {
 		this.iterationList = iterationList;
+	}
+
+	public long getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(final long startDate) {
+		this.startDate = startDate;
+	}
+
+	public long getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(final long endDate) {
+		this.endDate = endDate;
+	}
+
+	public List<User> getAssignees() {
+		return assignees;
+	}
+
+	public void setAssignees(final List<User> assignees) {
+		this.assignees = assignees;
 	}
 }

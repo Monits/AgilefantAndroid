@@ -46,12 +46,15 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String TASKS_TO_DONE = "tasksToDone";
 	private static final String BACKLOG_ID = "backlogId";
 
+	private static final String PROJECT_DATA = "/ajax/projectData.action";
+	private static final String PROJECT_ID = "projectId";
+
 	@Override
-	public boolean login(String userName, String password) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public boolean login(final String userName, final String password) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(USERNAME, userName);
 		connection.addParameter(PASSWORD, password);
-		String response = connection.executePost(host + LOGIN_URL);
+		final String response = connection.executePost(host + LOGIN_URL);
 
 		if (response.split(";")[0].equals(host + LOGIN_OK)) {
 			return true;
@@ -62,19 +65,19 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public String getAllBacklogs() throws RequestException {
-		HttpConnection connection = new HttpConnection();
+		final HttpConnection connection = new HttpConnection();
 		return connection.executeGet(host + GET_ALL_BACKLOGS_URL);
 	}
 
 	@Override
-	public String getIteration(long id) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public String getIteration(final long id) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(ITERATION_ID, String.valueOf(id));
 		return connection.executeGet(host + GET_ITERATION);
 	}
 
 	@Override
-	public void setDomain(String domain) {
+	public void setDomain(final String domain) {
 		if (domain.matches(HTTP_REXEG)) {
 			this.host = domain;
 		} else {
@@ -88,9 +91,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void taskChangeSpentEffort(long date, long minutesSpent,
-			String description, long taskId, long userId) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public void taskChangeSpentEffort(final long date, final long minutesSpent,
+			final String description, final long taskId, final long userId) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(HOUR_ENTRY_DATE, String.valueOf(date));
 		connection.addParameter(HOUR_ENTRY_MINUTES_SPENT, String.valueOf(minutesSpent));
 		connection.addParameter(HOUR_ENTRY_DESCRIPTION, description);
@@ -101,8 +104,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String taskChangeState(StateKey state, long taskId) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public String taskChangeState(final StateKey state, final long taskId) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_STATE, state.name());
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
@@ -110,8 +113,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String changeEffortLeft(double effortLeft, long taskId) throws RequestException{
-		HttpConnection connection = new HttpConnection();
+	public String changeEffortLeft(final double effortLeft, final long taskId) throws RequestException{
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_EFFORT_LEFT, String.valueOf(effortLeft));
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
@@ -119,8 +122,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String changeOriginalEstimate(int origalEstimate, long taskId) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public String changeOriginalEstimate(final int origalEstimate, final long taskId) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_ORIGINAL_ESTIMATE, String.valueOf(origalEstimate));
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
@@ -128,8 +131,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String retrieveUser(Long id) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public String retrieveUser(final Long id) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 
 		if (id != null) {
 			connection.addParameter(USER_ID, String.valueOf(id));
@@ -140,22 +143,22 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public String getMyBacklogs() throws RequestException {
-		HttpConnection connection = new HttpConnection();
+		final HttpConnection connection = new HttpConnection();
 		return connection.executeGet(host + GET_MY_BACKLOGS_URL);
 	}
 
 	@Override
-	public String getDailyWork(Long id) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public String getDailyWork(final Long id) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(USER_ID, String.valueOf(id));
 
 		return connection.executeGet(host + DAILY_WORK_ACTION);
 	}
 
 	@Override
-	public String changeStoryState(StateKey state, long storyId,
-			long backlogId, long iterationId, boolean tasksToDone) throws RequestException {
-		HttpConnection connection = new HttpConnection();
+	public String changeStoryState(final StateKey state, final long storyId,
+			final long backlogId, final long iterationId, final boolean tasksToDone) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(STORY_STATE, state.name());
 		connection.addParameter(STORY_ID, String.valueOf(storyId));
 		connection.addParameter(BACKLOG_ID, String.valueOf(backlogId));
@@ -163,5 +166,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 		connection.addParameter(TASKS_TO_DONE, String.valueOf(tasksToDone));
 
 		return connection.executePost(host + STORE_STORY_ACTION);
+	}
+
+	@Override
+	public String getProjectDetails(final long projectId) throws RequestException {
+		final HttpConnection connection = new HttpConnection();
+		connection.addParameter(PROJECT_ID, String.valueOf(projectId));
+		return connection.executeGet(host + PROJECT_DATA);
 	}
 }
