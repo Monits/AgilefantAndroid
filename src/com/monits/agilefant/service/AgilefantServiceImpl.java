@@ -1,8 +1,22 @@
 package com.monits.agilefant.service;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.inject.Inject;
 import com.monits.agilefant.connector.HttpConnection;
 import com.monits.agilefant.exception.RequestException;
+import com.monits.agilefant.model.DailyWork;
+import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Product;
+import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.StateKey;
+import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.User;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
@@ -49,6 +63,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String PROJECT_DATA = "/ajax/projectData.action";
 	private static final String PROJECT_ID = "projectId";
 
+	@Inject
+	private Gson gson;
+
 	@Override
 	public boolean login(final String userName, final String password) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
@@ -64,16 +81,20 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String getAllBacklogs() throws RequestException {
+	public List<Product> getAllBacklogs() throws RequestException {
 		final HttpConnection connection = new HttpConnection();
-		return connection.executeGet(host + GET_ALL_BACKLOGS_URL);
+
+		final Type listType = new TypeToken<ArrayList<Product>>() {}.getType();
+		return gson.fromJson(connection.executeGet(host + GET_ALL_BACKLOGS_URL), listType);
 	}
 
 	@Override
-	public String getIteration(final long id) throws RequestException {
+	public Iteration getIteration(final long id) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(ITERATION_ID, String.valueOf(id));
-		return connection.executeGet(host + GET_ITERATION);
+
+		return gson.fromJson(
+				connection.executeGet(host + GET_ITERATION), Iteration.class);
 	}
 
 	@Override
@@ -104,59 +125,63 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public String taskChangeState(final StateKey state, final long taskId) throws RequestException {
+	public Task taskChangeState(final StateKey state, final long taskId) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_STATE, state.name());
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
-		return connection.executePost(host + STORE_TASK_ACTION);
+		return gson.fromJson(
+				connection.executePost(host + STORE_TASK_ACTION), Task.class);
 	}
 
 	@Override
-	public String changeEffortLeft(final double effortLeft, final long taskId) throws RequestException{
+	public Task changeEffortLeft(final double effortLeft, final long taskId) throws RequestException{
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_EFFORT_LEFT, String.valueOf(effortLeft));
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
-		return connection.executePost(host + STORE_TASK_ACTION);
+		return gson.fromJson(connection.executePost(host + STORE_TASK_ACTION), Task.class);
 	}
 
 	@Override
-	public String changeOriginalEstimate(final int origalEstimate, final long taskId) throws RequestException {
+	public Task changeOriginalEstimate(final int origalEstimate, final long taskId) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(TASK_ORIGINAL_ESTIMATE, String.valueOf(origalEstimate));
 		connection.addParameter(TASK_ID, String.valueOf(taskId));
 
-		return connection.executePost(host + STORE_TASK_ACTION);
+		return gson.fromJson(connection.executePost(host + STORE_TASK_ACTION), Task.class);
 	}
 
 	@Override
-	public String retrieveUser(final Long id) throws RequestException {
+	public User retrieveUser(final Long id) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 
 		if (id != null) {
 			connection.addParameter(USER_ID, String.valueOf(id));
 		}
 
-		return connection.executeGet(host + RETRIEVE_USER_ACTION);
+		return gson.fromJson(connection.executeGet(host + RETRIEVE_USER_ACTION), User.class);
 	}
 
 	@Override
-	public String getMyBacklogs() throws RequestException {
+	public List<Project> getMyBacklogs() throws RequestException {
 		final HttpConnection connection = new HttpConnection();
-		return connection.executeGet(host + GET_MY_BACKLOGS_URL);
+
+		final Type listType = new TypeToken<ArrayList<Project>>() {}.getType();
+		return gson.fromJson(connection.executeGet(host + GET_MY_BACKLOGS_URL), listType);
 	}
 
 	@Override
-	public String getDailyWork(final Long id) throws RequestException {
+	public DailyWork getDailyWork(final Long id) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(USER_ID, String.valueOf(id));
 
-		return connection.executeGet(host + DAILY_WORK_ACTION);
+		return gson.fromJson(
+				connection.executeGet(host + DAILY_WORK_ACTION), DailyWork.class);
 	}
 
 	@Override
-	public String changeStoryState(final StateKey state, final long storyId,
+	public Story changeStoryState(final StateKey state, final long storyId,
 			final long backlogId, final long iterationId, final boolean tasksToDone) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(STORY_STATE, state.name());
@@ -165,13 +190,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 		connection.addParameter(ITERATION_ID, String.valueOf(iterationId));
 		connection.addParameter(TASKS_TO_DONE, String.valueOf(tasksToDone));
 
-		return connection.executePost(host + STORE_STORY_ACTION);
+		return gson.fromJson(connection.executePost(host + STORE_STORY_ACTION), Story.class);
 	}
 
 	@Override
-	public String getProjectDetails(final long projectId) throws RequestException {
+	public Project getProjectDetails(final long projectId) throws RequestException {
 		final HttpConnection connection = new HttpConnection();
 		connection.addParameter(PROJECT_ID, String.valueOf(projectId));
-		return connection.executeGet(host + PROJECT_DATA);
+		return gson.fromJson(connection.executeGet(host + PROJECT_DATA), Project.class);
 	}
 }

@@ -6,7 +6,6 @@ import android.content.SharedPreferences.Editor;
 import com.google.inject.Inject;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.User;
-import com.monits.agilefant.parser.UserParser;
 
 public class UserServiceImpl implements UserService {
 
@@ -16,17 +15,14 @@ public class UserServiceImpl implements UserService {
 	@Inject
 	private SharedPreferences sharedPreferences;
 
-	@Inject
-	private UserParser userParser;
-
 	private boolean isLoggedIn;
 
 	@Override
-	public boolean login(String domain, String userName, String password) throws RequestException {
+	public boolean login(final String domain, final String userName, final String password) throws RequestException {
 		agilefantService.setDomain(domain);
 		isLoggedIn = agilefantService.login(userName, password);
 
-		Editor editor = sharedPreferences.edit();
+		final Editor editor = sharedPreferences.edit();
 		editor.putBoolean(ISLOGGEDIN_KEY, isLoggedIn);
 		if (isLoggedIn) {
 			editor.putString(USER_NAME_KEY, userName);
@@ -50,9 +46,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User retrieveUser(Long id) throws RequestException {
-		User user = userParser.parseUser(
-				agilefantService.retrieveUser(id));
+	public User retrieveUser(final Long id) throws RequestException {
+		final User user = agilefantService.retrieveUser(id);
 
 		return user;
 	}
@@ -63,9 +58,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void storeLoggedUser(User user) {
+	public void storeLoggedUser(final User user) {
 		if (user != null) {
-			Editor editor = sharedPreferences.edit();
+			final Editor editor = sharedPreferences.edit();
 			editor.putLong(USER_ID_KEY, user.getId());
 			editor.putString(USER_INITIALS_KEY, user.getInitials());
 			editor.putString(FULLNAME_KEY, user.getFullName());
@@ -76,7 +71,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getLoggedUser() {
 		if (isLoggedIn()) {
-			User user = new User();
+			final User user = new User();
 
 			user.setId(
 					sharedPreferences.getLong(USER_ID_KEY, -1));

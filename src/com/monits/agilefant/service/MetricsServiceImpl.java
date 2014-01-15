@@ -8,8 +8,6 @@ import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.parser.StoryParser;
-import com.monits.agilefant.parser.TaskParser;
 
 /**
  * Manages metrics in Agilefant
@@ -21,42 +19,35 @@ public class MetricsServiceImpl implements MetricsService {
 	@Inject
 	private AgilefantService agilefantService;
 
-	@Inject
-	private TaskParser taskParser;
-
-	@Inject
-	private StoryParser storyParser;
-
 	@Override
-	public void taskChangeSpentEffort(Date date, long minutesSpent,
-			String description, long taskId, long userId) throws RequestException {
+	public void taskChangeSpentEffort(final Date date, final long minutesSpent,
+			final String description, final long taskId, final long userId) throws RequestException {
 		agilefantService.taskChangeSpentEffort(date.getTime(), minutesSpent, description, taskId, userId);
 	}
 
 	@Override
-	public Task taskChangeState(StateKey state, long taskId) throws RequestException {
-		Task task = taskParser.taskParser(agilefantService.taskChangeState(state, taskId));
+	public Task taskChangeState(final StateKey state, final long taskId) throws RequestException {
+		final Task task = agilefantService.taskChangeState(state, taskId);
 		return task;
 	}
 
 	@Override
-	public Task changeEffortLeft(double effortLeft, long taskId) throws RequestException {
-		Task task = taskParser.taskParser(agilefantService.changeEffortLeft(effortLeft, taskId));
+	public Task changeEffortLeft(final double effortLeft, final long taskId) throws RequestException {
+		final Task task = agilefantService.changeEffortLeft(effortLeft, taskId);
 		return task;
 	}
 
 	@Override
-	public Task changeOriginalEstimate(int origalEstimate, long taskId) throws RequestException {
-		Task task = taskParser.taskParser(agilefantService.changeOriginalEstimate(origalEstimate, taskId));
+	public Task changeOriginalEstimate(final int origalEstimate, final long taskId) throws RequestException {
+		final Task task = agilefantService.changeOriginalEstimate(origalEstimate, taskId);
 		return task;
 	}
 
 	@Override
-	public Story changeStoryState(StateKey state, long storyId, long backlogId, long iterationId, boolean tasksToDone)
+	public Story changeStoryState(final StateKey state, final long storyId, final long backlogId, final long iterationId, final boolean tasksToDone)
 			throws RequestException {
 
-		return storyParser.parseStory(
-				agilefantService.changeStoryState(state, storyId, backlogId, iterationId, tasksToDone));
+		return agilefantService.changeStoryState(state, storyId, backlogId, iterationId, tasksToDone);
 	}
 
 }

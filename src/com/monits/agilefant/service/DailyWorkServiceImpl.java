@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.monits.agilefant.service;
 
@@ -8,7 +8,6 @@ import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.DailyWorkTask;
 import com.monits.agilefant.model.Story;
-import com.monits.agilefant.parser.DailyWorkParser;
 import com.monits.agilefant.util.StoryUtils;
 
 /**
@@ -21,15 +20,11 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	private UserService userService;
 
 	@Inject
-	private DailyWorkParser dailyWorkParser;
-
-	@Inject
 	private AgilefantService agilefantService;
 
 	@Override
 	public DailyWork getDailyWork() throws RequestException {
-		DailyWork dailyWork =
-				dailyWorkParser.parseDailyWork(agilefantService.getDailyWork(userService.getLoggedUser().getId()));
+		final DailyWork dailyWork = agilefantService.getDailyWork(userService.getLoggedUser().getId());
 
 		populateContext(dailyWork);
 
@@ -39,14 +34,14 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	/**
 	 * This method populates queued tasks which hasn't got it's iteration context setted, but they do have a story context,
 	 * with the iteration coming from the story.
-	 * 
+	 *
 	 * @param dailyWork
 	 */
-	private void populateContext(DailyWork dailyWork) {
+	private void populateContext(final DailyWork dailyWork) {
 		if (dailyWork != null) {
-			for (DailyWorkTask queuedTask : dailyWork.getQueuedTasks()) {
+			for (final DailyWorkTask queuedTask : dailyWork.getQueuedTasks()) {
 				if (queuedTask.getIteration() == null && queuedTask.getStory() != null) {
-					Story story =
+					final Story story =
 							StoryUtils.findStoryById(dailyWork.getStories(), queuedTask.getStory().getId());
 
 					if (story != null) {
