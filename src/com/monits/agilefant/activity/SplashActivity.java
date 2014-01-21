@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
-import com.monits.agilefant.task.LoginAsyncTask;
 
 @ContentView(R.layout.activity_splash)
 public class SplashActivity extends RoboActivity {
@@ -22,52 +23,33 @@ public class SplashActivity extends RoboActivity {
 	@Inject
 	private SharedPreferences sharedPreferences;
 
-	@Inject
-	private LoginAsyncTask loginTask;
-
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		if (!userService.isLoggedIn()) {
 			startHomeActivity();
 		} else {
 
-			loginTask.configure(
+			userService.login(
 					sharedPreferences.getString(UserService.DOMAIN_KEY, ""),
 					sharedPreferences.getString(UserService.USER_NAME_KEY, ""),
 					sharedPreferences.getString(UserService.PASSWORD_KEY, ""),
-					false,
-					new TaskCallback<User>() {
+					new Listener<User>() {
 
 						@Override
-						public void onSuccess(User user) {
-							Intent intent = new Intent(SplashActivity.this, AllBackLogsActivity.class);
+						public void onResponse(final User arg0) {
+							final Intent intent = new Intent(SplashActivity.this, AllBackLogsActivity.class);
 							SplashActivity.this.startActivity(intent);
 						}
+					},
+					new ErrorListener() {
 
 						@Override
-						public void onError() {
+						public void onErrorResponse(final VolleyError arg0) {
 							startHomeActivity();
 						}
 					});
-		}
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (userService.isLoggedIn()) {
-			loginTask.execute();
-		}
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		if (loginTask != null) {
-			loginTask.interrupt();
 		}
 	}
 

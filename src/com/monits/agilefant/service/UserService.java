@@ -1,6 +1,7 @@
 package com.monits.agilefant.service;
 
-import com.monits.agilefant.exception.RequestException;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.User;
 
 public interface UserService {
@@ -42,13 +43,14 @@ public interface UserService {
 
 	/**
 	 * Login in Agilefant
+	 *
 	 * @param domain Agilefant domain
 	 * @param userName User name
 	 * @param password The password
-	 * @return If the user is logged
-	 * @throws RequestException
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	boolean login(String domain, String userName, String password) throws RequestException;
+	void login(String domain, String userName, String password, Listener<User> listener, ErrorListener error);
 
 	/**
 	 * @return If the user is logged
@@ -63,30 +65,33 @@ public interface UserService {
 	/**
 	 * Retrieves the user identified by the given id. If id is null, It'll retrieve the user bound
 	 * to the current agilefant session.
-	 * 
-	 * @return the user with this id if provided, otherwise the logged user. returns null if no user was found.
+	 *
+	 * @param id the id of the user
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	User retrieveUser(Long id) throws RequestException;
+	void retrieveUser(Long id, Listener<User> listener, ErrorListener error);
 
 	/**
 	 * Retrieves the current session user.
 	 * <blockquote>
 	 * This is a convenience for .retrieveUser(null)
 	 * </blockquote>
-	 * @return the logged user.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	User retrieveUser() throws RequestException;
+	void retrieveUser(Listener<User> listener, ErrorListener error);
 
 	/**
 	 * saves the user in the shared preferences.
-	 * 
+	 *
 	 * @param user the user to be stored.
 	 */
 	void storeLoggedUser(User user);
 
 	/**
 	 * Retrieves the logged user.
-	 * 
+	 *
 	 * @return the logged user.
 	 */
 	User getLoggedUser();

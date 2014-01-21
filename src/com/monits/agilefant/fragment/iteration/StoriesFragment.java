@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
@@ -51,27 +50,27 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	private ExpandableListView storiesListView;
 	private StoriesAdapter storiesAdapter;
 
-	public static StoriesFragment newInstance(ArrayList<Story> stories){
-		Bundle bundle = new Bundle();
+	public static StoriesFragment newInstance(final ArrayList<Story> stories){
+		final Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList(STORIES, stories);
 
-		StoriesFragment storiesFragment = new StoriesFragment();
+		final StoriesFragment storiesFragment = new StoriesFragment();
 		storiesFragment.setArguments(bundle);
 
 		return storiesFragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Bundle arguments = getArguments();
+		final Bundle arguments = getArguments();
 		this.stories= arguments.getParcelableArrayList(STORIES);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
 		storiesListView = (ExpandableListView)rootView.findViewById(R.id.stories);
 		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
@@ -88,7 +87,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 					// Agilefant's tasks that are already done, can't have it's EL changed.
 					if (!object.getState().equals(StateKey.DONE)) {
 
-						PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
+						final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
 								R.string.dialog_effortleft_title,
 								String.valueOf((float) object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
 								InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
@@ -96,7 +95,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 						dialogFragment.setPromptDialogListener(new PromptDialogListener() {
 
 							@Override
-							public void onAccept(String inputValue) {
+							public void onAccept(final String inputValue) {
 								double el = 0;
 								if (!inputValue.trim().equals("")) {
 									el = Double.valueOf(inputValue.trim());
@@ -111,7 +110,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 									}
 
 									@Override
-									public void onSuccess(Task response) {
+									public void onSuccess(final Task response) {
 										Toast.makeText(
 												getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
 									}
@@ -128,7 +127,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 				case R.id.task_spend_effort:
 
-					FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
+					final FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
 					transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
 					transaction.addToBackStack(null);
 					transaction.commit();
@@ -137,17 +136,17 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 				case R.id.task_state:
 
-					OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
+					final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onClick(final DialogInterface dialog, final int which) {
 							updateStateTask.configure(
 									StateKey.values()[which],
 									object,
 									new TaskCallback<Task>() {
 
 										@Override
-										public void onSuccess(Task response) {
+										public void onSuccess(final Task response) {
 											Toast.makeText(
 													getActivity(), "Successfully updated state", Toast.LENGTH_SHORT).show();
 										}
@@ -165,7 +164,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 						}
 					};
 
-					AlertDialog.Builder builder = new Builder(getActivity());
+					final AlertDialog.Builder builder = new Builder(getActivity());
 					builder.setTitle(R.string.dialog_state_title);
 					builder.setSingleChoiceItems(
 							StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
@@ -179,32 +178,32 @@ public class StoriesFragment extends RoboFragment implements Observer {
 		storiesAdapter.setOnGroupActionListener(new AdapterViewActionListener<Story>() {
 
 			@Override
-			public void onAction(View view, final Story object) {
+			public void onAction(final View view, final Story object) {
 				object.addObserver(StoriesFragment.this);
 
 				switch (view.getId()) {
 				case R.id.storie_state:
-					OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
+					final OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onClick(final DialogInterface dialog, final int which) {
 							final StateKey state = StateKey.values()[which];
 
 							if (state == StateKey.DONE) {
-								AlertDialog.Builder builder = new Builder(getActivity());
+								final AlertDialog.Builder builder = new Builder(getActivity());
 								builder.setTitle(R.string.dialog_tasks_to_done_title)
 								.setMessage(R.string.dialog_tasks_to_done_msg)
 								.setPositiveButton(android.R.string.yes, new OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(final DialogInterface dialog, final int which) {
 										executeUpdateStoryTask(state, object, true);
 									}
 								})
 								.setNegativeButton(android.R.string.no, new OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(final DialogInterface dialog, final int which) {
 										executeUpdateStoryTask(state, object, false);
 									}
 								});
@@ -218,7 +217,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 						}
 					};
 
-					AlertDialog.Builder builder = new Builder(getActivity());
+					final AlertDialog.Builder builder = new Builder(getActivity());
 					builder.setTitle(R.string.dialog_state_title);
 					builder.setSingleChoiceItems(
 							StateKey.getDisplayStates(), object.getState().ordinal(), onStoryStateSelectedListener);
@@ -239,12 +238,12 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 	/**
 	 * Configures and executes the {@link UpdateStoryTask}.
-	 * 
+	 *
 	 * @param state
 	 * @param story
 	 * @param allTasksToDone
 	 */
-	private void executeUpdateStoryTask(StateKey state, Story story, boolean allTasksToDone) {
+	private void executeUpdateStoryTask(final StateKey state, final Story story, final boolean allTasksToDone) {
 		updateStoryTask.configure(
 				state,
 				story,
@@ -252,7 +251,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 				new TaskCallback<Story>() {
 
 					@Override
-					public void onSuccess(Story response) {
+					public void onSuccess(final Story response) {
 						Toast.makeText(
 								getActivity(), "Successfully saved story", Toast.LENGTH_SHORT).show();
 					}
@@ -268,9 +267,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	}
 
 	@Override
-	public void update(Observable observable, Object data) {
-		BitmapAjaxCallback.clearCache();
-
+	public void update(final Observable observable, final Object data) {
 		if (isVisible()) {
 			storiesAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);

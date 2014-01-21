@@ -3,8 +3,10 @@ package com.monits.agilefant.service;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
-import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.User;
 
 public class UserServiceImpl implements UserService {
@@ -15,23 +17,46 @@ public class UserServiceImpl implements UserService {
 	@Inject
 	private SharedPreferences sharedPreferences;
 
-	private boolean isLoggedIn;
-
 	@Override
-	public boolean login(final String domain, final String userName, final String password) throws RequestException {
+	public void login(final String domain, final String userName, final String password, final Listener<User> listener, final ErrorListener error) {
 		agilefantService.setDomain(domain);
-		isLoggedIn = agilefantService.login(userName, password);
+		agilefantService.login(
+				userName,
+				password,
+				new Listener<String>() {
 
-		final Editor editor = sharedPreferences.edit();
-		editor.putBoolean(ISLOGGEDIN_KEY, isLoggedIn);
-		if (isLoggedIn) {
-			editor.putString(USER_NAME_KEY, userName);
-			editor.putString(PASSWORD_KEY, password);
-			editor.putString(DOMAIN_KEY, domain);
-		}
-		editor.commit();
+					@Override
+					public void onResponse(final String arg0) {
+						final Editor editor = sharedPreferences.edit();
 
-		return isLoggedIn;
+						editor.putBoolean(ISLOGGEDIN_KEY, true);
+						editor.putString(USER_NAME_KEY, userName);
+						editor.putString(PASSWORD_KEY, password);
+						editor.putString(DOMAIN_KEY, domain);
+
+						editor.commit();
+
+						retrieveUser(new Listener<User>() {
+
+							@Override
+							public void onResponse(final User arg0) {
+								storeLoggedUser(arg0);
+
+								listener.onResponse(arg0);
+							}
+
+						}, error);
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						logout();
+
+						error.onErrorResponse(arg0);
+					}
+				});
 	}
 
 	@Override
@@ -41,20 +66,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void logout() {
-		this.isLoggedIn = false;
-		sharedPreferences.edit().putBoolean(ISLOGGEDIN_KEY, isLoggedIn).commit();
+		sharedPreferences.edit().putBoolean(ISLOGGEDIN_KEY, false).commit();
 	}
 
 	@Override
-	public User retrieveUser(final Long id) throws RequestException {
-		final User user = agilefantService.retrieveUser(id);
-
-		return user;
+	public void retrieveUser(final Long id, final Listener<User> listener, final ErrorListener error) {
+		agilefantService.retrieveUser(id, listener, error);
 	}
 
 	@Override
-	public User retrieveUser() throws RequestException {
-		return retrieveUser(null);
+	public void retrieveUser(final Listener<User> listener, final ErrorListener error) {
+		retrieveUser(null, listener, error);
 	}
 
 	@Override

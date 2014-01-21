@@ -5,7 +5,6 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.androidquery.util.AQUtility;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.UserService;
@@ -43,15 +42,6 @@ public class BaseActivity extends RoboActionBarActivity {
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		if (isTaskRoot()) {
-			AQUtility.cleanCacheAsync(this);
 		}
 	}
 }

@@ -1,20 +1,27 @@
-/**
- * 
- */
 package com.monits.agilefant;
 
+import roboguice.RoboGuice;
 import android.app.Application;
 
-import com.androidquery.callback.BitmapAjaxCallback;
+import com.google.inject.Inject;
+import com.monits.agilefant.cache.BitmapLruCache;
 
-/**
- * @author gmuniz
- *
- */
 public class AgilefantApplication extends Application {
+
+	@Inject
+	private BitmapLruCache bitmapCache;
+
+	@Override
+	public void onCreate() {
+		RoboGuice.getInjector(this).injectMembers(this);
+
+		super.onCreate();
+	}
 
 	@Override
 	public void onLowMemory() {
-		BitmapAjaxCallback.clearCache();
+		bitmapCache.evictAll();
+
+		super.onLowMemory();
 	}
 }

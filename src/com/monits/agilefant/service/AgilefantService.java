@@ -2,6 +2,8 @@ package com.monits.agilefant.service;
 
 import java.util.List;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Iteration;
@@ -24,10 +26,10 @@ public interface AgilefantService {
 	 * Login in Agilefant with domain entered
 	 * @param userName
 	 * @param password
-	 * @return If the user is logged
-	 * @throws RequestException
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	boolean login(String userName, String password) throws RequestException;
+	void login(String userName, String password, Listener<String> listener, ErrorListener error);
 
 	/**
 	 * @return All backlogs in JSON format
@@ -95,10 +97,10 @@ public interface AgilefantService {
 	 * Retrieves the user with the given id.
 	 *
 	 * @param id <b>(Optional)</b> the user's id.
-	 * @return user in JSON format. Logged user in case no id was given.
-	 * @throws RequestException
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	User retrieveUser(Long id) throws RequestException;
+	void retrieveUser(Long id, Listener<User> listener, ErrorListener error) ;
 
 	/**
 	 * Retrieves the daily work.

@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
@@ -48,28 +47,28 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 	private TaskWithoutStoryAdapter taskWithoutStoryAdapter;
 
 
-	public static TaskWithoutStoryFragment newInstance(ArrayList<Task> taskWithoutStory) {
-		Bundle bundle = new Bundle();
+	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory) {
+		final Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("TASK_WITHOUT_STORIES", taskWithoutStory);
 
-		TaskWithoutStoryFragment taskWithoutStoryFragment = new TaskWithoutStoryFragment();
+		final TaskWithoutStoryFragment taskWithoutStoryFragment = new TaskWithoutStoryFragment();
 		taskWithoutStoryFragment.setArguments(bundle);
 
 		return taskWithoutStoryFragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Bundle arguments = getArguments();
+		final Bundle arguments = getArguments();
 		this.taskWithoutStory= arguments.getParcelableArrayList("TASK_WITHOUT_STORIES");
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_task_without_story, container, false);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
+		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_task_without_story, container, false);
 
 		taskWithoutStoryListView = (ListView)rootView.findViewById(R.id.task_without_story);
 		taskWithoutStoryListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
@@ -86,7 +85,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 					// Agilefant's tasks that are already done, can't have it's EL changed.
 					if (!object.getState().equals(StateKey.DONE)) {
 
-						PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
+						final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
 								R.string.dialog_effortleft_title,
 								String.valueOf((float) object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
 								InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
@@ -94,7 +93,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 						dialogFragment.setPromptDialogListener(new PromptDialogListener() {
 
 							@Override
-							public void onAccept(String inputValue) {
+							public void onAccept(final String inputValue) {
 								updateEffortLeftTask.configure(
 										object,
 										InputUtils.parseStringToDouble(inputValue),
@@ -107,7 +106,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 											}
 
 											@Override
-											public void onSuccess(Task response) {
+											public void onSuccess(final Task response) {
 												Toast.makeText(
 														getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
 											}
@@ -125,7 +124,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 				case R.id.task_spend_effort:
 
-					FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
+					final FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
 					transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
 					transaction.addToBackStack(null);
 					transaction.commit();
@@ -134,17 +133,17 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 				case R.id.task_state:
 
-					OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
+					final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onClick(final DialogInterface dialog, final int which) {
 							updateStateTask.configure(
 									StateKey.values()[which],
 									object,
 									new TaskCallback<Task>() {
 
 										@Override
-										public void onSuccess(Task response) {
+										public void onSuccess(final Task response) {
 											Toast.makeText(
 													getActivity(), "Successfully updated state", Toast.LENGTH_SHORT).show();
 										}
@@ -162,7 +161,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 						}
 					};
 
-					AlertDialog.Builder builder = new Builder(getActivity());
+					final AlertDialog.Builder builder = new Builder(getActivity());
 					builder.setTitle(R.string.dialog_state_title);
 					builder.setSingleChoiceItems(
 							StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
@@ -178,9 +177,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 	}
 
 	@Override
-	public void update(Observable observable, Object data) {
-		BitmapAjaxCallback.clearCache();
-
+	public void update(final Observable observable, final Object data) {
 		if (isVisible()) {
 			taskWithoutStoryAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
