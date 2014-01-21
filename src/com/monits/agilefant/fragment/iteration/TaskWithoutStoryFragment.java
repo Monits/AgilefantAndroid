@@ -19,26 +19,24 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
 import com.monits.agilefant.dialog.PromptDialogFragment;
 import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
-import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.task.UpdateEffortLeftTask;
-import com.monits.agilefant.task.UpdateStateTask;
+import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.util.InputUtils;
 
 public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 	@Inject
-	private UpdateEffortLeftTask updateEffortLeftTask;
-
-	@Inject
-	private UpdateStateTask updateStateTask;
+	private MetricsService metricsService;
 
 	private List<Task> taskWithoutStory;
 
@@ -94,26 +92,25 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 							@Override
 							public void onAccept(final String inputValue) {
-								updateEffortLeftTask.configure(
-										object,
+								metricsService.changeEffortLeft(
 										InputUtils.parseStringToDouble(inputValue),
-										new TaskCallback<Task>() {
+										object,
+										new Listener<Task>() {
 
 											@Override
-											public void onError() {
+											public void onResponse(final Task arg0) {
 												Toast.makeText(
-														getActivity(), "Failed to update Effort Left.", Toast.LENGTH_SHORT).show();
+														getActivity(), R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
 											}
+										},
+										new ErrorListener() {
 
 											@Override
-											public void onSuccess(final Task response) {
+											public void onErrorResponse(final VolleyError arg0) {
 												Toast.makeText(
-														getActivity(), "Successfully updated Effort Left.", Toast.LENGTH_SHORT).show();
+														getActivity(), R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
 											}
 										});
-
-								updateEffortLeftTask.execute();
-
 							}
 						});
 
@@ -137,25 +134,25 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 						@Override
 						public void onClick(final DialogInterface dialog, final int which) {
-							updateStateTask.configure(
+							metricsService.taskChangeState(
 									StateKey.values()[which],
 									object,
-									new TaskCallback<Task>() {
+									new Listener<Task>() {
 
 										@Override
-										public void onSuccess(final Task response) {
+										public void onResponse(final Task arg0) {
 											Toast.makeText(
-													getActivity(), "Successfully updated state", Toast.LENGTH_SHORT).show();
-										}
+													getActivity(), R.string.feedback_successfully_updated_state, Toast.LENGTH_SHORT).show();
+										};
+									},
+									new ErrorListener() {
 
 										@Override
-										public void onError() {
+										public void onErrorResponse(final VolleyError arg0) {
 											Toast.makeText(
-													getActivity(), "Failed to update the state", Toast.LENGTH_SHORT).show();
-										}
+													getActivity(), R.string.feedback_failed_update_state, Toast.LENGTH_SHORT).show();
+										};
 									});
-
-							updateStateTask.execute();
 
 							dialog.dismiss();
 						}

@@ -3,7 +3,8 @@ package com.monits.agilefant.service;
 
 import java.util.Date;
 
-import com.monits.agilefant.exception.RequestException;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -16,54 +17,66 @@ import com.monits.agilefant.model.Task;
 public interface MetricsService {
 
 	/**
-	 * Change spent Effort of task
+	 * Change spent Effort of task.
+	 *
+	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
 	 * @param date Date
 	 * @param minutesSpent Minutes to enter
 	 * @param description Description or comment
-	 * @param taskId Task id
+	 * @param task the task to be modified
 	 * @param userId User id
-	 * @throws RequestException
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	void taskChangeSpentEffort(Date date, long minutesSpent, String description, long taskId, long userId) throws RequestException;
+	void taskChangeSpentEffort(Date date, long minutesSpent, String description, Task task, long userId, Listener<String> listener, ErrorListener error);
 
 	/**
 	 * Change state of task
+	 *
+	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
 	 * @param state State to enter
-	 * @param taskId Task id
-	 * @return Updated task
-	 * @throws RequestException
+	 * @param task the task to be modified.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	Task taskChangeState(StateKey state, long taskId) throws RequestException;
+	void taskChangeState(StateKey state, Task task, Listener<Task> listener, ErrorListener error);
 
 	/**
 	 * Change effort Left of task
+	 *
+	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
 	 * @param effortLeft Hour to enter
-	 * @param taskId Task id
-	 * @return Updated task
-	 * @throws RequestException
+	 * @param task the task to be modified.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	Task changeEffortLeft(double effortLeft, long taskId) throws RequestException;
+	void changeEffortLeft(double effortLeft, Task task, Listener<Task> listener, ErrorListener error);
 
 	/**
 	 * Change original estimate of task
+	 *
+	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
 	 * @param origalEstimate Hour to enter
-	 * @param taskId Task id
-	 * @return Updated Task
-	 * @throws RequestException
+	 * @param task the task to be modified.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	Task changeOriginalEstimate(int origalEstimate, long taskId) throws RequestException;
+	void changeOriginalEstimate(int origalEstimate, long taskId, Listener<Task> listener, ErrorListener error);
 
 	/**
 	 * Changes the story state.
-	 * 
+	 *
+	 *<blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
 	 * @param state State to set
-	 * @param storyId the story's id.
-	 * @param backlogId the backlog's id.
-	 * @param iterationId the iteration's id.
+	 * @param story the story to be modified.
 	 * @param tasksToDone whether if all tasks
-	 * @return the updated story.
-	 * @throws RequestException
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	Story changeStoryState(StateKey state, long storyId, long backlogId, long iterationId, boolean tasksToDone)
-			throws RequestException;
+	void changeStoryState(StateKey state, Story story, boolean tasksToDone, Listener<Story> listener, ErrorListener error);
 }

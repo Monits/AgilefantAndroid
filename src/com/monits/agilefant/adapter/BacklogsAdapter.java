@@ -3,7 +3,9 @@ package com.monits.agilefant.adapter;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +13,23 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
+import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
-import com.monits.agilefant.task.GetIteration;
+import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.view.ProductExpandableListView;
 
 public class BacklogsAdapter extends BaseExpandableListAdapter{
 
 	@Inject
-	private GetIteration getIteration;
+	private IterationService iterationService;
 
 	private List<Product> productList;
 	private final Context context;
@@ -79,8 +86,42 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 						final int groupLevel2Position, final int childPosition, final long id) {
 					final Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
 					final String projectName = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getTitle();
-					getIteration.configure(projectName, iteration.getId());
-					getIteration.execute();
+
+					final ProgressDialog progressDialog = new ProgressDialog(context);
+					progressDialog.setIndeterminate(true);
+					progressDialog.setCancelable(false);
+					progressDialog.setMessage(context.getString(R.string.loading));
+					progressDialog.show();
+					iterationService.getIteration(
+							iteration.getId(),
+							new Listener<Iteration>() {
+
+								@Override
+								public void onResponse(final Iteration response) {
+									if (progressDialog != null && progressDialog.isShowing()) {
+										progressDialog.dismiss();
+									}
+
+									final Intent intent = new Intent(context, IterationActivity.class);
+
+									intent.putExtra(IterationActivity.ITERATION, response);
+									intent.putExtra(IterationActivity.PROJECTNAME, projectName);
+
+									context.startActivity(intent);
+								}
+							},
+							new ErrorListener() {
+
+								@Override
+								public void onErrorResponse(final VolleyError arg0) {
+									if (progressDialog != null && progressDialog.isShowing()) {
+										progressDialog.dismiss();
+									}
+
+									Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+								}
+							});
+
 					return true;
 				}
 			});

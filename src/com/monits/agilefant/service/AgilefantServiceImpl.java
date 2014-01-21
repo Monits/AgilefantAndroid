@@ -7,14 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
-import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,11 +18,9 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.RequestFuture;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
@@ -131,26 +125,24 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public List<Product> getAllBacklogs() throws RequestException {
+	public void getAllBacklogs(final Listener<List<Product>> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, GET_ALL_BACKLOGS_URL, host);
 
-		final RequestFuture<List<Product>> future = RequestFuture.newFuture();
 		final Type listType = new TypeToken<ArrayList<Product>>() {}.getType();
 		final GsonRequest<List<Product>> request = new GsonRequest<List<Product>>(
-				Method.GET, url, gson, listType, future, future);
+				Method.GET, url, gson, listType, listener, error);
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public Iteration getIteration(final long id) throws RequestException {
+	public void getIteration(final long id, final Listener<Iteration> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, GET_ITERATION, host, id);
 
-		final RequestFuture<Iteration> future = RequestFuture.newFuture();
 		final GsonRequest<Iteration> request = new GsonRequest<Iteration>(
-				Method.GET, url, gson, Iteration.class, future, future);
+				Method.GET, url, gson, Iteration.class, listener, error);
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
@@ -168,12 +160,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void taskChangeSpentEffort(final long date, final long minutesSpent,
-			final String description, final long taskId, final long userId) throws RequestException {
+	public void taskChangeSpentEffort(final long date, final long minutesSpent, final String description, final long taskId, final long userId,
+			final Listener<String> listener, final ErrorListener error) {
+
 		final String url = String.format(Locale.US, LOG_TASK_EFFORT_ACTION, host);
 
-		final RequestFuture<String> future = RequestFuture.newFuture();
-		final RfcCompliantListenableRequest<String> request = new RfcCompliantListenableRequest<String>(Method.POST, url, future, future) {
+		final RfcCompliantListenableRequest<String> request = new RfcCompliantListenableRequest<String>(Method.POST, url, listener, error) {
+
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
 				final Map<String, String> params = new HashMap<String, String>();
@@ -198,16 +191,15 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public Task taskChangeState(final StateKey state, final long taskId) throws RequestException {
+	public void taskChangeState(final StateKey state, final long taskId, final Listener<Task> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
 
-		final RequestFuture<Task> future = RequestFuture.newFuture();
 		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, future, future) {
+				Method.POST, url, gson, Task.class, listener, error) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -220,16 +212,15 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public Task changeEffortLeft(final double effortLeft, final long taskId) throws RequestException{
+	public void changeEffortLeft(final double effortLeft, final long taskId, final Listener<Task> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
 
-		final RequestFuture<Task> future = RequestFuture.newFuture();
 		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, future, future) {
+				Method.POST, url, gson, Task.class, listener, error) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -242,16 +233,17 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public Task changeOriginalEstimate(final int origalEstimate, final long taskId) throws RequestException {
+	public void changeOriginalEstimate(final int origalEstimate, final long taskId,
+			final Listener<Task> listener, final ErrorListener error) {
+
 		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
 
-		final RequestFuture<Task> future = RequestFuture.newFuture();
 		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, future, future) {
+				Method.POST, url, gson, Task.class, listener, error) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -264,7 +256,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
@@ -286,36 +278,34 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public List<Project> getMyBacklogs() throws RequestException {
+	public void getMyBacklogs(final Listener<List<Project>> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, GET_MY_BACKLOGS_URL, host);
 
-		final RequestFuture<List<Project>> future = RequestFuture.newFuture();
 		final Type listType = new TypeToken<ArrayList<Project>>() {}.getType();
 		final GsonRequest<List<Project>> request = new GsonRequest<List<Project>>(
-				Method.GET, url, gson, listType, future, future);
+				Method.GET, url, gson, listType, listener, error);
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public DailyWork getDailyWork(final Long id) throws RequestException {
+	public void getDailyWork(final Long id, final Listener<DailyWork> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, DAILY_WORK_ACTION, host, id);
 
-		final RequestFuture<DailyWork> future = RequestFuture.newFuture();
 		final GsonRequest<DailyWork> request = new GsonRequest<DailyWork>(
-				Method.GET, url, gson, DailyWork.class, future, future);
+				Method.GET, url, gson, DailyWork.class, listener, error);
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public Story changeStoryState(final StateKey state, final long storyId,
-			final long backlogId, final long iterationId, final boolean tasksToDone) throws RequestException {
+	public void changeStoryState(final StateKey state, final long storyId, final long backlogId,
+			final long iterationId, final boolean tasksToDone, final Listener<Story> listener, final ErrorListener error) {
+
 		final String url = String.format(Locale.US, STORE_STORY_ACTION, host);
 
-		final RequestFuture<Story> future = RequestFuture.newFuture();
 		final GsonRequest<Story> request = new GsonRequest<Story>(
-				Method.POST, url, gson, Story.class, future, future) {
+				Method.POST, url, gson, Story.class, listener, error) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -331,46 +321,16 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		return submitBlockingRequest(future, request);
+		requestQueue.add(request);
 	}
 
 	@Override
-	public Project getProjectDetails(final long projectId) throws RequestException {
+	public void getProjectDetails(final long projectId, final Listener<Project> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, PROJECT_DATA, host, projectId);
 
-		final RequestFuture<Project> future = RequestFuture.newFuture();
 		final GsonRequest<Project> request = new GsonRequest<Project>(
-				Method.GET, url, gson, Project.class, future, future);
+				Method.GET, url, gson, Project.class, listener, error);
 
-		return submitBlockingRequest(future, request);
-	}
-
-	/**
-	 * Send a request as blocking.
-	 *
-	 * The submitted future MUST be already set to listen for success and error responses on the given request.
-	 *
-	 * @param future The future to be used when syncing.
-	 * @param request The request to be performed.
-	 * @return The result of the request.
-	 * @throws RequestException If the request failed (didn't get a 2XX)
-	 */
-	private <T> T submitBlockingRequest(final RequestFuture<T> future, final Request<T> request) throws RequestException {
-		/*
-		 * FIXME: This method is ugly, it's API is ugly, and the null error parsing horrible.
-		 * This is for compatibility with old HttpConnection, methods should be refactored to make
-		 * everything async and this method obsolete.
-		 */
 		requestQueue.add(request);
-
-		try {
-			return future.get();
-		} catch (final ExecutionException e) {
-			// TODO : Actually parse the response / show appropriate messages!
-			throw new RequestException(e);
-		} catch (final Exception e) {
-			Log.e(getClass().getName(), "Havoc broke while sending a blocking request to the server.", e);
-			throw new RequestException(e);
-		}
 	}
 }

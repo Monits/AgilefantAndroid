@@ -2,7 +2,8 @@ package com.monits.agilefant.service;
 
 import java.util.List;
 
-import com.monits.agilefant.exception.RequestException;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
 
@@ -10,15 +11,18 @@ public interface BacklogService {
 
 	/**
 	 * Get All backlogs
-	 * @return A list of products
-	 * @throws RequestException
+	 *
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	List<Product> getAllBacklogs() throws RequestException;
+	public void getAllBacklogs(Listener<List<Product>> listener, ErrorListener error);
 
 	/**
 	 * Get my backlogs
-	 * @return A list of projects
-	 * @throws RequestException
+	 *
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	List<Project> getMyBacklogs() throws RequestException;
+	public void getMyBacklogs(Listener<List<Project>> listener, ErrorListener error);
+
 }

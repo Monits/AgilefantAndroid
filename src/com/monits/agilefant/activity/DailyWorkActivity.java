@@ -8,6 +8,7 @@ import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
@@ -16,15 +17,17 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.DailyWorkPagerAdapter;
 import com.monits.agilefant.fragment.dailywork.MyQueueWorkFragment;
 import com.monits.agilefant.fragment.dailywork.MyStoriesFragment;
 import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
-import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.DailyWork;
-import com.monits.agilefant.task.GetDailyWorkTask;
+import com.monits.agilefant.service.DailyWorkService;
 
 /**
  * @author gmuniz
@@ -40,7 +43,7 @@ public class DailyWorkActivity extends BaseActivity {
 	private PagerTabStrip pagerTabStrip;
 
 	@Inject
-	private GetDailyWorkTask getDailyWorkTask;
+	private DailyWorkService dailyWorkService;
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
@@ -56,29 +59,43 @@ public class DailyWorkActivity extends BaseActivity {
 		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
 		pagerTabStrip.setDrawFullUnderline(true);
 
-		getDailyWorkTask.configure(new TaskCallback<DailyWork>() {
+		final ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setMessage(getString(R.string.loading));
+		progressDialog.show();
 
-			@Override
-			public void onSuccess(final DailyWork response) {
-				viewPager.setCurrentItem(0);
-				viewPager.setVisibility(View.VISIBLE);
+		dailyWorkService.getDailyWork(
+				new Listener<DailyWork>() {
 
-				final List<Fragment> fragments = new ArrayList<Fragment>();
-				fragments.add(MyQueueWorkFragment.newInstance(response.getQueuedTasks()));
-				fragments.add(MyStoriesFragment.newInstance(response.getStories()));
-				fragments.add(MyTasksFragment.newInstance(response.getTaskWithoutStories()));
+					@Override
+					public void onResponse(final DailyWork response) {
+						viewPager.setCurrentItem(0);
+						viewPager.setVisibility(View.VISIBLE);
 
-				viewPager.setAdapter(
-						new DailyWorkPagerAdapter(DailyWorkActivity.this, getSupportFragmentManager(), fragments));
-			}
+						final List<Fragment> fragments = new ArrayList<Fragment>();
+						fragments.add(MyQueueWorkFragment.newInstance(response.getQueuedTasks()));
+						fragments.add(MyStoriesFragment.newInstance(response.getStories()));
+						fragments.add(MyTasksFragment.newInstance(response.getTaskWithoutStories()));
 
-			@Override
-			public void onError() {
-				Toast.makeText(DailyWorkActivity.this, "Failed to retrieve daily work", Toast.LENGTH_SHORT).show();
-			}
-		});
+						viewPager.setAdapter(
+								new DailyWorkPagerAdapter(DailyWorkActivity.this, getSupportFragmentManager(), fragments));
 
-		getDailyWorkTask.execute();
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+
+						Toast.makeText(DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work, Toast.LENGTH_SHORT).show();
+					}
+				});
 	}
 
 }

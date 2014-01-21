@@ -2,9 +2,12 @@ package com.monits.agilefant.service;
 
 
 import java.util.Date;
+import java.util.List;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
-import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -21,33 +24,127 @@ public class MetricsServiceImpl implements MetricsService {
 
 	@Override
 	public void taskChangeSpentEffort(final Date date, final long minutesSpent,
-			final String description, final long taskId, final long userId) throws RequestException {
-		agilefantService.taskChangeSpentEffort(date.getTime(), minutesSpent, description, taskId, userId);
+			final String description, final Task task, final long userId, final Listener<String> listener, final ErrorListener error) {
+
+		final Task fallbackTask = task.clone();
+		task.setEffortSpent(task.getEffortSpent() + minutesSpent);
+
+		agilefantService.taskChangeSpentEffort(
+				date.getTime(),
+				minutesSpent,
+				description,
+				task.getId(),
+				userId,
+				listener,
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						task.updateValues(fallbackTask);
+
+						error.onErrorResponse(arg0);
+					}
+				});
 	}
 
 	@Override
-	public Task taskChangeState(final StateKey state, final long taskId) throws RequestException {
-		final Task task = agilefantService.taskChangeState(state, taskId);
-		return task;
+	public void taskChangeState(final StateKey state, final Task task, final Listener<Task> listener, final ErrorListener error) {
+		final Task fallbackTask = task.clone();
+		task.setState(state, true);
+
+		agilefantService.taskChangeState(
+				state,
+				task.getId(),
+				new Listener<Task>() {
+
+					@Override
+					public void onResponse(final Task response) {
+						task.updateValues(response);
+
+						listener.onResponse(response);
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						task.updateValues(fallbackTask);
+
+						error.onErrorResponse(arg0);
+					}
+				});
 	}
 
 	@Override
-	public Task changeEffortLeft(final double effortLeft, final long taskId) throws RequestException {
-		final Task task = agilefantService.changeEffortLeft(effortLeft, taskId);
-		return task;
+	public void changeEffortLeft(final double effortLeft, final Task task, final Listener<Task> listener, final ErrorListener error) {
+
+		// Updating current task prior to sending request to the API
+		final Task fallbackTask = task.clone();
+		task.setEffortLeft(Double.valueOf(effortLeft * 60).longValue());
+
+		agilefantService.changeEffortLeft(
+				effortLeft,
+				task.getId(),
+				new Listener<Task>() {
+
+					@Override
+					public void onResponse(final Task response) {
+						task.updateValues(response);
+
+						listener.onResponse(response);
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						task.updateValues(fallbackTask);
+
+						error.onErrorResponse(arg0);
+					}
+				});
 	}
 
 	@Override
-	public Task changeOriginalEstimate(final int origalEstimate, final long taskId) throws RequestException {
-		final Task task = agilefantService.changeOriginalEstimate(origalEstimate, taskId);
-		return task;
+	public void changeOriginalEstimate(final int origalEstimate, final long taskId, final Listener<Task> listener, final ErrorListener error) {
+		agilefantService.changeOriginalEstimate(origalEstimate, taskId, listener, error);
 	}
 
 	@Override
-	public Story changeStoryState(final StateKey state, final long storyId, final long backlogId, final long iterationId, final boolean tasksToDone)
-			throws RequestException {
+	public void changeStoryState(final StateKey state, final Story story, final boolean tasksToDone, final Listener<Story> listener, final ErrorListener error) {
+		final Story fallbackStory = story.clone();
+		final List<Task> currentTasks = story.getTasks();
 
-		return agilefantService.changeStoryState(state, storyId, backlogId, iterationId, tasksToDone);
+		story.setState(state);
+		if (tasksToDone) {
+			for (final Task task : currentTasks) {
+				task.setState(StateKey.DONE, true);
+			}
+		}
+
+		final long iterationId = story.getIteration().getId();
+		agilefantService.changeStoryState(
+				state,
+				story.getId(),
+				iterationId,
+				iterationId,
+				tasksToDone,
+				listener,
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						story.setState(fallbackStory.getState());
+						if (tasksToDone) {
+							final List<Task> fallbackTasks = fallbackStory.getTasks();
+							for (int i = 0; i < currentTasks.size(); i++) {
+								currentTasks.get(i).setState(fallbackTasks.get(i).getState());
+							}
+						}
+
+						error.onErrorResponse(arg0);
+					}
+				});
 	}
 
 }

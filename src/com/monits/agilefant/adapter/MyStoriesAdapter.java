@@ -4,18 +4,25 @@ import java.util.Collections;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
+import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.task.GetIteration;
+import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.StoryRankComparator;
 import com.monits.agilefant.util.TaskRankComparator;
@@ -23,17 +30,17 @@ import com.monits.agilefant.util.TaskRankComparator;
 public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 	@Inject
-	private GetIteration getIteration;
+	private IterationService iterationService;
 
-	public MyStoriesAdapter(Context context, List<Story> stories) {
+	public MyStoriesAdapter(final Context context, final List<Story> stories) {
 		super(context);
 
 		Collections.sort(stories, new StoryRankComparator());
-		for (Story story : stories) {
+		for (final Story story : stories) {
 			super.addGroup(story);
-			List<Task> tasks = story.getTasks();
+			final List<Task> tasks = story.getTasks();
 			Collections.sort(tasks, new TaskRankComparator());
-			for (Task task : tasks) {
+			for (final Task task : tasks) {
 				super.addChildToGroup(story, task);
 			}
 		}
@@ -42,10 +49,10 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition,
-			boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getChildView(final int groupPosition, final int childPosition,
+			final boolean isLastChild, View convertView, final ViewGroup parent) {
 
-		ViewHolder holder = null;
+		final ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.my_tasks_item_nocontext, null);
@@ -58,7 +65,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		Task task = getChild(groupPosition, childPosition);
+		final Task task = getChild(groupPosition, childPosition);
 
 		holder.name.setText(task.getName());
 
@@ -70,10 +77,10 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-			View convertView, ViewGroup parent) {
+	public View getGroupView(final int groupPosition, final boolean isExpanded,
+			View convertView, final ViewGroup parent) {
 
-		ViewHolder holder = null;
+		final ViewHolder holder;
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.my_story_item, null);
@@ -87,7 +94,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		Story story = getGroup(groupPosition);
+		final Story story = getGroup(groupPosition);
 
 		holder.name.setText(story.getName());
 
@@ -96,21 +103,48 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		holder.state.setBackgroundResource(IterationUtils.getStateBackground(story.getState()));
 
 		if (story.getIteration() != null) {
-			Iteration iteration = story.getIteration();
+			final Iteration iteration = story.getIteration();
 
 			holder.context.setText(iteration.getName());
-			holder.context.setTag(story);
 			holder.context.setOnClickListener(new OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					Story task = (Story) v.getTag();
+				public void onClick(final View v) {
 
-					getIteration.configure(
-							task.getIteration().getParent().getName(),
-							task.getIteration().getId());
+					final ProgressDialog progressDialog = new ProgressDialog(context);
+					progressDialog.setIndeterminate(true);
+					progressDialog.setCancelable(false);
+					progressDialog.setMessage(context.getString(R.string.loading));
+					progressDialog.show();
+					iterationService.getIteration(
+							iteration.getId(),
+							new Listener<Iteration>() {
 
-					getIteration.execute();
+								@Override
+								public void onResponse(final Iteration response) {
+									if (progressDialog != null && progressDialog.isShowing()) {
+										progressDialog.dismiss();
+									}
+
+									final Intent intent = new Intent(context, IterationActivity.class);
+
+									intent.putExtra(IterationActivity.ITERATION, response);
+									intent.putExtra(IterationActivity.PROJECTNAME, iteration.getParent().getName());
+
+									context.startActivity(intent);
+								}
+							},
+							new ErrorListener() {
+
+								@Override
+								public void onErrorResponse(final VolleyError arg0) {
+									if (progressDialog != null && progressDialog.isShowing()) {
+										progressDialog.dismiss();
+									}
+
+									Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+								}
+							});
 				}
 			});
 		} else {

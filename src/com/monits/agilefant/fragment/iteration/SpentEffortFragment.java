@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import roboguice.fragment.RoboFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +18,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.dialog.DateTimePickerDialogFragment;
 import com.monits.agilefant.dialog.DateTimePickerDialogFragment.OnDateSetListener;
-import com.monits.agilefant.listeners.TaskCallback;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.UserService;
-import com.monits.agilefant.task.UpdateSpentEffortTask;
 import com.monits.agilefant.util.DateUtils;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.InputUtils;
@@ -36,10 +39,10 @@ public class SpentEffortFragment extends RoboFragment {
 	private static final String TASK = "task";
 
 	@Inject
-	private UserService userService;
+	private MetricsService metricsService;
 
 	@Inject
-	private UpdateSpentEffortTask updateSpentEffortTask;
+	private UserService userService;
 
 	private TextView mDateInput;
 	private Button mSubmitButton;
@@ -52,17 +55,17 @@ public class SpentEffortFragment extends RoboFragment {
 	private ImageButton mTriggerPickerButton;
 	private EditText mEffortLeftInput;
 
-	public static SpentEffortFragment newInstance(Task task) {
-		Bundle arguments = new Bundle();
+	public static SpentEffortFragment newInstance(final Task task) {
+		final Bundle arguments = new Bundle();
 		arguments.putParcelable(TASK, task);
 
-		SpentEffortFragment fragment = new SpentEffortFragment();
+		final SpentEffortFragment fragment = new SpentEffortFragment();
 		fragment.setArguments(arguments);
 		return fragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		task = getArguments().getParcelable(TASK);
@@ -70,11 +73,11 @@ public class SpentEffortFragment extends RoboFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_spent_effort, null);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.fragment_spent_effort, null);
 
-		Date time = Calendar.getInstance().getTime();
-		String formattedDate = dateFormatter.format(time);
+		final Date time = Calendar.getInstance().getTime();
+		final String formattedDate = dateFormatter.format(time);
 
 		mDateInput = (TextView) view.findViewById(R.id.date);
 		mDateInput.setText(formattedDate);
@@ -93,13 +96,13 @@ public class SpentEffortFragment extends RoboFragment {
 		mTriggerPickerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				DateTimePickerDialogFragment dateTimePickerDialogFragment = DateTimePickerDialogFragment.newInstance();
+			public void onClick(final View v) {
+				final DateTimePickerDialogFragment dateTimePickerDialogFragment = DateTimePickerDialogFragment.newInstance();
 				dateTimePickerDialogFragment.setOnDateSetListener(new OnDateSetListener() {
 
 					@Override
-					public void onDateSet(Date date) {
-						String formattedDate = DateUtils.formatDate(date, DATE_PATTERN);
+					public void onDateSet(final Date date) {
+						final String formattedDate = DateUtils.formatDate(date, DATE_PATTERN);
 						mDateInput.setText(formattedDate);
 					}
 				});
@@ -112,35 +115,51 @@ public class SpentEffortFragment extends RoboFragment {
 		mSubmitButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 
 				if (isValid()) {
-					final long minutes =
-							HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
+					final long minutes = HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
 
-					updateSpentEffortTask.configure(
+					final Context context = getActivity();
+					metricsService.taskChangeSpentEffort(
 							DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
 							minutes,
-							InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
 							mCommentInput.getText().toString(),
 							task,
 							userService.getLoggedUser().getId(),
-							new TaskCallback<Boolean>() {
+							new Listener<String>() {
 
 								@Override
-								public void onError() {
-									Toast.makeText(getActivity(), "Failed to update!", Toast.LENGTH_SHORT).show();
+								public void onResponse(final String arg0) {
+									Toast.makeText(context, R.string.feedback_succesfully_updated_spent_effort, Toast.LENGTH_SHORT).show();
 									getFragmentManager().popBackStack();
 								}
+							},
+							new ErrorListener() {
 
 								@Override
-								public void onSuccess(Boolean response) {
-									Toast.makeText(getActivity(), "Succesfully updated!", Toast.LENGTH_SHORT).show();
-									getFragmentManager().popBackStack();
+								public void onErrorResponse(final VolleyError arg0) {
+									Toast.makeText(context, R.string.feedback_failed_update_spent_effort, Toast.LENGTH_SHORT).show();
 								}
 							});
 
-					updateSpentEffortTask.execute();
+					metricsService.changeEffortLeft(
+							InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
+							task,
+							new Listener<Task>() {
+
+								@Override
+								public void onResponse(final Task arg0) {
+									Toast.makeText(context, R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
+								}
+							},
+							new ErrorListener() {
+
+								@Override
+								public void onErrorResponse(final VolleyError arg0) {
+									Toast.makeText(context, R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
+								}
+							});
 				}
 			}
 		});

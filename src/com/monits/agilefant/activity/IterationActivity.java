@@ -7,27 +7,29 @@ import android.support.v4.app.FragmentTransaction;
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.iteration.IterationFragment;
 import com.monits.agilefant.model.Iteration;
-import com.monits.agilefant.task.GetIteration;
 
 @ContentView(R.layout.activity_iteration)
 public class IterationActivity extends BaseActivity {
+
+	public static final String PROJECTNAME = "PROJECTNAME";
+	public static final String ITERATION = "ITERATION";
 
 	private Iteration iteration;
 	private String projectName;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		if (savedInstanceState != null) {
 			return;
 		}
 
-		Bundle bundle = getIntent().getExtras();
-		iteration = (Iteration)bundle.getSerializable(GetIteration.ITERATION);
-		projectName = bundle.getString(GetIteration.PROJECTNAME);
+		final Bundle bundle = getIntent().getExtras();
+		iteration = (Iteration) bundle.getSerializable(ITERATION);
+		projectName = bundle.getString(PROJECTNAME);
 
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		transaction.replace(R.id.container, IterationFragment.newInstance(projectName, iteration));
 		transaction.commit();
 	}

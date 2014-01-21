@@ -1,15 +1,17 @@
 package com.monits.agilefant.service;
 
-import com.monits.agilefant.exception.RequestException;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.Iteration;
 
 public interface IterationService {
 
 	/**
 	 * Get Iteration details
+	 *
 	 * @param id Iteration id
-	 * @return A Iteration
-	 * @throws RequestException
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
-	Iteration getIteration(long id) throws RequestException;
+	void getIteration(long id, Listener<Iteration> listener, ErrorListener error);
 }

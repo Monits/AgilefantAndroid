@@ -1,7 +1,8 @@
 package com.monits.agilefant.service;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.google.inject.Inject;
-import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.Iteration;
 
 public class IterationServiceImpl implements IterationService {
@@ -10,8 +11,8 @@ public class IterationServiceImpl implements IterationService {
 	private AgilefantService agilefantService;
 
 	@Override
-	public Iteration getIteration(final long id) throws RequestException {
-		return agilefantService.getIteration(id);
+	public void getIteration(final long id, final Listener<Iteration> listener, final ErrorListener error) {
+		agilefantService.getIteration(id, listener, error);
 	}
 
 }

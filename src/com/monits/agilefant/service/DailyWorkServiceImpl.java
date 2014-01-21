@@ -3,8 +3,9 @@
  */
 package com.monits.agilefant.service;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.google.inject.Inject;
-import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.DailyWorkTask;
 import com.monits.agilefant.model.Story;
@@ -23,12 +24,21 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	private AgilefantService agilefantService;
 
 	@Override
-	public DailyWork getDailyWork() throws RequestException {
-		final DailyWork dailyWork = agilefantService.getDailyWork(userService.getLoggedUser().getId());
+	public void getDailyWork(final Listener<DailyWork> listener, final ErrorListener error) {
 
-		populateContext(dailyWork);
+		agilefantService.getDailyWork(
+				userService.getLoggedUser().getId(),
+				new Listener<DailyWork>() {
 
-		return dailyWork;
+					@Override
+					public void onResponse(final DailyWork response) {
+
+						populateContext(response);
+
+						listener.onResponse(response);
+					}
+				}, error);
+
 	}
 
 	/**
