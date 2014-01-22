@@ -10,19 +10,19 @@ public class DailyWorkTask extends Task {
 	private Iteration iteration;
 
 	@SerializedName("story")
-	private Context story;
+	private Backlog story;
 
 	/**
 	 * @return the story
 	 */
-	public Context getStory() {
+	public Backlog getStory() {
 		return story;
 	}
 
 	/**
 	 * @param story the story to set
 	 */
-	public void setStory(Context story) {
+	public void setStory(final Backlog story) {
 		this.story = story;
 	}
 
@@ -36,7 +36,7 @@ public class DailyWorkTask extends Task {
 	/**
 	 * @param iteration the iteration to set
 	 */
-	public void setIteration(Iteration iteration) {
+	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
 	}
 }

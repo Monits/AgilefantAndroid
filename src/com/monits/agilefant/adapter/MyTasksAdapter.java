@@ -106,8 +106,10 @@ public class MyTasksAdapter extends BaseAdapter {
 
 									final Intent intent = new Intent(context, IterationActivity.class);
 
+									// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
+									response.setParent(iteration.getParent());
+
 									intent.putExtra(IterationActivity.ITERATION, response);
-									intent.putExtra(IterationActivity.PROJECTNAME, iteration.getParent().getName());
 
 									context.startActivity(intent);
 								}

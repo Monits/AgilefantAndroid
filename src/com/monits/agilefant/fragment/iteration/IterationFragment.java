@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -24,10 +25,8 @@ import com.monits.agilefant.util.DateUtils;
 public class IterationFragment extends RoboFragment implements OnPageChangeListener {
 
 	private static final String ITERATION = "iteration";
-	private static final String PROJECT_NAME = "project";
 
 	private Iteration mIteration;
-	private String mProjectName;
 
 	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 
@@ -44,28 +43,26 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 	private TextView iterationNameTree;
 
-	public static IterationFragment newInstance(String projectName, Iteration iteration) {
-		Bundle arguments = new Bundle();
+	public static IterationFragment newInstance(final Iteration iteration) {
+		final Bundle arguments = new Bundle();
 		arguments.putSerializable(ITERATION, iteration);
-		arguments.putString(PROJECT_NAME, projectName);
 
-		IterationFragment fragment = new IterationFragment();
+		final IterationFragment fragment = new IterationFragment();
 		fragment.setArguments(arguments);
 		return fragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		Bundle arguments = getArguments();
+	public void onCreate(final Bundle savedInstanceState) {
+		final Bundle arguments = getArguments();
 		mIteration = (Iteration) arguments.getSerializable(ITERATION);
-		mProjectName = arguments.getString(PROJECT_NAME);
 
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_iteration, null);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.fragment_iteration, null);
 
 		startDate = (TextView) view.findViewById(R.id.iteration_start_date);
 		endDate = (TextView) view.findViewById(R.id.iteration_end_date);
@@ -77,11 +74,12 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 		if (mIteration != null) {
 
-			if (mProjectName != null) {
+			final Backlog parent = mIteration.getParent();
+			if (parent != null) {
 				view.findViewById(R.id.path_layout).setVisibility(View.VISIBLE);
 
 				product.setText(mIteration.getRootIteration().getName());
-				project.setText(mProjectName);
+				project.setText(parent.getName());
 				iterationNameTree.setText(mIteration.getName());
 			} else {
 				view.findViewById(R.id.path_layout).setVisibility(View.GONE);
@@ -90,12 +88,12 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			startDate.setText(DateUtils.formatDate(mIteration.getStartDate(), DATE_PATTERN));
 			endDate.setText(DateUtils.formatDate(mIteration.getEndDate(), DATE_PATTERN));
 
-			List<Fragment> fragments = new ArrayList<Fragment>();
+			final List<Fragment> fragments = new ArrayList<Fragment>();
 
-			ArrayList<Story> storiesArray = new ArrayList<Story>();
+			final ArrayList<Story> storiesArray = new ArrayList<Story>();
 			storiesArray.addAll(mIteration.getStories());
 
-			ArrayList<Task> tasksWithoutStory = new ArrayList<Task>();
+			final ArrayList<Task> tasksWithoutStory = new ArrayList<Task>();
 			tasksWithoutStory.addAll(mIteration.getTasksWithoutStory());
 
 			fragments.add(StoriesFragment.newInstance(storiesArray));
@@ -112,17 +110,17 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 	}
 
 	@Override
-	public void onPageScrollStateChanged(int state) {
+	public void onPageScrollStateChanged(final int state) {
 	}
 
 	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
+	public void onPageScrolled(final int arg0, final float arg1, final int arg2) {
 	}
 
 	@Override
-	public void onPageSelected(int position) {
-		ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter)this.viewPager.getAdapter();
-		Fragment fragment = pagerAdapter.getItem(position);
+	public void onPageSelected(final int position) {
+		final ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter)this.viewPager.getAdapter();
+		final Fragment fragment = pagerAdapter.getItem(position);
 
 		if (fragment instanceof StoriesFragment) {
 			pagerTabStrip.setBackgroundResource(R.drawable.gradient_stories_title);

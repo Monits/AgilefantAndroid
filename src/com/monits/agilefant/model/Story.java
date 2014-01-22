@@ -37,7 +37,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	private int rank;
 
 	@SerializedName("backlog")
-	private Context backlog;
+	private Backlog backlog;
 
 	@SerializedName("iteration")
 	private Iteration iteration;
@@ -56,9 +56,9 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	 * @param backlog
 	 * @param iteration
 	 */
-	public Story(long id, String name, StateKey state, List<User> responsibles,
-			Metrics metrics, List<Task> tasks, int rank, Context backlog,
-			Iteration iteration) {
+	public Story(final long id, final String name, final StateKey state, final List<User> responsibles,
+			final Metrics metrics, final List<Task> tasks, final int rank, final Backlog backlog,
+			final Iteration iteration) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -81,7 +81,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -95,7 +95,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -109,7 +109,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(StateKey state) {
+	public void setState(final StateKey state) {
 		this.state = state;
 
 		setChanged();
@@ -126,7 +126,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param responsibles the responsibles to set
 	 */
-	public void setResponsibles(List<User> responsibles) {
+	public void setResponsibles(final List<User> responsibles) {
 		this.responsibles = responsibles;
 	}
 
@@ -143,7 +143,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param metrics the metrics to set
 	 */
-	public void setMetrics(Metrics metrics) {
+	public void setMetrics(final Metrics metrics) {
 		this.metrics = metrics;
 	}
 
@@ -157,7 +157,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param tasks the tasks to set
 	 */
-	public void setTasks(List<Task> tasks) {
+	public void setTasks(final List<Task> tasks) {
 		this.tasks = tasks;
 	}
 
@@ -171,7 +171,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param rank the rank to set
 	 */
-	public void setRank(int rank) {
+	public void setRank(final int rank) {
 		this.rank = rank;
 	}
 
@@ -185,21 +185,21 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	/**
 	 * @param iteration the iteration to set
 	 */
-	public void setIteration(Iteration iteration) {
+	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
 	}
 
 	/**
 	 * @return the context
 	 */
-	public Context getBacklog() {
+	public Backlog getBacklog() {
 		return backlog;
 	}
 
 	/**
 	 * @param backlog the context to set
 	 */
-	public void setBacklog(Context backlog) {
+	public void setBacklog(final Backlog backlog) {
 		this.backlog = backlog;
 	}
 
@@ -209,7 +209,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags) {
+	public void writeToParcel(final Parcel dest, final int flags) {
 		dest.writeSerializable(this);
 	}
 
@@ -218,7 +218,7 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	 */
 	public void attachTasksObservers() {
 		if (tasks != null) {
-			for (Task task : tasks) {
+			for (final Task task : tasks) {
 				task.addObserver(this);
 			}
 		}
@@ -230,13 +230,13 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	}
 
 	@Override
-	public void update(Observable observable, Object data) {
+	public void update(final Observable observable, final Object data) {
 		if (observable instanceof Task) {
 			long el = 0;
 			long es = 0;
 			long oe = 0;
 
-			for (Task task : tasks) {
+			for (final Task task : tasks) {
 				// Agilefant's stories don't consider this states on it's metrics.
 				if (!task.getState().equals(StateKey.DEFERRED)) {
 					oe += task.getOriginalEstimate();

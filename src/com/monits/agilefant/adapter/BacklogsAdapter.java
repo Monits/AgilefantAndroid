@@ -21,8 +21,10 @@ import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
+import com.monits.agilefant.model.Project;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.view.ProductExpandableListView;
 
@@ -85,7 +87,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 				public boolean onChildClick(final ExpandableListView parent, final View v,
 						final int groupLevel2Position, final int childPosition, final long id) {
 					final Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
-					final String projectName = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getTitle();
+					final Project project = productList.get(groupPosition).getProjectList().get(groupLevel2Position);
 
 					final ProgressDialog progressDialog = new ProgressDialog(context);
 					progressDialog.setIndeterminate(true);
@@ -104,8 +106,11 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 
 									final Intent intent = new Intent(context, IterationActivity.class);
 
+									// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
+									final Backlog backlog = new Backlog(project);
+									response.setParent(backlog);
+
 									intent.putExtra(IterationActivity.ITERATION, response);
-									intent.putExtra(IterationActivity.PROJECTNAME, projectName);
 
 									context.startActivity(intent);
 								}

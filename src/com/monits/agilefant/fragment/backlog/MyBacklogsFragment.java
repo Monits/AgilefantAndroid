@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.adapter.ProjectAdapter;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.service.BacklogService;
@@ -66,7 +67,7 @@ public class MyBacklogsFragment extends RoboFragment {
 					final int groupPosition, final int childPosition, final long id) {
 
 				final Iteration iteration = backlogsAdapter.getChild(groupPosition, childPosition);
-				final String projectName = backlogsAdapter.getGroup(groupPosition).getTitle();
+				final Project project = backlogsAdapter.getGroup(groupPosition);
 
 				final FragmentActivity context = getActivity();
 				final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -86,8 +87,11 @@ public class MyBacklogsFragment extends RoboFragment {
 
 								final Intent intent = new Intent(context, IterationActivity.class);
 
+								// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
+								final Backlog iterationParent = new Backlog(project);
+								response.setParent(iterationParent);
+
 								intent.putExtra(IterationActivity.ITERATION, response);
-								intent.putExtra(IterationActivity.PROJECTNAME, projectName);
 
 								context.startActivity(intent);
 							}

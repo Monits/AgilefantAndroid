@@ -11,11 +11,9 @@ import com.monits.agilefant.model.Iteration;
 @ContentView(R.layout.activity_iteration)
 public class IterationActivity extends BaseActivity {
 
-	public static final String PROJECTNAME = "PROJECTNAME";
 	public static final String ITERATION = "ITERATION";
 
 	private Iteration iteration;
-	private String projectName;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -27,10 +25,9 @@ public class IterationActivity extends BaseActivity {
 
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);
-		projectName = bundle.getString(PROJECTNAME);
 
 		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.container, IterationFragment.newInstance(projectName, iteration));
+		transaction.replace(R.id.container, IterationFragment.newInstance(iteration));
 		transaction.commit();
 	}
 

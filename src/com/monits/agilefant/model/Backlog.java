@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Context implements Serializable {
+public class Backlog implements Serializable {
 
 	private static final long serialVersionUID = -6490199061999944753L;
 
@@ -13,6 +13,14 @@ public class Context implements Serializable {
 
 	@SerializedName("name")
 	private String name;
+
+	public Backlog() {
+	}
+
+	public Backlog(final Project project) {
+		this.id = project.getId();
+		this.name = project.getTitle();
+	}
 
 	/**
 	 * @return the id
@@ -24,7 +32,7 @@ public class Context implements Serializable {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -38,8 +46,7 @@ public class Context implements Serializable {
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
-
 }

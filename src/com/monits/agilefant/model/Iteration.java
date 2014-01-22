@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Ivan Corbalan
  *
  */
-public class Iteration implements Serializable{
+public class Iteration implements Serializable {
 
 	private static final long serialVersionUID = -182238804828185878L;
 
@@ -39,14 +39,14 @@ public class Iteration implements Serializable{
 	private RootIteration rootIteration;
 
 	@SerializedName("parent")
-	private Context parent;
+	private Backlog parent;
 
 	/**
 	 * Constructor
 	 * @param id The iteration id
 	 * @param title The iteration title
 	 */
-	public Iteration(long id, String title) {
+	public Iteration(final long id, final String title) {
 		this.id = id;
 		this.title = title;
 	}
@@ -61,7 +61,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param id The iteration id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -75,7 +75,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param title The iteration title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -89,7 +89,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -103,7 +103,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param stories the stories to set
 	 */
-	public void setStories(List<Story> stories) {
+	public void setStories(final List<Story> stories) {
 		this.stories = stories;
 	}
 
@@ -117,7 +117,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param startDate the startDate to set
 	 */
-	public void setStartDate(long startDate) {
+	public void setStartDate(final long startDate) {
 		this.startDate = startDate;
 	}
 
@@ -131,7 +131,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param endDate the endDate to set
 	 */
-	public void setEndDate(long endDate) {
+	public void setEndDate(final long endDate) {
 		this.endDate = endDate;
 	}
 
@@ -145,7 +145,7 @@ public class Iteration implements Serializable{
 	/**
 	 * @param tasksWithoutStory the tasksWithoutStory to set
 	 */
-	public void setTasksWithoutStory(List<Task> tasksWithoutStory) {
+	public void setTasksWithoutStory(final List<Task> tasksWithoutStory) {
 		this.tasksWithoutStory = tasksWithoutStory;
 	}
 
@@ -159,15 +159,15 @@ public class Iteration implements Serializable{
 	/**
 	 * @param rootIteration the rootIteration to set
 	 */
-	public void setRootIteration(RootIteration rootIteration) {
+	public void setRootIteration(final RootIteration rootIteration) {
 		this.rootIteration = rootIteration;
 	}
 
-	public Context getParent() {
+	public Backlog getParent() {
 		return parent;
 	}
 
-	public void setParent(Context parent) {
+	public void setParent(final Backlog parent) {
 		this.parent = parent;
 	}
 }
