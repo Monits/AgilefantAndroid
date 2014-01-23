@@ -143,4 +143,13 @@ public interface AgilefantService {
 	 * @param error callback if the request failed
 	 */
 	void getProjectDetails(long projectId, Listener<Project> listener, ErrorListener error);
+
+	/**
+	 * Retrieves the leaf stories of the given project.
+	 *
+	 * @param projectId
+	 * @param listener
+	 * @param error
+	 */
+	void getProjectLeafStories(long projectId, Listener<List<Story>> listener, ErrorListener error);
 }

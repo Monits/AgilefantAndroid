@@ -1,0 +1,108 @@
+package com.monits.agilefant.activity;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerTitleStrip;
+import android.support.v4.view.ViewPager;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
+
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.google.inject.Inject;
+import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.ProjectPagerAdapter;
+import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
+import com.monits.agilefant.model.Backlog;
+import com.monits.agilefant.model.Project;
+import com.monits.agilefant.service.ProjectService;
+import com.monits.agilefant.util.DateUtils;
+import com.monits.agilefant.util.IterationUtils;
+
+@ContentView(R.layout.activity_project)
+public class ProjectActivity extends BaseActivity {
+
+	private static final int ACTIVITY_VIEW = 1;
+
+	public static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.BACKLOG";
+
+	@Inject
+	private ProjectService projectService;
+
+	@InjectView(value = R.id.root_flipper)
+	private ViewFlipper viewFlipper;
+
+	@InjectView(value = R.id.product)
+	private TextView productLabel;
+
+	@InjectView(value = R.id.project)
+	private TextView projectLabel;
+
+	@InjectView(value = R.id.project_start_date)
+	private TextView startLabel;
+
+	@InjectView(value = R.id.project_end_date)
+	private TextView endLabel;
+
+	@InjectView(value = R.id.pager)
+	private ViewPager viewPager;
+
+	@InjectView(value = R.id.pager_header)
+	private PagerTitleStrip pagerTitleStrip;
+
+	@InjectView(value = R.id.assignees)
+	private TextView assigneesLabel;
+
+	private Backlog backlog;
+
+	private ProjectPagerAdapter pagerAdapter;
+
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
+
+		final List<Fragment> fragments = new LinkedList<Fragment>();
+		fragments.add(ProjectLeafStoriesFragment.newInstance(backlog));
+		pagerAdapter = new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
+		viewPager.setAdapter(pagerAdapter);
+
+		pagerTitleStrip.setBackgroundResource(R.drawable.gradient_stories_title);
+
+		projectService.getProjectData(
+				backlog.getId(),
+				new Listener<Project>() {
+
+					@Override
+					public void onResponse(final Project project) {
+						viewFlipper.setDisplayedChild(ACTIVITY_VIEW);
+
+						final Backlog projectParent = project.getParent();
+						productLabel.setText(projectParent.getName());
+						projectLabel.setText(backlog.getName());
+						startLabel.setText(
+								DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
+						endLabel.setText(
+								DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
+						assigneesLabel.setText(
+								IterationUtils.getResposiblesDisplay(project.getAssignees()));
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						Toast.makeText(ProjectActivity.this, R.string.failed_to_retrieve_project_details, Toast.LENGTH_SHORT).show();
+					}
+				});
+
+	}
+}

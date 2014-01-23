@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTitleStrip;
@@ -11,10 +12,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
@@ -27,8 +30,6 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 	private static final String ITERATION = "iteration";
 
 	private Iteration mIteration;
-
-	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 
 	private TextView startDate;
 	private TextView endDate;
@@ -81,12 +82,24 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 				product.setText(mIteration.getRootIteration().getName());
 				project.setText(parent.getName());
 				iterationNameTree.setText(mIteration.getName());
+
+				project.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(final View v) {
+						final Intent intent = new Intent(getActivity(), ProjectActivity.class);
+						intent.putExtra(ProjectActivity.EXTRA_BACKLOG, parent);
+						startActivity(intent);
+					}
+				});
 			} else {
 				view.findViewById(R.id.path_layout).setVisibility(View.GONE);
 			}
 
-			startDate.setText(DateUtils.formatDate(mIteration.getStartDate(), DATE_PATTERN));
-			endDate.setText(DateUtils.formatDate(mIteration.getEndDate(), DATE_PATTERN));
+			startDate.setText(
+					DateUtils.formatDate(mIteration.getStartDate(), DateUtils.DATE_PATTERN));
+			endDate.setText(
+					DateUtils.formatDate(mIteration.getEndDate(), DateUtils.DATE_PATTERN));
 
 			final List<Fragment> fragments = new ArrayList<Fragment>();
 

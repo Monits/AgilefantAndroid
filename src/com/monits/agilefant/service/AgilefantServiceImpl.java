@@ -34,6 +34,8 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String PROJECT_LEAF_STORIES_ACTION = "%1$s/ajax/projectLeafStories.action";
+	private static final String OBJECT_ID = "objectId";
 	private static final String TASK_ORIGINAL_ESTIMATE = "task.originalEstimate";
 	private static final String TASK_EFFORT_LEFT = "task.effortLeft";
 	private static final String STORE_TASK_ACTION = "%1$s/ajax/storeTask.action";
@@ -330,6 +332,27 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final GsonRequest<Project> request = new GsonRequest<Project>(
 				Method.GET, url, gson, Project.class, listener, error);
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void getProjectLeafStories(final long projectId, final Listener<List<Story>> listener, final ErrorListener error) {
+		final String url = String.format(Locale.US, PROJECT_LEAF_STORIES_ACTION, host);
+
+		final Type listType = new TypeToken<ArrayList<Story>>() {}.getType();
+		final GsonRequest<List<Story>> request = new GsonRequest<List<Story>>(
+				Method.POST, url, gson, listType, listener, error) {
+
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<String, String>();
+
+				params.put(OBJECT_ID, String.valueOf(projectId));
+
+				return params;
+			}
+		};
 
 		requestQueue.add(request);
 	}

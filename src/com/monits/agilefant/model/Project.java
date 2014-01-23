@@ -27,6 +27,9 @@ public class Project implements Serializable{
 	@SerializedName("assignees")
 	private List<User> assignees;
 
+	@SerializedName("root")
+	private Backlog parent;
+
 	public Project() {
 	}
 
@@ -117,5 +120,19 @@ public class Project implements Serializable{
 
 	public void setAssignees(final List<User> assignees) {
 		this.assignees = assignees;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Backlog getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(final Backlog parent) {
+		this.parent = parent;
 	}
 }

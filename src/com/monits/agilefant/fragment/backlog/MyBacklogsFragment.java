@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
+import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.adapter.ProjectAdapter;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
@@ -109,6 +112,26 @@ public class MyBacklogsFragment extends RoboFragment {
 						});
 
 				return true;
+			}
+		});
+		allbackLogs.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
+				final int positionType = ExpandableListView.getPackedPositionType(position);
+
+				if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+					final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+					final Project project = backlogsAdapter.getGroup(groupPosition);
+
+					final Intent intent = new Intent(getActivity(), ProjectActivity.class);
+					intent.putExtra(ProjectActivity.EXTRA_BACKLOG, new Backlog(project));
+					startActivity(intent);
+
+					return true;
+				}
+
+				return false;
 			}
 		});
 

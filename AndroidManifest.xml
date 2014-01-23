@@ -49,6 +49,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/daily_work"
             android:parentActivityName=".activity.AllBackLogsActivity" />
+        <activity
+            android:name=".activity.ProjectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/project_details"
+            android:parentActivityName=".activity.AllBackLogsActivity" />
     </application>
 
 </manifest>

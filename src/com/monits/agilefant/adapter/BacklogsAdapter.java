@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -21,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
+import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
@@ -73,13 +76,35 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		if (listViewCache[groupPosition] != null) {
 			v = listViewCache[groupPosition];
 		} else {
+			final ProjectAdapter projectAdapter = new ProjectAdapter(
+					context, productList.get(groupPosition).getProjectList(), R.layout.project_item, R.layout.iteration_item);
 			final ProductExpandableListView delv = new ProductExpandableListView(context);
-			delv.setAdapter(new ProjectAdapter(
-					context, productList.get(groupPosition).getProjectList(), R.layout.project_item, R.layout.iteration_item));
+			delv.setAdapter(projectAdapter);
 			delv.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);
 			delv.setGroupIndicator(null);
 			delv.setDivider(null);
 			delv.setChildDivider(null);
+
+			delv.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
+					final int positionType = ExpandableListView.getPackedPositionType(position);
+
+					if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+						final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+						final Project project = projectAdapter.getGroup(groupPosition);
+
+						final Intent intent = new Intent(context, ProjectActivity.class);
+						intent.putExtra(ProjectActivity.EXTRA_BACKLOG, new Backlog(project));
+						context.startActivity(intent);
+
+						return true;
+					}
+
+					return false;
+				}
+			});
 
 			delv.setOnChildClickListener(new OnChildClickListener() {
 

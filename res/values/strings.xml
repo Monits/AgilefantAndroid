@@ -68,5 +68,9 @@
 	<string name="feedback_failed_update_state">Failed to update the state!</string>
 	<string name="feedback_successfully_updated_story">Successfully updated the story!</string>
 	<string name="feedback_failed_update_story">Failed to update the story!</string>
+	<string name="backlog">Backlog</string>
+	<string name="assignees">Assignees</string>
+	<string name="failed_to_retrieve_project_details">Failed to retrieve project details.</string>
+	<string name="project_details">Project Details</string>
 	
 </resources>
