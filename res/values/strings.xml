@@ -72,5 +72,11 @@
 	<string name="assignees">Assignees</string>
 	<string name="failed_to_retrieve_project_details">Failed to retrieve project details.</string>
 	<string name="project_details">Project Details</string>
+	<string name="feedback_failed_retrieve_users">Failed to retrieve users!</string>
+	<string name="select_users">Select users</string>
+	<string name="search_user">Search user</string>
+	<string name="ok">OK</string>
+	<string name="feedback_success_updated_project">Successfully updated project!</string>
+	<string name="feedback_failed_update_project">Failed to update project!</string>
 	
 </resources>

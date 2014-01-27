@@ -2,6 +2,7 @@ package com.monits.agilefant.service;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.monits.agilefant.model.DailyWork;
+import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
@@ -34,6 +36,7 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String USER_CHOOSER_DATA_ACTION = "%1$s/ajax/userChooserData.action";
 	private static final String PROJECT_LEAF_STORIES_ACTION = "%1$s/ajax/projectLeafStories.action";
 	private static final String OBJECT_ID = "objectId";
 	private static final String TASK_ORIGINAL_ESTIMATE = "task.originalEstimate";
@@ -351,6 +354,57 @@ public class AgilefantServiceImpl implements AgilefantService {
 				params.put(OBJECT_ID, String.valueOf(projectId));
 
 				return params;
+			}
+		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void getFilterableUsers(final Listener<List<FilterableUser>> listener, final ErrorListener error) {
+		final String url = String.format(Locale.US, USER_CHOOSER_DATA_ACTION, host);
+
+		final Type listType = new TypeToken<ArrayList<FilterableUser>>() {}.getType();
+		final GsonRequest<List<FilterableUser>> request = new GsonRequest<List<FilterableUser>>(
+				Method.POST, url, gson, listType, listener, error);
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void updateProject(final Project project, final Listener<Project> listener, final ErrorListener error) {
+		final String url = String.format(Locale.US, "%1$s/ajax/storeProject.action", host);
+
+		final GsonRequest<Project> request = new GsonRequest<Project>(
+				Method.POST, url, gson, Project.class, listener, error) {
+
+			@Override
+			public byte[] getBody() throws AuthFailureError {
+				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
+				final StringBuilder body = new StringBuilder();
+				final String paramsEncoding = getParamsEncoding();
+				try {
+					for (final User user : project.getAssignees()) {
+						body.append(URLEncoder.encode("assigneeIds", paramsEncoding));
+						body.append('=');
+						body.append(URLEncoder.encode(String.valueOf(user.getId()), paramsEncoding));
+						body.append('&');
+					}
+
+					body.append(URLEncoder.encode("assigneesChanged", paramsEncoding));
+					body.append('=');
+					body.append(URLEncoder.encode(String.valueOf(true), paramsEncoding));
+					body.append('&');
+
+					body.append(URLEncoder.encode("projectId", paramsEncoding));
+					body.append('=');
+					body.append(URLEncoder.encode(String.valueOf(project.getId()), paramsEncoding));
+
+				} catch (final UnsupportedEncodingException e) {
+					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);
+				}
+
+				return body.toString().getBytes();
 			}
 		};
 

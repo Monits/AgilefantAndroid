@@ -1,5 +1,7 @@
 package com.monits.agilefant.service;
 
+import java.util.List;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
@@ -7,6 +9,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
+import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.User;
 
 public class UserServiceImpl implements UserService {
@@ -106,5 +109,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void getFilterableUsers(final Listener<List<FilterableUser>> listener, final ErrorListener error) {
+		agilefantService.getFilterableUsers(listener, error);
 	}
 }

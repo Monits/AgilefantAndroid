@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/traslucent_black"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/margin_login"
+        android:padding="4dp" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/titlebar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="left|center_vertical"
+                android:background="@drawable/gradient_login_title"
+                android:padding="10dp"
+                android:text="@string/select_users"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <AutoCompleteTextView
+                android:id="@+id/user_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/titlebar"
+                android:completionThreshold="1"
+                android:hint="@string/search_user"
+                android:singleLine="true" />
+
+            <ListView
+                android:id="@+id/users_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/submit_btn"
+                android:layout_below="@+id/user_input"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="2dp"
+                android:listSelector="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/submit_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/ok" />
+        </RelativeLayout>
+    </ViewSwitcher>
+
+</LinearLayout>

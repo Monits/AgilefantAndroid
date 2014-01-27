@@ -23,4 +23,9 @@ public class ProjectServiceImpl implements ProjectService {
 			final Listener<List<Story>> listener, final ErrorListener error) {
 		agilefantService.getProjectLeafStories(projectId, listener, error);
 	}
+
+	@Override
+	public void updateProject(final Project project, final Listener<Project> listener, final ErrorListener error) {
+		agilefantService.updateProject(project, listener, error);
+	}
 }

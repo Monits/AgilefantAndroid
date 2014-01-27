@@ -6,6 +6,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
+import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
@@ -148,8 +149,25 @@ public interface AgilefantService {
 	 * Retrieves the leaf stories of the given project.
 	 *
 	 * @param projectId
-	 * @param listener
-	 * @param error
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
 	 */
 	void getProjectLeafStories(long projectId, Listener<List<Story>> listener, ErrorListener error);
+
+	/**
+	 * Retrieves the whole list of users in agilefant.
+	 *
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void getFilterableUsers(Listener<List<FilterableUser>> listener, ErrorListener error);
+
+	/**
+	 * Updates the projects data.
+	 *
+	 * @param project the project to update.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void updateProject(Project project, Listener<Project> listener, ErrorListener error);
 }

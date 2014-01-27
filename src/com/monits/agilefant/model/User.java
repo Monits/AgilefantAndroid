@@ -2,11 +2,26 @@ package com.monits.agilefant.model;
 
 import java.io.Serializable;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class User implements Serializable {
+public class User implements Serializable, Parcelable {
 
 	private static final long serialVersionUID = 2083552426069779695L;
+
+	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+		@Override
+		public User createFromParcel(final Parcel in) {
+			return new User(in);
+		}
+
+		@Override
+		public User[] newArray(final int size) {
+			return new User[size];
+		}
+	};
 
 	@SerializedName("id")
 	private long id;
@@ -16,6 +31,15 @@ public class User implements Serializable {
 
 	@SerializedName("fullName")
 	private String fullName;
+
+	public User() {
+	}
+
+	private User(final Parcel in) {
+		id = in.readLong();
+		initials = in.readString();
+		fullName = in.readString();
+	}
 
 	/**
 	 * @return the id
@@ -27,7 +51,7 @@ public class User implements Serializable {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -41,7 +65,7 @@ public class User implements Serializable {
 	/**
 	 * @param initials the initials to set
 	 */
-	public void setInitials(String initials) {
+	public void setInitials(final String initials) {
 		this.initials = initials;
 	}
 
@@ -49,7 +73,25 @@ public class User implements Serializable {
 		return fullName;
 	}
 
-	public void setFullName(String fullName) {
+	public void setFullName(final String fullName) {
 		this.fullName = fullName;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(final Parcel dest, final int flags) {
+		dest.writeLong(id);
+		dest.writeString(initials);
+		dest.writeString(fullName);
+	}
+
+	@Override
+	public String toString() {
+		// This value is shown when in landscape and using autocomplete.
+		return fullName;
 	}
 }

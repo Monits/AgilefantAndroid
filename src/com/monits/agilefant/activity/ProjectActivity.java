@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -20,8 +22,11 @@ import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.ProjectPagerAdapter;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
+import com.monits.agilefant.fragment.user_chooser.UserChooserFragment;
+import com.monits.agilefant.fragment.user_chooser.UserChooserFragment.OnUsersSubmittedListener;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Project;
+import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.util.DateUtils;
 import com.monits.agilefant.util.IterationUtils;
@@ -60,9 +65,11 @@ public class ProjectActivity extends BaseActivity {
 	@InjectView(value = R.id.assignees)
 	private TextView assigneesLabel;
 
+	private ProjectPagerAdapter pagerAdapter;
+
 	private Backlog backlog;
 
-	private ProjectPagerAdapter pagerAdapter;
+	private Project project;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -83,6 +90,8 @@ public class ProjectActivity extends BaseActivity {
 
 					@Override
 					public void onResponse(final Project project) {
+						ProjectActivity.this.project = project;
+
 						viewFlipper.setDisplayedChild(ACTIVITY_VIEW);
 
 						final Backlog projectParent = project.getParent();
@@ -104,5 +113,44 @@ public class ProjectActivity extends BaseActivity {
 					}
 				});
 
+		assigneesLabel.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				final Fragment fragment = UserChooserFragment.newInstance(
+						project.getAssignees(),
+						new OnUsersSubmittedListener() {
+
+							@Override
+							public void onSubmitUsers(final List<User> users) {
+								project.setAssignees(users);
+								assigneesLabel.setText(
+										IterationUtils.getResposiblesDisplay(users));
+
+								projectService.updateProject(
+										project,
+										new Listener<Project>() {
+
+											@Override
+											public void onResponse(final Project project) {
+												Toast.makeText(ProjectActivity.this, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
+											}
+										},
+										new ErrorListener() {
+
+											@Override
+											public void onErrorResponse(final VolleyError arg0) {
+												Toast.makeText(ProjectActivity.this, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
+											}
+										});
+							}
+						});
+
+				getSupportFragmentManager().beginTransaction()
+					.add(android.R.id.content, fragment)
+					.addToBackStack(null)
+					.commit();
+			}
+		});
 	}
 }

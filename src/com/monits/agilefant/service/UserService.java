@@ -1,7 +1,10 @@
 package com.monits.agilefant.service;
 
+import java.util.List;
+
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.User;
 
 public interface UserService {
@@ -95,4 +98,12 @@ public interface UserService {
 	 * @return the logged user.
 	 */
 	User getLoggedUser();
+
+	/**
+	 * Retrieves the whole list of users in agilefant.
+	 *
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void getFilterableUsers(Listener<List<FilterableUser>> listener, ErrorListener error);
 }

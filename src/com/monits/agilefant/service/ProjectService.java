@@ -26,4 +26,13 @@ public interface ProjectService {
 	 * @param error callback if the request failed.
 	 */
 	void getProjectLeafStories(long projectId, Listener<List<Story>> listener, ErrorListener error);
+
+	/**
+	 * Updates the projects data.
+	 *
+	 * @param project the project to update.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void updateProject(Project project, Listener<Project> listener, ErrorListener error);
 }
