@@ -8,9 +8,11 @@ import java.util.Observer;
 import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -27,9 +29,12 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
 import com.monits.agilefant.dialog.PromptDialogFragment;
 import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
+import com.monits.agilefant.fragment.user_chooser.UserChooserFragment;
+import com.monits.agilefant.fragment.user_chooser.UserChooserFragment.OnUsersSubmittedListener;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.util.InputUtils;
 
@@ -163,6 +168,41 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 					builder.setSingleChoiceItems(
 							StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
 					builder.show();
+
+					break;
+
+				case R.id.task_responsibles:
+					final Fragment fragment = UserChooserFragment.newInstance(
+							object.getResponsibles(),
+							new OnUsersSubmittedListener() {
+
+								@Override
+								public void onSubmitUsers(final List<User> users) {
+									final Context context = getActivity();
+									metricsService.changeTaskResponsibles(
+											users,
+											object,
+											new Listener<Task>() {
+
+												@Override
+												public void onResponse(final Task project) {
+													Toast.makeText(context, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
+												}
+											},
+											new ErrorListener() {
+
+												@Override
+												public void onErrorResponse(final VolleyError arg0) {
+													Toast.makeText(context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
+												}
+											});
+								}
+							});
+
+					getActivity().getSupportFragmentManager().beginTransaction()
+						.add(android.R.id.content, fragment)
+						.addToBackStack(null)
+						.commit();
 
 					break;
 				}

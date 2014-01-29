@@ -18,14 +18,14 @@ import com.monits.agilefant.util.IterationUtils;
 
 public class TaskWithoutStoryAdapter extends BaseAdapter {
 
-	private Context context;
-	private List<Task> tasks;
-	private LayoutInflater inflater;
+	private final Context context;
+	private final List<Task> tasks;
+	private final LayoutInflater inflater;
 
 	private AdapterViewActionListener<Task> actionListener;
-	private OnClickListener onClickListener;
+	private final OnClickListener onClickListener;
 
-	public TaskWithoutStoryAdapter(Context context, List<Task> tasks) {
+	public TaskWithoutStoryAdapter(final Context context, final List<Task> tasks) {
 		this.context = context;
 		this.tasks = tasks;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -33,8 +33,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 		onClickListener = new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				Integer position = (Integer) v.getTag();
+			public void onClick(final View v) {
+				final Integer position = (Integer) v.getTag();
 
 				if (actionListener != null && position != null) {
 					actionListener.onAction(v, getItem(position));
@@ -49,21 +49,21 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Task getItem(int position) {
+	public Task getItem(final int position) {
 		return tasks.get(position);
 	}
 
 	@Override
-	public long getItemId(int position) {
+	public long getItemId(final int position) {
 		return tasks.get(position).getId();
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, final ViewGroup parent) {
 		Holder holder;
 		if (null == convertView) {
 			holder = new Holder();
-			View inflate = inflater.inflate(R.layout.task_item, null);
+			final View inflate = inflater.inflate(R.layout.task_item, null);
 			holder.name = (TextView) inflate.findViewById(R.id.task_name);
 			holder.state = (TextView) inflate.findViewById(R.id.task_state);
 			holder.responsibles = (TextView) inflate.findViewById(R.id.task_responsibles);
@@ -78,7 +78,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 
-		Task task = getItem(position);
+		final Task task = getItem(position);
 
 		holder.name.setText(task.getName());
 
@@ -99,6 +99,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 		holder.effortLeft.setOnClickListener(onClickListener);
 		holder.state.setTag(position);
 		holder.state.setOnClickListener(onClickListener);
+		holder.responsibles.setTag(position);
+		holder.responsibles.setOnClickListener(onClickListener);
 
 		return convertView;
 	}
@@ -108,7 +110,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	 *
 	 * @param listener the listener to be set.
 	 */
-	public void setOnActionListener(AdapterViewActionListener<Task> listener) {
+	public void setOnActionListener(final AdapterViewActionListener<Task> listener) {
 		this.actionListener = listener;
 	}
 
