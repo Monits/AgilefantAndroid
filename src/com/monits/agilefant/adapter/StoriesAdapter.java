@@ -21,20 +21,20 @@ import com.monits.agilefant.util.TaskRankComparator;
 
 public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
-	private LayoutInflater inflater;
+	private final LayoutInflater inflater;
 	private AdapterViewActionListener<Task> childActionListener;
-	private OnClickListener onClickListener;
+	private final OnClickListener onClickListener;
 	private AdapterViewActionListener<Story> groupActionListener;
-	private OnClickListener onClickGroupListener;
+	private final OnClickListener onClickGroupListener;
 
-	public StoriesAdapter(Context context, List<Story> stories) {
+	public StoriesAdapter(final Context context, final List<Story> stories) {
 		super(context);
 		Collections.sort(stories, new StoryRankComparator());
-		for (Story story : stories) {
+		for (final Story story : stories) {
 			super.addGroup(story);
-			List<Task> tasks = story.getTasks();
+			final List<Task> tasks = story.getTasks();
 			Collections.sort(tasks, new TaskRankComparator());
-			for (Task task : tasks) {
+			for (final Task task : tasks) {
 				super.addChildToGroup(story, task);
 			}
 		}
@@ -44,9 +44,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		onClickListener = new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
-				Integer childPosition = (Integer) v.getTag(R.id.tag_child_position);
+			public void onClick(final View v) {
+				final Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
+				final Integer childPosition = (Integer) v.getTag(R.id.tag_child_position);
 
 				if (childActionListener != null && groupPosition != null && childPosition != null) {
 					childActionListener.onAction(v, getChild(groupPosition, childPosition));
@@ -57,8 +57,8 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		onClickGroupListener = new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
+			public void onClick(final View v) {
+				final Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
 
 				if (groupActionListener != null && groupPosition != null) {
 					groupActionListener.onAction(v, getGroup(groupPosition));
@@ -68,12 +68,12 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition,
-			boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getChildView(final int groupPosition, final int childPosition,
+			final boolean isLastChild, View convertView, final ViewGroup parent) {
 		HolderChild holder;
 		if (null == convertView) {
 			holder = new HolderChild();
-			View inflate = inflater.inflate(R.layout.task_item, null);
+			final View inflate = inflater.inflate(R.layout.task_item, null);
 			holder.name = (TextView) inflate.findViewById(R.id.task_name);
 			holder.state = (TextView) inflate.findViewById(R.id.task_state);
 			holder.responsibles = (TextView) inflate.findViewById(R.id.task_responsibles);
@@ -87,7 +87,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 			holder = (HolderChild) convertView.getTag();
 		}
 
-		Task task = getChild(groupPosition, childPosition);
+		final Task task = getChild(groupPosition, childPosition);
 
 		holder.name.setText(task.getName());
 
@@ -118,12 +118,12 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-			View convertView, ViewGroup parent) {
+	public View getGroupView(final int groupPosition, final boolean isExpanded,
+			View convertView, final ViewGroup parent) {
 		HolderGroup holder;
 		if (null == convertView) {
 			holder = new HolderGroup();
-			View inflate = inflater.inflate(R.layout.stories_item, null);
+			final View inflate = inflater.inflate(R.layout.stories_item, null);
 			holder.name = (TextView) inflate.findViewById(R.id.storie_name);
 			holder.state = (TextView) inflate.findViewById(R.id.storie_state);
 			holder.responsibles = (TextView) inflate.findViewById(R.id.storie_responsibles);
@@ -137,7 +137,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 			holder = (HolderGroup) convertView.getTag();
 		}
 
-		Story story = getGroup(groupPosition);
+		final Story story = getGroup(groupPosition);
 		// FIXME: Find a way to make this more automagic, and remove this onDemand call.
 		story.attachTasksObservers();
 
@@ -155,6 +155,8 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 		holder.state.setTag(R.id.tag_group_position, groupPosition);
 		holder.state.setOnClickListener(onClickGroupListener);
+		holder.responsibles.setTag(R.id.tag_group_position, groupPosition);
+		holder.responsibles.setOnClickListener(onClickGroupListener);
 
 		return convertView;
 	}
@@ -164,7 +166,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	 *
 	 * @param listener the listener to be set.
 	 */
-	public void setOnChildActionListener(AdapterViewActionListener<Task> listener) {
+	public void setOnChildActionListener(final AdapterViewActionListener<Task> listener) {
 		this.childActionListener = listener;
 	}
 
@@ -173,7 +175,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	 *
 	 * @param listener the listener to be set.
 	 */
-	public void setOnGroupActionListener(AdapterViewActionListener<Story> listener) {
+	public void setOnGroupActionListener(final AdapterViewActionListener<Story> listener) {
 		this.groupActionListener = listener;
 	}
 

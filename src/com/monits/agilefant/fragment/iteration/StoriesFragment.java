@@ -11,6 +11,8 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -27,10 +29,13 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
 import com.monits.agilefant.dialog.PromptDialogFragment;
 import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
+import com.monits.agilefant.fragment.user_chooser.UserChooserFragment;
+import com.monits.agilefant.fragment.user_chooser.UserChooserFragment.OnUsersSubmittedListener;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.MetricsService;
 
 public class StoriesFragment extends RoboFragment implements Observer {
@@ -181,51 +186,87 @@ public class StoriesFragment extends RoboFragment implements Observer {
 				object.addObserver(StoriesFragment.this);
 
 				switch (view.getId()) {
-				case R.id.storie_state:
-					final OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
+					case R.id.storie_state:
+						final OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(final DialogInterface dialog, final int which) {
-							final StateKey state = StateKey.values()[which];
+							@Override
+							public void onClick(final DialogInterface dialog, final int which) {
+								final StateKey state = StateKey.values()[which];
 
-							if (state == StateKey.DONE) {
-								final AlertDialog.Builder builder = new Builder(getActivity());
-								builder.setTitle(R.string.dialog_tasks_to_done_title)
-								.setMessage(R.string.dialog_tasks_to_done_msg)
-								.setPositiveButton(android.R.string.yes, new OnClickListener() {
+								if (state == StateKey.DONE) {
+									final AlertDialog.Builder builder = new Builder(getActivity());
+									builder.setTitle(R.string.dialog_tasks_to_done_title)
+									.setMessage(R.string.dialog_tasks_to_done_msg)
+									.setPositiveButton(android.R.string.yes, new OnClickListener() {
+
+										@Override
+										public void onClick(final DialogInterface dialog, final int which) {
+											executeUpdateStoryTask(state, object, true);
+										}
+									})
+									.setNegativeButton(android.R.string.no, new OnClickListener() {
+
+										@Override
+										public void onClick(final DialogInterface dialog, final int which) {
+											executeUpdateStoryTask(state, object, false);
+										}
+									});
+
+									builder.show();
+								} else {
+									executeUpdateStoryTask(state, object, false);
+								}
+
+								dialog.dismiss();
+							}
+						};
+
+						final AlertDialog.Builder builder = new Builder(getActivity());
+						builder.setTitle(R.string.dialog_state_title);
+						builder.setSingleChoiceItems(
+								StateKey.getDisplayStates(), object.getState().ordinal(), onStoryStateSelectedListener);
+						builder.show();
+
+						break;
+
+					case R.id.storie_responsibles:
+
+						final Fragment fragment = UserChooserFragment.newInstance(
+								object.getResponsibles(),
+								new OnUsersSubmittedListener() {
 
 									@Override
-									public void onClick(final DialogInterface dialog, final int which) {
-										executeUpdateStoryTask(state, object, true);
-									}
-								})
-								.setNegativeButton(android.R.string.no, new OnClickListener() {
+									public void onSubmitUsers(final List<User> users) {
 
-									@Override
-									public void onClick(final DialogInterface dialog, final int which) {
-										executeUpdateStoryTask(state, object, false);
+										final FragmentActivity activity = getActivity();
+										metricsService.changeStoryResponsibles(
+												users,
+												object,
+												new Listener<Story>() {
+
+													@Override
+													public void onResponse(final Story project) {
+														Toast.makeText(activity, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
+													}
+												},
+												new ErrorListener() {
+
+													@Override
+													public void onErrorResponse(final VolleyError arg0) {
+														Toast.makeText(activity, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
+													}
+												});
 									}
 								});
 
-								builder.show();
-							} else {
-								executeUpdateStoryTask(state, object, false);
-							}
+						getActivity().getSupportFragmentManager().beginTransaction()
+							.add(android.R.id.content, fragment)
+							.addToBackStack(null)
+							.commit();
 
-							dialog.dismiss();
-						}
-					};
-
-					final AlertDialog.Builder builder = new Builder(getActivity());
-					builder.setTitle(R.string.dialog_state_title);
-					builder.setSingleChoiceItems(
-							StateKey.getDisplayStates(), object.getState().ordinal(), onStoryStateSelectedListener);
-					builder.show();
-
-					break;
-
-				default:
-					break;
+						break;
+					default:
+						break;
 				}
 			}
 		});
