@@ -28,7 +28,6 @@ import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
-import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
@@ -37,6 +36,8 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String RESPONSIBLES_CHANGED = "responsiblesChanged";
+	private static final String NEW_RESPONSIBLES = "newResponsibles";
 	private static final String USERS_CHANGED = "usersChanged";
 	private static final String ASSIGNEE_IDS = "assigneeIds";
 	private static final String ASSIGNEES_CHANGED = "assigneesChanged";
@@ -198,71 +199,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 				} catch (final UnsupportedEncodingException e) {
 					return Response.error(new ParseError(e));
 				}
-			}
-		};
-
-		requestQueue.add(request);
-	}
-
-	@Override
-	public void taskChangeState(final StateKey state, final long taskId, final Listener<Task> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
-
-		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, listener, error) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<String, String>();
-
-				params.put(TASK_STATE, state.name());
-				params.put(TASK_ID, String.valueOf(taskId));
-
-				return params;
-			}
-		};
-
-		requestQueue.add(request);
-	}
-
-	@Override
-	public void changeEffortLeft(final double effortLeft, final long taskId, final Listener<Task> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
-
-		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, listener, error) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<String, String>();
-
-				params.put(TASK_EFFORT_LEFT, String.valueOf(effortLeft));
-				params.put(TASK_ID, String.valueOf(taskId));
-
-				return params;
-			}
-		};
-
-		requestQueue.add(request);
-	}
-
-	@Override
-	public void changeOriginalEstimate(final int origalEstimate, final long taskId,
-			final Listener<Task> listener, final ErrorListener error) {
-
-		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
-
-		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, listener, error) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<String, String>();
-
-				params.put(TASK_ORIGINAL_ESTIMATE, String.valueOf(origalEstimate));
-				params.put(TASK_ID, String.valueOf(taskId));
-
-				return params;
 			}
 		};
 
@@ -438,8 +374,57 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 					appendURLEncodedParam(body,
 							ASSIGNEES_CHANGED, String.valueOf(true), paramsEncoding);
+
 					appendURLEncodedParam(body,
 							PROJECT_ID, String.valueOf(project.getId()), paramsEncoding);
+
+				} catch (final UnsupportedEncodingException e) {
+					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);
+				}
+
+				return body.toString().getBytes();
+			}
+		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void updateTask(final Task task, final Listener<Task> listener, final ErrorListener error) {
+		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
+
+		final GsonRequest<Task> request = new GsonRequest<Task>(
+				Method.POST, url, gson, Task.class, listener, error) {
+
+			@Override
+			public byte[] getBody() throws AuthFailureError {
+				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
+				final StringBuilder body = new StringBuilder();
+				final String paramsEncoding = getParamsEncoding();
+
+				try {
+					for (final User user : task.getResponsibles()) {
+						appendURLEncodedParam(body,
+								NEW_RESPONSIBLES, String.valueOf(user.getId()), paramsEncoding);
+					}
+					appendURLEncodedParam(body,
+							RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
+
+
+					appendURLEncodedParam(body,
+							TASK_STATE, String.valueOf(task.getState().name()), paramsEncoding);
+
+					/*
+					 *  This 2 values, EL and OE, for sending requests it needs # of hours, not in minutes,
+					 *  while in the rest of the application this works under minutes.
+					 */
+					appendURLEncodedParam(body,
+							TASK_EFFORT_LEFT, String.valueOf(task.getEffortLeft() / 60), paramsEncoding);
+					appendURLEncodedParam(body,
+							TASK_ORIGINAL_ESTIMATE, String.valueOf(task.getOriginalEstimate() / 60), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							TASK_ID, String.valueOf(task.getId()), paramsEncoding);
 
 				} catch (final UnsupportedEncodingException e) {
 					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);

@@ -58,18 +58,6 @@ public interface MetricsService {
 	void changeEffortLeft(double effortLeft, Task task, Listener<Task> listener, ErrorListener error);
 
 	/**
-	 * Change original estimate of task
-	 *
-	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
-	 *
-	 * @param origalEstimate Hour to enter
-	 * @param task the task to be modified.
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void changeOriginalEstimate(int origalEstimate, long taskId, Listener<Task> listener, ErrorListener error);
-
-	/**
 	 * Changes the story state.
 	 *
 	 *<blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
@@ -94,4 +82,17 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void changeStoryResponsibles(List<User> responsibles, Story story, Listener<Story> listener, ErrorListener error);
+
+	/**
+	 * Changes the task's responsibles.
+	 *
+	 *<blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
+	 * @param responsibles the responsibles to set.
+	 * @param state State to set
+	 * @param task the task to be modified.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void changeTaskResponsibles(List<User> responsibles, Task task, Listener<Task> listener, ErrorListener error);
 }

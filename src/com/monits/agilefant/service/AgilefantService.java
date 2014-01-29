@@ -4,13 +4,11 @@ import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.monits.agilefant.exception.RequestException;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
-import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
@@ -76,35 +74,6 @@ public interface AgilefantService {
 	void taskChangeSpentEffort(long date, long minutesSpent, String description, long taskId, long userId, Listener<String> listener, ErrorListener error);
 
 	/**
-	 * Change state of task
-	 * @param state State to enter
-	 * @param taskId Task id
-	 * @return Updated task in JSON format
-	 * @throws RequestException
-	 */
-	void taskChangeState(StateKey state, long taskId, Listener<Task> listener, ErrorListener error);
-
-	/**
-	 * Change effort Left of task
-	 *
-	 * @param effortLeft Hour to enter. This value is converted into minutes from the api side.
-	 * @param taskId Task id
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void changeEffortLeft(double effortLeft, long taskId, Listener<Task> listener, ErrorListener error);
-
-	/**
-	 * Change original estimate of task
-	 *
-	 * @param origalEstimate Hour to enter
-	 * @param taskId Task id
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void changeOriginalEstimate(int origalEstimate, long taskId, Listener<Task> listener, ErrorListener error);
-
-	/**
 	 * Retrieves the user with the given id.
 	 *
 	 * @param id <b>(Optional)</b> the user's id.
@@ -166,4 +135,13 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void updateProject(Project project, Listener<Project> listener, ErrorListener error);
+
+	/**
+	 * Updates the task's data.
+	 *
+	 * @param task the task to update.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void updateTask(Task task, Listener<Task> listener, ErrorListener error);
 }

@@ -53,9 +53,8 @@ public class MetricsServiceImpl implements MetricsService {
 		final Task fallbackTask = task.clone();
 		task.setState(state, true);
 
-		agilefantService.taskChangeState(
-				state,
-				task.getId(),
+		agilefantService.updateTask(
+				task,
 				new Listener<Task>() {
 
 					@Override
@@ -83,9 +82,8 @@ public class MetricsServiceImpl implements MetricsService {
 		final Task fallbackTask = task.clone();
 		task.setEffortLeft(Double.valueOf(effortLeft * 60).longValue());
 
-		agilefantService.changeEffortLeft(
-				effortLeft,
-				task.getId(),
+		agilefantService.updateTask(
+				task,
 				new Listener<Task>() {
 
 					@Override
@@ -104,11 +102,6 @@ public class MetricsServiceImpl implements MetricsService {
 						error.onErrorResponse(arg0);
 					}
 				});
-	}
-
-	@Override
-	public void changeOriginalEstimate(final int origalEstimate, final long taskId, final Listener<Task> listener, final ErrorListener error) {
-		agilefantService.changeOriginalEstimate(origalEstimate, taskId, listener, error);
 	}
 
 	@Override
@@ -160,6 +153,35 @@ public class MetricsServiceImpl implements MetricsService {
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
 						story.updateValues(fallbackStory);
+
+						error.onErrorResponse(arg0);
+					}
+				});
+	}
+
+	@Override
+	public void changeTaskResponsibles(final List<User> responsibles, final Task task,
+			final Listener<Task> listener, final ErrorListener error) {
+
+		final Task fallbackTask = task.clone();
+		task.setResponsibles(responsibles);
+
+		agilefantService.updateTask(
+				task,
+				new Listener<Task>() {
+
+					@Override
+					public void onResponse(final Task response) {
+						task.updateValues(response);
+
+						listener.onResponse(response);
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						task.updateValues(fallbackTask);
 
 						error.onErrorResponse(arg0);
 					}

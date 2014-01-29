@@ -113,6 +113,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		holder.state.setTag(R.id.tag_child_position, childPosition);
 		holder.state.setTag(R.id.tag_group_position, groupPosition);
 		holder.state.setOnClickListener(onClickListener);
+		holder.responsibles.setTag(R.id.tag_child_position, childPosition);
+		holder.responsibles.setTag(R.id.tag_group_position, groupPosition);
+		holder.responsibles.setOnClickListener(onClickListener);
 
 		return convertView;
 	}

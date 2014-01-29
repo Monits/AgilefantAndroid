@@ -8,6 +8,7 @@ import java.util.Observer;
 import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -81,100 +82,135 @@ public class StoriesFragment extends RoboFragment implements Observer {
 				object.addObserver(StoriesFragment.this);
 
 				switch (view.getId()) {
-				case R.id.task_effort_left:
+					case R.id.task_effort_left:
 
-					// Agilefant's tasks that are already done, can't have it's EL changed.
-					if (!object.getState().equals(StateKey.DONE)) {
+						// Agilefant's tasks that are already done, can't have it's EL changed.
+						if (!object.getState().equals(StateKey.DONE)) {
 
-						final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
-								R.string.dialog_effortleft_title,
-								String.valueOf((float) object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
-								InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
+							final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
+									R.string.dialog_effortleft_title,
+									String.valueOf((float) object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
+									InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER);
 
-						dialogFragment.setPromptDialogListener(new PromptDialogListener() {
+							dialogFragment.setPromptDialogListener(new PromptDialogListener() {
+
+								@Override
+								public void onAccept(final String inputValue) {
+									double el = 0;
+									if (!inputValue.trim().equals("")) {
+										el = Double.valueOf(inputValue.trim());
+									}
+
+									metricsService.changeEffortLeft(
+											el, object,
+											new Listener<Task>() {
+
+												@Override
+												public void onResponse(final Task task) {
+
+													Toast.makeText(
+															getActivity(), R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
+												}
+											},
+											new ErrorListener() {
+
+												@Override
+												public void onErrorResponse(final VolleyError arg0) {
+
+													Toast.makeText(
+															getActivity(), R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
+												}
+											});
+								}
+							});
+
+							dialogFragment.show(getFragmentManager(), "effortLeftDialog");
+						}
+
+						break;
+
+					case R.id.task_spend_effort:
+
+						final FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
+						transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
+						transaction.addToBackStack(null);
+						transaction.commit();
+
+						break;
+
+					case R.id.task_state:
+
+						final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onAccept(final String inputValue) {
-								double el = 0;
-								if (!inputValue.trim().equals("")) {
-									el = Double.valueOf(inputValue.trim());
-								}
+							public void onClick(final DialogInterface dialog, final int which) {
 
-								metricsService.changeEffortLeft(
-										el, object,
+								metricsService.taskChangeState(
+										StateKey.values()[which],
+										object,
 										new Listener<Task>() {
 
 											@Override
-											public void onResponse(final Task task) {
-
+											public void onResponse(final Task arg0) {
 												Toast.makeText(
-														getActivity(), R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
-											}
+														getActivity(), R.string.feedback_successfully_updated_state, Toast.LENGTH_SHORT).show();
+											};
 										},
 										new ErrorListener() {
 
 											@Override
 											public void onErrorResponse(final VolleyError arg0) {
-
 												Toast.makeText(
-														getActivity(), R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
-											}
+														getActivity(), R.string.feedback_failed_update_state, Toast.LENGTH_SHORT).show();
+											};
 										});
+
+								dialog.dismiss();
 							}
-						});
+						};
 
-						dialogFragment.show(getFragmentManager(), "effortLeftDialog");
-					}
+						final AlertDialog.Builder builder = new Builder(getActivity());
+						builder.setTitle(R.string.dialog_state_title);
+						builder.setSingleChoiceItems(
+								StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
+						builder.show();
 
-					break;
+						break;
 
-				case R.id.task_spend_effort:
+					case R.id.task_responsibles:
+						final Fragment fragment = UserChooserFragment.newInstance(
+								object.getResponsibles(),
+								new OnUsersSubmittedListener() {
 
-					final FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
-					transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
-					transaction.addToBackStack(null);
-					transaction.commit();
+									@Override
+									public void onSubmitUsers(final List<User> users) {
+										final Context context = getActivity();
+										metricsService.changeTaskResponsibles(
+												users,
+												object,
+												new Listener<Task>() {
 
-					break;
+													@Override
+													public void onResponse(final Task project) {
+														Toast.makeText(context, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
+													}
+												},
+												new ErrorListener() {
 
-				case R.id.task_state:
+													@Override
+													public void onErrorResponse(final VolleyError arg0) {
+														Toast.makeText(context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
+													}
+												});
+									}
+								});
 
-					final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
+						getActivity().getSupportFragmentManager().beginTransaction()
+							.add(android.R.id.content, fragment)
+							.addToBackStack(null)
+							.commit();
 
-						@Override
-						public void onClick(final DialogInterface dialog, final int which) {
-
-							metricsService.taskChangeState(
-									StateKey.values()[which],
-									object,
-									new Listener<Task>() {
-
-										@Override
-										public void onResponse(final Task arg0) {
-											Toast.makeText(
-													getActivity(), R.string.feedback_successfully_updated_state, Toast.LENGTH_SHORT).show();
-										};
-									},
-									new ErrorListener() {
-
-										@Override
-										public void onErrorResponse(final VolleyError arg0) {
-											Toast.makeText(
-													getActivity(), R.string.feedback_failed_update_state, Toast.LENGTH_SHORT).show();
-										};
-									});
-
-							dialog.dismiss();
-						}
-					};
-
-					final AlertDialog.Builder builder = new Builder(getActivity());
-					builder.setTitle(R.string.dialog_state_title);
-					builder.setSingleChoiceItems(
-							StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
-					builder.show();
-
-					break;
+						break;
 				}
 			}
 		});
@@ -196,21 +232,21 @@ public class StoriesFragment extends RoboFragment implements Observer {
 								if (state == StateKey.DONE) {
 									final AlertDialog.Builder builder = new Builder(getActivity());
 									builder.setTitle(R.string.dialog_tasks_to_done_title)
-									.setMessage(R.string.dialog_tasks_to_done_msg)
-									.setPositiveButton(android.R.string.yes, new OnClickListener() {
+										.setMessage(R.string.dialog_tasks_to_done_msg)
+										.setPositiveButton(android.R.string.yes, new OnClickListener() {
 
-										@Override
-										public void onClick(final DialogInterface dialog, final int which) {
-											executeUpdateStoryTask(state, object, true);
-										}
-									})
-									.setNegativeButton(android.R.string.no, new OnClickListener() {
+											@Override
+											public void onClick(final DialogInterface dialog, final int which) {
+												executeUpdateStoryTask(state, object, true);
+											}
+										})
+										.setNegativeButton(android.R.string.no, new OnClickListener() {
 
-										@Override
-										public void onClick(final DialogInterface dialog, final int which) {
-											executeUpdateStoryTask(state, object, false);
-										}
-									});
+											@Override
+											public void onClick(final DialogInterface dialog, final int which) {
+												executeUpdateStoryTask(state, object, false);
+											}
+										});
 
 									builder.show();
 								} else {
