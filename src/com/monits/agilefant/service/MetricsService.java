@@ -2,12 +2,14 @@ package com.monits.agilefant.service;
 
 
 import java.util.Date;
+import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.User;
 
 /**
  * Manages metrics in Agilefant
@@ -79,4 +81,17 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void changeStoryState(StateKey state, Story story, boolean tasksToDone, Listener<Story> listener, ErrorListener error);
+
+	/**
+	 * Changes the story's responsibles.
+	 *
+	 *<blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
+	 * @param responsibles the responsibles to set.
+	 * @param state State to set
+	 * @param story the story to be modified.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void changeStoryResponsibles(List<User> responsibles, Story story, Listener<Story> listener, ErrorListener error);
 }

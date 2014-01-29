@@ -22,6 +22,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
@@ -36,6 +37,10 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String USERS_CHANGED = "usersChanged";
+	private static final String ASSIGNEE_IDS = "assigneeIds";
+	private static final String ASSIGNEES_CHANGED = "assigneesChanged";
+	private static final String PROJECT_ID = "projectId";
 	private static final String USER_CHOOSER_DATA_ACTION = "%1$s/ajax/userChooserData.action";
 	private static final String PROJECT_LEAF_STORIES_ACTION = "%1$s/ajax/projectLeafStories.action";
 	private static final String OBJECT_ID = "objectId";
@@ -304,8 +309,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void changeStoryState(final StateKey state, final long storyId, final long backlogId,
-			final long iterationId, final boolean tasksToDone, final Listener<Story> listener, final ErrorListener error) {
+	public void updateStory(final Story story, final Boolean tasksToDone, final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, STORE_STORY_ACTION, host);
 
@@ -313,16 +317,59 @@ public class AgilefantServiceImpl implements AgilefantService {
 				Method.POST, url, gson, Story.class, listener, error) {
 
 			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<String, String>();
+			public byte[] getBody() throws AuthFailureError {
+				final Long backlogId;
+				final Long iterationId;
+				final Iteration iteration = story.getIteration();
+				final Backlog backlog = story.getBacklog();
+				if (backlog != null
+						&& iteration != null) {
+					backlogId = backlog.getId();
+					iterationId = iteration.getId();
+				} else if (iteration != null) {
+					backlogId = iteration.getId();
+					iterationId = iteration.getId();
+				} else {
+					backlogId = backlog.getId();
+					iterationId = null;
+				}
 
-				params.put(STORY_STATE, state.name());
-				params.put(STORY_ID, String.valueOf(storyId));
-				params.put(BACKLOG_ID, String.valueOf(backlogId));
-				params.put(ITERATION_ID, String.valueOf(iterationId));
-				params.put(TASKS_TO_DONE, String.valueOf(tasksToDone));
+				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
+				final StringBuilder body = new StringBuilder();
+				final String paramsEncoding = getParamsEncoding();
+				try {
+					for (final User user : story.getResponsibles()) {
+						appendURLEncodedParam(body,
+								USER_IDS, String.valueOf(user.getId()), paramsEncoding);
+					}
 
-				return params;
+					appendURLEncodedParam(body,
+							USERS_CHANGED, String.valueOf(true), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							STORY_ID, String.valueOf(story.getId()), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							STORY_STATE, story.getState().name(), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							BACKLOG_ID, String.valueOf(backlogId), paramsEncoding);
+
+					if (iterationId != null) {
+						appendURLEncodedParam(body,
+								ITERATION_ID, String.valueOf(iterationId), paramsEncoding);
+					}
+
+					if (tasksToDone != null) {
+						appendURLEncodedParam(body,
+								TASKS_TO_DONE, String.valueOf(tasksToDone), paramsEncoding);
+					}
+
+				} catch (final UnsupportedEncodingException e) {
+					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);
+				}
+
+				return body.toString().getBytes();
 			}
 		};
 
@@ -385,20 +432,14 @@ public class AgilefantServiceImpl implements AgilefantService {
 				final String paramsEncoding = getParamsEncoding();
 				try {
 					for (final User user : project.getAssignees()) {
-						body.append(URLEncoder.encode("assigneeIds", paramsEncoding));
-						body.append('=');
-						body.append(URLEncoder.encode(String.valueOf(user.getId()), paramsEncoding));
-						body.append('&');
+						appendURLEncodedParam(body,
+								ASSIGNEE_IDS, String.valueOf(user.getId()), paramsEncoding);
 					}
 
-					body.append(URLEncoder.encode("assigneesChanged", paramsEncoding));
-					body.append('=');
-					body.append(URLEncoder.encode(String.valueOf(true), paramsEncoding));
-					body.append('&');
-
-					body.append(URLEncoder.encode("projectId", paramsEncoding));
-					body.append('=');
-					body.append(URLEncoder.encode(String.valueOf(project.getId()), paramsEncoding));
+					appendURLEncodedParam(body,
+							ASSIGNEES_CHANGED, String.valueOf(true), paramsEncoding);
+					appendURLEncodedParam(body,
+							PROJECT_ID, String.valueOf(project.getId()), paramsEncoding);
 
 				} catch (final UnsupportedEncodingException e) {
 					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);
@@ -409,5 +450,28 @@ public class AgilefantServiceImpl implements AgilefantService {
 		};
 
 		requestQueue.add(request);
+	}
+
+	/**
+	 * An auxiliary method in order to append parameters to the given post body's StringBuilder,
+	 * for some special requests.
+	 *
+	 * @param sb the StringBuilder to build post body.
+	 * @param key the key of the param.
+	 * @param value the value for that key.
+	 * @param encoding the encoding.
+	 * @return the same StringBuilder that was given, with the given params appended.
+	 *
+	 * @throws UnsupportedEncodingException
+	 */
+	private StringBuilder appendURLEncodedParam(final StringBuilder sb,
+			final String key, final String value, final String encoding) throws UnsupportedEncodingException {
+
+		sb.append(URLEncoder.encode(key, encoding));
+		sb.append('=');
+		sb.append(URLEncoder.encode(value, encoding));
+		sb.append('&');
+
+		return sb;
 	}
 }

@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.User;
 
 /**
  * Manages metrics in Agilefant
@@ -122,12 +123,8 @@ public class MetricsServiceImpl implements MetricsService {
 			}
 		}
 
-		final long iterationId = story.getIteration().getId();
-		agilefantService.changeStoryState(
-				state,
-				story.getId(),
-				iterationId,
-				iterationId,
+		agilefantService.updateStory(
+				story,
 				tasksToDone,
 				listener,
 				new ErrorListener() {
@@ -147,4 +144,25 @@ public class MetricsServiceImpl implements MetricsService {
 				});
 	}
 
+	@Override
+	public void changeStoryResponsibles(final List<User> responsibles, final Story story,
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final Story fallbackStory = story.clone();
+		story.setResponsibles(responsibles);
+
+		agilefantService.updateStory(
+				story,
+				null,
+				listener,
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						story.updateValues(fallbackStory);
+
+						error.onErrorResponse(arg0);
+					}
+				});
+	}
 }

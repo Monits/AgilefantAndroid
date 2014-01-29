@@ -67,7 +67,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment {
 		storiesListView = (ListView) view.findViewById(R.id.stories_list);
 		storiesEmptyView = view.findViewById(R.id.stories_empty_view);
 
-		storiesAdapter = new ProjectLeafStoriesAdapter(getActivity());
+		storiesAdapter = new ProjectLeafStoriesAdapter(getActivity(), getFragmentManager());
 		storiesListView.setEmptyView(storiesEmptyView);
 		storiesListView.setAdapter(storiesAdapter);
 

@@ -128,6 +128,9 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 	 */
 	public void setResponsibles(final List<User> responsibles) {
 		this.responsibles = responsibles;
+
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -224,9 +227,29 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 		}
 	}
 
+	/**
+	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
+	 * views to render multiple times.
+	 *
+	 * @param task the updated task.
+	 */
+	public void updateValues(final Story task) {
+		this.name = task.getName();
+		this.rank = task.getRank();
+		this.backlog = task.getBacklog();
+		this.iteration = task.getIteration();
+		this.tasks = task.getTasks();
+		this.metrics = task.getMetrics();
+		this.state = task.getState();
+		this.responsibles = task.getResponsibles();
+
+		setChanged();
+		notifyObservers();
+	}
+
 	@Override
 	public Story clone() {
-		return new Story(id, name, state, responsibles, metrics, new LinkedList<Task>(tasks), rank, backlog, iteration);
+		return new Story(id, name, state, responsibles, metrics, tasks != null ? new LinkedList<Task>(tasks) : null, rank, backlog, iteration);
 	}
 
 	@Override

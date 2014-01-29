@@ -17,7 +17,7 @@
         android:paddingRight="5dp"
         android:paddingTop="5dp" >
 
-        <include layout="@layout/daily_work_header" />
+        <include layout="@layout/project_leaf_stories_header" />
 
         <ListView
             android:id="@+id/stories_list"

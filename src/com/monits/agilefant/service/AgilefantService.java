@@ -125,16 +125,12 @@ public interface AgilefantService {
 	/**
 	 * Changes the story state.
 	 *
-	 * @param state State to set
-	 * @param storyId the story's id.
-	 * @param backlogId the backlog's id.
-	 * @param iterationId the iteration's id.
+	 * @param story the story to update.
 	 * @param tasksToDone whether if all tasks should be also set as done.
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void changeStoryState(StateKey state, long storyId, long backlogId, long iterationId, boolean tasksToDone,
-		Listener<Story> listener, ErrorListener error);
+	void updateStory(Story story, Boolean tasksToDone, Listener<Story> listener, ErrorListener error);
 
 	/**
 	 * Retrieves the details of the project.
