@@ -4,36 +4,34 @@ import java.util.Collections;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.activity.IterationActivity;
+import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.StoryRankComparator;
 import com.monits.agilefant.util.TaskRankComparator;
 
 public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
-	@Inject
-	private IterationService iterationService;
+	private final OnClickListener onClickChildListener;
+	private AdapterViewActionListener<Task> childActionListener;
+	private final OnClickListener onClickGroupListener;
+	private AdapterViewActionListener<Story> groupActionListener;
+
+
 
 	public MyStoriesAdapter(final Context context, final List<Story> stories) {
 		super(context);
+
+		RoboGuice.injectMembers(context, this);
 
 		Collections.sort(stories, new StoryRankComparator());
 		for (final Story story : stories) {
@@ -45,7 +43,30 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 			}
 		}
 
-		RoboGuice.injectMembers(context, this);
+		onClickChildListener = new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				final Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
+				final Integer childPosition = (Integer) v.getTag(R.id.tag_child_position);
+
+				if (childActionListener != null && groupPosition != null && childPosition != null) {
+					childActionListener.onAction(v, getChild(groupPosition, childPosition));
+				}
+			}
+		};
+
+		onClickGroupListener = new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				final Integer groupPosition = (Integer) v.getTag(R.id.tag_group_position);
+
+				if (groupActionListener != null && groupPosition != null) {
+					groupActionListener.onAction(v, getGroup(groupPosition));
+				}
+			}
+		};
 	}
 
 	@Override
@@ -69,9 +90,12 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 
 		holder.name.setText(task.getName());
 
-		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
 		holder.state.setText(IterationUtils.getStateName(task.getState()));
+		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
 		holder.state.setBackgroundResource(IterationUtils.getStateBackground(task.getState()));
+		holder.state.setTag(R.id.tag_group_position, groupPosition);
+		holder.state.setTag(R.id.tag_child_position, childPosition);
+		holder.state.setOnClickListener(onClickChildListener);
 
 		return convertView;
 	}
@@ -98,57 +122,18 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 
 		holder.name.setText(story.getName());
 
-		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(story.getState())));
 		holder.state.setText(IterationUtils.getStateName(story.getState()));
+		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(story.getState())));
 		holder.state.setBackgroundResource(IterationUtils.getStateBackground(story.getState()));
+		holder.state.setTag(R.id.tag_group_position, groupPosition);
+		holder.state.setOnClickListener(onClickGroupListener);
 
 		if (story.getIteration() != null) {
 			final Iteration iteration = story.getIteration();
 
 			holder.context.setText(iteration.getName());
-			holder.context.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(final View v) {
-
-					final ProgressDialog progressDialog = new ProgressDialog(context);
-					progressDialog.setIndeterminate(true);
-					progressDialog.setCancelable(false);
-					progressDialog.setMessage(context.getString(R.string.loading));
-					progressDialog.show();
-					iterationService.getIteration(
-							iteration.getId(),
-							new Listener<Iteration>() {
-
-								@Override
-								public void onResponse(final Iteration response) {
-									if (progressDialog != null && progressDialog.isShowing()) {
-										progressDialog.dismiss();
-									}
-
-									final Intent intent = new Intent(context, IterationActivity.class);
-
-									// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-									response.setParent(iteration.getParent());
-
-									intent.putExtra(IterationActivity.ITERATION, response);
-
-									context.startActivity(intent);
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									if (progressDialog != null && progressDialog.isShowing()) {
-										progressDialog.dismiss();
-									}
-
-									Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
-								}
-							});
-				}
-			});
+			holder.context.setTag(R.id.tag_group_position, groupPosition);
+			holder.context.setOnClickListener(onClickGroupListener);
 		} else {
 			holder.context.setText(" - ");
 			holder.context.setOnClickListener(null);
@@ -157,7 +142,25 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		return convertView;
 	}
 
-	class ViewHolder {
+	/**
+	 * Add a listener to intercept click events on group's children row's, children views
+	 *
+	 * @param listener the listener to be set.
+	 */
+	public void setOnChildActionListener(final AdapterViewActionListener<Task> listener) {
+		this.childActionListener = listener;
+	}
+
+	/**
+	 * Add a listener to intercept click events on group's children views.
+	 *
+	 * @param listener the listener to be set.
+	 */
+	public void setOnGroupActionListener(final AdapterViewActionListener<Story> listener) {
+		this.groupActionListener = listener;
+	}
+
+	private static class ViewHolder {
 		public TextView name;
 		public TextView context;
 		public TextView state;
