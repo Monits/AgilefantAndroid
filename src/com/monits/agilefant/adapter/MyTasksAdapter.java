@@ -13,6 +13,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.DailyWorkTask;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.IterationUtils;
 
 public class MyTasksAdapter extends BaseAdapter {
@@ -20,7 +21,7 @@ public class MyTasksAdapter extends BaseAdapter {
 	private final Context context;
 	private final List<DailyWorkTask> tasks;
 
-	private AdapterViewActionListener<DailyWorkTask> actionListener;
+	private AdapterViewActionListener<Task> actionListener;
 	private final OnClickListener onClickListener;
 
 	public MyTasksAdapter(final Context context, final List<DailyWorkTask> tasks) {
@@ -102,7 +103,7 @@ public class MyTasksAdapter extends BaseAdapter {
 	 *
 	 * @param listener the listener to be set.
 	 */
-	public void setOnActionListener(final AdapterViewActionListener<DailyWorkTask> listener) {
+	public void setOnActionListener(final AdapterViewActionListener<Task> listener) {
 		this.actionListener = listener;
 	}
 
