@@ -10,25 +10,25 @@ public class DailyWork implements Serializable {
 	private static final long serialVersionUID = 2241576318943952740L;
 
 	@SerializedName("queuedTasks")
-	private List<DailyWorkTask> queuedTasks;
+	private List<Task> queuedTasks;
 
 	@SerializedName("stories")
 	private List<Story> stories;
 
 	@SerializedName("tasksWithoutStory")
-	private List<DailyWorkTask> taskWithoutStories;
+	private List<Task> taskWithoutStories;
 
 	/**
 	 * @return the queuedTasks
 	 */
-	public List<DailyWorkTask> getQueuedTasks() {
+	public List<Task> getQueuedTasks() {
 		return queuedTasks;
 	}
 
 	/**
 	 * @param queuedTasks the queuedTasks to set
 	 */
-	public void setQueuedTasks(List<DailyWorkTask> queuedTasks) {
+	public void setQueuedTasks(final List<Task> queuedTasks) {
 		this.queuedTasks = queuedTasks;
 	}
 
@@ -42,21 +42,21 @@ public class DailyWork implements Serializable {
 	/**
 	 * @param stories the stories to set
 	 */
-	public void setStories(List<Story> stories) {
+	public void setStories(final List<Story> stories) {
 		this.stories = stories;
 	}
 
 	/**
 	 * @return the taskWithoutStories
 	 */
-	public List<DailyWorkTask> getTaskWithoutStories() {
+	public List<Task> getTaskWithoutStories() {
 		return taskWithoutStories;
 	}
 
 	/**
 	 * @param taskWithoutStories the taskWithoutStories to set
 	 */
-	public void setTaskWithoutStories(List<DailyWorkTask> taskWithoutStories) {
+	public void setTaskWithoutStories(final List<Task> taskWithoutStories) {
 		this.taskWithoutStories = taskWithoutStories;
 	}
 }

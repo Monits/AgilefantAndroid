@@ -15,7 +15,7 @@ import android.widget.ListView;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.MyTasksAdapter;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
-import com.monits.agilefant.model.DailyWorkTask;
+import com.monits.agilefant.model.Task;
 
 public class MyQueueWorkFragment extends RoboFragment implements Observer {
 
@@ -23,13 +23,13 @@ public class MyQueueWorkFragment extends RoboFragment implements Observer {
 
 	private MyTasksAdapter tasksAdapter;
 
-	private List<DailyWorkTask> mTasks;
+	private List<Task> mTasks;
 
-	public static MyQueueWorkFragment newInstance(final List<DailyWorkTask> queuedTasks) {
+	public static MyQueueWorkFragment newInstance(final List<Task> queuedTasks) {
 		final MyQueueWorkFragment queueWorkFragment = new MyQueueWorkFragment();
 		final Bundle arguments = new Bundle();
 
-		final ArrayList<DailyWorkTask> tasks = new ArrayList<DailyWorkTask>();
+		final ArrayList<Task> tasks = new ArrayList<Task>();
 		tasks.addAll(queuedTasks);
 		arguments.putParcelableArrayList(TASKS_KEY, tasks);
 

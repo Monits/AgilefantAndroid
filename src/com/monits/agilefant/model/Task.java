@@ -37,6 +37,12 @@ public class Task extends Observable implements Serializable, Parcelable {
 	@SerializedName("rank")
 	private int rank;
 
+	@SerializedName("iteration")
+	private Iteration iteration;
+
+	@SerializedName("story")
+	private Backlog story;
+
 	public Task() {
 	}
 
@@ -50,9 +56,9 @@ public class Task extends Observable implements Serializable, Parcelable {
 	 * @param state
 	 * @param rank
 	 */
-	public Task(long effortLeft, long effortSpent, long originalEstimate,
-			String name, long id, List<User> responsibles, StateKey state,
-			int rank) {
+	public Task(final long effortLeft, final long effortSpent, final long originalEstimate,
+			final String name, final long id, final List<User> responsibles, final StateKey state,
+			final int rank) {
 		super();
 		this.effortLeft = effortLeft;
 		this.effortSpent = effortSpent;
@@ -74,7 +80,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param effortLeft the effortLeft to set
 	 */
-	public void setEffortLeft(long effortLeft) {
+	public void setEffortLeft(final long effortLeft) {
 		this.effortLeft = effortLeft;
 		setChanged();
 		notifyObservers();
@@ -90,7 +96,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param effortSpent the effortSpent to set
 	 */
-	public void setEffortSpent(long effortSpent) {
+	public void setEffortSpent(final long effortSpent) {
 		this.effortSpent = effortSpent;
 		setChanged();
 		notifyObservers();
@@ -106,7 +112,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param originalEstimate the originalEstimate to set
 	 */
-	public void setOriginalEstimate(long originalEstimate) {
+	public void setOriginalEstimate(final long originalEstimate) {
 		this.originalEstimate = originalEstimate;
 	}
 
@@ -120,7 +126,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -134,7 +140,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -148,7 +154,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param responsibles the responsibles to set
 	 */
-	public void setResponsibles(List<User> responsibles) {
+	public void setResponsibles(final List<User> responsibles) {
 		this.responsibles = responsibles;
 		setChanged();
 		notifyObservers();
@@ -164,7 +170,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(StateKey state) {
+	public void setState(final StateKey state) {
 		setState(state, false);
 	}
 
@@ -172,7 +178,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	 * @param state the state to set
 	 * @param resetELIfDone whether if effort left should be reset to zero, if {@link StateKey} is done.
 	 */
-	public void setState(StateKey state, boolean resetELIfDone) {
+	public void setState(final StateKey state, final boolean resetELIfDone) {
 		this.state = state;
 
 		if (state.equals(StateKey.DONE) && resetELIfDone) {
@@ -193,19 +199,47 @@ public class Task extends Observable implements Serializable, Parcelable {
 	/**
 	 * @param rank the rank to set
 	 */
-	public void setRank(int rank) {
+	public void setRank(final int rank) {
 		this.rank = rank;
 		setChanged();
 		notifyObservers();
 	}
 
 	/**
+	 * @return the story
+	 */
+	public Backlog getStory() {
+		return story;
+	}
+
+	/**
+	 * @param story the story to set
+	 */
+	public void setStory(final Backlog story) {
+		this.story = story;
+	}
+
+	/**
+	 * @return the iteration
+	 */
+	public Iteration getIteration() {
+		return iteration;
+	}
+
+	/**
+	 * @param iteration the iteration to set
+	 */
+	public void setIteration(final Iteration iteration) {
+		this.iteration = iteration;
+	}
+
+	/**
 	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
 	 * views to render multiple times.
-	 * 
+	 *
 	 * @param task the updated task.
 	 */
-	public void updateValues(Task task) {
+	public void updateValues(final Task task) {
 		this.effortLeft = task.getEffortLeft();
 		this.effortSpent = task.getEffortSpent();
 		this.originalEstimate = task.getOriginalEstimate();
@@ -221,7 +255,7 @@ public class Task extends Observable implements Serializable, Parcelable {
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags) {
+	public void writeToParcel(final Parcel dest, final int flags) {
 		dest.writeSerializable(this);
 	}
 

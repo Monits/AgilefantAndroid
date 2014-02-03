@@ -7,8 +7,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.google.inject.Inject;
 import com.monits.agilefant.model.DailyWork;
-import com.monits.agilefant.model.DailyWorkTask;
 import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.StoryUtils;
 
 /**
@@ -49,7 +49,7 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	 */
 	private void populateContext(final DailyWork dailyWork) {
 		if (dailyWork != null) {
-			for (final DailyWorkTask queuedTask : dailyWork.getQueuedTasks()) {
+			for (final Task queuedTask : dailyWork.getQueuedTasks()) {
 				if (queuedTask.getIteration() == null && queuedTask.getStory() != null) {
 					final Story story =
 							StoryUtils.findStoryById(dailyWork.getStories(), queuedTask.getStory().getId());

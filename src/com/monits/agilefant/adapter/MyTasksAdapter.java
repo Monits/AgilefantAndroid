@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
-import com.monits.agilefant.model.DailyWorkTask;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.IterationUtils;
@@ -19,12 +18,12 @@ import com.monits.agilefant.util.IterationUtils;
 public class MyTasksAdapter extends BaseAdapter {
 
 	private final Context context;
-	private final List<DailyWorkTask> tasks;
+	private final List<Task> tasks;
 
 	private AdapterViewActionListener<Task> actionListener;
 	private final OnClickListener onClickListener;
 
-	public MyTasksAdapter(final Context context, final List<DailyWorkTask> tasks) {
+	public MyTasksAdapter(final Context context, final List<Task> tasks) {
 		this.context = context;
 		this.tasks = tasks;
 
@@ -47,13 +46,13 @@ public class MyTasksAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public DailyWorkTask getItem(final int position) {
+	public Task getItem(final int position) {
 		return tasks != null ? tasks.get(position) : null;
 	}
 
 	@Override
 	public long getItemId(final int position) {
-		final DailyWorkTask item = getItem(position);
+		final Task item = getItem(position);
 		return item != null ? item.getId() : 0;
 	}
 
@@ -74,7 +73,7 @@ public class MyTasksAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		final DailyWorkTask task = getItem(position);
+		final Task task = getItem(position);
 
 		holder.name.setText(task.getName());
 

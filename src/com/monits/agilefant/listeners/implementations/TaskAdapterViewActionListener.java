@@ -28,7 +28,6 @@ import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.user_chooser.UserChooserFragment;
 import com.monits.agilefant.fragment.user_chooser.UserChooserFragment.OnUsersSubmittedListener;
-import com.monits.agilefant.model.DailyWorkTask;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
@@ -182,10 +181,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 				break;
 
 			case R.id.column_context:
-				// TODO: This model can be taken out, move context fields to iteration !
-				final DailyWorkTask dailyTask = (DailyWorkTask) object;
-
-				final Iteration iteration = dailyTask.getIteration();
+				final Iteration iteration = object.getIteration();
 
 				final ProgressDialog progressDialog = new ProgressDialog(context);
 				progressDialog.setIndeterminate(true);

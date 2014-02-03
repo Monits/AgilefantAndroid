@@ -15,21 +15,21 @@ import android.widget.ListView;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.MyTasksAdapter;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
-import com.monits.agilefant.model.DailyWorkTask;
+import com.monits.agilefant.model.Task;
 
 public class MyTasksFragment extends RoboFragment implements Observer {
 
 	private static final String TASKS_KEY = "TASKS";
 
-	private List<DailyWorkTask> mTasks;
+	private List<Task> mTasks;
 
 	private MyTasksAdapter tasksAdapter;
 
-	public static MyTasksFragment newInstance(final List<DailyWorkTask> taskWithoutStories) {
+	public static MyTasksFragment newInstance(final List<Task> taskWithoutStories) {
 		final MyTasksFragment tasksFragment = new MyTasksFragment();
 		final Bundle arguments = new Bundle();
 
-		final ArrayList<DailyWorkTask> tasks = new ArrayList<DailyWorkTask>();
+		final ArrayList<Task> tasks = new ArrayList<Task>();
 		tasks.addAll(taskWithoutStories);
 		arguments.putParcelableArrayList(TASKS_KEY, tasks);
 
