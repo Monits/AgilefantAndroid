@@ -106,6 +106,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 					final String location = response.headers.get("Location");
 					if (location != null && location.split(";")[0].equals(getHost() + LOGIN_OK)) {
 						listener.onResponse(location);
+					} else {
+						error.onErrorResponse(volleyError);
 					}
 				} else {
 					error.onErrorResponse(volleyError);
