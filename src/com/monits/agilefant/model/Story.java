@@ -1,6 +1,5 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -11,9 +10,19 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Story extends Observable implements Serializable, Parcelable, Observer {
+public class Story extends Observable implements Parcelable, Observer {
 
-	private static final long serialVersionUID = -3498965706027533482L;
+	public static final Parcelable.Creator<Story> CREATOR = new Parcelable.Creator<Story>() {
+		@Override
+		public Story createFromParcel(final Parcel in) {
+			return new Story(in);
+		}
+
+		@Override
+		public Story[] newArray(final int size) {
+			return new Story[size];
+		}
+	};
 
 	@SerializedName("id")
 	private long id;
@@ -69,6 +78,20 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 		this.rank = rank;
 		this.backlog = backlog;
 		this.iteration = iteration;
+	}
+
+	private Story(final Parcel in) {
+		this.id = in.readLong();
+		this.name = in.readString();
+		this.state = (StateKey) in.readSerializable();
+		this.responsibles = new LinkedList<User>();
+		in.readList(responsibles, User.class.getClassLoader());
+		this.metrics = in.readParcelable(Metrics.class.getClassLoader());
+		this.tasks = new LinkedList<Task>();
+		in.readList(tasks, Task.class.getClassLoader());
+		this.rank = in.readInt();
+		this.backlog = in.readParcelable(Backlog.class.getClassLoader());
+		this.iteration = in.readParcelable(Iteration.class.getClassLoader());
 	}
 
 	/**
@@ -213,7 +236,15 @@ public class Story extends Observable implements Serializable, Parcelable, Obser
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeSerializable(this);
+		dest.writeLong(id);
+		dest.writeString(name);
+		dest.writeSerializable(state);
+		dest.writeList(responsibles);
+		dest.writeParcelable(metrics, flags);
+		dest.writeList(tasks);
+		dest.writeInt(rank);
+		dest.writeParcelable(backlog, flags);
+		dest.writeParcelable(iteration, flags);
 	}
 
 	/**

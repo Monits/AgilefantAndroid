@@ -46,7 +46,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 	public static IterationFragment newInstance(final Iteration iteration) {
 		final Bundle arguments = new Bundle();
-		arguments.putSerializable(ITERATION, iteration);
+		arguments.putParcelable(ITERATION, iteration);
 
 		final IterationFragment fragment = new IterationFragment();
 		fragment.setArguments(arguments);
@@ -56,7 +56,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		final Bundle arguments = getArguments();
-		mIteration = (Iteration) arguments.getSerializable(ITERATION);
+		mIteration = arguments.getParcelable(ITERATION);
 
 		super.onCreate(savedInstanceState);
 	}

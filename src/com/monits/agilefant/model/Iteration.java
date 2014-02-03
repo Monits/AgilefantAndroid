@@ -1,7 +1,10 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -10,9 +13,19 @@ import com.google.gson.annotations.SerializedName;
  * @author Ivan Corbalan
  *
  */
-public class Iteration implements Serializable {
+public class Iteration implements Parcelable {
 
-	private static final long serialVersionUID = -182238804828185878L;
+	public static final Parcelable.Creator<Iteration> CREATOR = new Parcelable.Creator<Iteration>() {
+		@Override
+		public Iteration createFromParcel(final Parcel in) {
+			return new Iteration(in);
+		}
+
+		@Override
+		public Iteration[] newArray(final int size) {
+			return new Iteration[size];
+		}
+	};
 
 	@SerializedName("id")
 	private long id;
@@ -49,6 +62,20 @@ public class Iteration implements Serializable {
 	public Iteration(final long id, final String title) {
 		this.id = id;
 		this.title = title;
+	}
+
+	private Iteration(final Parcel in) {
+		this.id = in.readLong();
+		this.title = in.readString();
+		this.name = in.readString();
+		this.stories = new LinkedList<Story>();
+		in.readList(stories, Story.class.getClassLoader());
+		this.startDate = in.readLong();
+		this.endDate = in.readLong();
+		this.tasksWithoutStory = new LinkedList<Task>();
+		in.readList(tasksWithoutStory, Task.class.getClassLoader());
+		this.rootIteration = in.readParcelable(RootIteration.class.getClassLoader());
+		this.parent = in.readParcelable(Backlog.class.getClassLoader());
 	}
 
 	/**
@@ -169,5 +196,23 @@ public class Iteration implements Serializable {
 
 	public void setParent(final Backlog parent) {
 		this.parent = parent;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(final Parcel dest, final int flags) {
+		dest.writeLong(id);
+		dest.writeString(title);
+		dest.writeString(name);
+		dest.writeList(stories);
+		dest.writeLong(startDate);
+		dest.writeLong(endDate);
+		dest.writeList(tasksWithoutStory);
+		dest.writeParcelable(rootIteration, flags);
+		dest.writeParcelable(parent, flags);
 	}
 }

@@ -1,15 +1,11 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class User implements Serializable, Parcelable {
-
-	private static final long serialVersionUID = 2083552426069779695L;
+public class User implements Parcelable {
 
 	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
 		@Override

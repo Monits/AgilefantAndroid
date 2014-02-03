@@ -1,6 +1,6 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 
@@ -9,9 +9,19 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Serializable, Parcelable {
+public class Task extends Observable implements Parcelable {
 
-	private static final long serialVersionUID = 5089050545685421289L;
+	public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
+		@Override
+		public Task createFromParcel(final Parcel in) {
+			return new Task(in);
+		}
+
+		@Override
+		public Task[] newArray(final int size) {
+			return new Task[size];
+		}
+	};
 
 	@SerializedName("effortLeft")
 	private long effortLeft;
@@ -68,6 +78,20 @@ public class Task extends Observable implements Serializable, Parcelable {
 		this.responsibles = responsibles;
 		this.state = state;
 		this.rank = rank;
+	}
+
+	private Task(final Parcel in) {
+		this.effortLeft = in.readLong();
+		this.effortSpent = in.readLong();
+		this.originalEstimate = in.readLong();
+		this.name = in.readString();
+		this.id = in.readLong();
+		responsibles = new LinkedList<User>();
+		in.readList(this.responsibles, User.class.getClassLoader());
+		this.state = (StateKey) in.readSerializable();
+		this.rank = in.readInt();
+		this.iteration = in.readParcelable(Iteration.class.getClassLoader());
+		this.story = in.readParcelable(Story.class.getClassLoader());
 	}
 
 	/**
@@ -256,7 +280,16 @@ public class Task extends Observable implements Serializable, Parcelable {
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeSerializable(this);
+		dest.writeLong(effortLeft);
+		dest.writeLong(effortSpent);
+		dest.writeLong(originalEstimate);
+		dest.writeString(name);
+		dest.writeLong(id);
+		dest.writeList(responsibles);
+		dest.writeSerializable(state);
+		dest.writeInt(rank);
+		dest.writeParcelable(iteration, flags);
+		dest.writeParcelable(story, flags);
 	}
 
 	@Override

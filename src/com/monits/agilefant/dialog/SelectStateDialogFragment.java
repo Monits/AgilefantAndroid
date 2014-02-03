@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.monits.agilefant.dialog;
 
@@ -24,35 +24,35 @@ public class SelectStateDialogFragment extends DialogFragment {
 	private static final String ARGUMENT_TASK = "argument_task";
 	private Task mTask;
 
-	public static SelectStateDialogFragment newInstance(Task task) {
-		SelectStateDialogFragment dialogFragment = new SelectStateDialogFragment();
+	public static SelectStateDialogFragment newInstance(final Task task) {
+		final SelectStateDialogFragment dialogFragment = new SelectStateDialogFragment();
 
-		Bundle arguments = new Bundle();
-		arguments.putSerializable(ARGUMENT_TASK, task);
+		final Bundle arguments = new Bundle();
+		arguments.putParcelable(ARGUMENT_TASK, task);
 		dialogFragment.setArguments(arguments);
 
 		return dialogFragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mTask = (Task) getArguments().getSerializable(ARGUMENT_TASK);
+		mTask = getArguments().getParcelable(ARGUMENT_TASK);
 	}
 
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
+	public Dialog onCreateDialog(final Bundle savedInstanceState) {
+		final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(final DialogInterface dialog, final int which) {
 				mTask.setState(StateKey.values()[which]);
 				dialog.dismiss();
 			}
 		};
 
-		AlertDialog.Builder builder = new Builder(getActivity());
+		final AlertDialog.Builder builder = new Builder(getActivity());
 		builder.setTitle(R.string.dialog_state_title);
 		builder.setSingleChoiceItems(
 				StateKey.getDisplayStates(), mTask.getState().ordinal(), onChoiceSelectedListener);

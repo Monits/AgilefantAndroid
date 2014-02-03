@@ -44,7 +44,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		final ProjectLeafStoriesFragment fragment = new ProjectLeafStoriesFragment();
 
 		final Bundle args = new Bundle();
-		args.putSerializable(BACKLOG, projectBacklog);
+		args.putParcelable(BACKLOG, projectBacklog);
 
 		fragment.setArguments(args);
 
@@ -55,7 +55,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	public void onCreate(final Bundle savedInstanceState) {
 
 		final Bundle arguments = getArguments();
-		backlog = (Backlog) arguments.getSerializable(BACKLOG);
+		backlog = arguments.getParcelable(BACKLOG);
 
 		super.onCreate(savedInstanceState);
 	}

@@ -75,7 +75,7 @@ public class ProjectActivity extends BaseActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
+		backlog = getIntent().getParcelableExtra(EXTRA_BACKLOG);
 
 		final List<Fragment> fragments = new LinkedList<Fragment>();
 		fragments.add(ProjectLeafStoriesFragment.newInstance(backlog));

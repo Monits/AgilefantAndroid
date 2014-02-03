@@ -1,12 +1,23 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Metrics implements Serializable{
+public class Metrics implements Parcelable {
 
-	private static final long serialVersionUID = 8568693131774396328L;
+	public static final Parcelable.Creator<Metrics> CREATOR = new Parcelable.Creator<Metrics>() {
+		@Override
+		public Metrics createFromParcel(final Parcel in) {
+			return new Metrics(in);
+		}
+
+		@Override
+		public Metrics[] newArray(final int size) {
+			return new Metrics[size];
+		}
+	};
 
 	@SerializedName("effortLeft")
 	private long effortLeft;
@@ -30,11 +41,17 @@ public class Metrics implements Serializable{
 	 * @param effortSpent
 	 * @param originalEstimate
 	 */
-	public Metrics(long effortLeft, long effortSpent, long originalEstimate) {
+	public Metrics(final long effortLeft, final long effortSpent, final long originalEstimate) {
 		super();
 		this.effortLeft = effortLeft;
 		this.effortSpent = effortSpent;
 		this.originalEstimate = originalEstimate;
+	}
+
+	private Metrics(final Parcel in) {
+		this.effortLeft = in.readLong();
+		this.effortSpent = in.readLong();
+		this.originalEstimate = in.readLong();
 	}
 
 	/**
@@ -47,7 +64,7 @@ public class Metrics implements Serializable{
 	/**
 	 * @param effortLeft the effortLeft to set
 	 */
-	public void setEffortLeft(long effortLeft) {
+	public void setEffortLeft(final long effortLeft) {
 		this.effortLeft = effortLeft;
 	}
 
@@ -61,7 +78,7 @@ public class Metrics implements Serializable{
 	/**
 	 * @param effortSpent the effortSpent to set
 	 */
-	public void setEffortSpent(long effortSpent) {
+	public void setEffortSpent(final long effortSpent) {
 		this.effortSpent = effortSpent;
 	}
 
@@ -75,7 +92,19 @@ public class Metrics implements Serializable{
 	/**
 	 * @param originalEstimate the originalEstimate to set
 	 */
-	public void setOriginalEstimate(long originalEstimate) {
+	public void setOriginalEstimate(final long originalEstimate) {
 		this.originalEstimate = originalEstimate;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(final Parcel dest, final int flags) {
+		dest.writeLong(effortLeft);
+		dest.writeLong(effortSpent);
+		dest.writeLong(originalEstimate);
 	}
 }

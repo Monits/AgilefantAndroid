@@ -1,12 +1,23 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Backlog implements Serializable {
+public class Backlog implements Parcelable {
 
-	private static final long serialVersionUID = -6490199061999944753L;
+	public static final Parcelable.Creator<Backlog> CREATOR = new Parcelable.Creator<Backlog>() {
+		@Override
+		public Backlog createFromParcel(final Parcel in) {
+			return new Backlog(in);
+		}
+
+		@Override
+		public Backlog[] newArray(final int size) {
+			return new Backlog[size];
+		}
+	};
 
 	@SerializedName("id")
 	private long id;
@@ -20,6 +31,11 @@ public class Backlog implements Serializable {
 	public Backlog(final Project project) {
 		this.id = project.getId();
 		this.name = project.getTitle();
+	}
+
+	private Backlog(final Parcel in) {
+		this.id = in.readLong();
+		this.name = in.readString();
 	}
 
 	/**
@@ -48,5 +64,16 @@ public class Backlog implements Serializable {
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(final Parcel dest, final int flags) {
+		dest.writeLong(id);
+		dest.writeString(name);
 	}
 }
