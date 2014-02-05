@@ -74,12 +74,12 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		if (null == convertView) {
 			holder = new HolderChild();
 			final View inflate = inflater.inflate(R.layout.task_item, null);
-			holder.name = (TextView) inflate.findViewById(R.id.task_name);
-			holder.state = (TextView) inflate.findViewById(R.id.task_state);
-			holder.responsibles = (TextView) inflate.findViewById(R.id.task_responsibles);
-			holder.effortLeft = (TextView) inflate.findViewById(R.id.task_effort_left);
-			holder.originalEstimate = (TextView) inflate.findViewById(R.id.task_original_estimate);
-			holder.spendEffort = (TextView) inflate.findViewById(R.id.task_spend_effort);
+			holder.name = (TextView) inflate.findViewById(R.id.column_name);
+			holder.state = (TextView) inflate.findViewById(R.id.column_state);
+			holder.responsibles = (TextView) inflate.findViewById(R.id.column_responsibles);
+			holder.effortLeft = (TextView) inflate.findViewById(R.id.column_effort_left);
+			holder.originalEstimate = (TextView) inflate.findViewById(R.id.column_original_estimate);
+			holder.spendEffort = (TextView) inflate.findViewById(R.id.column_spent_effort);
 
 			convertView = inflate;
 			convertView.setTag(holder);
@@ -127,12 +127,12 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		if (null == convertView) {
 			holder = new HolderGroup();
 			final View inflate = inflater.inflate(R.layout.stories_item, null);
-			holder.name = (TextView) inflate.findViewById(R.id.storie_name);
-			holder.state = (TextView) inflate.findViewById(R.id.storie_state);
-			holder.responsibles = (TextView) inflate.findViewById(R.id.storie_responsibles);
-			holder.effortLeft = (TextView) inflate.findViewById(R.id.storie_effort_left);
-			holder.originalEstimate = (TextView) inflate.findViewById(R.id.storie_original_estimate);
-			holder.spendEffort = (TextView) inflate.findViewById(R.id.storie_spend_effort);
+			holder.name = (TextView) inflate.findViewById(R.id.column_name);
+			holder.state = (TextView) inflate.findViewById(R.id.column_state);
+			holder.responsibles = (TextView) inflate.findViewById(R.id.column_responsibles);
+			holder.effortLeft = (TextView) inflate.findViewById(R.id.column_effort_left);
+			holder.originalEstimate = (TextView) inflate.findViewById(R.id.column_original_estimate);
+			holder.spendEffort = (TextView) inflate.findViewById(R.id.column_spent_effort);
 
 			convertView = inflate;
 			convertView.setTag(holder);

@@ -2,4 +2,13 @@
 <resources>
     <item type="id" name="tag_group_position"/>
     <item type="id" name="tag_child_position"/>
+    
+    <!-- Story's and Tasks columns -->
+    <item type="id" name="column_name" />
+    <item type="id" name="column_state" />
+    <item type="id" name="column_responsibles" />
+    <item type="id" name="column_effort_left" />
+    <item type="id" name="column_original_estimate" />
+    <item type="id" name="column_spent_effort" />
+    <item type="id" name="column_context" />
 </resources>

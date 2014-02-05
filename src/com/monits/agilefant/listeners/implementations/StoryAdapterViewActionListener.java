@@ -53,7 +53,7 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 		object.addObserver(getObserver());
 
 		switch (view.getId()) {
-			case R.id.storie_state:
+			case R.id.column_state:
 				final OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
 
 					@Override
@@ -96,7 +96,7 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 
 				break;
 
-			case R.id.storie_responsibles:
+			case R.id.column_responsibles:
 
 				final Fragment fragment = UserChooserFragment.newInstance(
 						object.getResponsibles(),

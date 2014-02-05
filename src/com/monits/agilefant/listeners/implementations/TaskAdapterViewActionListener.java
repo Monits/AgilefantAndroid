@@ -58,7 +58,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 	public void onAction(final View view, final Task object) {
 
 		switch (view.getId()) {
-			case R.id.task_effort_left:
+			case R.id.column_effort_left:
 
 				// Agilefant's tasks that are already done, can't have it's EL changed.
 				if (!object.getState().equals(StateKey.DONE)) {
@@ -99,7 +99,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 				break;
 
-			case R.id.task_spend_effort:
+			case R.id.column_spent_effort:
 
 				final FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
 				transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
@@ -108,7 +108,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 				break;
 
-			case R.id.task_state:
+			case R.id.column_state:
 
 				final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
 
@@ -146,7 +146,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 				break;
 
-			case R.id.task_responsibles:
+			case R.id.column_responsibles:
 				final Fragment fragment = UserChooserFragment.newInstance(
 						object.getResponsibles(),
 						new OnUsersSubmittedListener() {
