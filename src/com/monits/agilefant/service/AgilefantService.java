@@ -144,4 +144,14 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void updateTask(Task task, Listener<Task> listener, ErrorListener error);
+	
+	/**
+	 * Updates the Story Iteration.
+	 *
+	 * @param Story the Story to update.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void moveStory(long backlogId, Story story, Listener<Story> listener, ErrorListener error);
+	
 }

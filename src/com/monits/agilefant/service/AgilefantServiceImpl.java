@@ -82,6 +82,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String STORE_STORY_ACTION = "%1$s/ajax/storeStory.action";
 	private static final String STORY_ID = "storyId";
 	private static final String STORY_STATE = "story.state";
+	private static final String STORY_MOVE = "%1$s/ajax/moveStory.action";
 	private static final String TASKS_TO_DONE = "tasksToDone";
 	private static final String BACKLOG_ID = "backlogId";
 
@@ -461,4 +462,29 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		return sb;
 	}
+
+	@Override
+	public void moveStory(final long backlogId, final Story story,
+			final Listener<Story> listener, final ErrorListener error) {
+		final String url = String.format(Locale.US, STORY_MOVE, host);
+		
+		final GsonRequest<Story> request = new GsonRequest<Story>(
+				Method.POST, url, gson, Story.class, listener, error) {
+			
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<String, String>();
+
+				params.put("backlogId", String.valueOf(backlogId));
+				params.put("moveParents", "false"); //This parameter is always false
+				params.put("storyId", String.valueOf(story.getId()));
+				
+				return params;
+			}
+			
+		};
+		requestQueue.add(request);
+	}
+
+
 }

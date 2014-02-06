@@ -8,6 +8,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -182,6 +183,43 @@ public class MetricsServiceImpl implements MetricsService {
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
 						task.updateValues(fallbackTask);
+
+						error.onErrorResponse(arg0);
+					}
+				});
+	}
+
+	@Override
+	public void moveStory(final Story story, final Iteration iteration, 
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final Story fallbackStory = story.clone();
+		story.setIteration(iteration);
+		
+		final long backlogId;
+		if (iteration != null) {
+			backlogId = iteration.getId();
+		} else {
+			backlogId = story.getBacklog().getId();
+		}
+		
+		agilefantService.moveStory(
+				backlogId,
+				story,
+				new Listener<Story>() {
+					
+					@Override
+					public void onResponse(final Story storyOk) {
+						story.updateValues(storyOk);
+						
+						listener.onResponse(storyOk);
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						story.updateValues(fallbackStory);
 
 						error.onErrorResponse(arg0);
 					}

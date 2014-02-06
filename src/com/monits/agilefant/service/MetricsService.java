@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -95,4 +96,18 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void changeTaskResponsibles(List<User> responsibles, Task task, Listener<Task> listener, ErrorListener error);
+	
+	
+	/**
+	 * Change story's iteration
+	 *
+	 * <blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
+	 * @param story the Story to be modified
+	 * @param iteration the Iteration to modify the Story
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void moveStory(Story story, Iteration iteration, Listener<Story> listener, ErrorListener error);
+	
 }
