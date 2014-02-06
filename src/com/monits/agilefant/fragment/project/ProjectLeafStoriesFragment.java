@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.ProjectLeafStoriesAdapter;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
-import com.monits.agilefant.model.Backlog;
+import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.service.ProjectService;
 
@@ -29,7 +29,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 	private static final String BACKLOG = "PROJECT_BACKLOG";
 
-	private Backlog backlog;
+	private Project project;
 
 	@Inject
 	private ProjectService projectService;
@@ -40,7 +40,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 	private ProjectLeafStoriesAdapter storiesAdapter;
 
-	public static ProjectLeafStoriesFragment newInstance(final Backlog projectBacklog) {
+	public static ProjectLeafStoriesFragment newInstance(final Project projectBacklog) {
 		final ProjectLeafStoriesFragment fragment = new ProjectLeafStoriesFragment();
 
 		final Bundle args = new Bundle();
@@ -55,7 +55,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	public void onCreate(final Bundle savedInstanceState) {
 
 		final Bundle arguments = getArguments();
-		backlog = arguments.getParcelable(BACKLOG);
+		project = arguments.getParcelable(BACKLOG);
 
 		super.onCreate(savedInstanceState);
 	}
@@ -83,7 +83,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		projectService.getProjectLeafStories(
-				backlog.getId(),
+				project.getId(),
 				new Listener<List<Story>>() {
 
 					@Override

@@ -36,7 +36,7 @@ public class ProjectActivity extends BaseActivity {
 
 	private static final int ACTIVITY_VIEW = 1;
 
-	public static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.BACKLOG";
+	public static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.PROJECT";
 
 	@Inject
 	private ProjectService projectService;
@@ -77,11 +77,6 @@ public class ProjectActivity extends BaseActivity {
 
 		backlog = getIntent().getParcelableExtra(EXTRA_BACKLOG);
 
-		final List<Fragment> fragments = new LinkedList<Fragment>();
-		fragments.add(ProjectLeafStoriesFragment.newInstance(backlog));
-		pagerAdapter = new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
-		viewPager.setAdapter(pagerAdapter);
-
 		pagerTitleStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 
 		projectService.getProjectData(
@@ -91,6 +86,11 @@ public class ProjectActivity extends BaseActivity {
 					@Override
 					public void onResponse(final Project project) {
 						ProjectActivity.this.project = project;
+
+						final List<Fragment> fragments = new LinkedList<Fragment>();
+						fragments.add(ProjectLeafStoriesFragment.newInstance(project));
+						pagerAdapter = new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
+						viewPager.setAdapter(pagerAdapter);
 
 						viewFlipper.setDisplayedChild(ACTIVITY_VIEW);
 
