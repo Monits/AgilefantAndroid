@@ -28,6 +28,9 @@ public class Project implements Parcelable {
 	@SerializedName("title")
 	private String title;
 
+	@SerializedName("name")
+	private String name;
+
 	@SerializedName("children")
 	private List<Iteration> iterationList;
 
@@ -97,9 +100,11 @@ public class Project implements Parcelable {
 
 	/**
 	 * @return The project title
+	 *
 	 */
 	public String getTitle() {
-		return title;
+		//Agilefant gives name in one endpoint and title in another.
+		return name != null ? name : title;
 	}
 
 	/**
@@ -169,7 +174,7 @@ public class Project implements Parcelable {
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
 		dest.writeLong(id);
-		dest.writeString(title);
+		dest.writeString(getTitle());
 		dest.writeList(iterationList);
 		dest.writeLong(startDate);
 		dest.writeLong(endDate);

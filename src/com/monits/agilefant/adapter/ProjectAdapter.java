@@ -14,9 +14,9 @@ import com.monits.agilefant.model.Project;
 
 public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Iteration> {
 
-	private LayoutInflater inflater;
-	private int groupResId;
-	private int childResId;
+	private final LayoutInflater inflater;
+	private final int groupResId;
+	private final int childResId;
 
 	/**
 	 * @param context
@@ -98,7 +98,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 
 	/**
 	 * set the projects to display.
-	 * 
+	 *
 	 * @param projectList the projects.
 	 */
 	public void setProjects(List<Project> projectList) {

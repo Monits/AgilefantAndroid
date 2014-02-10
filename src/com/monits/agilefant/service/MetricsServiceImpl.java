@@ -190,36 +190,35 @@ public class MetricsServiceImpl implements MetricsService {
 	}
 
 	@Override
-	public void moveStory(final Story story, final Iteration iteration, 
+	public void moveStory(final Story story, final Iteration iteration,
 			final Listener<Story> listener, final ErrorListener error) {
 
 		final Story fallbackStory = story.clone();
 		story.setIteration(iteration);
-		
+
 		final long backlogId;
 		if (iteration != null) {
 			backlogId = iteration.getId();
 		} else {
 			backlogId = story.getBacklog().getId();
 		}
-		
+
 		agilefantService.moveStory(
 				backlogId,
 				story,
 				new Listener<Story>() {
-					
+
 					@Override
 					public void onResponse(final Story storyOk) {
-						story.updateValues(storyOk);
-						
-						listener.onResponse(storyOk);
+						// The story from the response is incomplete, sending the one we have updated.
+						listener.onResponse(story);
 					}
 				},
 				new ErrorListener() {
 
 					@Override
-					public void onErrorResponse(VolleyError arg0) {
-						story.updateValues(fallbackStory);
+					public void onErrorResponse(final VolleyError arg0) {
+						story.setIteration(fallbackStory.getIteration());
 
 						error.onErrorResponse(arg0);
 					}

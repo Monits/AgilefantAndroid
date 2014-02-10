@@ -78,5 +78,7 @@
 	<string name="ok">OK</string>
 	<string name="feedback_success_updated_project">Successfully updated project!</string>
 	<string name="feedback_failed_update_project">Failed to update project!</string>
+	<string name="feedback_ok_to_move_story">Successfully moved story!</string>
+	<string name="feedback_failed_to_move_story">Failed to move story!</string>
 	
 </resources>

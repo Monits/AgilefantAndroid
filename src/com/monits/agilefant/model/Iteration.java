@@ -55,6 +55,12 @@ public class Iteration implements Parcelable {
 	private Backlog parent;
 
 	/**
+	 * Default constructor
+	 */
+	public Iteration() {
+	}
+
+	/**
 	 * Constructor
 	 * @param id The iteration id
 	 * @param title The iteration title
@@ -93,6 +99,20 @@ public class Iteration implements Parcelable {
 	}
 
 	/**
+	 * @return The iteration name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @param name The iteration name to set
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
 	 * @return The iteration title
 	 */
 	public String getTitle() {
@@ -106,19 +126,6 @@ public class Iteration implements Parcelable {
 		this.title = title;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
 
 	/**
 	 * @return the stories
@@ -215,4 +222,27 @@ public class Iteration implements Parcelable {
 		dest.writeParcelable(rootIteration, flags);
 		dest.writeParcelable(parent, flags);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Iteration other = (Iteration) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
 }

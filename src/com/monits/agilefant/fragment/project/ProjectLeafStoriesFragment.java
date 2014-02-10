@@ -1,15 +1,20 @@
 package com.monits.agilefant.fragment.project;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import roboguice.fragment.RoboFragment;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -19,10 +24,14 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.IterationAdapter;
 import com.monits.agilefant.adapter.ProjectLeafStoriesAdapter;
+import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
+import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
 
 public class ProjectLeafStoriesFragment extends RoboFragment implements Observer {
@@ -33,6 +42,9 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 	@Inject
 	private ProjectService projectService;
+
+	@Inject
+	private MetricsService metricsService;
 
 	private ViewFlipper viewFlipper;
 	private ListView storiesListView;
@@ -70,8 +82,76 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		viewFlipper = (ViewFlipper) view.findViewById(R.id.root_flipper);
 
 		final FragmentActivity context = getActivity();
+
 		storiesAdapter = new ProjectLeafStoriesAdapter(context);
 		storiesAdapter.setOnActionListener(new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this));
+		storiesAdapter.setOnLongActionListener(new AdapterViewOnLongActionListener<Story>() {
+
+			@Override
+			public boolean onLongAction(final View view, final Story object) {
+				object.addObserver(ProjectLeafStoriesFragment.this);
+
+				final List<Iteration> iterations = new LinkedList<Iteration>(project.getIterationList());
+
+				final Iteration falseIteration = new Iteration();
+				falseIteration.setName(project.getTitle());
+				iterations.add(0, falseIteration);
+
+				int currentIterationIndex = iterations.indexOf(object.getIteration());
+				if (currentIterationIndex == -1) {
+					currentIterationIndex = 0;
+				}
+
+				final IterationAdapter iterationAdapter = new IterationAdapter(context, iterations, currentIterationIndex);
+
+				final ListView listView = new ListView(getActivity());
+				listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+				listView.setAdapter(iterationAdapter);
+
+				final AlertDialog.Builder builder = new Builder(context);
+				builder.setTitle(R.string.iteration_);
+				builder.setView(listView);
+				final AlertDialog dialog = builder.create();
+
+				listView.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+						for (int i = 0; i < listView.getCount(); i++) {
+							listView.setItemChecked(i, false);
+						}
+
+						listView.setItemChecked(position, true);
+
+						final Iteration iteration = position == 0 ? null : iterations.get(position);
+						metricsService.moveStory(
+								object,
+								iteration,
+								new Listener<Story>() {
+
+									@Override
+									public void onResponse(final Story response) {
+										Toast.makeText(context, R.string.feedback_ok_to_move_story, Toast.LENGTH_SHORT).show();
+									}
+								},
+								new ErrorListener() {
+									@Override
+									public void onErrorResponse(final VolleyError arg0) {
+										Toast.makeText(context, R.string.feedback_failed_to_move_story, Toast.LENGTH_SHORT).show();
+									}
+								}
+							);
+
+						dialog.dismiss();
+					}
+				});
+
+				dialog.show();
+
+				return true;
+			}
+		});
+
 		storiesListView = (ListView) view.findViewById(R.id.stories_list);
 		storiesEmptyView = view.findViewById(R.id.stories_empty_view);
 		storiesListView.setEmptyView(storiesEmptyView);

@@ -7,12 +7,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
+import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.util.IterationUtils;
@@ -25,6 +27,9 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 
 	private AdapterViewActionListener<Story> actionListener;
 	private final OnClickListener onClickListener;
+
+	private AdapterViewOnLongActionListener<Story> onLongActionListener;
+	private final OnLongClickListener onLongClickListener;
 
 	public ProjectLeafStoriesAdapter(final Context context) {
 		RoboGuice.injectMembers(context, this);
@@ -40,6 +45,20 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 				if (actionListener != null && position != null) {
 					actionListener.onAction(v, getItem(position));
 				}
+			}
+		};
+
+		onLongClickListener = new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(final View v) {
+				final Integer position = (Integer) v.getTag();
+
+				if (onLongActionListener != null && position != null) {
+					return onLongActionListener.onLongAction(v, getItem(position));
+				}
+
+				return true;
 			}
 		};
 	}
@@ -100,12 +119,14 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 			final Iteration iteration = story.getIteration();
 
 			holder.iteration.setText(iteration.getName());
-			holder.iteration.setTag(position);
 			holder.iteration.setOnClickListener(onClickListener);
 		} else {
 			holder.iteration.setText(" - ");
 			holder.iteration.setOnClickListener(null);
 		}
+
+		holder.iteration.setTag(position);
+		holder.iteration.setOnLongClickListener(onLongClickListener);
 
 		return ret;
 	}
@@ -114,6 +135,15 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 		this.stories = stories;
 
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * Add a listener to intercept long press events on stories iterations.
+	 *
+	 * @param onLongActionListener the listener to be set
+	 */
+	public void setOnLongActionListener(final AdapterViewOnLongActionListener<Story> onLongActionListener) {
+		this.onLongActionListener = onLongActionListener;
 	}
 
 	/**

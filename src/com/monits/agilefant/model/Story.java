@@ -213,6 +213,8 @@ public class Story extends Observable implements Parcelable, Observer {
 	 */
 	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
