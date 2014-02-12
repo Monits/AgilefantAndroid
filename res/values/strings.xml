@@ -80,7 +80,11 @@
 	<string name="feedback_failed_update_project">Failed to update project!</string>
 	<string name="feedback_ok_to_move_story">Successfully moved story!</string>
 	<string name="feedback_failed_to_move_story">Failed to move story!</string>
+	<string name="start_tracking_task_time">Do you want to start tracking the task time?</string>
+	<string name="dialog_start_tracking_task_time_negative">Cancel</string>
+	<string name="dialog_start_tracking_task_time_positive">Ok</string>
+	<string name="already_tracking_task_error">Already tracking a task, finish it before starting a new one!</string>
 	<string name="feedback_success_updated_task_rank">Successfully updated task\'s rank</string>
 	<string name="feedback_failed_update_tasks_rank">Failed to update task\'s rank</string>
-	
+
 </resources>

@@ -34,6 +34,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.TaskTimeTrackingService;
 import com.monits.agilefant.util.InputUtils;
 
 public class TaskAdapterViewActionListener extends AbstractObservableAdapterViewActionListener<Task> {
@@ -58,6 +59,28 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 	public void onAction(final View view, final Task object) {
 
 		switch (view.getId()) {
+			case R.id.column_name:
+				final Builder confirmStartTrackingBuilder = new Builder(context);
+				confirmStartTrackingBuilder.setMessage(R.string.start_tracking_task_time);
+				confirmStartTrackingBuilder.setPositiveButton(R.string.dialog_start_tracking_task_time_positive, new OnClickListener() {
+
+					@Override
+					public void onClick(final DialogInterface dialog, final int which) {
+						context.startService(new Intent(context, TaskTimeTrackingService.class));
+
+					}
+				});
+				confirmStartTrackingBuilder.setNegativeButton(R.string.dialog_start_tracking_task_time_negative, new OnClickListener() {
+
+					@Override
+					public void onClick(final DialogInterface dialog, final int which) {
+						dialog.dismiss();
+					}
+				});
+				final AlertDialog confirmStartTrackingDialog = confirmStartTrackingBuilder.create();
+				confirmStartTrackingDialog.show();
+
+				break;
 			case R.id.column_effort_left:
 
 				// Agilefant's tasks that are already done, can't have it's EL changed.
