@@ -89,6 +89,9 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		final Task task = getChild(groupPosition, childPosition);
 
 		holder.name.setText(task.getName());
+		holder.name.setTag(R.id.tag_group_position, groupPosition);
+		holder.name.setTag(R.id.tag_child_position, childPosition);
+		holder.name.setOnClickListener(onClickChildListener);
 
 		holder.state.setText(IterationUtils.getStateName(task.getState()));
 		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));

@@ -76,6 +76,8 @@ public class MyTasksAdapter extends BaseAdapter {
 		final Task task = getItem(position);
 
 		holder.name.setText(task.getName());
+		holder.name.setTag(position);
+		holder.name.setOnClickListener(onClickListener);
 
 		holder.state.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(task.getState())));
 		holder.state.setText(IterationUtils.getStateName(task.getState()));

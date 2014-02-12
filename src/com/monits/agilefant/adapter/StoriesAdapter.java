@@ -101,6 +101,9 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
 
+		holder.name.setTag(R.id.tag_child_position, childPosition);
+		holder.name.setTag(R.id.tag_group_position, groupPosition);
+		holder.name.setOnClickListener(onClickListener);
 		holder.spendEffort.setTag(R.id.tag_child_position, childPosition);
 		holder.spendEffort.setTag(R.id.tag_group_position, groupPosition);
 		holder.spendEffort.setOnClickListener(onClickListener);

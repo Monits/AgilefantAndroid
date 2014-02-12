@@ -91,6 +91,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
 		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
 
+		holder.name.setTag(position);
+		holder.name.setOnClickListener(onClickListener);
 		holder.spendEffort.setTag(position);
 		holder.spendEffort.setOnClickListener(onClickListener);
 		holder.originalEstimate.setTag(position);
