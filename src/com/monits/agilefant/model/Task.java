@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Parcelable, Rankeable {
+public class Task extends Observable implements Parcelable, Rankable {
 
 	public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
 		@Override

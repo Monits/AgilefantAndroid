@@ -1,6 +1,6 @@
 package com.monits.agilefant.model;
 
-public interface Rankeable {
+public interface Rankable {
 
 	/**
 	 * Retrieves the rank.

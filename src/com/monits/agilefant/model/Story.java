@@ -10,7 +10,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Story extends Observable implements Parcelable, Observer, Rankeable {
+public class Story extends Observable implements Parcelable, Observer, Rankable {
 
 	public static final Parcelable.Creator<Story> CREATOR = new Parcelable.Creator<Story>() {
 		@Override

@@ -16,7 +16,7 @@ import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
-import com.monits.agilefant.util.RankeableComparator;
+import com.monits.agilefant.util.RankComparator;
 
 public class TaskWithoutStoryAdapter extends BaseAdapter {
 
@@ -44,7 +44,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 			}
 		};
 
-		Collections.sort(tasks, RankeableComparator.INSTANCE);
+		Collections.sort(tasks, RankComparator.INSTANCE);
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	 * Sorts tasks by rank.
 	 */
 	public void sortAndNotify() {
-		Collections.sort(tasks, RankeableComparator.INSTANCE);
+		Collections.sort(tasks, RankComparator.INSTANCE);
 
 		notifyDataSetChanged();
 	}

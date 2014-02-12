@@ -16,7 +16,7 @@ import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.IterationUtils;
-import com.monits.agilefant.util.RankeableComparator;
+import com.monits.agilefant.util.RankComparator;
 
 public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
@@ -32,11 +32,11 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 
 		RoboGuice.injectMembers(context, this);
 
-		Collections.sort(stories, RankeableComparator.INSTANCE);
+		Collections.sort(stories, RankComparator.INSTANCE);
 		for (final Story story : stories) {
 			super.addGroup(story);
 			final List<Task> tasks = story.getTasks();
-			Collections.sort(tasks, RankeableComparator.INSTANCE);
+			Collections.sort(tasks, RankComparator.INSTANCE);
 			for (final Task task : tasks) {
 				super.addChildToGroup(story, task);
 			}
