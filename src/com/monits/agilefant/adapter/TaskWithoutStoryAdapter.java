@@ -1,5 +1,6 @@
 package com.monits.agilefant.adapter;
 
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -15,6 +16,7 @@ import com.monits.agilefant.listeners.AdapterViewActionListener;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
+import com.monits.agilefant.util.RankeableComparator;
 
 public class TaskWithoutStoryAdapter extends BaseAdapter {
 
@@ -41,21 +43,23 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 				}
 			}
 		};
+
+		Collections.sort(tasks, RankeableComparator.INSTANCE);
 	}
 
 	@Override
 	public int getCount() {
-		return tasks.size();
+		return tasks != null ? tasks.size() : 0;
 	}
 
 	@Override
 	public Task getItem(final int position) {
-		return tasks.get(position);
+		return getCount() > 0 && position < getCount() && position >= 0 ? tasks.get(position) : null;
 	}
 
 	@Override
 	public long getItemId(final int position) {
-		return tasks.get(position).getId();
+		return getItem(position) != null ? getItem(position).getId() : -1;
 	}
 
 	@Override
@@ -114,6 +118,15 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	 */
 	public void setOnActionListener(final AdapterViewActionListener<Task> listener) {
 		this.actionListener = listener;
+	}
+
+	/**
+	 * Sorts tasks by rank.
+	 */
+	public void sortAndNotify() {
+		Collections.sort(tasks, RankeableComparator.INSTANCE);
+
+		notifyDataSetChanged();
 	}
 
 	class Holder {

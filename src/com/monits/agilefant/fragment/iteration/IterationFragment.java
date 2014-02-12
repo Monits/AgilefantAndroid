@@ -110,7 +110,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			tasksWithoutStory.addAll(mIteration.getTasksWithoutStory());
 
 			fragments.add(StoriesFragment.newInstance(storiesArray));
-			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
+			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory, mIteration));
 			fragments.add(IterationBurndownFragment.newInstance(mIteration.getId()));
 
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));

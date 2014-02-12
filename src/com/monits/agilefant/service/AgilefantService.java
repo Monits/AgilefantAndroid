@@ -144,7 +144,7 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void updateTask(Task task, Listener<Task> listener, ErrorListener error);
-	
+
 	/**
 	 * Updates the Story Iteration.
 	 *
@@ -153,5 +153,15 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void moveStory(long backlogId, Story story, Listener<Story> listener, ErrorListener error);
-	
+
+
+	/**
+	 * Updates Task's rank under the given target task.
+	 *
+	 * @param task the task to be updated in rank.
+	 * @param targetTask the task to be ranked under.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void rankTaskUnder(Task task, Task targetTask, Listener<Task> listener, ErrorListener error);
 }

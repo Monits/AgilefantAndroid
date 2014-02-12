@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Parcelable {
+public class Task extends Observable implements Parcelable, Rankeable {
 
 	public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
 		@Override
@@ -213,16 +213,12 @@ public class Task extends Observable implements Parcelable {
 		notifyObservers();
 	}
 
-	/**
-	 * @return the rank
-	 */
+	@Override
 	public int  getRank() {
 		return rank;
 	}
 
-	/**
-	 * @param rank the rank to set
-	 */
+	@Override
 	public void setRank(final int rank) {
 		this.rank = rank;
 		setChanged();
@@ -294,6 +290,43 @@ public class Task extends Observable implements Parcelable {
 
 	@Override
 	public Task clone() {
-		return new Task(effortLeft, effortSpent, originalEstimate, name, id, responsibles, state, rank);
+		final Task clonedTask = new Task();
+		clonedTask.setEffortLeft(effortLeft);
+		clonedTask.setEffortSpent(effortSpent);
+		clonedTask.setOriginalEstimate(originalEstimate);
+		clonedTask.setName(name);
+		clonedTask.setId(id);
+		clonedTask.setResponsibles(responsibles);
+		clonedTask.setState(state);
+		clonedTask.setRank(rank);
+		clonedTask.setIteration(iteration);
+		clonedTask.setStory(story);
+		return clonedTask;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Task)) {
+			return false;
+		}
+		final Task other = (Task) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
 	}
 }

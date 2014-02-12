@@ -2,6 +2,7 @@ package com.monits.agilefant.service;
 
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
@@ -221,6 +222,40 @@ public class MetricsServiceImpl implements MetricsService {
 						story.setIteration(fallbackStory.getIteration());
 
 						error.onErrorResponse(arg0);
+					}
+				});
+	}
+
+	@Override
+	public void rankTaskUnder(final Task task, final Task targetTask, final List<Task> allTasks,
+			final Listener<Task> listener, final ErrorListener error) {
+
+		final List<Task> fallbackTasksList = new LinkedList<Task>();
+		for (int i = 0; i < allTasks.size(); i++) {
+			final Task taskAt = allTasks.get(i);
+
+			fallbackTasksList.add(taskAt.clone());
+
+			// Rank is equal to the index in the list.
+			taskAt.setRank(i);
+		}
+
+		agilefantService.rankTaskUnder(
+				task,
+				targetTask,
+				listener,
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						for (int i = 0; i < allTasks.size(); i++) {
+							final Task currentTaskAt = allTasks.get(i);
+
+							final int indexOfFallbackTask = fallbackTasksList.indexOf(currentTaskAt);
+							final Task fallbackTask = fallbackTasksList.get(indexOfFallbackTask);
+
+							currentTaskAt.setRank(fallbackTask.getRank());
+						}
 					}
 				});
 	}

@@ -10,7 +10,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Story extends Observable implements Parcelable, Observer {
+public class Story extends Observable implements Parcelable, Observer, Rankeable {
 
 	public static final Parcelable.Creator<Story> CREATOR = new Parcelable.Creator<Story>() {
 		@Override
@@ -187,16 +187,12 @@ public class Story extends Observable implements Parcelable, Observer {
 		this.tasks = tasks;
 	}
 
-	/**
-	 * @return the rank
-	 */
+	@Override
 	public int  getRank() {
 		return rank;
 	}
 
-	/**
-	 * @param rank the rank to set
-	 */
+	@Override
 	public void setRank(final int rank) {
 		this.rank = rank;
 	}

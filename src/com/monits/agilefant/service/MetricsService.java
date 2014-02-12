@@ -96,8 +96,8 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void changeTaskResponsibles(List<User> responsibles, Task task, Listener<Task> listener, ErrorListener error);
-	
-	
+
+
 	/**
 	 * Change story's iteration
 	 *
@@ -109,5 +109,18 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void moveStory(Story story, Iteration iteration, Listener<Story> listener, ErrorListener error);
-	
+
+
+	/**
+	 * Updates Task's rank under the given target task.
+	 *
+	 * <blockquote> <b>NOTE:</b> This method will automatically update all task's rank as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *
+	 * @param task the task to be updated in rank.
+	 * @param targetTask the task to be ranked under.
+	 * @param allTasks the complete list of tasks, to update it's ranks.
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void rankTaskUnder(Task task, Task targetTask, List<Task> allTasks, Listener<Task> listener, ErrorListener error);
 }

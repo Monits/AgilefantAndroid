@@ -36,6 +36,8 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String RANK_TASK_UNDER_ACTION = "%1$s/ajax/rankTaskAndMoveUnder.action";
+	private static final String RANK_UNDER_ID = "rankUnderId";
 	private static final String RESPONSIBLES_CHANGED = "responsiblesChanged";
 	private static final String NEW_RESPONSIBLES = "newResponsibles";
 	private static final String USERS_CHANGED = "usersChanged";
@@ -434,6 +436,29 @@ public class AgilefantServiceImpl implements AgilefantService {
 				}
 
 				return body.toString().getBytes();
+			}
+		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void rankTaskUnder(final Task task, final Task targetTask,
+			final Listener<Task> listener, final ErrorListener error) {
+
+		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, host);
+
+		final GsonRequest<Task> request = new GsonRequest<Task>(
+				Method.POST, url, gson, Task.class, listener, error) {
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<String, String>();
+
+				params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
+				params.put(TASK_ID, String.valueOf(task.getId()));
+				params.put(RANK_UNDER_ID, String.valueOf(targetTask != null ? targetTask.getId() : -1));
+
+				return params;
 			}
 		};
 
