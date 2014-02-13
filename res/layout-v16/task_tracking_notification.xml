@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
+        android:background="#163240"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/chronometer_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/app_icon"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textSize="14sp" />
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chronometer_description"
+        android:layout_toRightOf="@+id/app_icon"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/vertical_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/app_icon"
+        android:layout_toRightOf="@+id/app_icon"
+        android:background="?android:listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vertical_divider"
+        android:layout_toRightOf="@+id/app_icon"
+        android:divider="?android:listDivider"
+        android:dividerPadding="10dp"
+        android:orientation="horizontal"
+        android:showDividers="middle" >
+
+        <Button
+            android:id="@+id/chronometer_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_notification_pause"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="fitCenter"
+            android:text="@string/notification_pause" />
+
+        <Button
+            android:id="@+id/chronometer_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableLeft="@drawable/ic_notification_save"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="fitCenter"
+            android:text="@string/notification_submit" />
+    </LinearLayout>
+
+</RelativeLayout>

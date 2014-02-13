@@ -66,7 +66,9 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 					@Override
 					public void onClick(final DialogInterface dialog, final int which) {
-						context.startService(new Intent(context, TaskTimeTrackingService.class));
+						final Intent intent = new Intent(context, TaskTimeTrackingService.class);
+						intent.putExtra(TaskTimeTrackingService.EXTRA_TASK, object);
+						context.startService(intent);
 
 					}
 				});
