@@ -2,11 +2,13 @@ package com.monits.agilefant.service;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Method;
 
+import roboguice.service.RoboService;
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,9 +22,10 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.activity.SavingTaskTimeDialogActivity;
 import com.monits.agilefant.model.Task;
 
-public class TaskTimeTrackingService extends Service implements PropertyChangeListener {
+public class TaskTimeTrackingService extends RoboService implements PropertyChangeListener {
 
 	private static final int NOTIFICATION_ID = 1;
 
@@ -36,6 +39,8 @@ public class TaskTimeTrackingService extends Service implements PropertyChangeLi
 
 	private boolean isTracking;
 	private boolean isChronometerRunning;
+	private long elapsedMillis = -1;
+	private long timeWhenStopped = 0;
 
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -43,13 +48,19 @@ public class TaskTimeTrackingService extends Service implements PropertyChangeLi
 		public void onReceive(final Context context, final Intent intent) {
 			final String action = intent.getAction();
 			if (action.equals(ACTION_START_TRACKING)) {
-
-				displayNotification();
+				resumeChronometer();
 			} else if (action.equals(ACTION_PAUSE_TRACKING)) {
-
-				displayNotification();
+				pauseChronometer();
 			} else if (action.equals(ACTION_STOP_TRACKING)) {
+				pauseChronometer();
 
+				collapseStatusBar();
+
+				final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
+				dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+				dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_TASK, trackedTask);
+				dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(timeWhenStopped));
+				startActivity(dialogActivityIntent);
 			}
 		}
 	};
@@ -100,6 +111,10 @@ public class TaskTimeTrackingService extends Service implements PropertyChangeLi
 
 	@Override
 	public void onDestroy() {
+		final NotificationManager mNotificationManager =
+		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(NOTIFICATION_ID);
+
 		unregisterReceiver(broadcastReceiver);
 	}
 
@@ -118,9 +133,9 @@ public class TaskTimeTrackingService extends Service implements PropertyChangeLi
 
 		contentView.setTextViewText(R.id.chronometer_description, trackedTask.getName());
 		contentView.setChronometer(R.id.chronometer,
-				SystemClock.elapsedRealtime(), // TODO: save this time on pause.
+				elapsedMillis,
 				getString(R.string.chronometer_format),
-				isChronometerRunning = !isChronometerRunning); // TODO: Change this according to current state (play / pause)
+				isChronometerRunning);
 
 		mNotificationBuilder = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)
@@ -130,12 +145,14 @@ public class TaskTimeTrackingService extends Service implements PropertyChangeLi
 			.setContentTitle(getString(R.string.app_name))
 			.setContentText(getString(R.string.notification_content_text, trackedTask.getName()));
 
-		final PendingIntent changeStateIntent =
-				PendingIntent.getBroadcast(
-						TaskTimeTrackingService.this,
-						0,
-						new Intent(ACTION_START_TRACKING),
-						0);
+		final PendingIntent changeStateIntent;
+		if (isChronometerRunning) {
+			changeStateIntent = PendingIntent.getBroadcast(
+					TaskTimeTrackingService.this, 0, new Intent(ACTION_PAUSE_TRACKING), 0);
+		} else {
+			changeStateIntent = PendingIntent.getBroadcast(
+					TaskTimeTrackingService.this, 0, new Intent(ACTION_START_TRACKING), 0);
+		}
 
 		final PendingIntent stopIntent =
 				PendingIntent.getBroadcast(
@@ -149,13 +166,61 @@ public class TaskTimeTrackingService extends Service implements PropertyChangeLi
 
 		final Notification notification;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			contentView.setImageViewResource(R.id.chronometer_status,
+					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
+
 			mNotificationBuilder.setContent(contentView);
 			notification = mNotificationBuilder.build();
 		} else {
+			contentView.setTextViewCompoundDrawables(R.id.chronometer_status,
+					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play,
+							0,
+							0,
+							0);
+			contentView.setTextViewText(R.id.chronometer_status,
+					isChronometerRunning ? getString(R.string.notification_pause) : getString(R.string.notification_play));
+
 			notification = mNotificationBuilder.build();
 			notification.bigContentView = contentView;
 		}
 
 		startForeground(NOTIFICATION_ID, notification);
+	}
+
+	/**
+	 * Resumes chronometer, updates elapsed millis and updates notification state.
+	 */
+	private void resumeChronometer() {
+		isChronometerRunning = true;
+		elapsedMillis = elapsedMillis == -1 ? SystemClock.elapsedRealtime() : SystemClock.elapsedRealtime() + timeWhenStopped;
+
+		displayNotification();
+	}
+
+	/**
+	 * Stops the chronometer, stores the time when it was stopped and updates notification state.
+	 */
+	private void pauseChronometer() {
+		isChronometerRunning = false;
+		timeWhenStopped = elapsedMillis - SystemClock.elapsedRealtime();
+
+		displayNotification();
+	}
+
+	private void collapseStatusBar() {
+		final Object sbservice = getSystemService("statusbar");
+
+		try {
+		    final Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
+		    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+		        final Method collapse = statusbarManager.getMethod("collapse");
+		        collapse.invoke(sbservice);
+		    } else {
+		        final Method collapse2 = statusbarManager.getMethod("collapsePanels");
+		        collapse2.invoke(sbservice);
+		    }
+		} catch (final Exception e) {
+			Log.e(getClass().getName(), "Failed to close status bar", e);
+		}
 	}
 }

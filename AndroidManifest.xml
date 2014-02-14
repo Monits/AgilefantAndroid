@@ -9,6 +9,7 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
 
     <application
         android:name="com.monits.agilefant.AgilefantApplication"
@@ -54,12 +55,17 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/project_details"
             android:parentActivityName=".activity.AllBackLogsActivity" />
+        <activity
+            android:name=".activity.SavingTaskTimeDialogActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Dialog" />
        		
 		<service
 		    android:exported="false"
             android:name="com.monits.agilefant.service.TaskTimeTrackingService"
             android:enabled="true" >
         </service>
+        
     </application>
 
 </manifest>
