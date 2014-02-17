@@ -6,6 +6,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import roboguice.fragment.RoboFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +20,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
 import com.monits.agilefant.listeners.OnSwapRowListener;
@@ -41,6 +46,25 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 	private TaskWithoutStoryAdapter taskWithoutStoryAdapter;
 	private Iteration iteration;
 
+	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+
+			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
+					&& !TaskWithoutStoryFragment.this.isDetached()) {
+
+				final Task updatedTask = intent.getParcelableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
+
+				final int indexOf = taskWithoutStory.indexOf(updatedTask);
+				if (indexOf != -1) {
+					taskWithoutStory.get(indexOf).updateValues(updatedTask);
+					taskWithoutStoryAdapter.notifyDataSetChanged();
+				}
+			}
+		}
+	};
+
 	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory, final Iteration iteration) {
 		final Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList(EXTRA_TASKS, taskWithoutStory);
@@ -55,6 +79,10 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		final IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
+		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
 		this.taskWithoutStory= arguments.getParcelableArrayList(EXTRA_TASKS);
@@ -123,4 +151,11 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 			observable.deleteObserver(this);
 		}
 	}
+
+	@Override
+	public void onDestroy() {
+		getActivity().unregisterReceiver(broadcastReceiver);
+		super.onDestroy();
+	}
+
 }

@@ -8,6 +8,9 @@ import com.monits.agilefant.cache.BitmapLruCache;
 
 public class AgilefantApplication extends Application {
 
+	public static final String ACTION_TASK_UPDATED = "com.monits.agilefant.intent.action.TASK_UPDATED";
+	public static final String EXTRA_TASK_UPDATED = "com.monits.agilefant.intent.extra.UPDATED_TASK";
+
 	@Inject
 	private BitmapLruCache bitmapCache;
 

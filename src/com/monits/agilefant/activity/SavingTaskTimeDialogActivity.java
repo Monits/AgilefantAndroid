@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.TaskTimeTrackingService;
@@ -34,6 +35,10 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 					@Override
 					public void onResponse(final String arg0) {
 						stopService(new Intent(SavingTaskTimeDialogActivity.this, TaskTimeTrackingService.class));
+
+						final Intent taskUpdatedIntent = new Intent(AgilefantApplication.ACTION_TASK_UPDATED);
+						taskUpdatedIntent.putExtra(AgilefantApplication.EXTRA_TASK_UPDATED, task);
+						sendBroadcast(taskUpdatedIntent);
 
 						SavingTaskTimeDialogActivity.this.finish();
 					}
