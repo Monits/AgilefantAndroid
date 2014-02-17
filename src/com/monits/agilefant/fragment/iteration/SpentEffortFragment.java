@@ -36,7 +36,9 @@ import com.monits.agilefant.util.ValidationUtils;
 public class SpentEffortFragment extends RoboFragment {
 
 	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
+
 	private static final String TASK = "task";
+	private static final String MINUTES_SPENT = "minutes_spent";
 
 	@Inject
 	private MetricsService metricsService;
@@ -49,11 +51,16 @@ public class SpentEffortFragment extends RoboFragment {
 	private EditText mResponsiblesInput;
 	private EditText mHoursInput;
 	private EditText mCommentInput;
-
-	private Task task;
-	private SimpleDateFormat dateFormatter;
 	private ImageButton mTriggerPickerButton;
 	private EditText mEffortLeftInput;
+
+	private SimpleDateFormat dateFormatter;
+
+	private Task task;
+	private long minutesSpent = -1;
+
+	private Listener<String> spentRequestSuccessCallback;
+	private ErrorListener spentRequestFailedCallback;
 
 	public static SpentEffortFragment newInstance(final Task task) {
 		final Bundle arguments = new Bundle();
@@ -64,11 +71,24 @@ public class SpentEffortFragment extends RoboFragment {
 		return fragment;
 	}
 
+	public static SpentEffortFragment newInstance(final Task task, final long minutes) {
+		final Bundle arguments = new Bundle();
+		arguments.putParcelable(TASK, task);
+		arguments.putLong(MINUTES_SPENT, minutes);
+
+		final SpentEffortFragment fragment = new SpentEffortFragment();
+		fragment.setArguments(arguments);
+		return fragment;
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		task = getArguments().getParcelable(TASK);
+		final Bundle arguments = getArguments();
+		task = arguments.getParcelable(TASK);
+		minutesSpent = arguments.getLong(MINUTES_SPENT);
+
 		dateFormatter = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 	}
 
@@ -89,6 +109,13 @@ public class SpentEffortFragment extends RoboFragment {
 
 		mEffortLeftInput = (EditText) view.findViewById(R.id.effort_left);
 		mEffortLeftInput.setText(String.valueOf((float) task.getEffortLeft() / 60));
+
+		if (minutesSpent != -1) {
+			mHoursInput.setText(
+					HoursUtils.convertMinutesToHours(minutesSpent));
+			mEffortLeftInput.setText(
+					String.valueOf((float) (task.getEffortLeft() - minutesSpent) / 60));
+		}
 
 		mCommentInput = (EditText) view.findViewById(R.id.comment);
 
@@ -133,6 +160,10 @@ public class SpentEffortFragment extends RoboFragment {
 								public void onResponse(final String arg0) {
 									Toast.makeText(context, R.string.feedback_succesfully_updated_spent_effort, Toast.LENGTH_SHORT).show();
 									getFragmentManager().popBackStack();
+
+									if (spentRequestSuccessCallback != null) {
+										spentRequestSuccessCallback.onResponse(arg0);
+									}
 								}
 							},
 							new ErrorListener() {
@@ -140,6 +171,10 @@ public class SpentEffortFragment extends RoboFragment {
 								@Override
 								public void onErrorResponse(final VolleyError arg0) {
 									Toast.makeText(context, R.string.feedback_failed_update_spent_effort, Toast.LENGTH_SHORT).show();
+
+									if (spentRequestFailedCallback != null) {
+										spentRequestFailedCallback.onErrorResponse(arg0);
+									}
 								}
 							});
 
@@ -165,6 +200,11 @@ public class SpentEffortFragment extends RoboFragment {
 		});
 
 		return view;
+	}
+
+	public void setEffortSpentCallbacks(final Listener<String> listener, final ErrorListener error) {
+		this.spentRequestSuccessCallback = listener;
+		this.spentRequestFailedCallback = error;
 	}
 
 	private boolean isValid() {

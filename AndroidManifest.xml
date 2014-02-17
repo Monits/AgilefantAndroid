@@ -58,7 +58,7 @@
         <activity
             android:name=".activity.SavingTaskTimeDialogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
        		
 		<service
 		    android:exported="false"

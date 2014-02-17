@@ -1,37 +1,21 @@
 package com.monits.agilefant.activity;
 
-import java.util.Date;
-
-import roboguice.activity.RoboActivity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import roboguice.activity.RoboFragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
-import com.monits.agilefant.R;
+import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.TaskTimeTrackingService;
-import com.monits.agilefant.service.UserService;
 
-public class SavingTaskTimeDialogActivity extends RoboActivity {
+public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 
 	private static final long AGILEFANT_MIN_SPENT_EFFORT = 6;
 	public static final String EXTRA_TASK = "com.monits.agilefant.intent.extra.TASK";
 	public static final String EXTRA_ELAPSED_MILLIS = "com.monits.agilefant.intent.extra.ELAPSED_MILLIS";
-
-	@Inject
-	private MetricsService metricsService;
-
-	@Inject
-	private UserService userService;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -39,56 +23,32 @@ public class SavingTaskTimeDialogActivity extends RoboActivity {
 
 		final Intent intent = this.getIntent();
 		final Bundle extras = intent.getExtras();
-		final Task trackedTask = extras.getParcelable(EXTRA_TASK);
-		final long elapsedMillis = extras.getLong(EXTRA_ELAPSED_MILLIS);
+		final Task task = extras.getParcelable(EXTRA_TASK);
+		final long millis = extras.getLong(EXTRA_ELAPSED_MILLIS);
+		final long minutes = getSpentEffort(millisToMinutes(millis));
 
-		final Builder confirmSubmitTimeBuilder = new Builder(this);
-		confirmSubmitTimeBuilder.setMessage(R.string.dialog_set_task_time);
-		confirmSubmitTimeBuilder.setPositiveButton(R.string.dialog_start_tracking_task_time_positive, new OnClickListener() {
+		final SpentEffortFragment spentEffortFragment = SpentEffortFragment.newInstance(task, minutes);
+		spentEffortFragment.setEffortSpentCallbacks(
+				new Listener<String>() {
 
-			@Override
-			public void onClick(final DialogInterface dialog, final int which) {
-				metricsService.taskChangeSpentEffort(
-						new Date(),
-						getSpentEffort(millisToMinutes(elapsedMillis)),
-						"",
-						trackedTask,
-						userService.getLoggedUser().getId(),
-						new Listener<String>() {
+					@Override
+					public void onResponse(final String arg0) {
+						stopService(new Intent(SavingTaskTimeDialogActivity.this, TaskTimeTrackingService.class));
 
-							@Override
-							public void onResponse(final String arg0) {
-								Toast.makeText(SavingTaskTimeDialogActivity.this, R.string.time_saved, Toast.LENGTH_SHORT).show();
+						SavingTaskTimeDialogActivity.this.finish();
+					}
+				},
+				new ErrorListener() {
 
-								stopService(new Intent(SavingTaskTimeDialogActivity.this, TaskTimeTrackingService.class));
-							}
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						SavingTaskTimeDialogActivity.this.finish();
+					}
+				});
 
-						},
-						new ErrorListener() {
-							@Override
-							public void onErrorResponse(final VolleyError arg0) {
-								Toast.makeText(SavingTaskTimeDialogActivity.this, R.string.error_saving_time, Toast.LENGTH_SHORT).show();
-							}
-
-						});
-
-				SavingTaskTimeDialogActivity.this.finish();
-				dialog.dismiss();
-			}
-		});
-		confirmSubmitTimeBuilder.setNegativeButton(R.string.dialog_start_tracking_task_time_negative, new OnClickListener() {
-
-			@Override
-			public void onClick(final DialogInterface dialog, final int which) {
-				sendBroadcast(new Intent(TaskTimeTrackingService.ACTION_START_TRACKING));
-
-				SavingTaskTimeDialogActivity.this.finish();
-				dialog.dismiss();
-			}
-		});
-
-		final AlertDialog confirmSubmitTaskTimeDialog = confirmSubmitTimeBuilder.create();
-		confirmSubmitTaskTimeDialog.show();
+		getSupportFragmentManager().beginTransaction()
+			.replace(android.R.id.content, spentEffortFragment)
+			.commit();
 	}
 
 	private long millisToMinutes(final long millis) {
