@@ -111,10 +111,12 @@ public class SpentEffortFragment extends RoboFragment {
 		mEffortLeftInput.setText(String.valueOf((float) task.getEffortLeft() / 60));
 
 		if (minutesSpent != -1) {
+			final float difference = (task.getEffortLeft() - minutesSpent) / 60.0f;
+
 			mHoursInput.setText(
 					HoursUtils.convertMinutesToHours(minutesSpent));
 			mEffortLeftInput.setText(
-					String.valueOf((float) (task.getEffortLeft() - minutesSpent) / 60));
+					String.valueOf(difference < 0 ? 0 : difference));
 		}
 
 		mCommentInput = (EditText) view.findViewById(R.id.comment);
