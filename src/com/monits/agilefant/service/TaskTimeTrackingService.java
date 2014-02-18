@@ -52,7 +52,12 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			} else if (action.equals(ACTION_PAUSE_TRACKING)) {
 				pauseChronometer();
 			} else if (action.equals(ACTION_STOP_TRACKING)) {
-				pauseChronometer();
+
+				if (isChronometerRunning) {
+					pauseChronometer();
+
+					displayNotification();
+				}
 
 				collapseStatusBar();
 
@@ -64,6 +69,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 						SavingTaskTimeDialogActivity.EXTRA_TASK, trackedTask);
 				dialogActivityIntent.putExtra(
 						SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(timeWhenStopped));
+
 				startActivity(dialogActivityIntent);
 			}
 		}
