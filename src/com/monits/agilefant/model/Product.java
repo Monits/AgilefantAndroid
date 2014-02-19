@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Product implements Serializable{
+public class Product implements Serializable {
 
 	private static final long serialVersionUID = 2998260609210275811L;
 
@@ -24,7 +24,7 @@ public class Product implements Serializable{
 	 * @param title The product title
 	 * @param projectList Project List
 	 */
-	public Product(long id, String title, List<Project> projectList) {
+	public Product(final long id, final String title, final List<Project> projectList) {
 		this.id = id;
 		this.title = title;
 		this.projectList = projectList;
@@ -40,7 +40,7 @@ public class Product implements Serializable{
 	/**
 	 * @param id The product id to set
 	 */
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -54,7 +54,7 @@ public class Product implements Serializable{
 	/**
 	 * @param title The product title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -68,7 +68,7 @@ public class Product implements Serializable{
 	/**
 	 * @param projectList the projectList to set
 	 */
-	public void setProjectList(List<Project> projectList) {
+	public void setProjectList(final List<Project> projectList) {
 		this.projectList = projectList;
 	}
 }

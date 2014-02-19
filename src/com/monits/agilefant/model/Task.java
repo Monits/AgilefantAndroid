@@ -1,27 +1,17 @@
 package com.monits.agilefant.model;
 
-import java.util.LinkedList;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Observable;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Parcelable, Rankable {
+public class Task extends Observable implements Serializable, Rankable {
 
-	public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
-		@Override
-		public Task createFromParcel(final Parcel in) {
-			return new Task(in);
-		}
-
-		@Override
-		public Task[] newArray(final int size) {
-			return new Task[size];
-		}
-	};
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 2576001407807164868L;
 
 	@SerializedName("effortLeft")
 	private long effortLeft;
@@ -78,20 +68,6 @@ public class Task extends Observable implements Parcelable, Rankable {
 		this.responsibles = responsibles;
 		this.state = state;
 		this.rank = rank;
-	}
-
-	private Task(final Parcel in) {
-		this.effortLeft = in.readLong();
-		this.effortSpent = in.readLong();
-		this.originalEstimate = in.readLong();
-		this.name = in.readString();
-		this.id = in.readLong();
-		responsibles = new LinkedList<User>();
-		in.readList(this.responsibles, User.class.getClassLoader());
-		this.state = (StateKey) in.readSerializable();
-		this.rank = in.readInt();
-		this.iteration = in.readParcelable(Iteration.class.getClassLoader());
-		this.story = in.readParcelable(Story.class.getClassLoader());
 	}
 
 	/**
@@ -267,25 +243,6 @@ public class Task extends Observable implements Parcelable, Rankable {
 		this.responsibles = task.getResponsibles();
 		setChanged();
 		notifyObservers();
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeLong(effortLeft);
-		dest.writeLong(effortSpent);
-		dest.writeLong(originalEstimate);
-		dest.writeString(name);
-		dest.writeLong(id);
-		dest.writeList(responsibles);
-		dest.writeSerializable(state);
-		dest.writeInt(rank);
-		dest.writeParcelable(iteration, flags);
-		dest.writeParcelable(story, flags);
 	}
 
 	@Override

@@ -54,7 +54,8 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
 					&& !TaskWithoutStoryFragment.this.isDetached()) {
 
-				final Task updatedTask = intent.getParcelableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
+				final Task updatedTask =
+						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
 
 				final int indexOf = taskWithoutStory.indexOf(updatedTask);
 				if (indexOf != -1) {
@@ -67,8 +68,8 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory, final Iteration iteration) {
 		final Bundle bundle = new Bundle();
-		bundle.putParcelableArrayList(EXTRA_TASKS, taskWithoutStory);
-		bundle.putParcelable(EXTRA_ITERATION, iteration);
+		bundle.putSerializable(EXTRA_TASKS, taskWithoutStory);
+		bundle.putSerializable(EXTRA_ITERATION, iteration);
 
 		final TaskWithoutStoryFragment taskWithoutStoryFragment = new TaskWithoutStoryFragment();
 		taskWithoutStoryFragment.setArguments(bundle);
@@ -76,6 +77,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		return taskWithoutStoryFragment;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,8 +87,8 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
-		this.taskWithoutStory= arguments.getParcelableArrayList(EXTRA_TASKS);
-		this.iteration = arguments.getParcelable(EXTRA_ITERATION);
+		this.taskWithoutStory= (List<Task>) arguments.getSerializable(EXTRA_TASKS);
+		this.iteration = (Iteration) arguments.getSerializable(EXTRA_ITERATION);
 	}
 
 	@Override

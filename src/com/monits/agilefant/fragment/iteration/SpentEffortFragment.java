@@ -64,7 +64,7 @@ public class SpentEffortFragment extends RoboFragment {
 
 	public static SpentEffortFragment newInstance(final Task task) {
 		final Bundle arguments = new Bundle();
-		arguments.putParcelable(TASK, task);
+		arguments.putSerializable(TASK, task);
 
 		final SpentEffortFragment fragment = new SpentEffortFragment();
 		fragment.setArguments(arguments);
@@ -73,7 +73,7 @@ public class SpentEffortFragment extends RoboFragment {
 
 	public static SpentEffortFragment newInstance(final Task task, final long minutes) {
 		final Bundle arguments = new Bundle();
-		arguments.putParcelable(TASK, task);
+		arguments.putSerializable(TASK, task);
 		arguments.putLong(MINUTES_SPENT, minutes);
 
 		final SpentEffortFragment fragment = new SpentEffortFragment();
@@ -86,7 +86,7 @@ public class SpentEffortFragment extends RoboFragment {
 		super.onCreate(savedInstanceState);
 
 		final Bundle arguments = getArguments();
-		task = arguments.getParcelable(TASK);
+		task = (Task) arguments.getSerializable(TASK);
 		minutesSpent = arguments.getLong(MINUTES_SPENT);
 
 		dateFormatter = new SimpleDateFormat(DATE_PATTERN, Locale.US);

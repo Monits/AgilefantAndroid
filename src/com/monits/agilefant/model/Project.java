@@ -1,26 +1,16 @@
 package com.monits.agilefant.model;
 
-import java.util.LinkedList;
+import java.io.Serializable;
 import java.util.List;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Project implements Parcelable {
+public class Project implements Serializable {
 
-	public static final Parcelable.Creator<Project> CREATOR = new Parcelable.Creator<Project>() {
-		@Override
-		public Project createFromParcel(final Parcel in) {
-			return new Project(in);
-		}
-
-		@Override
-		public Project[] newArray(final int size) {
-			return new Project[size];
-		}
-	};
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6674750903458874065L;
 
 	@SerializedName("id")
 	private long id;
@@ -70,18 +60,6 @@ public class Project implements Parcelable {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.assignees = assignees;
-	}
-
-	private Project(final Parcel in) {
-		this.id = in.readLong();
-		this.title = in.readString();
-		this.iterationList = new LinkedList<Iteration>();
-		in.readList(iterationList, Iteration.class.getClassLoader());
-		this.startDate = in.readLong();
-		this.endDate = in.readLong();
-		this.assignees = new LinkedList<User>();
-		in.readList(assignees, User.class.getClassLoader());
-		this.parent = in.readParcelable(Backlog.class.getClassLoader());
 	}
 
 	/**
@@ -164,21 +142,5 @@ public class Project implements Parcelable {
 	 */
 	public void setParent(final Backlog parent) {
 		this.parent = parent;
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeLong(id);
-		dest.writeString(getTitle());
-		dest.writeList(iterationList);
-		dest.writeLong(startDate);
-		dest.writeLong(endDate);
-		dest.writeList(assignees);
-		dest.writeParcelable(parent, flags);
 	}
 }

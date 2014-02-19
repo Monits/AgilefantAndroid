@@ -28,7 +28,7 @@ public class SelectStateDialogFragment extends DialogFragment {
 		final SelectStateDialogFragment dialogFragment = new SelectStateDialogFragment();
 
 		final Bundle arguments = new Bundle();
-		arguments.putParcelable(ARGUMENT_TASK, task);
+		arguments.putSerializable(ARGUMENT_TASK, task);
 		dialogFragment.setArguments(arguments);
 
 		return dialogFragment;
@@ -38,7 +38,7 @@ public class SelectStateDialogFragment extends DialogFragment {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mTask = getArguments().getParcelable(ARGUMENT_TASK);
+		mTask = (Task) getArguments().getSerializable(ARGUMENT_TASK);
 	}
 
 	@Override

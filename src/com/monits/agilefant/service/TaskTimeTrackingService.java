@@ -100,7 +100,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			if (intent != null && intent.hasExtra(EXTRA_TASK)) {
 				isTracking = true;
 
-				trackedTask = intent.getParcelableExtra(EXTRA_TASK);
+				trackedTask = (Task) intent.getSerializableExtra(EXTRA_TASK);
 
 				displayNotification();
 

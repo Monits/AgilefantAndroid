@@ -1,23 +1,15 @@
 package com.monits.agilefant.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Metrics implements Parcelable {
+public class Metrics implements Serializable {
 
-	public static final Parcelable.Creator<Metrics> CREATOR = new Parcelable.Creator<Metrics>() {
-		@Override
-		public Metrics createFromParcel(final Parcel in) {
-			return new Metrics(in);
-		}
-
-		@Override
-		public Metrics[] newArray(final int size) {
-			return new Metrics[size];
-		}
-	};
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 2283324819991736310L;
 
 	@SerializedName("effortLeft")
 	private long effortLeft;
@@ -46,12 +38,6 @@ public class Metrics implements Parcelable {
 		this.effortLeft = effortLeft;
 		this.effortSpent = effortSpent;
 		this.originalEstimate = originalEstimate;
-	}
-
-	private Metrics(final Parcel in) {
-		this.effortLeft = in.readLong();
-		this.effortSpent = in.readLong();
-		this.originalEstimate = in.readLong();
 	}
 
 	/**
@@ -94,17 +80,5 @@ public class Metrics implements Parcelable {
 	 */
 	public void setOriginalEstimate(final long originalEstimate) {
 		this.originalEstimate = originalEstimate;
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeLong(effortLeft);
-		dest.writeLong(effortSpent);
-		dest.writeLong(originalEstimate);
 	}
 }

@@ -51,18 +51,19 @@ public class UserChooserFragment extends RoboFragment {
 		final UserChooserFragment fragment = new UserChooserFragment();
 
 		final Bundle arguments = new Bundle();
-		arguments.putParcelableArrayList(CURRENT_RESPONSIBLES, new ArrayList<User>(currentResponsibles));
+		arguments.putSerializable(CURRENT_RESPONSIBLES, new ArrayList<User>(currentResponsibles));
 		fragment.setArguments(arguments);
 		fragment.setOnUsersSubmittedListener(listener);
 
 		return fragment;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 
 		final Bundle arguments = getArguments();
-		final List<User> currentUsers = arguments.getParcelableArrayList(CURRENT_RESPONSIBLES);
+		final List<User> currentUsers = (List<User>) arguments.getSerializable(CURRENT_RESPONSIBLES);
 		if (currentUsers != null) {
 			selectedUsers.addAll(currentUsers);
 		}

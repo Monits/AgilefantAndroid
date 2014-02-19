@@ -24,7 +24,7 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 
 		final Intent intent = this.getIntent();
 		final Bundle extras = intent.getExtras();
-		final Task task = extras.getParcelable(EXTRA_TASK);
+		final Task task = (Task) extras.getSerializable(EXTRA_TASK);
 		final long millis = extras.getLong(EXTRA_ELAPSED_MILLIS);
 		final long minutes = getSpentEffort(millisToMinutes(millis));
 

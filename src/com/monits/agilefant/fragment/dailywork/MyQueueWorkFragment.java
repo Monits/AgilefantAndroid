@@ -31,18 +31,19 @@ public class MyQueueWorkFragment extends RoboFragment implements Observer {
 
 		final ArrayList<Task> tasks = new ArrayList<Task>();
 		tasks.addAll(queuedTasks);
-		arguments.putParcelableArrayList(TASKS_KEY, tasks);
+		arguments.putSerializable(TASKS_KEY, tasks);
 
 		queueWorkFragment.setArguments(arguments);
 
 		return queueWorkFragment;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mTasks = getArguments().getParcelableArrayList(TASKS_KEY);
+		mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
 	}
 
 	@Override

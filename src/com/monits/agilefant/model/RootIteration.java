@@ -1,32 +1,20 @@
 package com.monits.agilefant.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RootIteration implements Parcelable {
+public class RootIteration implements Serializable {
 
-	public static final Parcelable.Creator<RootIteration> CREATOR = new Parcelable.Creator<RootIteration>() {
-		@Override
-		public RootIteration createFromParcel(final Parcel in) {
-			return new RootIteration(in);
-		}
-
-		@Override
-		public RootIteration[] newArray(final int size) {
-			return new RootIteration[size];
-		}
-	};
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6685530221513814790L;
 
 	@SerializedName("name")
 	private String name;
 
 	public RootIteration() {
-	}
-
-	private RootIteration(final Parcel in) {
-		this.name = in.readString();
 	}
 
 	/**
@@ -41,15 +29,5 @@ public class RootIteration implements Parcelable {
 	 */
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeString(name);
 	}
 }

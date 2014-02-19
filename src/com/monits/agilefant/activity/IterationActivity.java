@@ -24,7 +24,7 @@ public class IterationActivity extends BaseActivity {
 		}
 
 		final Bundle bundle = getIntent().getExtras();
-		iteration = bundle.getParcelable(ITERATION);
+		iteration = (Iteration) bundle.getSerializable(ITERATION);
 
 		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		transaction.replace(R.id.container, IterationFragment.newInstance(iteration));

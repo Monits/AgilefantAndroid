@@ -33,18 +33,19 @@ public class MyStoriesFragment extends RoboFragment implements Observer {
 
 		final ArrayList<Story> myStories = new ArrayList<Story>();
 		myStories.addAll(stories);
-		arguments.putParcelableArrayList(STORIES_KEY, myStories);
+		arguments.putSerializable(STORIES_KEY, myStories);
 
 		storiesFragment.setArguments(arguments);
 
 		return storiesFragment;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mStories = getArguments().getParcelableArrayList(STORIES_KEY);
+		mStories = (List<Story>) getArguments().getSerializable(STORIES_KEY);
 	}
 
 	@Override

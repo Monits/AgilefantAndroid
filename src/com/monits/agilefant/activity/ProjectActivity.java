@@ -75,7 +75,7 @@ public class ProjectActivity extends BaseActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		backlog = getIntent().getParcelableExtra(EXTRA_BACKLOG);
+		backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
 
 		pagerTitleStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 

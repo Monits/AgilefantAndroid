@@ -39,7 +39,8 @@ public class StoriesFragment extends RoboFragment implements Observer {
 			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
 					&& !StoriesFragment.this.isDetached()) {
 
-				final Task updatedTask = intent.getParcelableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
+				final Task updatedTask =
+						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
 
 				for (final Story story : stories) {
 					final List<Task> tasks = story.getTasks();
@@ -55,7 +56,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 	public static StoriesFragment newInstance(final ArrayList<Story> stories) {
 		final Bundle bundle = new Bundle();
-		bundle.putParcelableArrayList(STORIES, stories);
+		bundle.putSerializable(STORIES, stories);
 
 		final StoriesFragment storiesFragment = new StoriesFragment();
 		storiesFragment.setArguments(bundle);
@@ -63,6 +64,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 		return storiesFragment;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,7 +74,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
-		this.stories= arguments.getParcelableArrayList(STORIES);
+		this.stories= (List<Story>) arguments.getSerializable(STORIES);
 	}
 
 	@Override
