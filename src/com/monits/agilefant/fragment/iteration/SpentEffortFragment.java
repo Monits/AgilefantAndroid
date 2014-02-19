@@ -146,62 +146,67 @@ public class SpentEffortFragment extends RoboFragment {
 			@Override
 			public void onClick(final View v) {
 
-				if (isValid()) {
-					final long minutes = HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
-
-					final Context context = getActivity();
-					metricsService.taskChangeSpentEffort(
-							DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
-							minutes,
-							mCommentInput.getText().toString(),
-							task,
-							userService.getLoggedUser().getId(),
-							new Listener<String>() {
-
-								@Override
-								public void onResponse(final String arg0) {
-									Toast.makeText(context, R.string.feedback_succesfully_updated_spent_effort, Toast.LENGTH_SHORT).show();
-									getFragmentManager().popBackStack();
-
-									if (spentRequestSuccessCallback != null) {
-										spentRequestSuccessCallback.onResponse(arg0);
-									}
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									Toast.makeText(context, R.string.feedback_failed_update_spent_effort, Toast.LENGTH_SHORT).show();
-
-									if (spentRequestFailedCallback != null) {
-										spentRequestFailedCallback.onErrorResponse(arg0);
-									}
-								}
-							});
-
-					metricsService.changeEffortLeft(
-							InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
-							task,
-							new Listener<Task>() {
-
-								@Override
-								public void onResponse(final Task arg0) {
-									Toast.makeText(context, R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									Toast.makeText(context, R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
-								}
-							});
-				}
+				saveEffortLeft();
 			}
+
 		});
 
 		return view;
+	}
+
+	private void saveEffortLeft() {
+		if (isValid()) {
+			final long minutes = HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
+
+			final Context context = getActivity();
+				metricsService.taskChangeSpentEffort(
+						DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
+						minutes,
+						mCommentInput.getText().toString(),
+						task,
+						userService.getLoggedUser().getId(),
+						new Listener<String>() {
+
+							@Override
+							public void onResponse(final String arg0) {
+								Toast.makeText(context, R.string.feedback_succesfully_updated_spent_effort, Toast.LENGTH_SHORT).show();
+								getFragmentManager().popBackStack();
+
+								if (spentRequestSuccessCallback != null) {
+									spentRequestSuccessCallback.onResponse(arg0);
+								}
+							}
+						},
+						new ErrorListener() {
+
+							@Override
+							public void onErrorResponse(final VolleyError arg0) {
+								Toast.makeText(context, R.string.feedback_failed_update_spent_effort, Toast.LENGTH_SHORT).show();
+
+								if (spentRequestFailedCallback != null) {
+									spentRequestFailedCallback.onErrorResponse(arg0);
+								}
+							}
+						});
+
+				metricsService.changeEffortLeft(
+						InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
+						task,
+						new Listener<Task>() {
+
+							@Override
+							public void onResponse(final Task arg0) {
+								Toast.makeText(context, R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
+							}
+						},
+						new ErrorListener() {
+
+							@Override
+							public void onErrorResponse(final VolleyError arg0) {
+								Toast.makeText(context, R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
+							}
+						});
+			}
 	}
 
 	public void setEffortSpentCallbacks(final Listener<String> listener, final ErrorListener error) {
@@ -213,6 +218,14 @@ public class SpentEffortFragment extends RoboFragment {
 		if (!ValidationUtils.validDate(DATE_PATTERN, mDateInput.getText().toString().trim())) {
 			Toast.makeText(getActivity(), R.string.error_validation_date, Toast.LENGTH_SHORT).show();
 			return false;
+		} else {
+			final String hoursInputValue = mHoursInput.getText().toString().trim();
+			if (hoursInputValue.equals("—")
+				|| hoursInputValue.equals("")
+				|| hoursInputValue.equals("0")) {
+				Toast.makeText(getActivity(), R.string.error_validate_effort_left, Toast.LENGTH_SHORT).show();
+				return false;
+			}
 		}
 
 		return true;
