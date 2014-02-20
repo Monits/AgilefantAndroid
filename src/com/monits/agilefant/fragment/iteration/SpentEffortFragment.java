@@ -6,7 +6,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import roboguice.fragment.RoboFragment;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.dialog.DateTimePickerDialogFragment;
 import com.monits.agilefant.dialog.DateTimePickerDialogFragment.OnDateSetListener;
+import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.UserService;
@@ -54,6 +58,7 @@ public class SpentEffortFragment extends RoboFragment {
 	private ImageButton mTriggerPickerButton;
 	private EditText mEffortLeftInput;
 
+
 	private SimpleDateFormat dateFormatter;
 
 	private Task task;
@@ -61,6 +66,7 @@ public class SpentEffortFragment extends RoboFragment {
 
 	private Listener<String> spentRequestSuccessCallback;
 	private ErrorListener spentRequestFailedCallback;
+
 
 	public static SpentEffortFragment newInstance(final Task task) {
 		final Bundle arguments = new Bundle();
@@ -145,8 +151,56 @@ public class SpentEffortFragment extends RoboFragment {
 
 			@Override
 			public void onClick(final View v) {
+				final Context context = SpentEffortFragment.this.getActivity();
+				final long effortLeft = task.getEffortLeft();
+				final StateKey taskState = task.getState();
 
-				saveEffortLeft();
+				if ((effortLeft == 0
+						|| Float.valueOf(mEffortLeftInput.getText().toString()) == 0)
+						&& taskState != StateKey.IMPLEMENTED
+						&& taskState != StateKey.DONE) {
+
+					final AlertDialog.Builder builder = new Builder(context);
+					builder.setNegativeButton(R.string.dialog_update_task_state_negative, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(final DialogInterface dialog, final int which) {
+							dialog.dismiss();
+						}
+					});
+					builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(final DialogInterface dialog, final int which) {
+							saveEffortLeft();
+
+							metricsService.taskChangeState(
+									StateKey.IMPLEMENTED,
+									task,
+									new Listener<Task>() {
+
+										@Override
+										public void onResponse(final Task arg0) {
+											Toast.makeText(context, R.string.feedback_successfully_updated_state, Toast.LENGTH_SHORT).show();
+										}
+									},
+									new ErrorListener() {
+
+										@Override
+										public void onErrorResponse(
+												final VolleyError arg0) {
+											Toast.makeText(context, R.string.feedback_failed_update_state, Toast.LENGTH_SHORT).show();
+										}
+									});
+							dialog.dismiss();
+						}
+					});
+					builder.setMessage(R.string.dialog_update_task_state);
+
+					builder.show();
+
+				} else {
+					saveEffortLeft();
+				}
+
 			}
 
 		});
@@ -155,10 +209,11 @@ public class SpentEffortFragment extends RoboFragment {
 	}
 
 	private void saveEffortLeft() {
+		final Context context = SpentEffortFragment.this.getActivity();
 		if (isValid()) {
 			final long minutes = HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
 
-			final Context context = getActivity();
+
 				metricsService.taskChangeSpentEffort(
 						DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
 						minutes,
