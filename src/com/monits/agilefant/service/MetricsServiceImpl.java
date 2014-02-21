@@ -10,6 +10,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Rankable;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -231,14 +232,7 @@ public class MetricsServiceImpl implements MetricsService {
 			final Listener<Task> listener, final ErrorListener error) {
 
 		final List<Task> fallbackTasksList = new LinkedList<Task>();
-		for (int i = 0; i < allTasks.size(); i++) {
-			final Task taskAt = allTasks.get(i);
-
-			fallbackTasksList.add(taskAt.clone());
-
-			// Rank is equal to the index in the list.
-			taskAt.setRank(i);
-		}
+		copyAndSetRank(allTasks, fallbackTasksList);
 
 		agilefantService.rankTaskUnder(
 				task,
@@ -248,15 +242,90 @@ public class MetricsServiceImpl implements MetricsService {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						for (int i = 0; i < allTasks.size(); i++) {
-							final Task currentTaskAt = allTasks.get(i);
+						rollbackRanks(allTasks, fallbackTasksList);
 
-							final int indexOfFallbackTask = fallbackTasksList.indexOf(currentTaskAt);
-							final Task fallbackTask = fallbackTasksList.get(indexOfFallbackTask);
-
-							currentTaskAt.setRank(fallbackTask.getRank());
-						}
+						error.onErrorResponse(arg0);
 					}
 				});
+	}
+
+	@Override
+	public void rankStoryOver(final Story story, final Story targetStory, final List<Story> allStories,
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final List<Story> fallbackStoryList = new LinkedList<Story>();
+		copyAndSetRank(allStories, fallbackStoryList);
+
+		agilefantService.rankStoryOver(
+				story,
+				targetStory,
+				listener,
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						rollbackRanks(allStories, fallbackStoryList);
+
+						error.onErrorResponse(arg0);
+					}
+				});
+	}
+
+	@Override
+	public void rankStoryUnder(final Story story, final Story targetStory, final List<Story> allStories,
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final List<Story> fallbackStoryList = new LinkedList<Story>();
+		copyAndSetRank(allStories, fallbackStoryList);
+
+		agilefantService.rankStoryUnder(
+				story,
+				targetStory,
+				listener,
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						rollbackRanks(allStories, fallbackStoryList);
+
+						error.onErrorResponse(arg0);
+					}
+				});
+	}
+
+	/**
+	 * This method clones the source items into the fallback list, and updates the ranks of the source list.
+	 *
+	 * @param source the original list.
+	 * @param copy the list where cloned items will be added.
+	 */
+	public <T extends Rankable<T>> void copyAndSetRank(final List<T> source, final List<T> copy) {
+
+		for (int i = 0; i < source.size(); i++) {
+			final T itemAt = source.get(i);
+
+			copy.add(itemAt.clone());
+
+			// Rank is equal to the index in the list.
+			itemAt.setRank(i);
+		}
+	}
+
+	/**
+	 * Updates the ranks of the items in the source list with the ones in the fallbacklist.
+	 *
+	 * @param source the list to be updated.
+	 * @param fallbackList the list containing the values to be updated with.
+	 */
+	public <T extends Rankable<T>> void rollbackRanks(final List<T> source, final List<T> fallbackList) {
+
+		for (int i = 0; i < source.size(); i++) {
+			final T currentTaskAt = source.get(i);
+
+			final int indexOfFallbackTask = fallbackList.indexOf(currentTaskAt);
+			final T fallbackTask = fallbackList.get(indexOfFallbackTask);
+
+			currentTaskAt.setRank(fallbackTask.getRank());
+		}
 	}
 }

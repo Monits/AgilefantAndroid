@@ -21,15 +21,15 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	/**
 	 * @param context
 	 */
-	public ProjectAdapter(Context context) {
+	public ProjectAdapter(final Context context) {
 		this(context, null);
 	}
 
-	public ProjectAdapter(Context context, List<Project> projectList) {
+	public ProjectAdapter(final Context context, final List<Project> projectList) {
 		this(context, projectList, R.layout.default_project_item, R.layout.default_iteration_item);
 	}
 
-	public ProjectAdapter(Context context, List<Project> projectList, int groupResId, int childResId) {
+	public ProjectAdapter(final Context context, final List<Project> projectList, final int groupResId, final int childResId) {
 		super(context);
 
 		setProjects(projectList);
@@ -40,45 +40,48 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition,
-			boolean isLastChild, View convertView, ViewGroup parent) {
-		HolderChild holder;
+	public View getChildView(final int groupPosition, final int childPosition,
+			final boolean isLastChild, final View convertView, final ViewGroup parent) {
+
+		final View ret;
+		final HolderChild holder;
 		if (null == convertView) {
 			holder = new HolderChild();
-			View inflate = inflater.inflate(childResId, null);
-			holder.title = (TextView) inflate.findViewById(R.id.title);
+			ret = inflater.inflate(childResId, null);
+			holder.title = (TextView) ret.findViewById(R.id.title);
 
-			convertView = inflate;
-			convertView.setTag(holder);
+			ret.setTag(holder);
 		} else {
+			ret = convertView;
 			holder = (HolderChild) convertView.getTag();
 		}
 
-		Iteration iteration = getChild(groupPosition, childPosition);
+		final Iteration iteration = getChild(groupPosition, childPosition);
 
 		holder.title.setText(iteration.getTitle());
 
-		return convertView;
+		return ret;
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-			View convertView, ViewGroup parent) {
+	public View getGroupView(final int groupPosition, final boolean isExpanded,
+			final View convertView, final ViewGroup parent) {
 
-		HolderGroup holder;
+		final View ret;
+		final HolderGroup holder;
 		if (null == convertView) {
 			holder = new HolderGroup();
-			View inflate = inflater.inflate(groupResId, null);
-			holder.title = (TextView) inflate.findViewById(R.id.title);
-			holder.icon = (TextView) inflate.findViewById(R.id.icon);
+			ret = inflater.inflate(groupResId, null);
+			holder.title = (TextView) ret.findViewById(R.id.title);
+			holder.icon = (TextView) ret.findViewById(R.id.icon);
 
-			convertView = inflate;
-			convertView.setTag(holder);
+			ret.setTag(holder);
 		} else {
+			ret = convertView;
 			holder = (HolderGroup) convertView.getTag();
 		}
 
-		Project project = getGroup(groupPosition);
+		final Project project = getGroup(groupPosition);
 
 		holder.title.setText(project.getTitle());
 
@@ -88,11 +91,11 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 			holder.icon.setText("+");
 		}
 
-		return convertView;
+		return ret;
 	}
 
 	@Override
-	public boolean isChildSelectable(int arg0, int arg1) {
+	public boolean isChildSelectable(final int arg0, final int arg1) {
 		return true;
 	}
 
@@ -101,11 +104,11 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	 *
 	 * @param projectList the projects.
 	 */
-	public void setProjects(List<Project> projectList) {
+	public void setProjects(final List<Project> projectList) {
 		if (projectList != null) {
-			for (Project project : projectList) {
+			for (final Project project : projectList) {
 				super.addGroup(project);
-				for (Iteration iteration : project.getIterationList()) {
+				for (final Iteration iteration : project.getIterationList()) {
 					super.addChildToGroup(project, iteration);
 				}
 			}
@@ -121,5 +124,17 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 
 	class HolderChild {
 		public TextView title;
+	}
+
+	@Override
+	public long getChildId(final int groupPosition, final int childPosition) {
+		final Iteration child = getChild(groupPosition, childPosition);
+		return child != null ? child.getId() : -1;
+	}
+
+	@Override
+	public long getGroupId(final int groupPosition) {
+		final Project group = getGroup(groupPosition);
+		return group != null ? group.getId() : -1;
 	}
 }

@@ -8,7 +8,7 @@ import java.util.Observer;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Story extends Observable implements Serializable, Observer, Rankable {
+public class Story extends Observable implements Serializable, Observer, Rankable<Story> {
 
 	/**
 	 *

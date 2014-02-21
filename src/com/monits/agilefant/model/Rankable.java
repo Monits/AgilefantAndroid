@@ -1,6 +1,6 @@
 package com.monits.agilefant.model;
 
-public interface Rankable {
+public interface Rankable<T> extends Cloneable {
 
 	/**
 	 * Retrieves the rank.
@@ -13,4 +13,6 @@ public interface Rankable {
 	 * Sets the rank.
 	 */
 	public void setRank(int rank);
+
+	public T clone();
 }

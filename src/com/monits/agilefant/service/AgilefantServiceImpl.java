@@ -90,6 +90,10 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private static final String PROJECT_DATA = "%1$s/ajax/projectData.action?projectId=%2$d";
 
+	private static final String RANK_STORY_UNDER_ACTION = "%1$s/ajax/rankStoryUnder.action";
+	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
+	private static final String TARGET_STORY_ID = "targetStoryId";
+
 	@Inject
 	private Gson gson;
 
@@ -450,6 +454,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final GsonRequest<Task> request = new GsonRequest<Task>(
 				Method.POST, url, gson, Task.class, listener, error) {
+
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
 				final Map<String, String> params = new HashMap<String, String>();
@@ -457,6 +462,52 @@ public class AgilefantServiceImpl implements AgilefantService {
 				params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
 				params.put(TASK_ID, String.valueOf(task.getId()));
 				params.put(RANK_UNDER_ID, String.valueOf(targetTask != null ? targetTask.getId() : -1));
+
+				return params;
+			}
+		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void rankStoryUnder(final Story story, final Story targetStory,
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, host);
+
+		final GsonRequest<Story> request = new GsonRequest<Story>(
+				Method.POST, url, gson, Story.class, listener, error) {
+
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<String, String>();
+
+				params.put(STORY_ID, String.valueOf(story.getId()));
+				params.put(TARGET_STORY_ID, String.valueOf(targetStory.getId()));
+
+				return params;
+			}
+		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void rankStoryOver(final Story story, final Story targetStory,
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, host);
+
+		final GsonRequest<Story> request = new GsonRequest<Story>(
+				Method.POST, url, gson, Story.class, listener, error) {
+
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<String, String>();
+
+				params.put(STORY_ID, String.valueOf(story.getId()));
+				params.put(TARGET_STORY_ID, String.valueOf(targetStory.getId()));
 
 				return params;
 			}
@@ -492,10 +543,10 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void moveStory(final long backlogId, final Story story,
 			final Listener<Story> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, STORY_MOVE, host);
-		
+
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Method.POST, url, gson, Story.class, listener, error) {
-			
+
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
 				final Map<String, String> params = new HashMap<String, String>();
@@ -503,10 +554,10 @@ public class AgilefantServiceImpl implements AgilefantService {
 				params.put("backlogId", String.valueOf(backlogId));
 				params.put("moveParents", "false"); //This parameter is always false
 				params.put("storyId", String.valueOf(story.getId()));
-				
+
 				return params;
 			}
-			
+
 		};
 		requestQueue.add(request);
 	}

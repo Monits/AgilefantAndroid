@@ -11,25 +11,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
+import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
+import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.view.DynamicExpandableListView;
 
 public class StoriesFragment extends RoboFragment implements Observer {
+
+	@Inject
+	private MetricsService metricsService;
 
 	private static final String STORIES = "STORIES";
 	private List<Story> stories;
 
-	private ExpandableListView storiesListView;
+	private DynamicExpandableListView storiesListView;
 	private StoriesAdapter storiesAdapter;
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -81,13 +92,83 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
-		storiesListView = (ExpandableListView)rootView.findViewById(R.id.stories);
+		storiesListView = (DynamicExpandableListView) rootView.findViewById(R.id.stories);
 		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
-		storiesAdapter = new StoriesAdapter(rootView.getContext(), stories);
 
-		storiesAdapter.setOnChildActionListener(new TaskAdapterViewActionListener(getActivity(), StoriesFragment.this));
-		storiesAdapter.setOnGroupActionListener(new StoryAdapterViewActionListener(getActivity(), StoriesFragment.this));
+		final FragmentActivity context = getActivity();
+		storiesAdapter = new StoriesAdapter(rootView.getContext(), stories);
+		storiesAdapter.setOnChildActionListener(new TaskAdapterViewActionListener(context, StoriesFragment.this));
+		storiesAdapter.setOnGroupActionListener(new StoryAdapterViewActionListener(context, StoriesFragment.this));
 		storiesListView.setAdapter(storiesAdapter);
+		storiesListView.setOnSwapRowListener(new OnSwapRowListener() {
+
+			@Override
+			public void onSwapPositions(final int itemPosition, final int targetPosition,
+					final SwapDirection swapDirection, final long aboveItemId, final long belowItemId) {
+
+				if (aboveItemId == -1
+						&& swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
+
+					metricsService.rankStoryOver(
+							storiesAdapter.getGroup(itemPosition),
+							storiesAdapter.getGroup(targetPosition),
+							stories,
+							new Listener<Story>() {
+
+								@Override
+								public void onResponse(final Story arg0) {
+									Toast.makeText(
+											context,
+											R.string.feedback_success_update_story_rank,
+											Toast.LENGTH_SHORT)
+											.show();
+								}
+							},
+							new ErrorListener() {
+
+								@Override
+								public void onErrorResponse(final VolleyError arg0) {
+									storiesAdapter.setItems(stories);
+
+									Toast.makeText(
+											context,
+											R.string.feedback_failed_update_story_rank,
+											Toast.LENGTH_SHORT)
+											.show();
+								}
+							});
+				} else {
+					metricsService.rankStoryUnder(
+							storiesAdapter.getGroup(itemPosition),
+							storiesAdapter.getGroup(targetPosition),
+							stories,
+							new Listener<Story>() {
+
+								@Override
+								public void onResponse(final Story arg0) {
+									Toast.makeText(
+											context,
+											R.string.feedback_success_update_story_rank,
+											Toast.LENGTH_SHORT)
+											.show();
+								}
+							},
+							new ErrorListener() {
+
+								@Override
+								public void onErrorResponse(final VolleyError arg0) {
+									storiesAdapter.setItems(stories);
+
+									Toast.makeText(
+											context,
+											R.string.feedback_failed_update_story_rank,
+											Toast.LENGTH_SHORT)
+											.show();
+								}
+							});
+				}
+			}
+		});
 
 		return rootView;
 	}

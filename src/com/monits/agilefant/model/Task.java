@@ -6,7 +6,7 @@ import java.util.Observable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Serializable, Rankable {
+public class Task extends Observable implements Serializable, Rankable<Task> {
 
 	/**
 	 *

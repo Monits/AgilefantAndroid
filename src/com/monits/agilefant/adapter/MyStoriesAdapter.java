@@ -167,4 +167,16 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		public TextView context;
 		public TextView state;
 	}
+
+	@Override
+	public long getChildId(final int groupPosition, final int childPosition) {
+		final Task child = getChild(groupPosition, childPosition);
+		return child != null ? child.getId() : -1;
+	}
+
+	@Override
+	public long getGroupId(final int groupPosition) {
+		final Story group = getGroup(groupPosition);
+		return group != null ? group.getId() : -1;
+	}
 }

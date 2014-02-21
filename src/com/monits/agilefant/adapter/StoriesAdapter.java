@@ -17,8 +17,9 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.RankComparator;
+import com.monits.agilefant.view.DynamicExpandableListView.Swappable;
 
-public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
+public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> implements Swappable {
 
 	private final LayoutInflater inflater;
 	private AdapterViewActionListener<Task> childActionListener;
@@ -28,15 +29,8 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 	public StoriesAdapter(final Context context, final List<Story> stories) {
 		super(context);
-		Collections.sort(stories, RankComparator.INSTANCE);
-		for (final Story story : stories) {
-			super.addGroup(story);
-			final List<Task> tasks = story.getTasks();
-			Collections.sort(tasks, RankComparator.INSTANCE);
-			for (final Task task : tasks) {
-				super.addChildToGroup(story, task);
-			}
-		}
+
+		setItems(stories);
 
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -182,6 +176,48 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 	 */
 	public void setOnGroupActionListener(final AdapterViewActionListener<Story> listener) {
 		this.groupActionListener = listener;
+	}
+
+	@Override
+	public long getGroupId(final int groupPosition) {
+		final Story group = getGroup(groupPosition);
+		return group != null ? group.getId() : -1;
+	}
+
+	@Override
+	public long getChildId(final int groupPosition, final int childPosition) {
+		final Task child = getChild(groupPosition, childPosition);
+		return child != null ? child.getId() : -1;
+	}
+
+	public void setItems(final List<Story> stories) {
+		Collections.sort(stories, RankComparator.INSTANCE);
+
+		for (final Story story : stories) {
+			addGroup(story);
+			final List<Task> tasks = story.getTasks();
+
+			Collections.sort(tasks, RankComparator.INSTANCE);
+
+			for (final Task task : tasks) {
+				addChildToGroup(story, task);
+			}
+		}
+
+		notifyDataSetChanged();
+	}
+
+	@Override
+	public void swapItems(final int positionOne, final int positionTwo) {
+		final Story temp = getGroup(positionOne);
+		final List<Task> temptasks = children.get(positionOne);
+		groups.set(positionOne, getGroup(positionTwo));
+		children.set(positionOne, children.get(positionTwo));
+
+		groups.set(positionTwo, temp);
+		children.set(positionTwo, temptasks);
+
+		notifyDataSetChanged();
 	}
 
 	class HolderGroup {
