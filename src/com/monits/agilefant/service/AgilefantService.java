@@ -176,6 +176,17 @@ public interface AgilefantService {
 	void rankStoryUnder(Story story, Story targetStory, Listener<Story> listener, ErrorListener error);
 
 	/**
+	 * Updates Story's rank lower than the given target story.
+	 *
+	 * @param story the story to update.
+	 * @param targetStory the story which will remain above the given story in rank.
+	 * @param backlogId the backlogId.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void rankStoryUnder(Story story, Story targetStory, Long backlogId, Listener<Story> listener, ErrorListener error);
+
+	/**
 	 * Updates Story's rank higher than the given target story.
 	 *
 	 * @param story the story to update.
@@ -184,4 +195,15 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryOver(Story story, Story targetStory, Listener<Story> listener, ErrorListener error);
+
+	/**
+	 * Updates Story's rank higher than the given target story.
+	 *
+	 * @param story the story to update.
+	 * @param targetStory the story which will remain below the given story in rank.
+	 * @param backlogId the backlogId.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void rankStoryOver(Story story, Story targetStory, Long backlogId, Listener<Story> listener, ErrorListener error);
 }

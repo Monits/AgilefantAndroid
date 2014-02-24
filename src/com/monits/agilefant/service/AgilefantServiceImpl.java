@@ -473,6 +473,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public void rankStoryUnder(final Story story, final Story targetStory,
 			final Listener<Story> listener, final ErrorListener error) {
+		rankStoryUnder(story, targetStory, null, listener, error);
+	}
+
+	@Override
+	public void rankStoryUnder(final Story story, final Story targetStory, final Long backlogId,
+			final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, host);
 
@@ -486,6 +492,10 @@ public class AgilefantServiceImpl implements AgilefantService {
 				params.put(STORY_ID, String.valueOf(story.getId()));
 				params.put(TARGET_STORY_ID, String.valueOf(targetStory.getId()));
 
+				if (backlogId != null) {
+					params.put(BACKLOG_ID, String.valueOf(backlogId));
+				}
+
 				return params;
 			}
 		};
@@ -495,6 +505,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void rankStoryOver(final Story story, final Story targetStory,
+			final Listener<Story> listener, final ErrorListener error) {
+		rankStoryOver(story, targetStory, null, listener, error);
+	}
+
+	@Override
+	public void rankStoryOver(final Story story, final Story targetStory, final Long backlogId,
 			final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, host);
@@ -508,6 +524,10 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 				params.put(STORY_ID, String.valueOf(story.getId()));
 				params.put(TARGET_STORY_ID, String.valueOf(targetStory.getId()));
+
+				if (backlogId != null) {
+					params.put(BACKLOG_ID, String.valueOf(backlogId));
+				}
 
 				return params;
 			}
@@ -561,6 +581,4 @@ public class AgilefantServiceImpl implements AgilefantService {
 		};
 		requestQueue.add(request);
 	}
-
-
 }

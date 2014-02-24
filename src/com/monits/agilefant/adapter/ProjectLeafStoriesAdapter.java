@@ -71,13 +71,18 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 	@Override
 	public Story getItem(final int position) {
 		final int count = getCount();
-		return count > 0 && position < count ? stories.get(position) : null;
+
+		if (count > 0 && position < count && position >= 0) {
+			return stories.get(position);
+		}
+
+		return null;
 	}
 
 	@Override
 	public long getItemId(final int position) {
 		final Story story = getItem(position);
-		return story != null ? story.getId() : 0;
+		return story != null ? story.getId() : -1;
 	}
 
 	@Override

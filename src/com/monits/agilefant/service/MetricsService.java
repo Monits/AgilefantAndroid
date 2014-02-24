@@ -134,6 +134,18 @@ public interface MetricsService {
 	void rankStoryUnder(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener, ErrorListener error);
 
 	/**
+	 * Updates Story's rank lower than the given target story. Useable when sorting project leaf stories.
+	 *
+	 * @param story the story to update.
+	 * @param targetStory the story which will remain above the given story in rank.
+	 * @param allStories the complete list of stories, to update it's ranks.
+	 * @param backlogId the id of the backlog where this sorting is taking place.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void rankStoryUnder(Story story, Story targetStory, Long backlogId, List<Story> allStories, Listener<Story> listener, ErrorListener error);
+
+	/**
 	 * Updates Story's rank higher than the given target story.
 	 *
 	 * @param story the story to update.
@@ -143,4 +155,16 @@ public interface MetricsService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryOver(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener, ErrorListener error);
+
+	/**
+	 * Updates Story's rank higher than the given target story. Useable when sorting project leaf stories.
+	 *
+	 * @param story the story to update.
+	 * @param targetStory the story which will remain below the given story in rank.
+	 * @param allStories the complete list of stories, to update it's ranks.
+	 * @param backlogId the id of the backlog where this sorting is taking place.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void rankStoryOver(Story story, Story targetStory, Long backlogId, List<Story> allStories, Listener<Story> listener, ErrorListener error);
 }
