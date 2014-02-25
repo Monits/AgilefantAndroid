@@ -92,7 +92,9 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 					final int positionType = ExpandableListView.getPackedPositionType(position);
 
 					if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-						final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+						final long packedPosition = delv.getExpandableListPosition(position);
+						final int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
+
 						final Project project = projectAdapter.getGroup(groupPosition);
 
 						final Intent intent = new Intent(context, ProjectActivity.class);
