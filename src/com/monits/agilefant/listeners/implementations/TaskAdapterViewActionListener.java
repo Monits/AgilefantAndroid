@@ -57,6 +57,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 	@Override
 	public void onAction(final View view, final Task object) {
+		super.onAction(view, object);
 
 		switch (view.getId()) {
 			case R.id.column_name:

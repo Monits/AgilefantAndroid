@@ -50,7 +50,7 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 
 	@Override
 	public void onAction(final View view, final Story object) {
-		object.addObserver(getObserver());
+		super.onAction(view, object);
 
 		switch (view.getId()) {
 			case R.id.column_state:
