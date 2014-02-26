@@ -100,5 +100,7 @@
 	<string name="error_validate_effort_left">Please fill effort spent with a value other than 0</string>
 	<string name="dialog_update_task_state">Do you want to change task status to ready as effort left is 0? Otherwise, please update that value.</string>
 	<string name="dialog_update_task_state_negative">Cancel</string>
-
+	<string name="new_story">New Story</string>
+	<string name="saved_story">Story successfully created!</string>
+	<string name="error_saving_story">Failed to create story!</string>
 </resources>

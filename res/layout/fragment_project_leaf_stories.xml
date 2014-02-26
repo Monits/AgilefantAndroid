@@ -9,20 +9,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="5dp" >
 
-        <include layout="@layout/project_leaf_stories_header" />
+        <include
+            android:id="@+id/header"
+            layout="@layout/project_leaf_stories_header" />
 
-        <com.monits.agilefant.view.DynamicListView
+        <ListView
             android:id="@+id/stories_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/header"
             android:layout_marginTop="@dimen/divider_stories_task"
             android:cacheColorHint="@android:color/transparent"
             android:childDivider="@android:color/transparent"
@@ -36,9 +38,10 @@
             android:id="@+id/stories_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/stories_list"
             android:gravity="center"
             android:text="@string/empty_my_stories"
             android:visibility="gone" />
-    </LinearLayout>
 
+    </RelativeLayout>
 </ViewFlipper>

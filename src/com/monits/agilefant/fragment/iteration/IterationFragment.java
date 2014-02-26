@@ -109,7 +109,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			final ArrayList<Task> tasksWithoutStory = new ArrayList<Task>();
 			tasksWithoutStory.addAll(mIteration.getTasksWithoutStory());
 
-			fragments.add(StoriesFragment.newInstance(storiesArray));
+			fragments.add(StoriesFragment.newInstance(storiesArray, mIteration));
 			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory, mIteration));
 			fragments.add(IterationBurndownFragment.newInstance(mIteration.getId()));
 

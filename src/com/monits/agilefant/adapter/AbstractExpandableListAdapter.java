@@ -124,4 +124,13 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 
 		children.get(index).add(child);
 	}
+
+	/**
+	 * Clear lists to avoid double data in listviews
+	 *
+	 */
+	public void clear() {
+		groups.clear();
+		children.clear();
+	}
 }

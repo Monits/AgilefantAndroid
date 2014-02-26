@@ -197,6 +197,15 @@ public interface AgilefantService {
 	void rankStoryOver(Story story, Story targetStory, Listener<Story> listener, ErrorListener error);
 
 	/**
+	 * Create Story.
+	 *
+	 * @param Story the Story to create.
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void createStory(long backlogId, Story story, Listener<Story> listener, ErrorListener error);
+
+	/**
 	 * Updates Story's rank higher than the given target story.
 	 *
 	 * @param story the story to update.
@@ -206,4 +215,5 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryOver(Story story, Story targetStory, Long backlogId, Listener<Story> listener, ErrorListener error);
+
 }

@@ -191,16 +191,20 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 	}
 
 	public void setItems(final List<Story> stories) {
+		clear();
+
 		Collections.sort(stories, RankComparator.INSTANCE);
 
 		for (final Story story : stories) {
 			addGroup(story);
 			final List<Task> tasks = story.getTasks();
 
-			Collections.sort(tasks, RankComparator.INSTANCE);
+			if (tasks != null && !tasks.isEmpty()) {
+				Collections.sort(tasks, RankComparator.INSTANCE);
 
-			for (final Task task : tasks) {
-				addChildToGroup(story, task);
+				for (final Task task : tasks) {
+					addChildToGroup(story, task);
+				}
 			}
 		}
 

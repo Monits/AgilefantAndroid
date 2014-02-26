@@ -1,4 +1,4 @@
-package com.monits.agilefant.fragment.user_chooser;
+package com.monits.agilefant.fragment.userchooser;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -102,11 +102,10 @@ public class UserChooserFragment extends RoboFragment {
 			public void onItemClick(final AdapterView<?> adapter, final View view, final int position,
 					final long id) {
 				userInput.setText(null);
-				if (!selectedUsers.contains(autoCompleteUsersAdapter.getItem(position))) {
-					selectedUsers.add(
-							autoCompleteUsersAdapter.getItem(position));
-					selectedUsersAdapter.setUsers(selectedUsers);
-				}
+
+				selectedUsers.add(
+						autoCompleteUsersAdapter.getItem(position));
+				selectedUsersAdapter.setUsers(selectedUsers);
 			}
 		});
 

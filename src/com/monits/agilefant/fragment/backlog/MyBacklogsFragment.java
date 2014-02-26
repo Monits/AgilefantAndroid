@@ -121,9 +121,7 @@ public class MyBacklogsFragment extends RoboFragment {
 				final int positionType = ExpandableListView.getPackedPositionType(position);
 
 				if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-					final long packedPosition = allbackLogs.getExpandableListPosition(position);
-					final int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
-
+					final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 					final Project project = backlogsAdapter.getGroup(groupPosition);
 
 					final Intent intent = new Intent(getActivity(), ProjectActivity.class);

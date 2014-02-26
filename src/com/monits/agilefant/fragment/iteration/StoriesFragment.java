@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -24,9 +26,11 @@ import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
+import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
 import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
@@ -38,9 +42,14 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	private MetricsService metricsService;
 
 	private static final String STORIES = "STORIES";
+	private static final String ITERATION = "ITERATION";
+	private static final String ITERATION_ID = "ITERATION_ID";
+
 	private List<Story> stories;
+	private long iterationId;
 
 	private DynamicExpandableListView storiesListView;
+
 	private StoriesAdapter storiesAdapter;
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -62,12 +71,24 @@ public class StoriesFragment extends RoboFragment implements Observer {
 					}
 				}
 			}
+
+			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_STORY)) {
+				final Story newStory = (Story) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_STORY);
+				stories.add(newStory);
+
+				storiesAdapter.setItems(stories);
+				storiesAdapter.notifyDataSetChanged();
+			}
+
+
 		}
 	};
 
-	public static StoriesFragment newInstance(final ArrayList<Story> stories) {
+	public static StoriesFragment newInstance(final ArrayList<Story> stories, final Iteration mIteration) {
 		final Bundle bundle = new Bundle();
 		bundle.putSerializable(STORIES, stories);
+		bundle.putSerializable(ITERATION, mIteration);
+		bundle.putLong(ITERATION_ID, mIteration.getId());
 
 		final StoriesFragment storiesFragment = new StoriesFragment();
 		storiesFragment.setArguments(bundle);
@@ -82,15 +103,32 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
+		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
-		this.stories= (List<Story>) arguments.getSerializable(STORIES);
+		this.stories = (List<Story>) arguments.getSerializable(STORIES);
+		this.iterationId = arguments.getLong(ITERATION_ID);
 	}
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
+
+		final Button newStory = (Button) rootView.findViewById(R.id.new_story_btn);
+		newStory.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+
+				final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iterationId);
+
+				StoriesFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, createStoryFragment)
+				.addToBackStack(null)
+				.commit();
+			}
+		});
 
 		storiesListView = (DynamicExpandableListView) rootView.findViewById(R.id.stories);
 		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));

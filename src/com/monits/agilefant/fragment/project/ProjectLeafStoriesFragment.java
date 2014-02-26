@@ -27,14 +27,12 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.IterationAdapter;
 import com.monits.agilefant.adapter.ProjectLeafStoriesAdapter;
 import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
-import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
-import com.monits.agilefant.view.DynamicListView;
 
 public class ProjectLeafStoriesFragment extends RoboFragment implements Observer {
 
@@ -49,12 +47,10 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	private MetricsService metricsService;
 
 	private ViewFlipper viewFlipper;
-	private DynamicListView storiesListView;
+	private ListView storiesListView;
 	private View storiesEmptyView;
 
 	private ProjectLeafStoriesAdapter storiesAdapter;
-
-	private List<Story> stories;
 
 	public static ProjectLeafStoriesFragment newInstance(final Project projectBacklog) {
 		final ProjectLeafStoriesFragment fragment = new ProjectLeafStoriesFragment();
@@ -156,11 +152,10 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 			}
 		});
 
-		storiesListView = (DynamicListView) view.findViewById(R.id.stories_list);
+		storiesListView = (ListView) view.findViewById(R.id.stories_list);
 		storiesEmptyView = view.findViewById(R.id.stories_empty_view);
 		storiesListView.setEmptyView(storiesEmptyView);
 		storiesListView.setAdapter(storiesAdapter);
-		storiesListView.setOnSwapRowListener(new OnSwapLeafStoriesListener(context));
 
 		return view;
 	}
@@ -173,8 +168,6 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 					@Override
 					public void onResponse(final List<Story> stories) {
-						ProjectLeafStoriesFragment.this.stories = stories;
-						storiesListView.setItems(stories);
 						storiesAdapter.setStories(stories);
 
 						viewFlipper.setDisplayedChild(1);
@@ -196,68 +189,6 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		if (isVisible()) {
 			storiesAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
-		}
-	}
-
-	/**
-	 * An implementation for stories in backlog swap.
-	 */
-	private final class OnSwapLeafStoriesListener implements OnSwapRowListener {
-		private final FragmentActivity context;
-
-		private OnSwapLeafStoriesListener(final FragmentActivity context) {
-			this.context = context;
-		}
-
-		@Override
-		public void onSwapPositions(final int itemPosition, final int targetPosition,
-				final SwapDirection swapDirection, final long aboveItemId, final long belowItemId) {
-
-			final Listener<Story> successListener = new Listener<Story>() {
-
-				@Override
-				public void onResponse(final Story arg0) {
-					Toast.makeText(
-							context,
-							R.string.feedback_success_update_story_rank,
-							Toast.LENGTH_SHORT)
-							.show();
-				}
-			};
-
-			final ErrorListener errorListener = new ErrorListener() {
-
-				@Override
-				public void onErrorResponse(final VolleyError arg0) {
-					storiesAdapter.setStories(stories);
-
-					Toast.makeText(
-							context,
-							R.string.feedback_failed_update_story_rank,
-							Toast.LENGTH_SHORT)
-							.show();
-				}
-			};
-
-			if (aboveItemId == -1
-					&& swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
-
-				metricsService.rankStoryOver(
-						storiesAdapter.getItem(itemPosition),
-						storiesAdapter.getItem(targetPosition),
-						project.getId(),
-						stories,
-						successListener,
-						errorListener);
-			} else {
-				metricsService.rankStoryUnder(
-						storiesAdapter.getItem(itemPosition),
-						storiesAdapter.getItem(targetPosition),
-						project.getId(),
-						stories,
-						successListener,
-						errorListener);
-			}
 		}
 	}
 }

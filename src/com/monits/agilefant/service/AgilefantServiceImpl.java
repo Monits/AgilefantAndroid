@@ -36,6 +36,9 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String STORY_STORY_VALUE = "story.storyValue";
+	private static final String STORY_NAME = "story.name";
+	private static final String STORY_DESCRIPTION = "story.description";
 	private static final String RANK_TASK_UNDER_ACTION = "%1$s/ajax/rankTaskAndMoveUnder.action";
 	private static final String RANK_UNDER_ID = "rankUnderId";
 	private static final String RESPONSIBLES_CHANGED = "responsiblesChanged";
@@ -75,6 +78,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private static final String GET_ITERATION = "%1$s/ajax/iterationData.action?iterationId=%2$d";
 	private static final String ITERATION_ID = "iterationId";
+	private static final String ITERATION = "iteration";
 
 	private static final String RETRIEVE_USER_ACTION = "/ajax/retrieveUser.action";
 	private static final String USER_ID = "userId";
@@ -89,6 +93,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String BACKLOG_ID = "backlogId";
 
 	private static final String PROJECT_DATA = "%1$s/ajax/projectData.action?projectId=%2$d";
+	private static final String STORY_CREATE = "%1$s/ajax/createStory.action";
 
 	private static final String RANK_STORY_UNDER_ACTION = "%1$s/ajax/rankStoryUnder.action";
 	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
@@ -581,4 +586,38 @@ public class AgilefantServiceImpl implements AgilefantService {
 		};
 		requestQueue.add(request);
 	}
+
+	@Override
+	public void createStory(final long backlogId, final Story story,
+			final Listener<Story> listener, final ErrorListener error) {
+
+		final String url = String.format(Locale.US, STORY_CREATE, host);
+
+		final GsonRequest<Story> request = new GsonRequest<Story>(
+				Method.POST, url, gson, Story.class, listener, error) {
+
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<String, String>();
+
+				params.put(BACKLOG_ID, String.valueOf(backlogId));
+				params.put(ITERATION, String.valueOf(backlogId));
+				params.put(STORY_DESCRIPTION, "");
+				params.put(STORY_NAME, String.valueOf(story.getName()));
+				params.put(STORY_STATE, String.valueOf(story.getState()));
+				params.put(STORY_STORY_VALUE, "");
+				for (final User user : story.getResponsibles()) {
+					params.put(USER_IDS, String.valueOf(user.getId()));
+				}
+
+				params.put(USERS_CHANGED, "false");
+
+				return params;
+			}
+
+		};
+		requestQueue.add(request);
+
+	}
+
 }
