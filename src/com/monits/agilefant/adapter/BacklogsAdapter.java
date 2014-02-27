@@ -89,10 +89,10 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 
 				@Override
 				public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
-					final int positionType = ExpandableListView.getPackedPositionType(position);
+					final long packedPosition = delv.getExpandableListPosition(position);
+					final int positionType = ExpandableListView.getPackedPositionType(packedPosition);
 
 					if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-						final long packedPosition = delv.getExpandableListPosition(position);
 						final int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
 
 						final Project project = projectAdapter.getGroup(groupPosition);
