@@ -95,26 +95,33 @@ public class DynamicExpandableListView extends ExpandableListView {
 			new AdapterView.OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(final AdapterView<?> arg0, final View arg1, final int pos, final long id) {
-					// Dragging groups while expanded will cause the app to crash, collapsing all before!
-					for (int i = 0; i < getExpandableListAdapter().getGroupCount(); i++) {
-						collapseGroup(i);
+					final long packedPosition = getExpandableListPosition(pos);
+					final int positionType = ExpandableListView.getPackedPositionType(packedPosition);
+
+					if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+						// Dragging groups while expanded will cause the app to crash, collapsing all before!
+						for (int i = 0; i < getExpandableListAdapter().getGroupCount(); i++) {
+							collapseGroup(i);
+						}
+
+						mTotalOffset = 0;
+
+						final int position = pointToPosition(mDownX, mDownY);
+						final int itemNum = position - getFirstVisiblePosition();
+
+						final View selectedView = getChildAt(itemNum);
+						mMobileItemId = getExpandableListAdapter().getGroupId(position);
+						mHoverCell = getAndAddHoverView(selectedView);
+						selectedView.setVisibility(INVISIBLE);
+
+						mCellIsMobile = true;
+
+						updateNeighborViewsForID(mMobileItemId);
+
+						return true;
 					}
 
-					mTotalOffset = 0;
-
-					final int position = pointToPosition(mDownX, mDownY);
-					final int itemNum = position - getFirstVisiblePosition();
-
-					final View selectedView = getChildAt(itemNum);
-					mMobileItemId = getExpandableListAdapter().getGroupId(position);
-					mHoverCell = getAndAddHoverView(selectedView);
-					selectedView.setVisibility(INVISIBLE);
-
-					mCellIsMobile = true;
-
-					updateNeighborViewsForID(mMobileItemId);
-
-					return true;
+					return false;
 				}
 			};
 
