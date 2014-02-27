@@ -253,12 +253,27 @@ public class MetricsServiceImpl implements MetricsService {
 	public void rankStoryOver(final Story story, final Story targetStory, final List<Story> allStories,
 			final Listener<Story> listener, final ErrorListener error) {
 
+		 rankStoryOver(story, targetStory, null, allStories, listener, error);
+	}
+
+	 @Override
+	 public void rankStoryUnder(final Story story, final Story targetStory, final List<Story> allStories,
+			final Listener<Story> listener, final ErrorListener error) {
+		 		rankStoryUnder(story, targetStory, null, allStories, listener, error);
+	 }
+
+	 @Override
+	 public void rankStoryUnder(final Story story, final Story targetStory,
+			 final Long backlogId, final List<Story> allStories, final Listener<Story> listener,
+			 final ErrorListener error) {
+
 		final List<Story> fallbackStoryList = new LinkedList<Story>();
 		copyAndSetRank(allStories, fallbackStoryList);
 
-		agilefantService.rankStoryOver(
+		agilefantService.rankStoryUnder(
 				story,
 				targetStory,
+				backlogId,
 				listener,
 				new ErrorListener() {
 
@@ -272,15 +287,17 @@ public class MetricsServiceImpl implements MetricsService {
 	}
 
 	@Override
-	public void rankStoryUnder(final Story story, final Story targetStory, final List<Story> allStories,
-			final Listener<Story> listener, final ErrorListener error) {
+	 public void rankStoryOver(final Story story, final Story targetStory,
+			 final Long backlogId, final List<Story> allStories, final Listener<Story> listener,
+			 final ErrorListener error) {
 
 		final List<Story> fallbackStoryList = new LinkedList<Story>();
 		copyAndSetRank(allStories, fallbackStoryList);
 
-		agilefantService.rankStoryUnder(
+		agilefantService.rankStoryOver(
 				story,
 				targetStory,
+				backlogId,
 				listener,
 				new ErrorListener() {
 

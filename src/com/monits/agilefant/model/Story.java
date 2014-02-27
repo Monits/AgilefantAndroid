@@ -260,4 +260,30 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 			this.metrics = new Metrics(el, es, oe);
 		}
 	}
+
+	 @Override
+	 public int hashCode() {
+		 final int prime = 31;
+		 int result = 1;
+		 result = prime * result + (int) (id ^ (id >>> 32));
+		 return result;
+	 }
+
+	 @Override
+	 public boolean equals(final Object obj) {
+		 if (this == obj) {
+			return true;
+		 }
+		 if (obj == null) {
+			 return false;
+		 }
+		 if (!(obj instanceof Story)) {
+			 return false;
+		 }
+		 final Story other = (Story) obj;
+		 if (id != other.id) {
+			 return false;
+		 }
+		 return true;
+	 }
 }
