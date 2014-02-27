@@ -11,6 +11,7 @@ import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.model.backlog.BacklogElementParameters;
 
 /**
  * Manages metrics in Agilefant
@@ -171,10 +172,10 @@ public interface MetricsService {
 	/**
 	 * Create Story
 	 *
-	 * @param story the Story to be created
+	 * @param parameters values of story
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void createStory(Story story, Listener<Story> listener, ErrorListener error);
+	void createStory(BacklogElementParameters parameters, Listener<Story> listener, ErrorListener error);
 
 }

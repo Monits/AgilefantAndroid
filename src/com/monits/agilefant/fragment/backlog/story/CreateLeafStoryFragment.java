@@ -18,14 +18,15 @@ import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragmen
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.MetricsService;
-public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
+
+public class CreateLeafStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
 	private MetricsService metricsService;
 
-	public static CreateStoryFragment newInstance(final long iterationId) {
-		final CreateStoryFragment fragment = new CreateStoryFragment();
-		return prepareFragmentForIteration(iterationId, fragment);
+	public static CreateLeafStoryFragment newInstance(final Long backlogId) {
+		final CreateLeafStoryFragment fragment = new CreateLeafStoryFragment();
+		return prepareFragmentForBacklog(backlogId, fragment);
 	}
 
 	@Override
@@ -38,9 +39,7 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 	@Override
 	protected void onSubmit(final BacklogElementParameters parameters) {
 		final FragmentActivity context = getActivity();
-		metricsService.createStory(
-				parameters,
-				new Listener<Story>() {
+		metricsService.createStory(parameters, new Listener<Story>() {
 					@Override
 					public void onResponse(final Story newStory) {
 

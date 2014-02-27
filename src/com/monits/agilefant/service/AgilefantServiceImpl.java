@@ -31,11 +31,13 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.GsonRequest;
 import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String STORY_STORY_POINTS = "story.storyPoints";
 	private static final String STORY_STORY_VALUE = "story.storyValue";
 	private static final String STORY_NAME = "story.name";
 	private static final String STORY_DESCRIPTION = "story.description";
@@ -588,7 +590,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void createStory(final long backlogId, final Story story,
+	public void createStory(final BacklogElementParameters parameters,
 			final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, STORY_CREATE, host);
@@ -597,27 +599,55 @@ public class AgilefantServiceImpl implements AgilefantService {
 				Method.POST, url, gson, Story.class, listener, error) {
 
 			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<String, String>();
+			public byte[] getBody() throws AuthFailureError {
+				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
+				final StringBuilder body = new StringBuilder();
+				final String paramsEncoding = getParamsEncoding();
+				try {
+					final Long iterationId = parameters.getIterationId();
+					Long backlogId = parameters.getBacklogId();
+					if (backlogId == null && iterationId != null) {
+						backlogId = iterationId;
+					}
 
-				params.put(BACKLOG_ID, String.valueOf(backlogId));
-				params.put(ITERATION, String.valueOf(backlogId));
-				params.put(STORY_DESCRIPTION, "");
-				params.put(STORY_NAME, String.valueOf(story.getName()));
-				params.put(STORY_STATE, String.valueOf(story.getState()));
-				params.put(STORY_STORY_VALUE, "");
-				for (final User user : story.getResponsibles()) {
-					params.put(USER_IDS, String.valueOf(user.getId()));
+					appendURLEncodedParam(body,
+							BACKLOG_ID, String.valueOf(backlogId), paramsEncoding);
+
+					if (iterationId != null) {
+						appendURLEncodedParam(body,
+								ITERATION, String.valueOf(iterationId), paramsEncoding);
+					}
+
+					appendURLEncodedParam(body,
+							STORY_DESCRIPTION, "", paramsEncoding);
+
+					appendURLEncodedParam(body,
+							STORY_NAME, String.valueOf(parameters.getName()), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							STORY_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							STORY_STORY_POINTS, "", paramsEncoding);
+
+					appendURLEncodedParam(body,
+							STORY_STORY_VALUE, "", paramsEncoding);
+
+					for (final User user : parameters.getSelectedUser()) {
+						appendURLEncodedParam(body,
+								USER_IDS, String.valueOf(user.getId()), paramsEncoding);
+					}
+
+					appendURLEncodedParam(body,
+							USERS_CHANGED, String.valueOf(true), paramsEncoding);
+
+				} catch (final UnsupportedEncodingException e) {
+					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);
 				}
 
-				params.put(USERS_CHANGED, "false");
-
-				return params;
+				return body.toString().getBytes();
 			}
-
 		};
 		requestQueue.add(request);
-
 	}
-
 }

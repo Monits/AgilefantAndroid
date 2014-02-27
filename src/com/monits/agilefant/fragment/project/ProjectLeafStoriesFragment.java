@@ -8,13 +8,19 @@ import java.util.Observer;
 import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -23,9 +29,11 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.IterationAdapter;
 import com.monits.agilefant.adapter.ProjectLeafStoriesAdapter;
+import com.monits.agilefant.fragment.backlog.story.CreateLeafStoryFragment;
 import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
 import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
@@ -55,12 +63,26 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	private ProjectLeafStoriesAdapter storiesAdapter;
 	private List<Story> stories;
 
+	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+
+			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_STORY)) {
+				final Story newStory = (Story) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_STORY);
+				stories.add(newStory);
+
+				storiesAdapter.setStories(stories);
+				storiesAdapter.notifyDataSetChanged();
+			}
+		}
+	};
+
 	public static ProjectLeafStoriesFragment newInstance(final Project projectBacklog) {
 		final ProjectLeafStoriesFragment fragment = new ProjectLeafStoriesFragment();
 
 		final Bundle args = new Bundle();
 		args.putSerializable(BACKLOG, projectBacklog);
-
 		fragment.setArguments(args);
 
 		return fragment;
@@ -68,6 +90,10 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
+
+		final IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
+		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(BACKLOG);
@@ -81,6 +107,19 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 		final View view = LayoutInflater.from(getActivity())
 			.inflate(R.layout.fragment_project_leaf_stories, container, false);
+
+		final Button newLeafStory = (Button) view.findViewById(R.id.new_story_btn);
+		newLeafStory.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+
+				ProjectLeafStoriesFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+					.replace(android.R.id.content, CreateLeafStoryFragment.newInstance(project.getId()))
+					.addToBackStack(null)
+					.commit();
+			}
+		});
 
 		viewFlipper = (ViewFlipper) view.findViewById(R.id.root_flipper);
 

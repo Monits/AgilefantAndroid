@@ -15,6 +15,7 @@ import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.model.backlog.BacklogElementParameters;
 
 /**
  * Manages metrics in Agilefant
@@ -347,11 +348,10 @@ public class MetricsServiceImpl implements MetricsService {
 	}
 
 	@Override
-	public void createStory(final Story story, final Listener<Story> listener,
+	public void createStory(final BacklogElementParameters parameters, final Listener<Story> listener,
 			final ErrorListener error) {
 		agilefantService.createStory(
-				story.getBacklog().getId(),
-				story,
+				parameters,
 				listener,
 				error);
 	}

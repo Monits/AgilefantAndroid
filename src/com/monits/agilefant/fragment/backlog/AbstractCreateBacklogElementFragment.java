@@ -41,6 +41,7 @@ import com.monits.agilefant.util.IterationUtils;
 public abstract class AbstractCreateBacklogElementFragment extends RoboFragment {
 
 	private static final String ARGUMENT_BACKLOG_ID = "backlog_id";
+	private static final String ARGUMENT_ITERATION_ID = "iteration_id";
 
 	@Inject
 	private UserService userService;
@@ -61,11 +62,20 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 	private StateKey stateKey;
 
-	private long backlogId;
+	private Long backlogId;
+	private Long iterationId;
 
-	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragment(final long backlogId, final T fragment) {
+	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForBacklog(final Long backlogId, final T fragment) {
 		final Bundle args = new Bundle();
 		args.putLong(ARGUMENT_BACKLOG_ID, backlogId);
+		fragment.setArguments(args);
+
+		return fragment;
+	}
+
+	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForIteration(final Long iterationId, final T fragment) {
+		final Bundle args = new Bundle();
+		args.putLong(ARGUMENT_ITERATION_ID, iterationId);
 		fragment.setArguments(args);
 
 		return fragment;
@@ -74,7 +84,14 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		final Bundle arguments = getArguments();
-		backlogId = arguments.getLong(ARGUMENT_BACKLOG_ID);
+		if (arguments.containsKey(ARGUMENT_BACKLOG_ID)) {
+			backlogId = arguments.getLong(ARGUMENT_BACKLOG_ID);
+		}
+
+		if (arguments.containsKey(ARGUMENT_ITERATION_ID)) {
+			iterationId = arguments.getLong(ARGUMENT_ITERATION_ID);
+		}
+
 		super.onCreate(savedInstanceState);
 	}
 
@@ -191,6 +208,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 			public void onClick(final View v) {
 				final BacklogElementParameters parameters = new BacklogElementParameters.Builder()
 					.backlogId(backlogId)
+					.iterationId(iterationId)
 					.stateKey(stateKey)
 					.selectedUsers(selectedUsers)
 					.name(storyName.getText().toString())
