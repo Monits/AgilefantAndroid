@@ -355,4 +355,15 @@ public class MetricsServiceImpl implements MetricsService {
 				listener,
 				error);
 	}
+
+	@Override
+	public void createTaskWithoutStory(
+			final BacklogElementParameters parameters, final Listener<Task> listener,
+			final ErrorListener errorListener) {
+		agilefantService.createTaskWhitoutStory(
+				parameters,
+				listener,
+				errorListener);
+
+	}
 }

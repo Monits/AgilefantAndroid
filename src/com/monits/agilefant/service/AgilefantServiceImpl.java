@@ -96,10 +96,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private static final String PROJECT_DATA = "%1$s/ajax/projectData.action?projectId=%2$d";
 	private static final String STORY_CREATE = "%1$s/ajax/createStory.action";
+	private static final String TASK_CREATE = "%1$s/ajax/createTask.action";
 
 	private static final String RANK_STORY_UNDER_ACTION = "%1$s/ajax/rankStoryUnder.action";
 	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
 	private static final String TARGET_STORY_ID = "targetStoryId";
+	protected static final String TASK_NAME = "task.name";
 
 	@Inject
 	private Gson gson;
@@ -648,6 +650,59 @@ public class AgilefantServiceImpl implements AgilefantService {
 				return body.toString().getBytes();
 			}
 		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void createTaskWhitoutStory(
+			final BacklogElementParameters parameters, final Listener<Task> listener,
+			final ErrorListener errorListener) {
+
+		final String url = String.format(Locale.US, TASK_CREATE, host);
+
+		final GsonRequest<Task> request = new GsonRequest<Task>(
+				Method.POST, url, gson, Task.class, listener, errorListener) {
+
+			@Override
+			public byte[] getBody() throws AuthFailureError {
+
+				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
+				final StringBuilder body = new StringBuilder();
+				final String paramsEncoding = getParamsEncoding();
+				try {
+
+					appendURLEncodedParam(body,
+							ITERATION_ID, String.valueOf(parameters.getIterationId()), paramsEncoding);
+
+					for (final User user : parameters.getSelectedUser()) {
+						appendURLEncodedParam(body,
+								NEW_RESPONSIBLES, String.valueOf(user.getId()), paramsEncoding);
+					}
+
+					appendURLEncodedParam(body,
+							RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							TASK_EFFORT_LEFT, "", paramsEncoding);
+
+					appendURLEncodedParam(body,
+							TASK_NAME, String.valueOf(parameters.getName()), paramsEncoding);
+
+					appendURLEncodedParam(body,
+							TASK_ORIGINAL_ESTIMATE, "", paramsEncoding);
+
+					appendURLEncodedParam(body,
+							TASK_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
+
+				} catch (final UnsupportedEncodingException e) {
+					throw new RuntimeException("Encoding not supported: " + paramsEncoding, e);
+				}
+
+				return body.toString().getBytes();
+			}
+		};
+
 		requestQueue.add(request);
 	}
 }

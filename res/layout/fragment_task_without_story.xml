@@ -28,6 +28,7 @@
             android:layout_below="@id/header"
             android:cacheColorHint="@android:color/transparent"
             android:listSelector="@android:color/transparent"
+            android:layout_above="@+id/new_task_btn"
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/divider_stories_task"
             android:groupIndicator="@null" />
@@ -39,6 +40,15 @@
             android:gravity="center"
             android:text="@string/iteration_without_task"
             android:visibility="gone" />
+        
+          <Button
+            android:id="@+id/new_task_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/new_task_without_story" />
     </RelativeLayout>
 
 </RelativeLayout>

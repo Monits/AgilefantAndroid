@@ -13,7 +13,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -23,6 +25,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
+import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
 import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
 import com.monits.agilefant.model.Iteration;
@@ -63,6 +66,14 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 					taskWithoutStoryAdapter.notifyDataSetChanged();
 				}
 			}
+
+			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY)) {
+				final Task newTaskWithoutStory = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
+
+				taskWithoutStory.add(newTaskWithoutStory);
+				taskWithoutStoryAdapter.setItems(taskWithoutStory);
+				taskWithoutStoryAdapter.notifyDataSetChanged();
+			}
 		}
 	};
 
@@ -84,6 +95,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
+		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
@@ -95,6 +107,22 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_task_without_story, container, false);
+
+		final Button newTaskWithoutStory = (Button) rootView.findViewById(R.id.new_task_btn);
+		newTaskWithoutStory.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+
+				final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory.newInstance(iteration.getId());
+
+				TaskWithoutStoryFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+					.replace(android.R.id.content, createTaskWithoutStory)
+					.addToBackStack(null)
+					.commit();
+
+			}
+		});
 
 		taskWithoutStoryListView = (DynamicListView) rootView.findViewById(R.id.task_without_story);
 		taskWithoutStoryListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));

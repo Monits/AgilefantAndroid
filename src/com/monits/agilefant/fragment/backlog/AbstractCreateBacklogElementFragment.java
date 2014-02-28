@@ -216,6 +216,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 				onSubmit(parameters);
 			}
+
 		});
 	}
 

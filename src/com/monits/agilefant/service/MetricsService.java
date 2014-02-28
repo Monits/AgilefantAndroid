@@ -178,4 +178,12 @@ public interface MetricsService {
 	 */
 	void createStory(BacklogElementParameters parameters, Listener<Story> listener, ErrorListener error);
 
+	/**
+	 * Create TaskWithoutStory
+	 *
+	 * @param parameters the values to create task without story
+	 * @param listener callback if the request was successful
+	 * @param error callback if the request failed
+	 */
+	void createTaskWithoutStory(BacklogElementParameters parameters, Listener<Task> listener, ErrorListener errorListener);
 }

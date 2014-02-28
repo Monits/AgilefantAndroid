@@ -21,7 +21,7 @@ import com.monits.agilefant.util.RankComparator;
 public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 	private final Context context;
-	private final List<Task> tasks;
+	private List<Task> tasks;
 	private final LayoutInflater inflater;
 
 	private AdapterViewActionListener<Task> actionListener;
@@ -60,6 +60,11 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(final int position) {
 		return getItem(position) != null ? getItem(position).getId() : -1;
+	}
+
+	public void setItems(final List<Task> tasks){
+		this.tasks = tasks;
+		notifyDataSetChanged();
 	}
 
 	@Override

@@ -217,4 +217,12 @@ public interface AgilefantService {
 	 */
 	void createStory(final BacklogElementParameters parameters, Listener<Story> listener, ErrorListener error);
 
+	/**
+	 * Creates task without story
+	 * @param parameters values of task
+	 * @param listener  callback if the request was successful.
+	 * @param errorListener  callback if the request failed.
+	 */
+	void createTaskWhitoutStory(BacklogElementParameters parameters,
+			Listener<Task> listener, ErrorListener errorListener);
 }
