@@ -152,11 +152,9 @@ public class SpentEffortFragment extends RoboFragment {
 			@Override
 			public void onClick(final View v) {
 				final Context context = SpentEffortFragment.this.getActivity();
-				final long effortLeft = task.getEffortLeft();
 				final StateKey taskState = task.getState();
 
-				if ((effortLeft == 0
-						|| Float.valueOf(mEffortLeftInput.getText().toString()) == 0)
+				if (Float.valueOf(mEffortLeftInput.getText().toString()) == 0
 						&& taskState != StateKey.IMPLEMENTED
 						&& taskState != StateKey.DONE) {
 
