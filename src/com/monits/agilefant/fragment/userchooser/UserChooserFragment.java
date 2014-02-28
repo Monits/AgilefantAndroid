@@ -103,9 +103,11 @@ public class UserChooserFragment extends RoboFragment {
 					final long id) {
 				userInput.setText(null);
 
-				selectedUsers.add(
-						autoCompleteUsersAdapter.getItem(position));
-				selectedUsersAdapter.setUsers(selectedUsers);
+				if (!selectedUsers.contains(autoCompleteUsersAdapter.getItem(position))) {
+					selectedUsers.add(
+							autoCompleteUsersAdapter.getItem(position));
+					selectedUsersAdapter.setUsers(selectedUsers);
+				}
 			}
 		});
 
