@@ -38,13 +38,13 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 
 	@Override
 	protected int getTitleResourceId() {
-		return R.string.new_task_without_story;
+		return R.string.new_task;
 	}
 
 	@Override
 	protected void onSubmit(final BacklogElementParameters parameters) {
 		final FragmentActivity context = getActivity();
-		metricsService.createTaskWithoutStory(
+		metricsService.createTask(
 				parameters,
 				new Listener<Task>() {
 					@Override

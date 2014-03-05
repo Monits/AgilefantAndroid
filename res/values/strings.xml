@@ -103,7 +103,10 @@
 	<string name="new_story">New Story</string>
 	<string name="saved_story">Story successfully created!</string>
 	<string name="error_saving_story">Failed to create story!</string>
-	<string name="new_task_without_story">New Task</string>
-	<string name="saved_task">Task successfully created!</string>
+	<string name="new_task">New Task</string>
+	<string name="saved_task">Task Successfully created!</string>
 	<string name="error_saving_task">Failed to create task!</string>
+	<string name="context_hint">Search iteration</string>
+	<string name="feedback_failed_current_iterations_retrieval">Failed to retrieve current iterations!</string>
+	<string name="validation_empty_context">Context can\'t be empty!</string>
 </resources>

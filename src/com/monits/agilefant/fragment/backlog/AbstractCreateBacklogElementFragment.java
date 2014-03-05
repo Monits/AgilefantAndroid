@@ -62,8 +62,8 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 	private StateKey stateKey;
 
-	private Long backlogId;
-	private Long iterationId;
+	protected Long backlogId;
+	protected Long iterationId;
 
 	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForBacklog(final Long backlogId, final T fragment) {
 		final Bundle args = new Bundle();
@@ -84,11 +84,13 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		final Bundle arguments = getArguments();
-		if (arguments.containsKey(ARGUMENT_BACKLOG_ID)) {
+		final boolean hasArguments = arguments != null;
+
+		if (hasArguments && arguments.containsKey(ARGUMENT_BACKLOG_ID)) {
 			backlogId = arguments.getLong(ARGUMENT_BACKLOG_ID);
 		}
 
-		if (arguments.containsKey(ARGUMENT_ITERATION_ID)) {
+		if (hasArguments && arguments.containsKey(ARGUMENT_ITERATION_ID)) {
 			iterationId = arguments.getLong(ARGUMENT_ITERATION_ID);
 		}
 

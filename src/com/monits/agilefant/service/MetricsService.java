@@ -185,5 +185,5 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void createTaskWithoutStory(BacklogElementParameters parameters, Listener<Task> listener, ErrorListener errorListener);
+	void createTask(BacklogElementParameters parameters, Listener<Task> listener, ErrorListener errorListener);
 }

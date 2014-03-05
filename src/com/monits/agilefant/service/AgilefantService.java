@@ -5,6 +5,7 @@ import java.util.List;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.DailyWork;
+import com.monits.agilefant.model.FilterableIteration;
 import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
@@ -223,6 +224,15 @@ public interface AgilefantService {
 	 * @param listener  callback if the request was successful.
 	 * @param errorListener  callback if the request failed.
 	 */
-	void createTaskWhitoutStory(BacklogElementParameters parameters,
+	void createTask(BacklogElementParameters parameters,
 			Listener<Task> listener, ErrorListener errorListener);
+
+	/**
+	 * Retrieves the list of the ongoing filterable iterations.
+	 *
+	 * @param listener callback if the request was successful.
+	 * @param error callback if the request failed.
+	 */
+	void getCurrentFilterableIterations(
+			Listener<List<FilterableIteration>> listener, ErrorListener error);
 }

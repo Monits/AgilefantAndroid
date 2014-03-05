@@ -24,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.DailyWork;
+import com.monits.agilefant.model.FilterableIteration;
 import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
@@ -37,6 +38,7 @@ import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
+	private static final String CURRENT_ITERATION_CHOOSER_ACTION = "%1$s/ajax/currentIterationChooserData.action";
 	private static final String STORY_STORY_POINTS = "story.storyPoints";
 	private static final String STORY_STORY_VALUE = "story.storyValue";
 	private static final String STORY_NAME = "story.name";
@@ -655,7 +657,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void createTaskWhitoutStory(
+	public void createTask(
 			final BacklogElementParameters parameters, final Listener<Task> listener,
 			final ErrorListener errorListener) {
 
@@ -702,6 +704,19 @@ public class AgilefantServiceImpl implements AgilefantService {
 				return body.toString().getBytes();
 			}
 		};
+
+		requestQueue.add(request);
+	}
+
+	@Override
+	public void getCurrentFilterableIterations(
+			final Listener<List<FilterableIteration>> listener, final ErrorListener error) {
+
+		final String url = String.format(Locale.US, CURRENT_ITERATION_CHOOSER_ACTION, host);
+
+		final Type listType = new TypeToken<ArrayList<FilterableIteration>>() {}.getType();
+		final GsonRequest<List<FilterableIteration>> request = new GsonRequest<List<FilterableIteration>>(
+				Method.POST, url, gson, listType, listener, error);
 
 		requestQueue.add(request);
 	}

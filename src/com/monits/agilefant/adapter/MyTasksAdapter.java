@@ -18,7 +18,7 @@ import com.monits.agilefant.util.IterationUtils;
 public class MyTasksAdapter extends BaseAdapter {
 
 	private final Context context;
-	private final List<Task> tasks;
+	private List<Task> tasks;
 
 	private AdapterViewActionListener<Task> actionListener;
 	private final OnClickListener onClickListener;
@@ -97,6 +97,12 @@ public class MyTasksAdapter extends BaseAdapter {
 		}
 
 		return convertView;
+	}
+
+	public void setItems(final List<Task> items) {
+		this.tasks = items;
+
+		notifyDataSetChanged();
 	}
 
 	/**

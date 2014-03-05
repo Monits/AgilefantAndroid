@@ -19,7 +19,8 @@
         android:dividerHeight="@dimen/divider_stories_task"
         android:groupIndicator="@null"
         android:listSelector="@android:color/transparent"
-        android:paddingBottom="@dimen/divider_stories_task" />
+        android:paddingBottom="@dimen/divider_stories_task"
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tasks_empty_view"
@@ -27,6 +28,15 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/empty_my_tasks"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/new_task_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/new_task" />
 
 </LinearLayout>

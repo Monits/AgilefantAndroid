@@ -53,7 +53,7 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 		final TextView ret;
 		if (convertView == null) {
 			final LayoutInflater inflater = LayoutInflater.from(context);
-			ret = (TextView) inflater.inflate(R.layout.item_autocomplete_user, parent, false);
+			ret = (TextView) inflater.inflate(R.layout.item_autocomplete_text, parent, false);
 		} else {
 			ret = (TextView) convertView;
 		}

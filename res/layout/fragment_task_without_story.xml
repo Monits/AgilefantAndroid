@@ -48,7 +48,7 @@
             android:layout_alignParentBottom="true"
             android:gravity="center"
             android:padding="5dp"
-            android:text="@string/new_task_without_story" />
+            android:text="@string/new_task" />
     </RelativeLayout>
 
 </RelativeLayout>
