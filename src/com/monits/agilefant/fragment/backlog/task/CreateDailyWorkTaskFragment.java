@@ -27,6 +27,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteIterationsAdapter;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.model.FilterableIteration;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.IterationService;
@@ -45,6 +46,8 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 	private MetricsService metricsService;
 
 	private AutoCompleteTextView autocompleteIterations;
+
+	private Iteration iterationSelected;
 
 	public static CreateDailyWorkTaskFragment newInstance() {
 		return new CreateDailyWorkTaskFragment();
@@ -78,7 +81,8 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 				final FilterableIteration iteration =
 						autoCompleteIterationsAdapter.getItem(position);
 
-				iterationId = iteration.getIteration().getId();
+				iterationSelected = iteration.getIteration();
+				iterationId = iterationSelected.getId();
 
 				autocompleteIterations.setText(iteration.getName());
 			}
@@ -128,6 +132,7 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 
 						@Override
 						public void onResponse(final Task newTask) {
+							newTask.setIteration(iterationSelected);
 							final Intent newTaskIntent = new Intent();
 							newTaskIntent.setAction(
 									AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
