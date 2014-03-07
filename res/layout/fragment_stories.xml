@@ -25,7 +25,6 @@
             android:id="@+id/stories"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/new_story_btn"
             android:layout_below="@id/header"
             android:cacheColorHint="@android:color/transparent"
             android:childDivider="@android:color/transparent"
@@ -37,19 +36,10 @@
             android:id="@+id/stories_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/new_story_btn"
             android:gravity="center"
             android:text="@string/iteration_without_stories"
             android:visibility="gone" />
 
-        <Button
-            android:id="@+id/new_story_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/new_story" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -15,12 +15,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -102,24 +103,35 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	}
 
 	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+	    inflater.inflate(R.menu.menu_project_new_element, menu);
+
+	    super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_new_story:
+				this.getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, CreateLeafStoryFragment.newInstance(project.getId()))
+				.addToBackStack(null)
+				.commit();
+
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 
 		final View view = LayoutInflater.from(getActivity())
 			.inflate(R.layout.fragment_project_leaf_stories, container, false);
 
-		final Button newLeafStory = (Button) view.findViewById(R.id.new_story_btn);
-		newLeafStory.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View v) {
-
-				ProjectLeafStoriesFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, CreateLeafStoryFragment.newInstance(project.getId()))
-					.addToBackStack(null)
-					.commit();
-			}
-		});
+		setHasOptionsMenu(true);
 
 		viewFlipper = (ViewFlipper) view.findViewById(R.id.root_flipper);
 

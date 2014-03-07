@@ -12,10 +12,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.monits.agilefant.AgilefantApplication;
@@ -75,7 +76,29 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
 		return inflater.inflate(R.layout.fragment_my_tasks, container, false);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+	    inflater.inflate(R.menu.menu_dailywork_new_element, menu);
+	    super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_new_task:
+				MyTasksFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, CreateDailyWorkTaskFragment.newInstance())
+				.addToBackStack(null)
+				.commit();
+
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
@@ -84,23 +107,11 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 
 		final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
 		final View emptyView = view.findViewById(R.id.tasks_empty_view);
-		final Button newTaskButton = (Button) view.findViewById(R.id.new_task_btn);
 
 		tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
 		tasksAdapter.setOnActionListener(new TaskAdapterViewActionListener(getActivity(), MyTasksFragment.this));
 		tasksListView.setAdapter(tasksAdapter);
 		tasksListView.setEmptyView(emptyView);
-
-		newTaskButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View v) {
-				MyTasksFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, new CreateDailyWorkTaskFragment())
-					.addToBackStack(null)
-					.commit();
-			}
-		});
 	}
 
 	@Override

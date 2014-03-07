@@ -24,7 +24,6 @@
             android:id="@+id/stories_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/new_story_btn"
             android:layout_below="@+id/header"
             android:layout_marginTop="@dimen/divider_stories_task"
             android:cacheColorHint="@android:color/transparent"
@@ -44,14 +43,6 @@
             android:text="@string/empty_my_stories"
             android:visibility="gone" />
 
-        <Button
-            android:id="@+id/new_story_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/new_story" />
     </RelativeLayout>
 
 </ViewFlipper>
