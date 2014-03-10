@@ -23,6 +23,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment.OnUsersSubmittedListener;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
@@ -39,11 +40,17 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 	private IterationService iterationService;
 
 	private final Observer observer;
+	private final Backlog mBacklog;
 
 	public StoryAdapterViewActionListener(final FragmentActivity context, final Observer observer) {
+		this(context, observer, null);
+	}
+
+	public StoryAdapterViewActionListener(final FragmentActivity context, final Observer observer, final Backlog backlog) {
 		super(context);
 
 		this.observer = observer;
+		this.mBacklog = backlog;
 
 		RoboGuice.injectMembers(context, this);
 	}
@@ -153,7 +160,11 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 								final Intent intent = new Intent(context, IterationActivity.class);
 
 								// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-								response.setParent(iteration.getParent());
+								if (iteration.getParent() == null && mBacklog != null) {
+									response.setParent(mBacklog);
+								} else {
+									response.setParent(iteration.getParent());
+								}
 
 								intent.putExtra(IterationActivity.ITERATION, response);
 

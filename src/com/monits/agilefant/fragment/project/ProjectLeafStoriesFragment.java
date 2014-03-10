@@ -38,6 +38,7 @@ import com.monits.agilefant.fragment.backlog.story.CreateLeafStoryFragment;
 import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
 import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
@@ -138,7 +139,9 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		final FragmentActivity context = getActivity();
 
 		storiesAdapter = new ProjectLeafStoriesAdapter(context);
-		storiesAdapter.setOnActionListener(new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this));
+
+		final Backlog backlog = new Backlog(project);
+		storiesAdapter.setOnActionListener(new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this, backlog));
 		storiesAdapter.setOnLongActionListener(new AdapterViewOnLongActionListener<Story>() {
 
 			@Override
