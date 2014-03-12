@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import roboguice.fragment.RoboFragment;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,21 +19,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.MyTasksAdapter;
+import com.monits.agilefant.adapter.ProjectAdapter;
 import com.monits.agilefant.fragment.backlog.task.CreateDailyWorkTaskFragment;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
+import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.service.BacklogService;
 
 public class MyTasksFragment extends RoboFragment implements Observer {
 
 	private static final String TASKS_KEY = "TASKS";
 
+	@Inject
+	private BacklogService backlogService;
+
 	private List<Task> mTasks;
 
 	private MyTasksAdapter tasksAdapter;
+
+	private ProjectAdapter backlogsAdapter;
 
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -105,13 +119,55 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
-		final View emptyView = view.findViewById(R.id.tasks_empty_view);
+		backlogsAdapter = new ProjectAdapter(getActivity());
 
-		tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
-		tasksAdapter.setOnActionListener(new TaskAdapterViewActionListener(getActivity(), MyTasksFragment.this));
-		tasksListView.setAdapter(tasksAdapter);
-		tasksListView.setEmptyView(emptyView);
+		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+		progressDialog.setIndeterminate(true);
+		progressDialog.setCancelable(false);
+		progressDialog.setMessage(getActivity().getString(R.string.loading));
+		progressDialog.show();
+
+		backlogService.getMyBacklogs(
+				new Listener<List<Project>>() {
+
+					@Override
+					public void onResponse(final List<Project> response) {
+						if (response != null) {
+							backlogsAdapter.setProjects(response);
+
+							final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
+							final View emptyView = view.findViewById(R.id.tasks_empty_view);
+
+							final List<Project> projectList = new ArrayList<Project>();
+
+							for (int i = 0; i < backlogsAdapter.getGroupCount(); i++) {
+								projectList.add(backlogsAdapter.getGroup(i));
+							}
+
+							tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
+							tasksAdapter.setOnActionListener(new TaskAdapterViewActionListener(getActivity(), MyTasksFragment.this, projectList));
+							tasksListView.setAdapter(tasksAdapter);
+							tasksListView.setEmptyView(emptyView);
+
+							if (progressDialog != null && progressDialog.isShowing()) {
+								progressDialog.dismiss();
+							}
+						}
+					}
+				},
+				new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+						Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
+					}
+				});
+
+
+
 	}
 
 	@Override

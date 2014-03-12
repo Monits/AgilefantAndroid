@@ -28,7 +28,9 @@ import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment.OnUsersSubmittedListener;
+import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
@@ -46,11 +48,17 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 	private IterationService iterationService;
 
 	private final Observer observer;
+	private final List<Project> projectList;
 
 	public TaskAdapterViewActionListener(final FragmentActivity context, final Observer observer) {
+		this(context, observer, null);
+	}
+
+	public TaskAdapterViewActionListener(final FragmentActivity context, final Observer observer, final List<Project> projectList) {
 		super(context);
 
 		this.observer = observer;
+		this.projectList = projectList;
 
 		RoboGuice.injectMembers(context, this);
 	}
@@ -228,7 +236,22 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 								final Intent intent = new Intent(context, IterationActivity.class);
 
 								// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-								response.setParent(iteration.getParent());
+								if (iteration.getParent() == null && projectList != null) {
+									for (int i = 0; i < projectList.size(); i++) {
+										final Project project = projectList.get(i);
+										final List<Iteration> iterationList = project.getIterationList();
+										for (int j = 0; j < iterationList.size(); j++) {
+											final Iteration parentIteration = iterationList.get(j);
+											if (parentIteration.getId() ==  iteration.getId()) {
+												final Backlog backlog = new Backlog(project);
+												response.setParent(backlog);
+												break;
+											}
+										}
+									}
+								} else {
+									response.setParent(iteration.getParent());
+								}
 
 								intent.putExtra(IterationActivity.ITERATION, response);
 
