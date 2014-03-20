@@ -150,7 +150,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		mNotificationBuilder = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setOnlyAlertOnce(true)
-			.setDefaults(Notification.DEFAULT_ALL)
+			.setDefaults(Notification.DEFAULT_LIGHTS)
 			.setOngoing(true)
 			.setContentTitle(getString(R.string.app_name))
 			.setContentText(getString(R.string.notification_content_text, trackedTask.getName()));
