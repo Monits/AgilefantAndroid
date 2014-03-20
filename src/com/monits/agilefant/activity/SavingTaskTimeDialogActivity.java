@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.flurry.android.FlurryAgent;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.model.Task;
@@ -66,5 +67,17 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 		}
 
 		return minutes;
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, AgilefantApplication.FLURRY_API_KEY);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 }

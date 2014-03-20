@@ -9,7 +9,9 @@ import android.os.Bundle;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.flurry.android.FlurryAgent;
 import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
@@ -51,6 +53,18 @@ public class SplashActivity extends RoboActivity {
 						}
 					});
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, AgilefantApplication.FLURRY_API_KEY);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 
 	private void startHomeActivity() {

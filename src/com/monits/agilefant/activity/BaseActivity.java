@@ -5,7 +5,9 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.flurry.android.FlurryAgent;
 import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.UserService;
 
@@ -43,5 +45,17 @@ public class BaseActivity extends RoboActionBarActivity {
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, AgilefantApplication.FLURRY_API_KEY);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 }
