@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.SavingTaskTimeDialogActivity;
+import com.monits.agilefant.model.NotificationHolder;
 import com.monits.agilefant.model.Task;
 
 public class TaskTimeTrackingService extends RoboService implements PropertyChangeListener {
@@ -38,9 +38,8 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 	private Task trackedTask;
 
 	private boolean isTracking;
-	private boolean isChronometerRunning;
-	private long elapsedMillis = -1;
-	private long timeWhenStopped = 0;
+
+	private NotificationHolder notificationHolder;
 
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -48,13 +47,13 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		public void onReceive(final Context context, final Intent intent) {
 			final String action = intent.getAction();
 			if (action.equals(ACTION_START_TRACKING)) {
-				resumeChronometer();
+				resumeChronometer(notificationHolder);
 			} else if (action.equals(ACTION_PAUSE_TRACKING)) {
-				pauseChronometer();
+				pauseChronometer(notificationHolder);
 			} else if (action.equals(ACTION_STOP_TRACKING)) {
 
-				if (isChronometerRunning) {
-					pauseChronometer();
+				if (notificationHolder.isChronometerRunning()) {
+					pauseChronometer(notificationHolder);
 
 					displayNotification();
 				}
@@ -68,7 +67,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 				dialogActivityIntent.putExtra(
 						SavingTaskTimeDialogActivity.EXTRA_TASK, trackedTask);
 				dialogActivityIntent.putExtra(
-						SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(timeWhenStopped));
+						SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(notificationHolder.getElapsedTime()));
 
 				startActivity(dialogActivityIntent);
 			}
@@ -101,6 +100,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 				isTracking = true;
 
 				trackedTask = (Task) intent.getSerializableExtra(EXTRA_TASK);
+				notificationHolder = new NotificationHolder(trackedTask);
 
 				displayNotification();
 
@@ -143,9 +143,9 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 
 		contentView.setTextViewText(R.id.chronometer_description, trackedTask.getName());
 		contentView.setChronometer(R.id.chronometer,
-				elapsedMillis,
+				notificationHolder.getChronometerBaseTime(),
 				getString(R.string.chronometer_format),
-				isChronometerRunning);
+				notificationHolder.isChronometerRunning());
 
 		mNotificationBuilder = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)
@@ -156,7 +156,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			.setContentText(getString(R.string.notification_content_text, trackedTask.getName()));
 
 		final PendingIntent changeStateIntent;
-		if (isChronometerRunning) {
+		if (notificationHolder.isChronometerRunning()) {
 			changeStateIntent = PendingIntent.getBroadcast(
 					TaskTimeTrackingService.this, 0, new Intent(ACTION_PAUSE_TRACKING), 0);
 		} else {
@@ -177,18 +177,18 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		final Notification notification;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			contentView.setImageViewResource(R.id.chronometer_status,
-					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
+					notificationHolder.isChronometerRunning() ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
 
 			mNotificationBuilder.setContent(contentView);
 			notification = mNotificationBuilder.build();
 		} else {
 			contentView.setTextViewCompoundDrawables(R.id.chronometer_status,
-					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play,
+					notificationHolder.isChronometerRunning() ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play,
 							0,
 							0,
 							0);
 			contentView.setTextViewText(R.id.chronometer_status,
-					isChronometerRunning ? getString(R.string.notification_pause) : getString(R.string.notification_play));
+					notificationHolder.isChronometerRunning() ? getString(R.string.notification_pause) : getString(R.string.notification_play));
 
 			notification = mNotificationBuilder.build();
 			notification.bigContentView = contentView;
@@ -200,20 +200,16 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 	/**
 	 * Resumes chronometer, updates elapsed millis and updates notification state.
 	 */
-	private void resumeChronometer() {
-		isChronometerRunning = true;
-		elapsedMillis = elapsedMillis == -1 ? SystemClock.elapsedRealtime() : SystemClock.elapsedRealtime() + timeWhenStopped;
-
+	private void resumeChronometer(final NotificationHolder notificationHolder) {
+		notificationHolder.resume();
 		displayNotification();
 	}
 
 	/**
 	 * Stops the chronometer, stores the time when it was stopped and updates notification state.
 	 */
-	private void pauseChronometer() {
-		isChronometerRunning = false;
-		timeWhenStopped = elapsedMillis - SystemClock.elapsedRealtime();
-
+	private void pauseChronometer(final NotificationHolder notificationHolder) {
+		notificationHolder.pause();
 		displayNotification();
 	}
 
