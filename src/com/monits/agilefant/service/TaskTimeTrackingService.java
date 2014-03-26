@@ -3,6 +3,9 @@ package com.monits.agilefant.service;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import roboguice.service.RoboService;
 import android.annotation.SuppressLint;
@@ -27,54 +30,62 @@ import com.monits.agilefant.model.Task;
 
 public class TaskTimeTrackingService extends RoboService implements PropertyChangeListener {
 
-	private static final int NOTIFICATION_ID = 1;
-
 	public static final String ACTION_START_TRACKING = "com.monits.agilefant.intent.action.START_TRACKING";
 	public static final String ACTION_PAUSE_TRACKING = "com.monits.agilefant.intent.action.PAUSE_TRACKING";
 	public static final String ACTION_STOP_TRACKING  = "com.monits.agilefant.intent.action.STOP_TRACKING";
+	public static final String ACTION_QUIT_TRACKING_TASK = "com.monits.agilefant.intent.action.QUIT_TRACKING_TASK";
 
+	public static final String EXTRA_NOTIFICATION_ID = "com.monits.agilefant.intent.extra.NOTIFICATION_ID";
 	public static final String EXTRA_TASK = "com.monits.agilefant.intent.extra.TASK";
 
-	private Task trackedTask;
-
-	private boolean isTracking;
-
-	private NotificationHolder notificationHolder;
+	private final Map<Long, NotificationHolder> notificationMap = new ConcurrentHashMap<Long, NotificationHolder>();
 
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 			final String action = intent.getAction();
-			if (action.equals(ACTION_START_TRACKING)) {
-				resumeChronometer(notificationHolder);
-			} else if (action.equals(ACTION_PAUSE_TRACKING)) {
-				pauseChronometer(notificationHolder);
-			} else if (action.equals(ACTION_STOP_TRACKING)) {
 
-				if (notificationHolder.isChronometerRunning()) {
+			final long notificationId = intent.getLongExtra(EXTRA_NOTIFICATION_ID, -1);
+			if (notificationMap.containsKey(notificationId)) {
+				final NotificationHolder notificationHolder = notificationMap.get(notificationId);
+
+				if (action.equals(ACTION_START_TRACKING)) {
+					startChronometer(notificationHolder);
+				} else if (action.equals(ACTION_PAUSE_TRACKING)) {
 					pauseChronometer(notificationHolder);
+				} else if (action.equals(ACTION_QUIT_TRACKING_TASK)) {
+					notificationMap.remove(notificationHolder);
 
-					displayNotification();
+					mNotificationManager.cancel(notificationHolder.getNotificationId());
+
+					if (notificationMap.isEmpty()) {
+						stopSelf();
+					}
+				} else if (action.equals(ACTION_STOP_TRACKING)) {
+
+					if (notificationHolder.isChronometerRunning()) {
+						pauseChronometer(notificationHolder);
+					}
+
+					collapseStatusBar();
+
+					final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
+					dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+							| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+							| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+					dialogActivityIntent.putExtra(
+							SavingTaskTimeDialogActivity.EXTRA_TASK, notificationHolder.getTrackedTask());
+					dialogActivityIntent.putExtra(
+							SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(notificationHolder.getElapsedTime()));
+
+					startActivity(dialogActivityIntent);
 				}
-
-				collapseStatusBar();
-
-				final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
-				dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-						| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-				dialogActivityIntent.putExtra(
-						SavingTaskTimeDialogActivity.EXTRA_TASK, trackedTask);
-				dialogActivityIntent.putExtra(
-						SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(notificationHolder.getElapsedTime()));
-
-				startActivity(dialogActivityIntent);
 			}
 		}
 	};
 
-	private NotificationCompat.Builder mNotificationBuilder;
+	private NotificationManager mNotificationManager;
 
 	@Override
 	public IBinder onBind(final Intent intent) {
@@ -83,10 +94,13 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 
 	@Override
 	public void onCreate() {
+		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(ACTION_START_TRACKING);
 		intentFilter.addAction(ACTION_STOP_TRACKING);
 		intentFilter.addAction(ACTION_PAUSE_TRACKING);
+		intentFilter.addAction(ACTION_QUIT_TRACKING_TASK);
 
 		registerReceiver(broadcastReceiver, intentFilter);
 
@@ -95,25 +109,29 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
-		if (!isTracking) {
-			if (intent != null && intent.hasExtra(EXTRA_TASK)) {
-				isTracking = true;
+		if (intent != null && intent.hasExtra(EXTRA_TASK)) {
+			final Task taskToTrack = (Task) intent.getSerializableExtra(EXTRA_TASK);
 
-				trackedTask = (Task) intent.getSerializableExtra(EXTRA_TASK);
-				notificationHolder = new NotificationHolder(trackedTask);
+			final long id = taskToTrack.getId();
+			if (!notificationMap.containsKey(id)) {
 
-				displayNotification();
+				final NotificationHolder notificationHolder = new NotificationHolder(taskToTrack);
+				notificationMap.put(id, notificationHolder);
 
-				sendBroadcast(new Intent(ACTION_START_TRACKING));
+				startChronometer(notificationHolder);
+
+				final Intent startIntent = new Intent(ACTION_START_TRACKING);
+				startIntent.putExtra(EXTRA_NOTIFICATION_ID, id);
+				sendBroadcast(startIntent);
 			} else {
-				isTracking = false;
-
-				stopSelf();
-
-				Log.e(getClass().getName(), "Failed to start tracking, no extra provided!");
+				Toast.makeText(TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
 			}
-		} else {
-			Toast.makeText(TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
+
+
+		} else if (notificationMap.isEmpty()) {
+			stopSelf();
+
+			Log.e(getClass().getName(), "Failed to start tracking, no extra provided!");
 		}
 
 		return START_STICKY;
@@ -121,9 +139,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 
 	@Override
 	public void onDestroy() {
-		final NotificationManager mNotificationManager =
-		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel(NOTIFICATION_ID);
+		mNotificationManager.cancelAll();
 
 		unregisterReceiver(broadcastReceiver);
 	}
@@ -137,7 +153,13 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 	 * Creates or updates current notification.
 	 */
 	@SuppressLint("NewApi")
-	private void displayNotification() {
+	private void displayNotification(final NotificationHolder notificationHolder) {
+		final Task trackedTask = notificationHolder.getTrackedTask();
+		final long extraNotifId = trackedTask.getId();		// Make sure it's a long
+
+		final int notifId = notificationHolder.getNotificationId();
+		final boolean isChronometerRunning = notificationHolder.isChronometerRunning();
+
 		final RemoteViews contentView =
 				new RemoteViews(getPackageName(), R.layout.task_tracking_notification);
 
@@ -145,9 +167,9 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		contentView.setChronometer(R.id.chronometer,
 				notificationHolder.getChronometerBaseTime(),
 				getString(R.string.chronometer_format),
-				notificationHolder.isChronometerRunning());
+				isChronometerRunning);
 
-		mNotificationBuilder = new NotificationCompat.Builder(this)
+		final NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setOnlyAlertOnce(true)
 			.setDefaults(Notification.DEFAULT_LIGHTS)
@@ -156,20 +178,26 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			.setContentText(getString(R.string.notification_content_text, trackedTask.getName()));
 
 		final PendingIntent changeStateIntent;
-		if (notificationHolder.isChronometerRunning()) {
+		if (isChronometerRunning) {
+			final Intent pauseTrackingIntent = new Intent(ACTION_PAUSE_TRACKING);
+			pauseTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 			changeStateIntent = PendingIntent.getBroadcast(
-					TaskTimeTrackingService.this, 0, new Intent(ACTION_PAUSE_TRACKING), 0);
+					TaskTimeTrackingService.this, notifId, pauseTrackingIntent,
+					PendingIntent.FLAG_CANCEL_CURRENT);
 		} else {
+			final Intent resumeTrackingIntent = new Intent(ACTION_START_TRACKING);
+			resumeTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 			changeStateIntent = PendingIntent.getBroadcast(
-					TaskTimeTrackingService.this, 0, new Intent(ACTION_START_TRACKING), 0);
+					TaskTimeTrackingService.this, notifId, resumeTrackingIntent,
+					PendingIntent.FLAG_CANCEL_CURRENT);
 		}
 
+		final Intent stopTrackingIntent = new Intent(ACTION_STOP_TRACKING);
+		stopTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 		final PendingIntent stopIntent =
 				PendingIntent.getBroadcast(
-						TaskTimeTrackingService.this,
-						0,
-						new Intent(ACTION_STOP_TRACKING),
-						0);
+						TaskTimeTrackingService.this, notifId, stopTrackingIntent,
+						PendingIntent.FLAG_CANCEL_CURRENT);
 
 		contentView.setOnClickPendingIntent(R.id.chronometer_status, changeStateIntent);
 		contentView.setOnClickPendingIntent(R.id.chronometer_stop, stopIntent);
@@ -177,32 +205,40 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		final Notification notification;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			contentView.setImageViewResource(R.id.chronometer_status,
-					notificationHolder.isChronometerRunning() ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
+					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
 
 			mNotificationBuilder.setContent(contentView);
 			notification = mNotificationBuilder.build();
 		} else {
 			contentView.setTextViewCompoundDrawables(R.id.chronometer_status,
-					notificationHolder.isChronometerRunning() ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play,
+					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play,
 							0,
 							0,
 							0);
 			contentView.setTextViewText(R.id.chronometer_status,
-					notificationHolder.isChronometerRunning() ? getString(R.string.notification_pause) : getString(R.string.notification_play));
+					isChronometerRunning ? getString(R.string.notification_pause) : getString(R.string.notification_play));
 
 			notification = mNotificationBuilder.build();
 			notification.bigContentView = contentView;
 		}
 
-		startForeground(NOTIFICATION_ID, notification);
+		mNotificationManager.notify(notifId, notification);
 	}
 
 	/**
 	 * Resumes chronometer, updates elapsed millis and updates notification state.
 	 */
-	private void resumeChronometer(final NotificationHolder notificationHolder) {
+	private void startChronometer(final NotificationHolder notificationHolder) {
+
+		for (final Entry<Long, NotificationHolder> entry : notificationMap.entrySet()) {
+			if (entry.getKey() != notificationHolder.getTrackedTask().getId()) {
+				pauseChronometer(entry.getValue());
+			}
+		}
+
 		notificationHolder.resume();
-		displayNotification();
+
+		displayNotification(notificationHolder);
 	}
 
 	/**
@@ -210,21 +246,22 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 	 */
 	private void pauseChronometer(final NotificationHolder notificationHolder) {
 		notificationHolder.pause();
-		displayNotification();
+
+		displayNotification(notificationHolder);
 	}
 
 	private void collapseStatusBar() {
 		final Object sbservice = getSystemService("statusbar");
 
 		try {
-		    final Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
-		    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-		        final Method collapse = statusbarManager.getMethod("collapse");
-		        collapse.invoke(sbservice);
-		    } else {
-		        final Method collapse2 = statusbarManager.getMethod("collapsePanels");
-		        collapse2.invoke(sbservice);
-		    }
+			final Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
+			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+				final Method collapse = statusbarManager.getMethod("collapse");
+				collapse.invoke(sbservice);
+			} else {
+				final Method collapse2 = statusbarManager.getMethod("collapsePanels");
+				collapse2.invoke(sbservice);
+			}
 		} catch (final Exception e) {
 			Log.e(getClass().getName(), "Failed to close status bar", e);
 		}

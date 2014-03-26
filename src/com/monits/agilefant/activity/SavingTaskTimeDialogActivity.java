@@ -35,7 +35,9 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 
 					@Override
 					public void onResponse(final String arg0) {
-						stopService(new Intent(SavingTaskTimeDialogActivity.this, TaskTimeTrackingService.class));
+						final Intent quitTrackingIntent = new Intent(TaskTimeTrackingService.ACTION_QUIT_TRACKING_TASK);
+						quitTrackingIntent.putExtra(TaskTimeTrackingService.EXTRA_NOTIFICATION_ID, task.getId());
+						sendBroadcast(quitTrackingIntent);
 
 						final Intent taskUpdatedIntent = new Intent(AgilefantApplication.ACTION_TASK_UPDATED);
 						taskUpdatedIntent.putExtra(AgilefantApplication.EXTRA_TASK_UPDATED, task);
