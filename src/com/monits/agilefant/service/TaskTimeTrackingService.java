@@ -1,7 +1,5 @@
 package com.monits.agilefant.service;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +26,7 @@ import com.monits.agilefant.activity.SavingTaskTimeDialogActivity;
 import com.monits.agilefant.model.NotificationHolder;
 import com.monits.agilefant.model.Task;
 
-public class TaskTimeTrackingService extends RoboService implements PropertyChangeListener {
+public class TaskTimeTrackingService extends RoboService {
 
 	public static final String ACTION_START_TRACKING = "com.monits.agilefant.intent.action.START_TRACKING";
 	public static final String ACTION_PAUSE_TRACKING = "com.monits.agilefant.intent.action.PAUSE_TRACKING";
@@ -55,7 +53,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 				} else if (action.equals(ACTION_PAUSE_TRACKING)) {
 					pauseChronometer(notificationHolder);
 				} else if (action.equals(ACTION_QUIT_TRACKING_TASK)) {
-					notificationMap.remove(notificationHolder);
+					notificationMap.remove(notificationId);
 
 					mNotificationManager.cancel(notificationHolder.getNotificationId());
 
@@ -115,7 +113,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			final long id = taskToTrack.getId();
 			if (!notificationMap.containsKey(id)) {
 
-				final NotificationHolder notificationHolder = new NotificationHolder(taskToTrack);
+				final NotificationHolder notificationHolder = new NotificationHolder(this, taskToTrack);
 				notificationMap.put(id, notificationHolder);
 
 				startChronometer(notificationHolder);
@@ -129,12 +127,14 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 
 
 		} else if (notificationMap.isEmpty()) {
+			stopForeground(true);
+
 			stopSelf();
 
 			Log.e(getClass().getName(), "Failed to start tracking, no extra provided!");
 		}
 
-		return START_STICKY;
+		return START_STICKY_COMPATIBILITY;
 	}
 
 	@Override
@@ -144,16 +144,12 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		unregisterReceiver(broadcastReceiver);
 	}
 
-	@Override
-	public void propertyChange(final PropertyChangeEvent event) {
-
-	}
-
 	/**
 	 * Creates or updates current notification.
 	 */
 	@SuppressLint("NewApi")
 	private void displayNotification(final NotificationHolder notificationHolder) {
+
 		final Task trackedTask = notificationHolder.getTrackedTask();
 		final long extraNotifId = trackedTask.getId();		// Make sure it's a long
 
@@ -169,7 +165,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 				getString(R.string.chronometer_format),
 				isChronometerRunning);
 
-		final NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
+		final NotificationCompat.Builder mNotificationBuilder = notificationHolder.getNotificationBuilder()
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setOnlyAlertOnce(true)
 			.setDefaults(Notification.DEFAULT_LIGHTS)
@@ -183,13 +179,13 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			pauseTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 			changeStateIntent = PendingIntent.getBroadcast(
 					TaskTimeTrackingService.this, notifId, pauseTrackingIntent,
-					PendingIntent.FLAG_CANCEL_CURRENT);
+					PendingIntent.FLAG_UPDATE_CURRENT);
 		} else {
 			final Intent resumeTrackingIntent = new Intent(ACTION_START_TRACKING);
 			resumeTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 			changeStateIntent = PendingIntent.getBroadcast(
 					TaskTimeTrackingService.this, notifId, resumeTrackingIntent,
-					PendingIntent.FLAG_CANCEL_CURRENT);
+					PendingIntent.FLAG_UPDATE_CURRENT);
 		}
 
 		final Intent stopTrackingIntent = new Intent(ACTION_STOP_TRACKING);
@@ -197,7 +193,7 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		final PendingIntent stopIntent =
 				PendingIntent.getBroadcast(
 						TaskTimeTrackingService.this, notifId, stopTrackingIntent,
-						PendingIntent.FLAG_CANCEL_CURRENT);
+						PendingIntent.FLAG_UPDATE_CURRENT);
 
 		contentView.setOnClickPendingIntent(R.id.chronometer_status, changeStateIntent);
 		contentView.setOnClickPendingIntent(R.id.chronometer_stop, stopIntent);
@@ -222,21 +218,31 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 			notification.bigContentView = contentView;
 		}
 
-		mNotificationManager.notify(notifId, notification);
+		if (isChronometerRunning) {
+			startForeground(notifId, notification);
+		} else {
+			mNotificationManager.notify(notifId, notification);
+		}
 	}
 
 	/**
 	 * Resumes chronometer, updates elapsed millis and updates notification state.
 	 */
 	private void startChronometer(final NotificationHolder notificationHolder) {
+		stopForeground(false);
+
+		notificationHolder.resume();
+
+		/*
+		 * This multiple calls to displayNotification() were needed to avoid our notification to be overlapped.
+		 */
+		displayNotification(notificationHolder);
 
 		for (final Entry<Long, NotificationHolder> entry : notificationMap.entrySet()) {
-			if (entry.getKey() != notificationHolder.getTrackedTask().getId()) {
+			if (entry.getKey().longValue() != notificationHolder.getTrackedTask().getId()) {
 				pauseChronometer(entry.getValue());
 			}
 		}
-
-		notificationHolder.resume();
 
 		displayNotification(notificationHolder);
 	}
@@ -248,6 +254,19 @@ public class TaskTimeTrackingService extends RoboService implements PropertyChan
 		notificationHolder.pause();
 
 		displayNotification(notificationHolder);
+
+		/*
+		 * This is required to update each notification chronometer's base.
+		 *
+		 * From Android Doc:
+		 * Stop counting up. This does not affect the base as set from setBase(long), just the view display.
+		 * This stops the messages to the handler, effectively releasing resources that
+		 * would be held as the chronometer is running, via start().
+		 */
+		for (final NotificationHolder holder : notificationMap.values()) {
+			holder.updateBase();
+			displayNotification(holder);
+		}
 	}
 
 	private void collapseStatusBar() {

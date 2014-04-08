@@ -2,7 +2,9 @@ package com.monits.agilefant.model;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import android.content.Context;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 
 
 public class NotificationHolder {
@@ -16,9 +18,12 @@ public class NotificationHolder {
 	private long elapsedTime;
 	private long chronometerBaseTime;
 
-	public NotificationHolder(final Task trackedTask) {
+	private final NotificationCompat.Builder notifBuilder;
+
+	public NotificationHolder(final Context context, final Task trackedTask) {
 		this.notificationId = generatedId.incrementAndGet();
 		this.trackedTask = trackedTask;
+		notifBuilder = new NotificationCompat.Builder(context);
 	}
 
 	public int getNotificationId() {
@@ -41,10 +46,14 @@ public class NotificationHolder {
 		return elapsedTime;
 	}
 
+	public NotificationCompat.Builder getNotificationBuilder() {
+		return notifBuilder;
+	}
+
 	public void resume() {
 		if (!isChronometerRunning) {
 			isChronometerRunning = true;
-			chronometerBaseTime = SystemClock.elapsedRealtime() + elapsedTime;
+			updateBase();
 		}
 	}
 
@@ -55,4 +64,7 @@ public class NotificationHolder {
 		}
 	}
 
+	public void updateBase() {
+		chronometerBaseTime = SystemClock.elapsedRealtime() + elapsedTime;
+	}
 }

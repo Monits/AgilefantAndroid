@@ -63,7 +63,8 @@
 		<service
 		    android:exported="false"
             android:name="com.monits.agilefant.service.TaskTimeTrackingService"
-            android:enabled="true" >
+            android:enabled="true"
+            android:process=":TrackingService" >
         </service>
         
     </application>
