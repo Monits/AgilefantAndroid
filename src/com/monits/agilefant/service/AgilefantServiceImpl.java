@@ -80,7 +80,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private String host;
 
 	private static final String GET_MY_BACKLOGS_URL = "%1$s/ajax/myAssignmentsMenuData.action";
-	private static final String GET_ALL_BACKLOGS_URL = "%1$s";
+	private static final String GET_ALL_BACKLOGS_URL = "%1$s/ajax/menuData.action";
 	private static final String LOGIN_URL = "%1$s/j_spring_security_check";
 	private static final String PASSWORD = "j_password";
 	private static final String USERNAME = "j_username";
