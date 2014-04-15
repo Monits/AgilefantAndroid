@@ -9,11 +9,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.http.HttpStatus;
+
+import android.content.SharedPreferences;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
+import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
+import com.android.volley.RequeueAfterRequestDecorator;
+import com.android.volley.RequeuePolicy;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -73,7 +80,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private String host;
 
 	private static final String GET_MY_BACKLOGS_URL = "%1$s/ajax/myAssignmentsMenuData.action";
-	private static final String GET_ALL_BACKLOGS_URL = "%1$s/ajax/menuData.action";
+	private static final String GET_ALL_BACKLOGS_URL = "%1$s";
 	private static final String LOGIN_URL = "%1$s/j_spring_security_check";
 	private static final String PASSWORD = "j_password";
 	private static final String USERNAME = "j_username";
@@ -105,6 +112,11 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String TARGET_STORY_ID = "targetStoryId";
 	protected static final String TASK_NAME = "task.name";
 
+	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
+
+	@Inject
+	private SharedPreferences sharedPreferences;
+
 	@Inject
 	private Gson gson;
 
@@ -120,7 +132,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			@Override
 			public void onErrorResponse(final VolleyError volleyError) {
 				final NetworkResponse response = volleyError.networkResponse;
-				if (response != null && response.statusCode == 302) {
+				if (response != null && response.statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 					final String location = response.headers.get("Location");
 					if (location != null && location.split(";")[0].equals(getHost() + LOGIN_OK)) {
 						listener.onResponse(location);
@@ -163,7 +175,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<List<Product>> request = new GsonRequest<List<Product>>(
 				Method.GET, url, gson, listType, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -173,7 +185,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<Iteration> request = new GsonRequest<Iteration>(
 				Method.GET, url, gson, Iteration.class, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -222,7 +234,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -251,7 +263,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<List<Project>> request = new GsonRequest<List<Project>>(
 				Method.GET, url, gson, listType, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -261,7 +273,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<DailyWork> request = new GsonRequest<DailyWork>(
 				Method.GET, url, gson, DailyWork.class, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -329,7 +341,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -339,7 +351,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<Project> request = new GsonRequest<Project>(
 				Method.GET, url, gson, Project.class, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -360,7 +372,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -371,7 +383,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<List<FilterableUser>> request = new GsonRequest<List<FilterableUser>>(
 				Method.POST, url, gson, listType, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -406,7 +418,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -454,7 +466,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -478,7 +490,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -511,7 +523,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -544,7 +556,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	/**
@@ -590,7 +602,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 
 		};
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -653,7 +665,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -705,7 +717,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			}
 		};
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
@@ -718,6 +730,44 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<List<FilterableIteration>> request = new GsonRequest<List<FilterableIteration>>(
 				Method.POST, url, gson, listType, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
+	}
+
+	private void enqueueWithReloginPolicyAttached(final Request<?> request) {
+		requestQueue.add(
+				RequeueAfterRequestDecorator.wrap(requestQueue, request, reloginRequeuePolicy));
+	}
+
+	/**
+	 * Implementation of {@link RequeuePolicy} which will attempt to re-login before requeueing.
+	 *
+	 * @author gmuniz
+	 *
+	 */
+	private final class ReloginRequeuePolicy implements RequeuePolicy {
+
+		private ReloginRequeuePolicy() {
+		}
+
+		@Override
+		public boolean shouldRequeue(final NetworkResponse networkResponse) {
+			return networkResponse != null && networkResponse.statusCode == HttpStatus.SC_MOVED_TEMPORARILY;
+		}
+
+		@Override
+		public void executeBeforeRequeueing(
+				final Listener<?> successCallback, final ErrorListener errorCallback) {
+
+			login(sharedPreferences.getString(UserService.USER_NAME_KEY, null),
+					sharedPreferences.getString(UserService.PASSWORD_KEY, null),
+					new Listener<String>() {
+
+				@Override
+				public void onResponse(final String arg0) {
+					// We don't really care about response, we only need to be notified.
+					successCallback.onResponse(null);
+				}
+			}, errorCallback);
+		}
 	}
 }
