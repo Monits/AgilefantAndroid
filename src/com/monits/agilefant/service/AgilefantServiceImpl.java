@@ -41,7 +41,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.GsonRequest;
-import com.monits.android_volley.network.request.RfcCompliantListenableRequest;
+import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
@@ -735,7 +735,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private void enqueueWithReloginPolicyAttached(final Request<?> request) {
 		requestQueue.add(
-				RequeueAfterRequestDecorator.wrap(requestQueue, request, reloginRequeuePolicy));
+				RequeueAfterRequestDecorator.wrap(request, reloginRequeuePolicy));
 	}
 
 	/**

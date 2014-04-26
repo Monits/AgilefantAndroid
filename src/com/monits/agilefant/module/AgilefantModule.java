@@ -32,7 +32,7 @@ import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.service.ProjectServiceImpl;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.service.UserServiceImpl;
-import com.monits.android_volley.network.NullSafeImageLoader;
+import com.monits.volleyrequests.network.NullSafeImageLoader;
 
 @SuppressLint("NewApi")
 public class AgilefantModule extends AbstractModule {
