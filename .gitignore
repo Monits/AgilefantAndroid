@@ -3,4 +3,4 @@ gen/
 .*
 !.gitignore
 target/
-
+!.arc*
