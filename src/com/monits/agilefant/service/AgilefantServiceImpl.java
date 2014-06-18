@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpStatus;
 
@@ -19,13 +20,13 @@ import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
-import com.android.volley.RequeueAfterRequestDecorator;
-import com.android.volley.RequeuePolicy;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.RequestFuture;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
@@ -111,8 +112,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
 	private static final String TARGET_STORY_ID = "targetStoryId";
 	protected static final String TASK_NAME = "task.name";
-
-	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
 
 	@Inject
 	private SharedPreferences sharedPreferences;
@@ -734,40 +733,54 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	private void enqueueWithReloginPolicyAttached(final Request<?> request) {
-		requestQueue.add(
-				RequeueAfterRequestDecorator.wrap(request, reloginRequeuePolicy));
+		request.setRetryPolicy(new ReloginRetryPolicy(request.getRetryPolicy()));
+
+		requestQueue.add(request);
 	}
 
 	/**
-	 * Implementation of {@link RequeuePolicy} which will attempt to re-login before requeueing.
-	 *
-	 * @author gmuniz
-	 *
+	 * Implementation of {@link RetryPolicy} which will attempt to re-login on an auth error.
 	 */
-	private final class ReloginRequeuePolicy implements RequeuePolicy {
+	private final class ReloginRetryPolicy implements RetryPolicy {
 
-		private ReloginRequeuePolicy() {
+		private final RetryPolicy wrappedPolicy;
+
+		public ReloginRetryPolicy(final RetryPolicy retryPolicy) {
+			wrappedPolicy = retryPolicy;
 		}
 
 		@Override
-		public boolean shouldRequeue(final NetworkResponse networkResponse) {
-			return networkResponse != null && networkResponse.statusCode == HttpStatus.SC_MOVED_TEMPORARILY;
-		}
+		public void retry(final VolleyError error) throws VolleyError {
+			wrappedPolicy.retry(error);	// Consume a retry attempt
 
-		@Override
-		public void executeBeforeRequeueing(
-				final Listener<?> successCallback, final ErrorListener errorCallback) {
+			final NetworkResponse networkResponse = error.networkResponse;
+			if (networkResponse != null) {
+				final int statusCode = networkResponse.statusCode;
+				if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+					final RequestFuture<String> future = RequestFuture.newFuture();
+					login(sharedPreferences.getString(UserService.USER_NAME_KEY, null),
+							sharedPreferences.getString(UserService.PASSWORD_KEY, null),
+							future, future);
 
-			login(sharedPreferences.getString(UserService.USER_NAME_KEY, null),
-					sharedPreferences.getString(UserService.PASSWORD_KEY, null),
-					new Listener<String>() {
-
-				@Override
-				public void onResponse(final String arg0) {
-					// We don't really care about response, we only need to be notified.
-					successCallback.onResponse(null);
+					try {
+						future.get();
+					} catch (final InterruptedException e) {
+						throw new VolleyError(e);
+					} catch (final ExecutionException e) {
+						throw new VolleyError(e);
+					}
 				}
-			}, errorCallback);
+			}
+		}
+
+		@Override
+		public int getCurrentTimeout() {
+			return wrappedPolicy.getCurrentTimeout();
+		}
+
+		@Override
+		public int getCurrentRetryCount() {
+			return wrappedPolicy.getCurrentRetryCount();
 		}
 	}
 }
