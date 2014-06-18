@@ -251,7 +251,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final GsonRequest<User> request = new GsonRequest<User>(
 				Method.GET, url.toString(), gson, User.class, listener, error);
 
-		requestQueue.add(request);
+		enqueueWithReloginPolicyAttached(request);
 	}
 
 	@Override
