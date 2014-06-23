@@ -26,6 +26,7 @@ import com.monits.agilefant.adapter.AutoCompleteUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter.OnRemoveUserListener;
 import com.monits.agilefant.model.FilterableUser;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
 
@@ -112,10 +113,10 @@ public class UserChooserFragment extends RoboFragment {
 		});
 
 		userService.getFilterableUsers(
-				new Listener<List<FilterableUser>>() {
+				new Listener<List<UserChooser>>() {
 
 					@Override
-					public void onResponse(final List<FilterableUser> response) {
+					public void onResponse(final List<UserChooser> response) {
 						viewSwitcher.setDisplayedChild(1);
 
 						populateCurrentSelectedUsers(response);
@@ -155,13 +156,13 @@ public class UserChooserFragment extends RoboFragment {
 	 *
 	 * @param filterableUsers
 	 */
-	private void populateCurrentSelectedUsers(final List<FilterableUser> filterableUsers) {
+	private void populateCurrentSelectedUsers(final List<UserChooser> filterableUsers) {
 		for (int i = 0; i < selectedUsers.size(); i++) {
 			final User user = selectedUsers.get(i);
-			for (final FilterableUser filterableUser : filterableUsers) {
-				if (filterableUser.getId() == user.getId()) {
+			for (final UserChooser filterableUser : filterableUsers) {
+				if (filterableUser instanceof FilterableUser && filterableUser.getId() == user.getId()) {
 					selectedUsers.remove(i);
-					selectedUsers.add(i, filterableUser.getOriginalUser());
+					selectedUsers.add(i, ((FilterableUser) filterableUser).getUser());
 				}
 			}
 		}

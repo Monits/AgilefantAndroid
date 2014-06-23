@@ -14,14 +14,16 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.model.FilterableTeam;
 import com.monits.agilefant.model.FilterableUser;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.User;
 
 public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable {
 
 	private final Context context;
 
-	private List<FilterableUser> filterableUsers;
+	private List<UserChooser> filterableUsers;
 	private List<FilterableUser> filteredUsers;
 
 	private final Filter filter;
@@ -39,7 +41,7 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 	@Override
 	public User getItem(final int position) {
 		final int count = getCount();
-		return count > 0 && position < count ? filteredUsers.get(position).getOriginalUser() : null;
+		return count > 0 && position < count ? filteredUsers.get(position).getUser() : null;
 	}
 
 	@Override
@@ -73,23 +75,34 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 	private class ItemFilter extends Filter {
 		@Override
 		protected FilterResults performFiltering(final CharSequence constraint) {
-			final String filterString = constraint.toString();
 			final FilterResults results = new FilterResults();
 
 			final int count = filterableUsers.size();
 			final ArrayList<FilterableUser> usersList = new ArrayList<FilterableUser>(count);
 
-			for (int i = 0; i < count; i++) {
-				final FilterableUser user = filterableUsers.get(i);
-				final String matchedString = user.getMatchedString();
-				if (filterString != null && user.isEnabled()
-						&& (matchedString.toLowerCase().contains(filterString.toLowerCase())
-								|| user.getOriginalUser().getInitials().equalsIgnoreCase(filterString))) {
+			if (constraint != null) {
+				final String filterString = constraint.toString();
+				for (int i = 0; i < count; i++) {
+					final UserChooser userChooser = filterableUsers.get(i);
+					final String matchedString = userChooser.getMatchedString();
+					if (userChooser.isEnabled()) {
+						final boolean matchSomeChar = matchedString.toLowerCase().contains(filterString.toLowerCase());
+						if (userChooser instanceof FilterableUser
+								&& (matchSomeChar || ((FilterableUser) userChooser)
+										.getUser().getInitials().equalsIgnoreCase(filterString))) {
+							usersList.add((FilterableUser) userChooser);
 
-					usersList.add(user);
+						} else if (userChooser instanceof FilterableTeam && matchSomeChar) {
+							final List<Long> usersId = ((FilterableTeam) userChooser).getUsersId();
+							for (final UserChooser user : filterableUsers) {
+								if (usersId.contains(user.getId()) && !usersList.contains((FilterableUser) user)) {
+									usersList.add((FilterableUser) user);
+								}
+							}
+						}
+					}
 				}
 			}
-
 			results.values = usersList;
 			results.count = usersList.size();
 
@@ -104,7 +117,7 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 		}
 	}
 
-	public void setFilterableUsers(final List<FilterableUser> filterableUsers) {
+	public void setFilterableUsers(final List<UserChooser> filterableUsers) {
 		this.filterableUsers = filterableUsers;
 
 		notifyDataSetChanged();

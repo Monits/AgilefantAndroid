@@ -31,7 +31,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter.OnRemoveUserListener;
-import com.monits.agilefant.model.FilterableUser;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
@@ -136,10 +136,10 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		});
 
 		userService.getFilterableUsers(
-				new Listener<List<FilterableUser>>() {
+				new Listener<List<UserChooser>>() {
 
 					@Override
-					public void onResponse(final List<FilterableUser> response) {
+					public void onResponse(final List<UserChooser> response) {
 						viewSwitcher.setDisplayedChild(1);
 
 						autoCompleteUsersAdapter.setFilterableUsers(response);

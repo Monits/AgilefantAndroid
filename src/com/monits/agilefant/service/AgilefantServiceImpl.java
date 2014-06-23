@@ -33,7 +33,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.FilterableIteration;
-import com.monits.agilefant.model.FilterableUser;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
@@ -375,11 +375,11 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void getFilterableUsers(final Listener<List<FilterableUser>> listener, final ErrorListener error) {
+	public void getFilterableUsers(final Listener<List<UserChooser>> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, USER_CHOOSER_DATA_ACTION, host);
 
-		final Type listType = new TypeToken<ArrayList<FilterableUser>>() {}.getType();
-		final GsonRequest<List<FilterableUser>> request = new GsonRequest<List<FilterableUser>>(
+		final Type listType = new TypeToken<ArrayList<UserChooser>>() {}.getType();
+		final GsonRequest<List<UserChooser>> request = new GsonRequest<List<UserChooser>>(
 				Method.POST, url, gson, listType, listener, error);
 
 		enqueueWithReloginPolicyAttached(request);

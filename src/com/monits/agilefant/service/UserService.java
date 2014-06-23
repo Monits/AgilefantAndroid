@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.monits.agilefant.model.FilterableUser;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.User;
 
 public interface UserService {
@@ -105,5 +105,5 @@ public interface UserService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void getFilterableUsers(Listener<List<FilterableUser>> listener, ErrorListener error);
+	void getFilterableUsers(Listener<List<UserChooser>> listener, ErrorListener error);
 }

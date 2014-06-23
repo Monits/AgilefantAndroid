@@ -9,7 +9,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
-import com.monits.agilefant.model.FilterableUser;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.User;
 
 public class UserServiceImpl implements UserService {
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void getFilterableUsers(final Listener<List<FilterableUser>> listener, final ErrorListener error) {
+	public void getFilterableUsers(final Listener<List<UserChooser>> listener, final ErrorListener error) {
 		agilefantService.getFilterableUsers(listener, error);
 	}
 }
