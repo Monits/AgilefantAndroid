@@ -125,7 +125,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void login(final String userName, final String password, final Listener<String> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, LOGIN_URL, host);
+		final String url = String.format(Locale.US, LOGIN_URL, getHost());
 
 		final ErrorListener reqError = new ErrorListener() {
 
@@ -169,7 +169,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getAllBacklogs(final Listener<List<Product>> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, GET_ALL_BACKLOGS_URL, host);
+		final String url = String.format(Locale.US, GET_ALL_BACKLOGS_URL, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Product>>() {}.getType();
 		final GsonRequest<List<Product>> request = new GsonRequest<List<Product>>(
@@ -180,7 +180,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getIteration(final long id, final Listener<Iteration> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, GET_ITERATION, host, id);
+		final String url = String.format(Locale.US, GET_ITERATION, getHost(), id);
 
 		final GsonRequest<Iteration> request = new GsonRequest<Iteration>(
 				Method.GET, url, gson, Iteration.class, listener, error);
@@ -199,6 +199,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public String getHost() {
+		if (host == null) {
+			setDomain(sharedPreferences.getString(UserService.DOMAIN_KEY, null));
+		}
 		return host;
 	}
 
@@ -206,7 +209,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void taskChangeSpentEffort(final long date, final long minutesSpent, final String description, final long taskId, final long userId,
 			final Listener<String> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, LOG_TASK_EFFORT_ACTION, host);
+		final String url = String.format(Locale.US, LOG_TASK_EFFORT_ACTION, getHost());
 
 		final RfcCompliantListenableRequest<String> request = new RfcCompliantListenableRequest<String>(Method.POST, url, listener, error) {
 
@@ -240,7 +243,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public void retrieveUser(final Long id, final Listener<User> listener, final ErrorListener error) {
 		final StringBuilder url = new StringBuilder()
-			.append(host)
+			.append(getHost())
 			.append(RETRIEVE_USER_ACTION);
 		if (id != null) {
 			url.append("?")
@@ -257,7 +260,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getMyBacklogs(final Listener<List<Project>> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, GET_MY_BACKLOGS_URL, host);
+		final String url = String.format(Locale.US, GET_MY_BACKLOGS_URL, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Project>>() {}.getType();
 		final GsonRequest<List<Project>> request = new GsonRequest<List<Project>>(
@@ -268,7 +271,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getDailyWork(final Long id, final Listener<DailyWork> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, DAILY_WORK_ACTION, host, id);
+		final String url = String.format(Locale.US, DAILY_WORK_ACTION, getHost(), id);
 
 		final GsonRequest<DailyWork> request = new GsonRequest<DailyWork>(
 				Method.GET, url, gson, DailyWork.class, listener, error);
@@ -279,7 +282,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public void updateStory(final Story story, final Boolean tasksToDone, final Listener<Story> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, STORE_STORY_ACTION, host);
+		final String url = String.format(Locale.US, STORE_STORY_ACTION, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Method.POST, url, gson, Story.class, listener, error) {
@@ -346,7 +349,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getProjectDetails(final long projectId, final Listener<Project> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, PROJECT_DATA, host, projectId);
+		final String url = String.format(Locale.US, PROJECT_DATA, getHost(), projectId);
 
 		final GsonRequest<Project> request = new GsonRequest<Project>(
 				Method.GET, url, gson, Project.class, listener, error);
@@ -356,7 +359,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getProjectLeafStories(final long projectId, final Listener<List<Story>> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, PROJECT_LEAF_STORIES_ACTION, host);
+		final String url = String.format(Locale.US, PROJECT_LEAF_STORIES_ACTION, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Story>>() {}.getType();
 		final GsonRequest<List<Story>> request = new GsonRequest<List<Story>>(
@@ -377,7 +380,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getFilterableUsers(final Listener<List<UserChooser>> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, USER_CHOOSER_DATA_ACTION, host);
+		final String url = String.format(Locale.US, USER_CHOOSER_DATA_ACTION, getHost());
 
 		final Type listType = new TypeToken<ArrayList<UserChooser>>() {}.getType();
 		final GsonRequest<List<UserChooser>> request = new GsonRequest<List<UserChooser>>(
@@ -388,7 +391,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void updateProject(final Project project, final Listener<Project> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, "%1$s/ajax/storeProject.action", host);
+		final String url = String.format(Locale.US, "%1$s/ajax/storeProject.action", getHost());
 
 		final GsonRequest<Project> request = new GsonRequest<Project>(
 				Method.POST, url, gson, Project.class, listener, error) {
@@ -423,7 +426,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void updateTask(final Task task, final Listener<Task> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, STORE_TASK_ACTION, host);
+		final String url = String.format(Locale.US, STORE_TASK_ACTION, getHost());
 
 		final GsonRequest<Task> request = new GsonRequest<Task>(
 				Method.POST, url, gson, Task.class, listener, error) {
@@ -473,7 +476,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void rankTaskUnder(final Task task, final Task targetTask,
 			final Listener<Task> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, host);
+		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, getHost());
 
 		final GsonRequest<Task> request = new GsonRequest<Task>(
 				Method.POST, url, gson, Task.class, listener, error) {
@@ -503,7 +506,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void rankStoryUnder(final Story story, final Story targetStory, final Long backlogId,
 			final Listener<Story> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, host);
+		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Method.POST, url, gson, Story.class, listener, error) {
@@ -536,7 +539,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void rankStoryOver(final Story story, final Story targetStory, final Long backlogId,
 			final Listener<Story> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, host);
+		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Method.POST, url, gson, Story.class, listener, error) {
@@ -585,7 +588,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	@Override
 	public void moveStory(final long backlogId, final Story story,
 			final Listener<Story> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, STORY_MOVE, host);
+		final String url = String.format(Locale.US, STORY_MOVE, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Method.POST, url, gson, Story.class, listener, error) {
@@ -609,7 +612,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void createStory(final BacklogElementParameters parameters,
 			final Listener<Story> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, STORY_CREATE, host);
+		final String url = String.format(Locale.US, STORY_CREATE, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Method.POST, url, gson, Story.class, listener, error) {
@@ -673,7 +676,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			final BacklogElementParameters parameters, final Listener<Task> listener,
 			final ErrorListener errorListener) {
 
-		final String url = String.format(Locale.US, TASK_CREATE, host);
+		final String url = String.format(Locale.US, TASK_CREATE, getHost());
 
 		final GsonRequest<Task> request = new GsonRequest<Task>(
 				Method.POST, url, gson, Task.class, listener, errorListener) {
@@ -724,7 +727,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void getCurrentFilterableIterations(
 			final Listener<List<FilterableIteration>> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, CURRENT_ITERATION_CHOOSER_ACTION, host);
+		final String url = String.format(Locale.US, CURRENT_ITERATION_CHOOSER_ACTION, getHost());
 
 		final Type listType = new TypeToken<ArrayList<FilterableIteration>>() {}.getType();
 		final GsonRequest<List<FilterableIteration>> request = new GsonRequest<List<FilterableIteration>>(
