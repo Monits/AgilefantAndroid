@@ -1,5 +1,7 @@
 package com.monits.agilefant.model;
 
+import android.annotation.SuppressLint;
+
 public class UserChooser {
 
 	private long id;
@@ -50,13 +52,6 @@ public class UserChooser {
 	}
 
 	/**
-	 * @return the matchedString
-	 */
-	public String getMatchedString() {
-		return matchedString;
-	}
-
-	/**
 	 * @param matchedString the matchedString to set
 	 */
 	public void setMatchedString(final String matchedString) {
@@ -75,6 +70,16 @@ public class UserChooser {
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Checks if there a partial match.
+	 * @param filterString The partial string
+	 * @return True if there a partial match, false otherwise.
+	 */
+	@SuppressLint("DefaultLocale")
+	public boolean match(final String filterString) {
+		return matchedString.toLowerCase().contains(filterString.toLowerCase());
 	}
 
 }

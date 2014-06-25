@@ -14,17 +14,14 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
-import com.monits.agilefant.model.FilterableTeam;
-import com.monits.agilefant.model.FilterableUser;
 import com.monits.agilefant.model.UserChooser;
-import com.monits.agilefant.model.User;
 
 public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable {
 
 	private final Context context;
 
 	private List<UserChooser> filterableUsers;
-	private List<FilterableUser> filteredUsers;
+	private List<UserChooser> filteredUsers;
 
 	private final Filter filter;
 
@@ -39,14 +36,14 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 	}
 
 	@Override
-	public User getItem(final int position) {
+	public UserChooser getItem(final int position) {
 		final int count = getCount();
-		return count > 0 && position < count ? filteredUsers.get(position).getUser() : null;
+		return count > 0 && position < count ? filteredUsers.get(position) : null;
 	}
 
 	@Override
 	public long getItemId(final int position) {
-		final User user = getItem(position);
+		final UserChooser user = getItem(position);
 		return user != null ? user.getId() : 0;
 	}
 
@@ -60,8 +57,8 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 			ret = (TextView) convertView;
 		}
 
-		final User user = getItem(position);
-		ret.setText(user.getFullName());
+		final UserChooser user = getItem(position);
+		ret.setText(user.getName());
 
 		return ret;
 	}
@@ -78,28 +75,14 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 			final FilterResults results = new FilterResults();
 
 			final int count = filterableUsers.size();
-			final ArrayList<FilterableUser> usersList = new ArrayList<FilterableUser>(count);
+			final ArrayList<UserChooser> usersList = new ArrayList<UserChooser>(count);
 
 			if (constraint != null) {
 				final String filterString = constraint.toString();
 				for (int i = 0; i < count; i++) {
 					final UserChooser userChooser = filterableUsers.get(i);
-					final String matchedString = userChooser.getMatchedString();
-					if (userChooser.isEnabled()) {
-						final boolean matchSomeChar = matchedString.toLowerCase().contains(filterString.toLowerCase());
-						if (userChooser instanceof FilterableUser
-								&& (matchSomeChar || ((FilterableUser) userChooser)
-										.getUser().getInitials().equalsIgnoreCase(filterString))) {
-							usersList.add((FilterableUser) userChooser);
-
-						} else if (userChooser instanceof FilterableTeam && matchSomeChar) {
-							final List<Long> usersId = ((FilterableTeam) userChooser).getUsersId();
-							for (final UserChooser user : filterableUsers) {
-								if (usersId.contains(user.getId()) && !usersList.contains((FilterableUser) user)) {
-									usersList.add((FilterableUser) user);
-								}
-							}
-						}
+					if (userChooser.isEnabled() && userChooser.match(filterString)) {
+						usersList.add(userChooser);
 					}
 				}
 			}
@@ -112,7 +95,7 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(final CharSequence constraint, final FilterResults results) {
-			filteredUsers = (List<FilterableUser>) results.values;
+			filteredUsers = (List<UserChooser>) results.values;
 			notifyDataSetChanged();
 		}
 	}
@@ -121,5 +104,9 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 		this.filterableUsers = filterableUsers;
 
 		notifyDataSetChanged();
+	}
+
+	public List<UserChooser> getFilterableUsers() {
+		return filterableUsers;
 	}
 }

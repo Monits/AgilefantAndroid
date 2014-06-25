@@ -1,6 +1,5 @@
 package com.monits.agilefant.fragment.backlog;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
@@ -13,9 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -31,11 +27,12 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter.OnRemoveUserListener;
-import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.UserService;
+import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 import com.monits.agilefant.util.IterationUtils;
 
 public abstract class AbstractCreateBacklogElementFragment extends RoboFragment {
@@ -47,11 +44,10 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	private UserService userService;
 
 	private EditText storyName;
-	private AutoCompleteTextView mResponsiblesInput;
+	private AutoCompleteUserChooserTextView mResponsiblesInput;
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 	private ListView usersList;
 	private SelectedUsersAdapter selectedUsersAdapter;
-	private final List<User> selectedUsers = new LinkedList<User>();
 
 	private TextView storyState;
 	private TextView title;
@@ -118,22 +114,9 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 		stateKey = StateKey.NOT_STARTED;
 
-		mResponsiblesInput = (AutoCompleteTextView) view.findViewById(R.id.responsibles);
+		mResponsiblesInput = (AutoCompleteUserChooserTextView) view.findViewById(R.id.responsibles);
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(context);
 		mResponsiblesInput.setAdapter(autoCompleteUsersAdapter);
-		mResponsiblesInput.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(final AdapterView<?> adapter, final View view, final int position,
-					final long id) {
-				mResponsiblesInput.setText(null);
-				if (!selectedUsers.contains(autoCompleteUsersAdapter.getItem(position))) {
-					selectedUsers.add(
-							autoCompleteUsersAdapter.getItem(position));
-					selectedUsersAdapter.setUsers(selectedUsers);
-				}
-			}
-		});
 
 		userService.getFilterableUsers(
 				new Listener<List<UserChooser>>() {
@@ -143,7 +126,6 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 						viewSwitcher.setDisplayedChild(1);
 
 						autoCompleteUsersAdapter.setFilterableUsers(response);
-						selectedUsersAdapter.setUsers(selectedUsers);
 					}
 				},
 				new ErrorListener() {
@@ -156,14 +138,22 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 					}
 				});
 
+		mResponsiblesInput.setOnUserChooserActionListener(
+			new AutoCompleteUserChooserTextView.OnUserChooserActionListener() {
+				@Override
+				public void onUserChooserAction(final List<User> selected) {
+					selectedUsersAdapter.setUsers(selected);
+				}
+			}
+		);
+
 		usersList = (ListView) view.findViewById(R.id.users_list);
 		selectedUsersAdapter = new SelectedUsersAdapter(getActivity());
 		selectedUsersAdapter.setOnRemoveUserListener(new OnRemoveUserListener() {
 
 			@Override
 			public void OnRemoveUser(final View view, final int position, final User user) {
-				selectedUsers.remove(position);
-				selectedUsersAdapter.setUsers(selectedUsers);
+				mResponsiblesInput.removeUser(user);
 			}
 		});
 
@@ -212,7 +202,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 					.backlogId(backlogId)
 					.iterationId(iterationId)
 					.stateKey(stateKey)
-					.selectedUsers(selectedUsers)
+					.selectedUsers(mResponsiblesInput.getSelectedUsers())
 					.name(storyName.getText().toString())
 					.build();
 

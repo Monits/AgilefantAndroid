@@ -1,7 +1,6 @@
 package com.monits.agilefant.fragment.userchooser;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
@@ -10,9 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -25,10 +21,10 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter.OnRemoveUserListener;
-import com.monits.agilefant.model.FilterableUser;
-import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.service.UserService;
+import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 
 public class UserChooserFragment extends RoboFragment {
 
@@ -39,11 +35,10 @@ public class UserChooserFragment extends RoboFragment {
 
 	private ViewSwitcher viewSwitcher;
 
-	private final List<User> selectedUsers = new LinkedList<User>();
 	private ListView selectedUsersList;
 	private SelectedUsersAdapter selectedUsersAdapter;
 
-	private AutoCompleteTextView userInput;
+	private AutoCompleteUserChooserTextView userInput;
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 
 	private OnUsersSubmittedListener onUsersSubmittedListener;
@@ -59,18 +54,6 @@ public class UserChooserFragment extends RoboFragment {
 		return fragment;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-
-		final Bundle arguments = getArguments();
-		final List<User> currentUsers = (List<User>) arguments.getSerializable(CURRENT_RESPONSIBLES);
-		if (currentUsers != null) {
-			selectedUsers.addAll(currentUsers);
-		}
-
-		super.onCreate(savedInstanceState);
-	}
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
@@ -87,30 +70,22 @@ public class UserChooserFragment extends RoboFragment {
 
 			@Override
 			public void OnRemoveUser(final View view, final int position, final User user) {
-				selectedUsers.remove(position);
-				selectedUsersAdapter.setUsers(selectedUsers);
+				userInput.removeUser(user);
 			}
 		});
 
 		selectedUsersList.setAdapter(selectedUsersAdapter);
 
-		userInput = (AutoCompleteTextView) view.findViewById(R.id.user_input);
+		userInput = (AutoCompleteUserChooserTextView) view.findViewById(R.id.user_input);
+
+		@SuppressWarnings("unchecked")
+		final List<User> currentUsers = (List<User>) getArguments().getSerializable(CURRENT_RESPONSIBLES);
+		if (currentUsers != null) {
+			userInput.setUsers(currentUsers);
+		}
+
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(getActivity());
 		userInput.setAdapter(autoCompleteUsersAdapter);
-		userInput.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(final AdapterView<?> adapter, final View view, final int position,
-					final long id) {
-				userInput.setText(null);
-
-				if (!selectedUsers.contains(autoCompleteUsersAdapter.getItem(position))) {
-					selectedUsers.add(
-							autoCompleteUsersAdapter.getItem(position));
-					selectedUsersAdapter.setUsers(selectedUsers);
-				}
-			}
-		});
 
 		userService.getFilterableUsers(
 				new Listener<List<UserChooser>>() {
@@ -119,10 +94,9 @@ public class UserChooserFragment extends RoboFragment {
 					public void onResponse(final List<UserChooser> response) {
 						viewSwitcher.setDisplayedChild(1);
 
-						populateCurrentSelectedUsers(response);
+						userInput.populateCurrentSelectedUsers(response);
 
 						autoCompleteUsersAdapter.setFilterableUsers(response);
-						selectedUsersAdapter.setUsers(selectedUsers);
 					}
 				},
 				new ErrorListener() {
@@ -135,12 +109,21 @@ public class UserChooserFragment extends RoboFragment {
 					}
 				});
 
+		userInput.setOnUserChooserActionListener(
+			new AutoCompleteUserChooserTextView.OnUserChooserActionListener() {
+				@Override
+				public void onUserChooserAction(final List<User> selected) {
+					selectedUsersAdapter.setUsers(selected);
+				}
+			}
+		);
+
 		view.findViewById(R.id.submit_btn).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
 				if (onUsersSubmittedListener != null) {
-					onUsersSubmittedListener.onSubmitUsers(selectedUsers);
+					onUsersSubmittedListener.onSubmitUsers(userInput.getSelectedUsers());
 				}
 
 				getFragmentManager().popBackStackImmediate();
@@ -148,24 +131,6 @@ public class UserChooserFragment extends RoboFragment {
 		});
 
 		super.onViewCreated(view, savedInstanceState);
-	}
-
-	/**
-	 * Project's assignees only contain's the initials and the id of the user, this method is to replace those incomplete current users with
-	 * the complete objects
-	 *
-	 * @param filterableUsers
-	 */
-	private void populateCurrentSelectedUsers(final List<UserChooser> filterableUsers) {
-		for (int i = 0; i < selectedUsers.size(); i++) {
-			final User user = selectedUsers.get(i);
-			for (final UserChooser filterableUser : filterableUsers) {
-				if (filterableUser instanceof FilterableUser && filterableUser.getId() == user.getId()) {
-					selectedUsers.remove(i);
-					selectedUsers.add(i, ((FilterableUser) filterableUser).getUser());
-				}
-			}
-		}
 	}
 
 	public void setOnUsersSubmittedListener(final OnUsersSubmittedListener listener) {

@@ -1,5 +1,7 @@
 package com.monits.agilefant.model;
 
+import android.annotation.SuppressLint;
+
 public class FilterableUser extends UserChooser {
 
 	private User user;
@@ -27,4 +29,15 @@ public class FilterableUser extends UserChooser {
 		this.user = user;
 	}
 
+	/**
+	 * Checks if there a partial match or with your initials.
+	 * @param filterString The partial string
+	 * @return True if there a partial match or with your initials, false otherwise.
+	 */
+	@Override
+	@SuppressLint("DefaultLocale")
+	public boolean match(final String filterString) {
+		final String initials = getUser().getInitials();
+		return super.match(filterString) || (initials != null && initials.equalsIgnoreCase(filterString));
+	}
 }

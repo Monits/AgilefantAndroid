@@ -46,5 +46,4 @@ public class FilterableTeam extends UserChooser {
 	public void setUsersId(final List<Long> usersId) {
 		this.usersId = usersId;
 	}
-
 }

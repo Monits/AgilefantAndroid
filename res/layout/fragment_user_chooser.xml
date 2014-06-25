@@ -39,7 +39,7 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
-            <AutoCompleteTextView
+            <com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView
                 android:id="@+id/user_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

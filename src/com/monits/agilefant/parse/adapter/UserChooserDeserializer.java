@@ -45,13 +45,16 @@ public class UserChooserDeserializer implements JsonDeserializer<UserChooser> {
 				usersId.add(idList.get(i).getAsLong());
 			}
 
+			final JsonElement descriptionJsonElement =
+					jsonObject.getAsJsonObject("originalObject").get("description");
+
 			return new FilterableTeam(
 					jsonObject.get("id").getAsLong(),
 					jsonObject.get("enabled").getAsBoolean(),
 					jsonObject.get("matchedString").getAsString(),
 					jsonObject.get("name").getAsString(),
 					usersId,
-					jsonObject.getAsJsonObject("originalObject").get("description").getAsString());
+					descriptionJsonElement.isJsonNull() ? "" : descriptionJsonElement.getAsString());
 		}
 	}
 
