@@ -154,9 +154,13 @@ public class SpentEffortFragment extends RoboFragment {
 				final Context context = SpentEffortFragment.this.getActivity();
 				final StateKey taskState = task.getState();
 
-				if (Float.valueOf(mEffortLeftInput.getText().toString()) == 0
-						&& taskState != StateKey.IMPLEMENTED
-						&& taskState != StateKey.DONE) {
+				float el = 0;
+				final String effortLeft = mEffortLeftInput.getText().toString();
+				if (!"".equals(effortLeft)) {
+					el = Float.valueOf(effortLeft);
+				}
+
+				if (el == 0 && taskState != StateKey.IMPLEMENTED && taskState != StateKey.DONE) {
 
 					final AlertDialog.Builder builder = new Builder(context);
 					builder.setNegativeButton(R.string.dialog_update_task_state_negative, new DialogInterface.OnClickListener() {
