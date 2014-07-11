@@ -88,4 +88,10 @@ public class FilterableIteration {
 	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
 	}
+
+	@Override
+	public String toString() {
+		// This value is shown when in landscape and using autocomplete.
+		return name;
+	}
 }
