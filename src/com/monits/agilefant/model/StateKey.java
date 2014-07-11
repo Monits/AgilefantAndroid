@@ -3,7 +3,7 @@ package com.monits.agilefant.model;
 public enum StateKey {
 
 	NOT_STARTED("Not Started"),
-	STARTED("Started"),
+	STARTED("In Progress"),
 	PENDING("Pending"),
 	BLOCKED("Blocked"),
 	IMPLEMENTED("Ready"),
