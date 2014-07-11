@@ -14,6 +14,7 @@ import org.apache.http.HttpStatus;
 import android.content.SharedPreferences;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -111,6 +112,10 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
 	private static final String TARGET_STORY_ID = "targetStoryId";
 	protected static final String TASK_NAME = "task.name";
+
+	private static final int DAILYWORK_REATTEMPT = 1;
+	private static final float DAILYWORK_TIMEOUT_SECOND_ATTEMPT = 1.5f;
+	private static final int DAILYWORK_TIMEOUT = 30000;
 
 	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
 
@@ -275,6 +280,14 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final GsonRequest<DailyWork> request = new GsonRequest<DailyWork>(
 				Method.GET, url, gson, DailyWork.class, listener, error);
+
+		/*
+		 * Default Volley timeout is too low and the request to get the
+		 * DailyWork of a user can maybe take a little more time.
+		 * 30 secs timeout, 1 reattempt, 45 secs timeout for the second attempt
+		 */
+		request.setRetryPolicy(
+				new DefaultRetryPolicy(DAILYWORK_TIMEOUT, DAILYWORK_REATTEMPT, DAILYWORK_TIMEOUT_SECOND_ATTEMPT));
 
 		enqueueWithReloginPolicyAttached(request);
 	}
