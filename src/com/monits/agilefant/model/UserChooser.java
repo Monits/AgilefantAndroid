@@ -82,4 +82,9 @@ public class UserChooser {
 		return matchedString.toLowerCase().contains(filterString.toLowerCase());
 	}
 
+	@Override
+	public String toString() {
+		// This value is shown when in landscape and using autocomplete.
+		return name;
+	}
 }
