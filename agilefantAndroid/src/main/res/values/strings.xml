@@ -92,7 +92,6 @@
 	<string name="notification_submit">Submit</string>
 	<string name="notification_content_text">Tracking: %1$s.</string>
 	<string name="chronometer_format">Elapsed Time: %s</string>
-	<string name="dialog_set_task_time">Do you want to set your task time?</string>
 	<string name="error_saving_time">Error saving task time</string>
 	<string name="time_saved">Task time saved</string>
 	<string name="feedback_failed_update_story_rank">Failed to update the story\'s rank!</string>

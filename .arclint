@@ -1,10 +1,24 @@
 {
     "linters": {
-        "checkstyle": {
-            "type": "checkstyle",
-            "include": "(\\.java$)",
-            "paths": [ "src" ],
-            "aggregate": false
+        "json": {
+            "type": "json",
+            "include": [
+                "(^\\.arcconfig$)",
+                "(^\\.arclint$)"
+            ]
+        },
+        "gradle": {
+            "type": "gradle",
+            "lints": [ "checkstyle", "findbugs", "pmd", "cpd", "android" ]
+        },
+        "chmod": {
+            "type": "chmod"
+        },
+        "merge-conflict": {
+            "type": "merge-conflict"
+        },
+        "spelling": {
+            "type": "spelling"
         }
     }
 }
