@@ -23,6 +23,11 @@ public class MyTasksAdapter extends BaseAdapter {
 	private AdapterViewActionListener<Task> actionListener;
 	private final OnClickListener onClickListener;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param tasks The tasks
+	 */
 	public MyTasksAdapter(final Context context, final List<Task> tasks) {
 		this.context = context;
 		this.tasks = tasks;
@@ -56,6 +61,7 @@ public class MyTasksAdapter extends BaseAdapter {
 		return item != null ? item.getId() : 0;
 	}
 
+	@SuppressWarnings("checkstyle:finalparameters")
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 
@@ -99,6 +105,10 @@ public class MyTasksAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	/**
+	 * Set the items
+	 * @param items The items to set
+	 */
 	public void setItems(final List<Task> items) {
 		this.tasks = items;
 

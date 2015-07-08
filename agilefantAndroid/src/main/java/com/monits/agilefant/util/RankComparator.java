@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import com.monits.agilefant.model.Rankable;
 
-public class RankComparator implements Comparator<Rankable> {
+public final class RankComparator implements Comparator<Rankable> {
 
 	public static final RankComparator INSTANCE = new RankComparator();
 

@@ -26,44 +26,48 @@ public class AllBacklogsFragment extends RoboFragment {
 
 	private BacklogsAdapter backlogsAdapter;
 
+	/**
+	 * @return a new AllBacklogsFragment
+	 */
 	public static AllBacklogsFragment newInstance() {
 		return new AllBacklogsFragment();
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_backlogs, container, false);
 	}
 
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		final ExpandableListView allbackLogs = (ExpandableListView) view.findViewById(R.id.all_backlogs);
+		final ExpandableListView allBacklogs = (ExpandableListView) view.findViewById(R.id.all_backlogs);
 
 		backlogsAdapter = new BacklogsAdapter(getActivity());
-		allbackLogs.setAdapter(backlogsAdapter);
+		allBacklogs.setAdapter(backlogsAdapter);
 
 		final View loadingView = view.findViewById(R.id.loading_view);
 		loadingView.setVisibility(View.VISIBLE);
 		backlogService.getAllBacklogs(
-				new Listener<List<Product>>() {
+			new Listener<List<Product>>() {
 
-					@Override
-					public void onResponse(final List<Product> response) {
-						if (response != null) {
-							backlogsAdapter.setBacklogs(response);
-						}
-
-						loadingView.setVisibility(View.GONE);
+				@Override
+				public void onResponse(final List<Product> response) {
+					if (response != null) {
+						backlogsAdapter.setBacklogs(response);
 					}
-				},
-				new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						loadingView.setVisibility(View.GONE);
+					loadingView.setVisibility(View.GONE);
+				}
+			},
+			new ErrorListener() {
 
-						Toast.makeText(getActivity(), R.string.error_retrieve_backlogs, Toast.LENGTH_SHORT).show();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					loadingView.setVisibility(View.GONE);
+
+					Toast.makeText(getActivity(), R.string.error_retrieve_backlogs, Toast.LENGTH_SHORT).show();
+				}
+			});
 	}
 }

@@ -9,6 +9,7 @@ public interface AdapterViewOnLongActionListener<T> {
 	 *
 	 * @param view the view
 	 * @param object the object to be send
+	 * @return true if the callback consumed the long click, false otherwise.
 	 */
 	public boolean onLongAction(View view, T object);
 

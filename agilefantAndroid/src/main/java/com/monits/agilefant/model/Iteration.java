@@ -11,11 +11,10 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 public class Iteration implements Serializable {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 4014161739613202291L;
+
+	private static final int INT = 32;
+	private static final int SHIFT = INT;
 
 	@SerializedName("id")
 	private long id;
@@ -173,10 +172,17 @@ public class Iteration implements Serializable {
 		this.rootIteration = rootIteration;
 	}
 
+	/**
+	 * @return The parent backlog
+	 */
 	public Backlog getParent() {
 		return parent;
 	}
 
+	/**
+	 * Set the parent backlog
+	 * @param parent The backlog to set as a parent
+	 */
 	public void setParent(final Backlog parent) {
 		this.parent = parent;
 	}
@@ -185,21 +191,29 @@ public class Iteration implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + (int) (id ^ (id >>> SHIFT));
 		return result;
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
+
 		final Iteration other = (Iteration) obj;
-		if (id != other.id)
+		if (id != other.id) {
 			return false;
+		}
+
 		return true;
 	}
 

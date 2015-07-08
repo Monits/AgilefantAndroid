@@ -18,6 +18,8 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 	private static final long AGILEFANT_MIN_SPENT_EFFORT = 6;
 	public static final String EXTRA_TASK = "com.monits.agilefant.intent.extra.TASK";
 	public static final String EXTRA_ELAPSED_MILLIS = "com.monits.agilefant.intent.extra.ELAPSED_MILLIS";
+	public static final int MILLIS_IN_SECOND = 1000;
+	public static final int SECONDS_IN_MINUTE = 60;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -31,28 +33,28 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 
 		final SpentEffortFragment spentEffortFragment = SpentEffortFragment.newInstance(task, minutes);
 		spentEffortFragment.setEffortSpentCallbacks(
-				new Listener<String>() {
+			new Listener<String>() {
 
-					@Override
-					public void onResponse(final String arg0) {
-						final Intent quitTrackingIntent = new Intent(TaskTimeTrackingService.ACTION_QUIT_TRACKING_TASK);
-						quitTrackingIntent.putExtra(TaskTimeTrackingService.EXTRA_NOTIFICATION_ID, task.getId());
-						sendBroadcast(quitTrackingIntent);
+				@Override
+				public void onResponse(final String arg0) {
+					final Intent quitTrackingIntent = new Intent(TaskTimeTrackingService.ACTION_QUIT_TRACKING_TASK);
+					quitTrackingIntent.putExtra(TaskTimeTrackingService.EXTRA_NOTIFICATION_ID, task.getId());
+					sendBroadcast(quitTrackingIntent);
 
-						final Intent taskUpdatedIntent = new Intent(AgilefantApplication.ACTION_TASK_UPDATED);
-						taskUpdatedIntent.putExtra(AgilefantApplication.EXTRA_TASK_UPDATED, task);
-						sendBroadcast(taskUpdatedIntent);
+					final Intent taskUpdatedIntent = new Intent(AgilefantApplication.ACTION_TASK_UPDATED);
+					taskUpdatedIntent.putExtra(AgilefantApplication.EXTRA_TASK_UPDATED, task);
+					sendBroadcast(taskUpdatedIntent);
 
-						SavingTaskTimeDialogActivity.this.finish();
-					}
-				},
-				new ErrorListener() {
+					SavingTaskTimeDialogActivity.this.finish();
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						SavingTaskTimeDialogActivity.this.finish();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					SavingTaskTimeDialogActivity.this.finish();
+				}
+			});
 
 		getSupportFragmentManager().beginTransaction()
 			.replace(android.R.id.content, spentEffortFragment)
@@ -60,7 +62,7 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 	}
 
 	private long millisToMinutes(final long millis) {
-		return Math.round((millis / 1000) / 60);
+		return Math.round((millis / MILLIS_IN_SECOND) / SECONDS_IN_MINUTE);
 	}
 
 	private long getSpentEffort(final long minutes) {

@@ -1,18 +1,22 @@
 package com.monits.agilefant.model;
 
-public interface Rankable<T> extends Cloneable {
+public interface Rankable<T> {
 
 	/**
 	 * Retrieves the rank.
 	 *
 	 * @return the rank.
 	 */
-	public int getRank();
+	int getRank();
 
 	/**
 	 * Sets the rank.
+	 * @param rank the rank to set
 	 */
-	public void setRank(int rank);
+	void setRank(int rank);
 
-	public T clone();
+	/**
+	 * @return Return a copy of the this object.
+	 */
+	T getCopy();
 }

@@ -8,10 +8,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Task extends Observable implements Serializable, Rankable<Task> {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 2576001407807164868L;
+	private static final int SHIFT = 32;
 
 	@SerializedName("effortLeft")
 	private long effortLeft;
@@ -43,22 +41,24 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	@SerializedName("story")
 	private Backlog story;
 
+	/**
+	 * Default constructor
+	 */
 	public Task() {
 	}
 
 	/**
-	 * @param effortLeft
-	 * @param effortSpent
-	 * @param originalEstimate
-	 * @param name
-	 * @param id
-	 * @param responsibles
-	 * @param state
-	 * @param rank
+	 * @param effortLeft The effort left
+	 * @param effortSpent The effort spent
+	 * @param originalEstimate The original statimate
+	 * @param name The name
+	 * @param id The id
+	 * @param responsibles The responsibles
+	 * @param state The state
+	 * @param rank The rank
 	 */
-	public Task(final long effortLeft, final long effortSpent, final long originalEstimate,
-			final String name, final long id, final List<User> responsibles, final StateKey state,
-			final int rank) {
+	public Task(final long effortLeft, final long effortSpent, final long originalEstimate, final String name,
+			final long id, final List<User> responsibles, final StateKey state, final int rank) {
 		super();
 		this.effortLeft = effortLeft;
 		this.effortSpent = effortSpent;
@@ -68,6 +68,30 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 		this.responsibles = responsibles;
 		this.state = state;
 		this.rank = rank;
+	}
+
+	/**
+	 * Constructor.
+	 * Copy the data of the given object, and creates a new object with the same internal state.
+	 *
+	 *  @param task The task to copy
+	 */
+	public Task(final Task task) {
+		this.effortLeft = task.effortLeft;
+		this.effortSpent = task.effortSpent;
+		this.originalEstimate = task.originalEstimate;
+		this.name = task.name;
+		this.id = task.id;
+		this.responsibles = task.responsibles;
+		this.state = task.state;
+		this.rank = task.rank;
+		this.iteration = task.iteration;
+		this.story = task.story;
+	}
+
+	@Override
+	public Task getCopy() {
+		return new Task(this);
 	}
 
 	/**
@@ -190,7 +214,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	}
 
 	@Override
-	public int  getRank() {
+	public int getRank() {
 		return rank;
 	}
 
@@ -246,26 +270,10 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	}
 
 	@Override
-	public Task clone() {
-		final Task clonedTask = new Task();
-		clonedTask.setEffortLeft(effortLeft);
-		clonedTask.setEffortSpent(effortSpent);
-		clonedTask.setOriginalEstimate(originalEstimate);
-		clonedTask.setName(name);
-		clonedTask.setId(id);
-		clonedTask.setResponsibles(responsibles);
-		clonedTask.setState(state);
-		clonedTask.setRank(rank);
-		clonedTask.setIteration(iteration);
-		clonedTask.setStory(story);
-		return clonedTask;
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + (int) (id ^ (id >>> SHIFT));
 		return result;
 	}
 

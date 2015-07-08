@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import roboguice.fragment.RoboFragment;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -43,6 +42,7 @@ public class SpentEffortFragment extends RoboFragment {
 
 	private static final String TASK = "task";
 	private static final String MINUTES_SPENT = "minutes_spent";
+	public static final int MINUTES = 60;
 
 	@Inject
 	private MetricsService metricsService;
@@ -68,6 +68,11 @@ public class SpentEffortFragment extends RoboFragment {
 	private ErrorListener spentRequestFailedCallback;
 
 
+	/**
+	 * Creates a new SpentEffortFragment with the given task.
+	 * @param task The task
+	 * @return a new SpentEffortFragment with the given task.
+	 */
 	public static SpentEffortFragment newInstance(final Task task) {
 		final Bundle arguments = new Bundle();
 		arguments.putSerializable(TASK, task);
@@ -77,6 +82,12 @@ public class SpentEffortFragment extends RoboFragment {
 		return fragment;
 	}
 
+	/**
+	 * Creates a new SpentEffortFragment with the given task and minutes.
+	 * @param task The tasks
+	 * @param minutes The minutes.
+	 * @return a new SpentEffortFragment with the given task and minutes.
+	 */
 	public static SpentEffortFragment newInstance(final Task task, final long minutes) {
 		final Bundle arguments = new Bundle();
 		arguments.putSerializable(TASK, task);
@@ -99,7 +110,8 @@ public class SpentEffortFragment extends RoboFragment {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_spent_effort, null);
 
 		final Date time = Calendar.getInstance().getTime();
@@ -114,15 +126,13 @@ public class SpentEffortFragment extends RoboFragment {
 		mHoursInput = (EditText) view.findViewById(R.id.effort_spent);
 
 		mEffortLeftInput = (EditText) view.findViewById(R.id.effort_left);
-		mEffortLeftInput.setText(String.valueOf((float) task.getEffortLeft() / 60));
+		mEffortLeftInput.setText(String.valueOf((float) task.getEffortLeft() / MINUTES));
 
 		if (minutesSpent != -1) {
 			final float difference = (task.getEffortLeft() - minutesSpent) / 60.0f;
 
-			mHoursInput.setText(
-					HoursUtils.convertMinutesToHours(minutesSpent));
-			mEffortLeftInput.setText(
-					String.valueOf(difference < 0 ? 0 : difference));
+			mHoursInput.setText(HoursUtils.convertMinutesToHours(minutesSpent));
+			mEffortLeftInput.setText(String.valueOf(difference < 0 ? 0 : difference));
 		}
 
 		mCommentInput = (EditText) view.findViewById(R.id.comment);
@@ -132,7 +142,8 @@ public class SpentEffortFragment extends RoboFragment {
 
 			@Override
 			public void onClick(final View v) {
-				final DateTimePickerDialogFragment dateTimePickerDialogFragment = DateTimePickerDialogFragment.newInstance();
+				final DateTimePickerDialogFragment dateTimePickerDialogFragment =
+						DateTimePickerDialogFragment.newInstance();
 				dateTimePickerDialogFragment.setOnDateSetListener(new OnDateSetListener() {
 
 					@Override
@@ -147,7 +158,14 @@ public class SpentEffortFragment extends RoboFragment {
 		});
 
 		mSubmitButton = (Button) view.findViewById(R.id.submit_btn);
-		mSubmitButton.setOnClickListener(new OnClickListener() {
+		mSubmitButton.setOnClickListener(getOnClickListener());
+
+		return view;
+	}
+
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private OnClickListener getOnClickListener() {
+		return new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
@@ -162,45 +180,18 @@ public class SpentEffortFragment extends RoboFragment {
 
 				if (el == 0 && taskState != StateKey.IMPLEMENTED && taskState != StateKey.DONE) {
 
-					final AlertDialog.Builder builder = new Builder(context);
-					builder.setNegativeButton(R.string.dialog_update_task_state_negative, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(final DialogInterface dialog, final int which) {
-							dialog.dismiss();
-						}
-					});
-					builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(final DialogInterface dialog, final int which) {
-
-							if (isValid()) {
-								saveEffortLeft();
-
-								metricsService.taskChangeState(
-										StateKey.IMPLEMENTED,
-										task,
-										new Listener<Task>() {
-
-											@Override
-											public void onResponse(final Task arg0) {
-												Toast.makeText(context, R.string.feedback_successfully_updated_state,
-														Toast.LENGTH_SHORT).show();
-											}
-										},
-										new ErrorListener() {
-
-											@Override
-											public void onErrorResponse(final VolleyError arg0) {
-												Toast.makeText(context, R.string.feedback_failed_update_state,
-														Toast.LENGTH_SHORT).show();
-											}
-										});
+					final Builder builder = new Builder(context);
+					builder.setNegativeButton(R.string.dialog_update_task_state_negative,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(final DialogInterface dialog, final int which) {
 								dialog.dismiss();
 							}
-						}
-					});
-					builder.setMessage(R.string.dialog_update_task_state);
+						});
 
+					builder.setPositiveButton(R.string.ok, getDialogClickListener(context));
+
+					builder.setMessage(R.string.dialog_update_task_state);
 					builder.show();
 
 				} else {
@@ -208,12 +199,39 @@ public class SpentEffortFragment extends RoboFragment {
 						saveEffortLeft();
 					}
 				}
-
 			}
+		};
+	}
 
-		});
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private DialogInterface.OnClickListener getDialogClickListener(final Context context) {
+		return new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(final DialogInterface dialog, final int which) {
+				if (isValid()) {
+					saveEffortLeft();
 
-		return view;
+					metricsService.taskChangeState(
+						StateKey.IMPLEMENTED,
+						task,
+						new Listener<Task>() {
+							@Override
+							public void onResponse(final Task arg0) {
+								Toast.makeText(context, R.string.feedback_successfully_updated_state,
+										Toast.LENGTH_SHORT).show();
+							}
+						},
+						new ErrorListener() {
+							@Override
+							public void onErrorResponse(final VolleyError arg0) {
+								Toast.makeText(context, R.string.feedback_failed_update_state,
+										Toast.LENGTH_SHORT).show();
+							}
+						});
+					dialog.dismiss();
+				}
+			}
+		};
 	}
 
 	private void saveEffortLeft() {
@@ -221,58 +239,63 @@ public class SpentEffortFragment extends RoboFragment {
 		final long minutes = HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
 
 		metricsService.taskChangeSpentEffort(
-				DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
-				minutes,
-				mCommentInput.getText().toString(),
-				task,
-				userService.getLoggedUser().getId(),
-				new Listener<String>() {
+			DateUtils.parseDate(mDateInput.getText().toString().trim(), DATE_PATTERN),
+			minutes,
+			mCommentInput.getText().toString(),
+			task,
+			userService.getLoggedUser().getId(),
+			new Listener<String>() {
 
-					@Override
-					public void onResponse(final String arg0) {
-						Toast.makeText(context, R.string.feedback_succesfully_updated_spent_effort,
-								Toast.LENGTH_SHORT).show();
-						getFragmentManager().popBackStack();
+				@Override
+				public void onResponse(final String arg0) {
+					Toast.makeText(context, R.string.feedback_succesfully_updated_spent_effort,
+							Toast.LENGTH_SHORT).show();
+					getFragmentManager().popBackStack();
 
-						if (spentRequestSuccessCallback != null) {
-							spentRequestSuccessCallback.onResponse(arg0);
-						}
+					if (spentRequestSuccessCallback != null) {
+						spentRequestSuccessCallback.onResponse(arg0);
 					}
-				},
-				new ErrorListener() {
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(context, R.string.feedback_failed_update_spent_effort,
-								Toast.LENGTH_SHORT).show();
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					Toast.makeText(context, R.string.feedback_failed_update_spent_effort,
+							Toast.LENGTH_SHORT).show();
 
-						if (spentRequestFailedCallback != null) {
-							spentRequestFailedCallback.onErrorResponse(arg0);
-						}
+					if (spentRequestFailedCallback != null) {
+						spentRequestFailedCallback.onErrorResponse(arg0);
 					}
-				});
+				}
+			});
 
 		metricsService.changeEffortLeft(
-				InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
-				task,
-				new Listener<Task>() {
+			InputUtils.parseStringToDouble(mEffortLeftInput.getText().toString()),
+			task,
+			new Listener<Task>() {
 
-					@Override
-					public void onResponse(final Task arg0) {
-						Toast.makeText(context, R.string.feedback_succesfully_updated_effort_left,
-								Toast.LENGTH_SHORT).show();
-					}
-				},
-				new ErrorListener() {
+				@Override
+				public void onResponse(final Task arg0) {
+					Toast.makeText(context, R.string.feedback_succesfully_updated_effort_left,
+							Toast.LENGTH_SHORT).show();
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(context, R.string.feedback_failed_update_effort_left,
-								Toast.LENGTH_SHORT).show();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					Toast.makeText(context, R.string.feedback_failed_update_effort_left,
+							Toast.LENGTH_SHORT).show();
+				}
+			});
 	}
 
+	/**
+	 * Sets the effort spent callbacks
+	 * @param listener The success callback
+	 * @param error The error callback
+	 */
 	public void setEffortSpentCallbacks(final Listener<String> listener, final ErrorListener error) {
 		this.spentRequestSuccessCallback = listener;
 		this.spentRequestFailedCallback = error;

@@ -24,6 +24,11 @@ public class SelectStateDialogFragment extends DialogFragment {
 	private static final String ARGUMENT_TASK = "argument_task";
 	private Task mTask;
 
+	/**
+	 * Returns a new SelectStateDialogFragment with the given arguments
+	 * @param task The task
+	 * @return a new SelectStateDialogFragment with the given arguments
+	 */
 	public static SelectStateDialogFragment newInstance(final Task task) {
 		final SelectStateDialogFragment dialogFragment = new SelectStateDialogFragment();
 

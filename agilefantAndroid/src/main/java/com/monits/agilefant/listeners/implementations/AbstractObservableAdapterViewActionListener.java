@@ -8,10 +8,15 @@ import android.view.View;
 
 import com.monits.agilefant.listeners.AdapterViewActionListener;
 
-public abstract class AbstractObservableAdapterViewActionListener<T extends Observable> implements AdapterViewActionListener<T> {
+public abstract class AbstractObservableAdapterViewActionListener<T extends Observable>
+		implements AdapterViewActionListener<T> {
 
 	protected final FragmentActivity context;
 
+	/**
+	 * Constructor.
+	 * @param context The context
+	 */
 	public AbstractObservableAdapterViewActionListener(final FragmentActivity context) {
 		this.context = context;
 	}

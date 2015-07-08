@@ -43,7 +43,14 @@ public class UserChooserFragment extends RoboFragment {
 
 	private OnUsersSubmittedListener onUsersSubmittedListener;
 
-	public static UserChooserFragment newInstance(final List<User> currentResponsibles, final OnUsersSubmittedListener listener) {
+	/**
+	 * Creates a new UserChooserFragment with th given responsibles.
+	 * @param currentResponsibles The responsibles.
+	 * @param listener The users submitted listener
+	 * @return the new fragment
+	 */
+	public static UserChooserFragment newInstance(final List<User> currentResponsibles,
+			final OnUsersSubmittedListener listener) {
 		final UserChooserFragment fragment = new UserChooserFragment();
 
 		final Bundle arguments = new Bundle();
@@ -69,7 +76,7 @@ public class UserChooserFragment extends RoboFragment {
 		selectedUsersAdapter.setOnRemoveUserListener(new OnRemoveUserListener() {
 
 			@Override
-			public void OnRemoveUser(final View view, final int position, final User user) {
+			public void onRemoveUser(final View view, final int position, final User user) {
 				userInput.removeUser(user);
 			}
 		});
@@ -103,7 +110,8 @@ public class UserChooserFragment extends RoboFragment {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT).show();
+						Toast.makeText(
+							getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT).show();
 
 						getFragmentManager().popBackStackImmediate();
 					}
@@ -133,6 +141,10 @@ public class UserChooserFragment extends RoboFragment {
 		super.onViewCreated(view, savedInstanceState);
 	}
 
+	/**
+	 * Set the listener for selected users submission
+	 * @param listener The listener to set
+	 */
 	public void setOnUsersSubmittedListener(final OnUsersSubmittedListener listener) {
 		this.onUsersSubmittedListener = listener;
 	}

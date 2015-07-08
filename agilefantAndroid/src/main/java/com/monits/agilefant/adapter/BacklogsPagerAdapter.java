@@ -16,14 +16,21 @@ public class BacklogsPagerAdapter extends FragmentStatePagerAdapter {
 	private List<Fragment> fragments;
 	private Context context;
 
-	public BacklogsPagerAdapter(Context context, FragmentManager fragmentManager, List<Fragment> fragments) {
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param fragmentManager The fragment manager
+	 * @param fragments The fragments
+	 */
+	public BacklogsPagerAdapter(final Context context, final FragmentManager fragmentManager,
+			final List<Fragment> fragments) {
 		super(fragmentManager);
 		this.context  = context;
 		this.fragments = fragments;
 	}
 
 	@Override
-	public Fragment getItem(int position) {
+	public Fragment getItem(final int position) {
 		return fragments.get(position);
 	}
 
@@ -33,7 +40,7 @@ public class BacklogsPagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	@Override
-	public CharSequence getPageTitle(int position) {
+	public CharSequence getPageTitle(final int position) {
 		if (getItem(position) instanceof AllBacklogsFragment) {
 			return context.getResources().getString(R.string.all_backlogs);
 		} else if (getItem(position) instanceof MyBacklogsFragment) {

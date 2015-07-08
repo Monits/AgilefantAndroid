@@ -41,12 +41,16 @@ public class MyBacklogsFragment extends RoboFragment {
 
 	private ProjectAdapter backlogsAdapter;
 
+	/**
+	 * @return a new MyBacklogsFragment
+	 */
 	public static MyBacklogsFragment newInstance() {
 		return new MyBacklogsFragment();
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_backlogs, container, false);
 	}
 
@@ -63,61 +67,12 @@ public class MyBacklogsFragment extends RoboFragment {
 		allbackLogs.setDivider(null);
 		allbackLogs.setChildDivider(null);
 		allbackLogs.setEmptyView(emptyView);
-		allbackLogs.setOnChildClickListener(new OnChildClickListener() {
-
-			@Override
-			public boolean onChildClick(final ExpandableListView parent, final View v,
-					final int groupPosition, final int childPosition, final long id) {
-
-				final Iteration iteration = backlogsAdapter.getChild(groupPosition, childPosition);
-				final Project project = backlogsAdapter.getGroup(groupPosition);
-
-				final FragmentActivity context = getActivity();
-				final ProgressDialog progressDialog = new ProgressDialog(context);
-				progressDialog.setIndeterminate(true);
-				progressDialog.setCancelable(false);
-				progressDialog.setMessage(getResources().getString(R.string.loading));
-				progressDialog.show();
-				iterationService.getIteration(
-						iteration.getId(),
-						new Listener<Iteration>() {
-
-							@Override
-							public void onResponse(final Iteration response) {
-								if (progressDialog != null && progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
-
-								final Intent intent = new Intent(context, IterationActivity.class);
-
-								// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-								final Backlog iterationParent = new Backlog(project);
-								response.setParent(iterationParent);
-
-								intent.putExtra(IterationActivity.ITERATION, response);
-
-								context.startActivity(intent);
-							}
-						},
-						new ErrorListener() {
-
-							@Override
-							public void onErrorResponse(final VolleyError arg0) {
-								if (progressDialog != null && progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
-
-								Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
-							}
-						});
-
-				return true;
-			}
-		});
+		allbackLogs.setOnChildClickListener(getOnChildClickListener());
 		allbackLogs.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
-			public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
+			public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position,
+					final long id) {
 				final long packedPosition = allbackLogs.getExpandableListPosition(position);
 				final int positionType = ExpandableListView.getPackedPositionType(packedPosition);
 
@@ -139,25 +94,87 @@ public class MyBacklogsFragment extends RoboFragment {
 		final View loadingView = view.findViewById(R.id.loading_view);
 		loadingView.setVisibility(View.VISIBLE);
 		backlogService.getMyBacklogs(
-				new Listener<List<Project>>() {
+			new Listener<List<Project>>() {
 
-					@Override
-					public void onResponse(final List<Project> response) {
-						if (response != null) {
-							backlogsAdapter.setProjects(response);
-						}
-
-						loadingView.setVisibility(View.GONE);
+				@Override
+				public void onResponse(final List<Project> response) {
+					if (response != null) {
+						backlogsAdapter.setProjects(response);
 					}
-				},
-				new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						loadingView.setVisibility(View.GONE);
+					loadingView.setVisibility(View.GONE);
+				}
+			},
+			new ErrorListener() {
 
-						Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					loadingView.setVisibility(View.GONE);
+
+					Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
+				}
+			});
+	}
+
+	private OnChildClickListener getOnChildClickListener() {
+		return new OnChildClickListener() {
+
+			@Override
+			public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition,
+					final int childPosition, final long id) {
+
+				final Iteration iteration = backlogsAdapter.getChild(groupPosition, childPosition);
+				final Project project = backlogsAdapter.getGroup(groupPosition);
+
+				final FragmentActivity context = getActivity();
+				final ProgressDialog progressDialog = new ProgressDialog(context);
+				progressDialog.setIndeterminate(true);
+				progressDialog.setCancelable(false);
+				progressDialog.setMessage(getResources().getString(R.string.loading));
+				progressDialog.show();
+				iterationService.getIteration(iteration.getId(), getSuccessListener(project, context, progressDialog),
+						getErrorListener(context, progressDialog));
+
+				return true;
+			}
+		};
+	}
+
+	private ErrorListener getErrorListener(final FragmentActivity context, final ProgressDialog progressDialog) {
+		return new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(final VolleyError arg0) {
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+			}
+		};
+	}
+
+	private Listener<Iteration> getSuccessListener(final Project project, final FragmentActivity context,
+			final ProgressDialog progressDialog) {
+		return new Listener<Iteration>() {
+
+			@Override
+			public void onResponse(final Iteration response) {
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				final Intent intent = new Intent(context, IterationActivity.class);
+
+				// Workaround that may be patchy,
+				// but it depends on the request whether it comes or not, and how to get it.
+				final Backlog iterationParent = new Backlog(project);
+				response.setParent(iterationParent);
+
+				intent.putExtra(IterationActivity.ITERATION, response);
+
+				context.startActivity(intent);
+			}
+		};
 	}
 }

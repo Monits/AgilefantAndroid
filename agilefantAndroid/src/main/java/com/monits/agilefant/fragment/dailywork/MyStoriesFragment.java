@@ -27,6 +27,11 @@ public class MyStoriesFragment extends RoboFragment implements Observer {
 
 	private List<Story> mStories;
 
+	/**
+	 * Return a new MyQueueWorkFragment with the given stories
+	 * @param stories the stories
+	 * @return a new MyQueueWorkFragment with the given stories
+	 */
 	public static MyStoriesFragment newInstance(final List<Story> stories) {
 		final MyStoriesFragment storiesFragment = new MyStoriesFragment();
 		final Bundle arguments = new Bundle();
@@ -49,7 +54,8 @@ public class MyStoriesFragment extends RoboFragment implements Observer {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_my_stories, container, false);
 	}
 

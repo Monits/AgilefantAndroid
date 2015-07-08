@@ -21,6 +21,10 @@ public class SelectedUsersAdapter extends BaseAdapter {
 	private List<User> users;
 	private OnRemoveUserListener onRemoveListener;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 */
 	public SelectedUsersAdapter(final Context context) {
 		this.context = context;
 	}
@@ -61,7 +65,7 @@ public class SelectedUsersAdapter extends BaseAdapter {
 			@Override
 			public boolean onDrawableClick(final MotionEvent event) {
 				if (onRemoveListener != null) {
-					onRemoveListener.OnRemoveUser(view, position, user);
+					onRemoveListener.onRemoveUser(view, position, user);
 
 					return true;
 				}
@@ -73,17 +77,34 @@ public class SelectedUsersAdapter extends BaseAdapter {
 		return view;
 	}
 
+	/**
+	 * Set the users
+	 * @param users The users to set
+	 */
 	public void setUsers(final List<User> users) {
 		this.users = users;
 
 		notifyDataSetChanged();
 	}
 
+	/**
+	 * Set a listener for removal of users.
+	 * @param listener The listener
+	 */
 	public void setOnRemoveUserListener(final OnRemoveUserListener listener) {
 		this.onRemoveListener = listener;
 	}
 
+	/**
+	 * Interface for changes in the users list
+	 */
 	public static interface OnRemoveUserListener {
-		void OnRemoveUser(View view, int position, User user);
+		/**
+		 * Called after a user removal
+		 * @param view The view
+		 * @param position The item position
+		 * @param user The user
+		 */
+		void onRemoveUser(View view, int position, User user);
 	}
 }

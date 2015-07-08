@@ -31,6 +31,10 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 	private AdapterViewOnLongActionListener<Story> onLongActionListener;
 	private final OnLongClickListener onLongClickListener;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 */
 	public ProjectLeafStoriesAdapter(final Context context) {
 		RoboGuice.injectMembers(context, this);
 
@@ -134,6 +138,10 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 		return ret;
 	}
 
+	/**
+	 * Set the stories
+	 * @param stories the stories to set
+	 */
 	public void setStories(final List<Story> stories) {
 		this.stories = stories;
 

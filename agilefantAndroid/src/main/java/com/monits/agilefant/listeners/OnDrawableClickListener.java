@@ -12,6 +12,11 @@ public abstract class OnDrawableClickListener implements OnTouchListener {
 	private final Drawable drawable;
 	private final int fuzz = 40;
 
+	/**
+	 * Constructor
+	 * @param view The view
+	 * @param position The item position
+	 */
 	public OnDrawableClickListener(final TextView view, final DrawablePosition position) {
 		super();
 		final Drawable[] drawables = view.getCompoundDrawables();

@@ -46,24 +46,24 @@ public class IterationActivity extends BaseActivity {
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_new_story:
-				final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iteration.getId());
-				getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, createStoryFragment)
-					.addToBackStack(null)
-					.commit();
+		case R.id.action_new_story:
+			final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iteration.getId());
+			getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, createStoryFragment)
+				.addToBackStack(null)
+				.commit();
 
-				return true;
-			case R.id.action_new_task:
-				final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory.newInstance(iteration.getId());
-				getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, createTaskWithoutStory)
-					.addToBackStack(null)
-					.commit();
-				return true;
+			return true;
+		case R.id.action_new_task:
+			final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory.newInstance(iteration.getId());
+			getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, createTaskWithoutStory)
+				.addToBackStack(null)
+				.commit();
+			return true;
 
-			default:
-				return super.onOptionsItemSelected(item);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 }

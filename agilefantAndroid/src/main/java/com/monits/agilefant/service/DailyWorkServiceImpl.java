@@ -27,25 +27,25 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	public void getDailyWork(final Listener<DailyWork> listener, final ErrorListener error) {
 
 		agilefantService.getDailyWork(
-				userService.getLoggedUser().getId(),
-				new Listener<DailyWork>() {
+			userService.getLoggedUser().getId(),
+			new Listener<DailyWork>() {
 
-					@Override
-					public void onResponse(final DailyWork response) {
+				@Override
+				public void onResponse(final DailyWork response) {
 
-						populateContext(response);
+					populateContext(response);
 
-						listener.onResponse(response);
-					}
-				}, error);
+					listener.onResponse(response);
+				}
+			}, error);
 
 	}
 
 	/**
-	 * This method populates queued tasks which hasn't got it's iteration context setted, but they do have a story context,
-	 * with the iteration coming from the story.
+	 * This method populates queued tasks which hasn't got it's iteration context setted,
+	 * but they do have a story context, with the iteration coming from the story.
 	 *
-	 * @param dailyWork
+	 * @param dailyWork The daily work
 	 */
 	private void populateContext(final DailyWork dailyWork) {
 		if (dailyWork != null) {

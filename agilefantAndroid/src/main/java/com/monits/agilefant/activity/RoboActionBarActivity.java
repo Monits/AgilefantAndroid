@@ -36,8 +36,9 @@ public class RoboActionBarActivity extends ActionBarActivity implements RoboCont
 	@Inject
 	protected EventManager eventManager;
 
+	// RoboGuice's bug workaround, in order to use AppCompat without making the app crash.
 	@Inject
-	private ContentViewListener ignored; // RoboGuice's bug workaround, in order to use AppCompat without making the app crash.
+	private ContentViewListener ignored;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {

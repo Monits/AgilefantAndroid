@@ -25,25 +25,25 @@ public class BaseActivity extends RoboActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				NavUtils.navigateUpTo(this, new Intent(this, AllBackLogsActivity.class));
-				return true;
-			case R.id.actionbar_logout:
-				userService.logout();
-				final Intent intent = new Intent(this, HomeActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				finish();
+		case android.R.id.home:
+			NavUtils.navigateUpTo(this, new Intent(this, AllBackLogsActivity.class));
+			return true;
+		case R.id.actionbar_logout:
+			userService.logout();
+			final Intent intent = new Intent(this, HomeActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			finish();
 
-				return true;
+			return true;
 
-			case R.id.actionbar_dailywork:
-				final Intent toDailyWorkIntent = new Intent(this, DailyWorkActivity.class);
-				startActivity(toDailyWorkIntent);
+		case R.id.actionbar_dailywork:
+			final Intent toDailyWorkIntent = new Intent(this, DailyWorkActivity.class);
+			startActivity(toDailyWorkIntent);
 
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

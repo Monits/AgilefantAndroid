@@ -30,6 +30,11 @@ public class IterationBurndownFragment extends RoboFragment {
 	@Inject
 	private AgilefantService agilefantService;
 
+	/**
+	 * Creates a new IterationBurndownFragment for the given iteration id
+	 * @param id The iteration id
+	 * @return the new fragment
+	 */
 	public static IterationBurndownFragment newInstance(final long id) {
 		final Bundle bundle = new Bundle();
 		bundle.putLong(PARAMS_ID, id);

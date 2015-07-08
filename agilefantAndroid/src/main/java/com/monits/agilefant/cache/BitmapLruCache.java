@@ -5,33 +5,44 @@ import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
 public class BitmapLruCache extends LruCache<String, Bitmap> implements ImageCache {
-    private static int getDefaultLruCacheSize() {
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        final int cacheSize = maxMemory / 8;
 
-        return cacheSize;
-    }
+	public static final int KB = 1024;
 
-    public BitmapLruCache() {
-        this(getDefaultLruCacheSize());
-    }
+	/**
+	 * Default constructor.
+	 * Construct the object with a default chache size.
+	 */
+	public BitmapLruCache() {
+		this(getDefaultLruCacheSize());
+	}
 
-    public BitmapLruCache(int sizeInKiloBytes) {
-        super(sizeInKiloBytes);
-    }
+	/**
+	 * Constructor
+	 * @param sizeInKiloBytes The size of the chache
+	 */
+	public BitmapLruCache(final int sizeInKiloBytes) {
+		super(sizeInKiloBytes);
+	}
 
-    @Override
-    protected int sizeOf(final String key, final Bitmap value) {
-        return value.getRowBytes() * value.getHeight() / 1024;
-    }
+	@Override
+	protected int sizeOf(final String key, final Bitmap value) {
+		return value.getRowBytes() * value.getHeight() / KB;
+	}
 
-    @Override
-    public Bitmap getBitmap(final String url) {
-        return get(url);
-    }
+	@Override
+	public Bitmap getBitmap(final String url) {
+		return get(url);
+	}
 
-    @Override
-    public void putBitmap(final String url, final Bitmap bitmap) {
-        put(url, bitmap);
-    }
+	@Override
+	public void putBitmap(final String url, final Bitmap bitmap) {
+		put(url, bitmap);
+	}
+
+	private static int getDefaultLruCacheSize() {
+		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / KB);
+		final int cacheSize = maxMemory / 8;
+
+		return cacheSize;
+	}
 }

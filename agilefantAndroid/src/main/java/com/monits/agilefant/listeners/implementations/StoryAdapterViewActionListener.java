@@ -10,7 +10,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -42,11 +41,23 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 	private final Observer observer;
 	private final Backlog mBacklog;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param observer An observer object
+	 */
 	public StoryAdapterViewActionListener(final FragmentActivity context, final Observer observer) {
 		this(context, observer, null);
 	}
 
-	public StoryAdapterViewActionListener(final FragmentActivity context, final Observer observer, final Backlog backlog) {
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param observer An observer object
+	 * @param backlog The backlog
+	 */
+	public StoryAdapterViewActionListener(final FragmentActivity context, final Observer observer,
+			final Backlog backlog) {
 		super(context);
 
 		this.observer = observer;
@@ -60,162 +71,171 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 		super.onAction(view, object);
 
 		switch (view.getId()) {
-			case R.id.column_state:
-				final OnClickListener onStoryStateSelectedListener = new DialogInterface.OnClickListener() {
+		case R.id.column_state:
+			final OnClickListener onStoryStateSelectedListener = getOnDialogClickListener(object);
 
-					@Override
-					public void onClick(final DialogInterface dialog, final int which) {
-						final StateKey state = StateKey.values()[which];
+			final AlertDialog.Builder builder = new Builder(context);
+			builder.setTitle(R.string.dialog_state_title);
+			builder.setSingleChoiceItems(
+					StateKey.getDisplayStates(), object.getState().ordinal(), onStoryStateSelectedListener);
+			builder.show();
+			break;
 
-						if (state == StateKey.DONE) {
-							final AlertDialog.Builder builder = new Builder(context);
-							builder.setTitle(R.string.dialog_tasks_to_done_title)
-								.setMessage(R.string.dialog_tasks_to_done_msg)
-								.setPositiveButton(android.R.string.yes, new OnClickListener() {
+		case R.id.column_responsibles:
+			context.getSupportFragmentManager().beginTransaction()
+				.add(android.R.id.content, getUserChooserFragment(object))
+				.addToBackStack(null)
+				.commit();
+			break;
 
-									@Override
-									public void onClick(final DialogInterface dialog, final int which) {
-										executeUpdateStoryTask(state, object, true);
-									}
-								})
-								.setNegativeButton(android.R.string.no, new OnClickListener() {
+		case R.id.column_context:
+			final Iteration iteration = object.getIteration();
 
-									@Override
-									public void onClick(final DialogInterface dialog, final int which) {
-										executeUpdateStoryTask(state, object, false);
-									}
-								});
+			final ProgressDialog progressDialog = new ProgressDialog(context);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setCancelable(false);
+			progressDialog.setMessage(context.getString(R.string.loading));
+			progressDialog.show();
 
-							builder.show();
-						} else {
-							executeUpdateStoryTask(state, object, false);
-						}
+			getIterationDetails(iteration, progressDialog);
 
-						dialog.dismiss();
+			break;
+		}
+	}
+
+	private void getIterationDetails(final Iteration iteration, final ProgressDialog progressDialog) {
+		iterationService.getIteration(
+			iteration.getId(),
+			new Listener<Iteration>() {
+
+				@Override
+				public void onResponse(final Iteration response) {
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
 					}
-				};
 
-				final AlertDialog.Builder builder = new Builder(context);
-				builder.setTitle(R.string.dialog_state_title);
-				builder.setSingleChoiceItems(
-						StateKey.getDisplayStates(), object.getState().ordinal(), onStoryStateSelectedListener);
-				builder.show();
+					final Intent intent = new Intent(context, IterationActivity.class);
 
-				break;
+					// Workaround that may be patchy,
+					// but it depends on the request whether it comes or not, and how to get it.
+					if (iteration.getParent() == null && mBacklog != null) {
+						response.setParent(mBacklog);
+					} else {
+						response.setParent(iteration.getParent());
+					}
 
-			case R.id.column_responsibles:
+					intent.putExtra(IterationActivity.ITERATION, response);
 
-				final Fragment fragment = UserChooserFragment.newInstance(
-						object.getResponsibles(),
-						new OnUsersSubmittedListener() {
+					context.startActivity(intent);
+				}
+			},
+			new ErrorListener() {
 
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
+					}
+
+					Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+				}
+			});
+	}
+
+	private UserChooserFragment getUserChooserFragment(final Story object) {
+		return UserChooserFragment.newInstance(
+			object.getResponsibles(),
+			new OnUsersSubmittedListener() {
+
+				@Override
+				public void onSubmitUsers(final List<User> users) {
+					metricsService.changeStoryResponsibles(
+						users,
+						object,
+						new Listener<Story>() {
 							@Override
-							public void onSubmitUsers(final List<User> users) {
-
-								metricsService.changeStoryResponsibles(
-										users,
-										object,
-										new Listener<Story>() {
-
-											@Override
-											public void onResponse(final Story project) {
-												Toast.makeText(context, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
-											}
-										},
-										new ErrorListener() {
-
-											@Override
-											public void onErrorResponse(final VolleyError arg0) {
-												Toast.makeText(context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
-											}
-										});
-							}
-						});
-
-				context.getSupportFragmentManager().beginTransaction()
-					.add(android.R.id.content, fragment)
-					.addToBackStack(null)
-					.commit();
-
-				break;
-			case R.id.column_context:
-				final Iteration iteration = object.getIteration();
-
-				final ProgressDialog progressDialog = new ProgressDialog(context);
-				progressDialog.setIndeterminate(true);
-				progressDialog.setCancelable(false);
-				progressDialog.setMessage(context.getString(R.string.loading));
-				progressDialog.show();
-
-				iterationService.getIteration(
-						iteration.getId(),
-						new Listener<Iteration>() {
-
-							@Override
-							public void onResponse(final Iteration response) {
-								if (progressDialog != null && progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
-
-								final Intent intent = new Intent(context, IterationActivity.class);
-
-								// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-								if (iteration.getParent() == null && mBacklog != null) {
-									response.setParent(mBacklog);
-								} else {
-									response.setParent(iteration.getParent());
-								}
-
-								intent.putExtra(IterationActivity.ITERATION, response);
-
-								context.startActivity(intent);
+							public void onResponse(final Story project) {
+								Toast.makeText(
+									context, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
 							}
 						},
 						new ErrorListener() {
-
 							@Override
 							public void onErrorResponse(final VolleyError arg0) {
-								if (progressDialog != null && progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
+								Toast.makeText(
+									context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
+							}
+						});
+				}
+			});
+	}
 
-								Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private OnClickListener getOnDialogClickListener(final Story object) {
+		return new OnClickListener() {
+
+			@Override
+			public void onClick(final DialogInterface dialog, final int which) {
+				final StateKey state = StateKey.values()[which];
+
+				if (state == StateKey.DONE) {
+					final Builder builder = new Builder(context);
+					builder.setTitle(R.string.dialog_tasks_to_done_title)
+						.setMessage(R.string.dialog_tasks_to_done_msg)
+						.setPositiveButton(android.R.string.yes, new OnClickListener() {
+
+							@Override
+							public void onClick(final DialogInterface dialog, final int which) {
+								executeUpdateStoryTask(state, object, true);
+							}
+						})
+						.setNegativeButton(android.R.string.no, new OnClickListener() {
+
+							@Override
+							public void onClick(final DialogInterface dialog, final int which) {
+								executeUpdateStoryTask(state, object, false);
 							}
 						});
 
-				break;
-		}
+					builder.show();
+				} else {
+					executeUpdateStoryTask(state, object, false);
+				}
+
+				dialog.dismiss();
+			}
+		};
 	}
 
 	/**
 	 * Configures and executes the {@link UpdateStoryTask}.
 	 *
-	 * @param state
-	 * @param story
-	 * @param allTasksToDone
+	 * @param state the state key
+	 * @param story the story
+	 * @param allTasksToDone all task done flag
 	 */
 	void executeUpdateStoryTask(final StateKey state, final Story story, final boolean allTasksToDone) {
 
 		metricsService.changeStoryState(
-				state,
-				story,
-				allTasksToDone,
-				new Listener<Story>() {
+			state,
+			story,
+			allTasksToDone,
+			new Listener<Story>() {
 
-					@Override
-					public void onResponse(final Story arg0) {
-						Toast.makeText(
-								context, R.string.feedback_successfully_updated_story, Toast.LENGTH_SHORT).show();
-					}
-				},
-				new ErrorListener() {
+				@Override
+				public void onResponse(final Story arg0) {
+					Toast.makeText(
+						context, R.string.feedback_successfully_updated_story, Toast.LENGTH_SHORT).show();
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(
-								context, R.string.feedback_failed_update_story, Toast.LENGTH_SHORT).show();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					Toast.makeText(
+						context, R.string.feedback_failed_update_story, Toast.LENGTH_SHORT).show();
+				}
+			});
 	}
 
 	@Override

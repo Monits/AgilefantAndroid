@@ -33,10 +33,20 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 	private OnDateSetListener mListener;
 	private Calendar mCalendar;
 
+	/**
+	 * @return A new DateTimePickerDialogFragment with all the default values.
+	 */
 	public static DateTimePickerDialogFragment newInstance() {
 		return new DateTimePickerDialogFragment();
 	}
 
+	/**
+	 * A DateTimePickerDialogFragment with the given date as value
+	 *
+	 * @param date The date to set
+	 *
+	 * @return a DateTimePickerDialogFragment
+	 */
 	public static DateTimePickerDialogFragment newInstance(final Date date) {
 		final Bundle arguments = new Bundle();
 		arguments.putSerializable(DATE_KEY, date);
@@ -107,11 +117,23 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 		return calendar.getTime();
 	}
 
+	/**
+	 * Set a listener for changes in the date.
+	 * @param listener The listener to set
+	 */
 	public void setOnDateSetListener(final OnDateSetListener listener) {
 		this.mListener = listener;
 	}
 
+	/**
+	 * Listener for changes in the date
+	 */
 	public static interface OnDateSetListener {
+
+		/**
+		 * Called after the date is setup
+		 * @param date the new date
+		 */
 		void onDateSet(Date date);
 	}
 }

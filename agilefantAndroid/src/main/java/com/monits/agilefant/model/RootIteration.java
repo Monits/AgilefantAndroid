@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class RootIteration implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 6685530221513814790L;
 
 	@SerializedName("name")
 	private String name;
 
+	/**
+	 * Default constuctor.
+	 */
 	public RootIteration() {
 	}
 
@@ -25,6 +25,7 @@ public class RootIteration implements Serializable {
 	}
 
 	/**
+	 * Set the name
 	 * @param name the name to set
 	 */
 	public void setName(final String name) {

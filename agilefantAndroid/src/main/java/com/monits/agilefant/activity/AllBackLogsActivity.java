@@ -25,10 +25,10 @@ public class AllBackLogsActivity extends BaseActivity {
 	private PagerTabStrip pagerTabStrip;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		List<Fragment> fragments = new ArrayList<Fragment>();
+		final List<Fragment> fragments = new ArrayList<>();
 		fragments.add(MyBacklogsFragment.newInstance());
 		fragments.add(AllBacklogsFragment.newInstance());
 

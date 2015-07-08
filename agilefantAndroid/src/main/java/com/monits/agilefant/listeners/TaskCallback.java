@@ -16,6 +16,7 @@ public interface TaskCallback<T> {
 
 	/**
 	 * Triggered if task result was successful.
+	 * @param response The response
 	 */
 	void onSuccess(T response);
 }

@@ -24,93 +24,97 @@ import com.monits.agilefant.model.backlog.BacklogElementParameters;
  */
 public class MetricsServiceImpl implements MetricsService {
 
+	public static final int MINUTES = 60;
 	@Inject
 	private AgilefantService agilefantService;
 
 	@Override
-	public void taskChangeSpentEffort(final Date date, final long minutesSpent,
-			final String description, final Task task, final long userId, final Listener<String> listener, final ErrorListener error) {
+	public void taskChangeSpentEffort(final Date date, final long minutesSpent, final String description,
+			final Task task, final long userId, final Listener<String> listener, final ErrorListener error) {
 
-		final Task fallbackTask = task.clone();
+		final Task fallbackTask = task.getCopy();
 		task.setEffortSpent(task.getEffortSpent() + minutesSpent);
 
 		agilefantService.taskChangeSpentEffort(
-				date.getTime(),
-				minutesSpent,
-				description,
-				task.getId(),
-				userId,
-				listener,
-				new ErrorListener() {
+			date.getTime(),
+			minutesSpent,
+			description,
+			task.getId(),
+			userId,
+			listener,
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						task.updateValues(fallbackTask);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					task.updateValues(fallbackTask);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
-	public void taskChangeState(final StateKey state, final Task task, final Listener<Task> listener, final ErrorListener error) {
-		final Task fallbackTask = task.clone();
+	public void taskChangeState(final StateKey state, final Task task, final Listener<Task> listener,
+			final ErrorListener error) {
+		final Task fallbackTask = task.getCopy();
 		task.setState(state, true);
 
 		agilefantService.updateTask(
-				task,
-				new Listener<Task>() {
+			task,
+			new Listener<Task>() {
 
-					@Override
-					public void onResponse(final Task response) {
-						task.updateValues(response);
+				@Override
+				public void onResponse(final Task response) {
+					task.updateValues(response);
 
-						listener.onResponse(response);
-					}
-				},
-				new ErrorListener() {
+					listener.onResponse(response);
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						task.updateValues(fallbackTask);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					task.updateValues(fallbackTask);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
-	public void changeEffortLeft(final double effortLeft, final Task task, final Listener<Task> listener, final ErrorListener error) {
+	public void changeEffortLeft(final double effortLeft, final Task task, final Listener<Task> listener,
+			final ErrorListener error) {
 
 		// Updating current task prior to sending request to the API
-		final Task fallbackTask = task.clone();
-		task.setEffortLeft(Double.valueOf(effortLeft * 60).longValue());
+		final Task fallbackTask = task.getCopy();
+		task.setEffortLeft(Double.valueOf(effortLeft * MINUTES).longValue());
 
 		agilefantService.updateTask(
-				task,
-				new Listener<Task>() {
+			task,
+			new Listener<Task>() {
 
-					@Override
-					public void onResponse(final Task response) {
-						task.updateValues(response);
+				@Override
+				public void onResponse(final Task response) {
+					task.updateValues(response);
 
-						listener.onResponse(response);
-					}
-				},
-				new ErrorListener() {
+					listener.onResponse(response);
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						task.updateValues(fallbackTask);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					task.updateValues(fallbackTask);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
-	public void changeStoryState(final StateKey state, final Story story, final boolean tasksToDone, final Listener<Story> listener, final ErrorListener error) {
-		final Story fallbackStory = story.clone();
+	public void changeStoryState(final StateKey state, final Story story, final boolean tasksToDone,
+			final Listener<Story> listener, final ErrorListener error) {
+		final Story fallbackStory = story.getCopy();
 		final List<Task> currentTasks = story.getTasks();
 
 		story.setState(state);
@@ -121,82 +125,82 @@ public class MetricsServiceImpl implements MetricsService {
 		}
 
 		agilefantService.updateStory(
-				story,
-				tasksToDone,
-				listener,
-				new ErrorListener() {
+			story,
+			tasksToDone,
+			listener,
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						story.setState(fallbackStory.getState());
-						if (tasksToDone) {
-							final List<Task> fallbackTasks = fallbackStory.getTasks();
-							for (int i = 0; i < currentTasks.size(); i++) {
-								currentTasks.get(i).setState(fallbackTasks.get(i).getState());
-							}
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					story.setState(fallbackStory.getState());
+					if (tasksToDone) {
+						final List<Task> fallbackTasks = fallbackStory.getTasks();
+						for (int i = 0; i < currentTasks.size(); i++) {
+							currentTasks.get(i).setState(fallbackTasks.get(i).getState());
 						}
-
-						error.onErrorResponse(arg0);
 					}
-				});
+
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
 	public void changeStoryResponsibles(final List<User> responsibles, final Story story,
 			final Listener<Story> listener, final ErrorListener error) {
 
-		final Story fallbackStory = story.clone();
+		final Story fallbackStory = story.getCopy();
 		story.setResponsibles(responsibles);
 
 		agilefantService.updateStory(
-				story,
-				null,
-				listener,
-				new ErrorListener() {
+			story,
+			null,
+			listener,
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						story.updateValues(fallbackStory);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					story.updateValues(fallbackStory);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
-	public void changeTaskResponsibles(final List<User> responsibles, final Task task,
-			final Listener<Task> listener, final ErrorListener error) {
+	public void changeTaskResponsibles(final List<User> responsibles, final Task task, final Listener<Task> listener,
+			final ErrorListener error) {
 
-		final Task fallbackTask = task.clone();
+		final Task fallbackTask = task.getCopy();
 		task.setResponsibles(responsibles);
 
 		agilefantService.updateTask(
-				task,
-				new Listener<Task>() {
+			task,
+			new Listener<Task>() {
 
-					@Override
-					public void onResponse(final Task response) {
-						task.updateValues(response);
+				@Override
+				public void onResponse(final Task response) {
+					task.updateValues(response);
 
-						listener.onResponse(response);
-					}
-				},
-				new ErrorListener() {
+					listener.onResponse(response);
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						task.updateValues(fallbackTask);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					task.updateValues(fallbackTask);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
-	public void moveStory(final Story story, final Iteration iteration,
-			final Listener<Story> listener, final ErrorListener error) {
+	public void moveStory(final Story story, final Iteration iteration, final Listener<Story> listener,
+			final ErrorListener error) {
 
-		final Story fallbackStory = story.clone();
+		final Story fallbackStory = story.getCopy();
 		story.setIteration(iteration);
 
 		final long backlogId;
@@ -207,108 +211,106 @@ public class MetricsServiceImpl implements MetricsService {
 		}
 
 		agilefantService.moveStory(
-				backlogId,
-				story,
-				new Listener<Story>() {
+			backlogId,
+			story,
+			new Listener<Story>() {
 
-					@Override
-					public void onResponse(final Story storyOk) {
-						// The story from the response is incomplete, sending the one we have updated.
-						listener.onResponse(story);
-					}
-				},
-				new ErrorListener() {
+				@Override
+				public void onResponse(final Story storyOk) {
+					// The story from the response is incomplete, sending the one we have updated.
+					listener.onResponse(story);
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						story.setIteration(fallbackStory.getIteration());
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					story.setIteration(fallbackStory.getIteration());
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
 	public void rankTaskUnder(final Task task, final Task targetTask, final List<Task> allTasks,
 			final Listener<Task> listener, final ErrorListener error) {
 
-		final List<Task> fallbackTasksList = new LinkedList<Task>();
+		final List<Task> fallbackTasksList = new LinkedList<>();
 		copyAndSetRank(allTasks, fallbackTasksList);
 
 		agilefantService.rankTaskUnder(
-				task,
-				targetTask,
-				listener,
-				new ErrorListener() {
+			task,
+			targetTask,
+			listener,
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allTasks, fallbackTasksList);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					rollbackRanks(allTasks, fallbackTasksList);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	@Override
 	public void rankStoryOver(final Story story, final Story targetStory, final List<Story> allStories,
 			final Listener<Story> listener, final ErrorListener error) {
 
-		 rankStoryOver(story, targetStory, null, allStories, listener, error);
-	}
-
-	 @Override
-	 public void rankStoryUnder(final Story story, final Story targetStory, final List<Story> allStories,
-			final Listener<Story> listener, final ErrorListener error) {
-		 		rankStoryUnder(story, targetStory, null, allStories, listener, error);
-	 }
-
-	 @Override
-	 public void rankStoryUnder(final Story story, final Story targetStory,
-			 final Long backlogId, final List<Story> allStories, final Listener<Story> listener,
-			 final ErrorListener error) {
-
-		final List<Story> fallbackStoryList = new LinkedList<Story>();
-		copyAndSetRank(allStories, fallbackStoryList);
-
-		agilefantService.rankStoryUnder(
-				story,
-				targetStory,
-				backlogId,
-				listener,
-				new ErrorListener() {
-
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allStories, fallbackStoryList);
-
-						error.onErrorResponse(arg0);
-					}
-				});
+		rankStoryOver(story, targetStory, null, allStories, listener, error);
 	}
 
 	@Override
-	 public void rankStoryOver(final Story story, final Story targetStory,
-			 final Long backlogId, final List<Story> allStories, final Listener<Story> listener,
-			 final ErrorListener error) {
+	public void rankStoryUnder(final Story story, final Story targetStory, final List<Story> allStories,
+			final Listener<Story> listener, final ErrorListener error) {
+		rankStoryUnder(story, targetStory, null, allStories, listener, error);
+	}
 
-		final List<Story> fallbackStoryList = new LinkedList<Story>();
+	@Override
+	public void rankStoryUnder(final Story story, final Story targetStory, final Long backlogId,
+			final List<Story> allStories, final Listener<Story> listener, final ErrorListener error) {
+
+		final List<Story> fallbackStoryList = new LinkedList<>();
+		copyAndSetRank(allStories, fallbackStoryList);
+
+		agilefantService.rankStoryUnder(
+			story,
+			targetStory,
+			backlogId,
+			listener,
+			new ErrorListener() {
+
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					rollbackRanks(allStories, fallbackStoryList);
+
+					error.onErrorResponse(arg0);
+				}
+			});
+	}
+
+	@Override
+	public void rankStoryOver(final Story story, final Story targetStory, final Long backlogId,
+		final List<Story> allStories, final Listener<Story> listener, final ErrorListener error) {
+
+		final List<Story> fallbackStoryList = new LinkedList<>();
 		copyAndSetRank(allStories, fallbackStoryList);
 
 		agilefantService.rankStoryOver(
-				story,
-				targetStory,
-				backlogId,
-				listener,
-				new ErrorListener() {
+			story,
+			targetStory,
+			backlogId,
+			listener,
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allStories, fallbackStoryList);
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					rollbackRanks(allStories, fallbackStoryList);
 
-						error.onErrorResponse(arg0);
-					}
-				});
+					error.onErrorResponse(arg0);
+				}
+			});
 	}
 
 	/**
@@ -322,7 +324,7 @@ public class MetricsServiceImpl implements MetricsService {
 		for (int i = 0; i < source.size(); i++) {
 			final T itemAt = source.get(i);
 
-			copy.add(itemAt.clone());
+			copy.add(itemAt.getCopy());
 
 			// Rank is equal to the index in the list.
 			itemAt.setRank(i);
@@ -350,20 +352,12 @@ public class MetricsServiceImpl implements MetricsService {
 	@Override
 	public void createStory(final BacklogElementParameters parameters, final Listener<Story> listener,
 			final ErrorListener error) {
-		agilefantService.createStory(
-				parameters,
-				listener,
-				error);
+		agilefantService.createStory(parameters, listener, error);
 	}
 
 	@Override
-	public void createTask(
-			final BacklogElementParameters parameters, final Listener<Task> listener,
+	public void createTask(final BacklogElementParameters parameters, final Listener<Task> listener,
 			final ErrorListener errorListener) {
-		agilefantService.createTask(
-				parameters,
-				listener,
-				errorListener);
-
+		agilefantService.createTask(parameters, listener, errorListener);
 	}
 }

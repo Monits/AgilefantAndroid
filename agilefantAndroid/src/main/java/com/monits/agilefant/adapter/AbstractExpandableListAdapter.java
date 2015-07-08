@@ -10,16 +10,16 @@ import android.widget.BaseExpandableListAdapter;
  * Abstract Expandable List Adapter
  * @author Ivan Corbalan
  *
- * @param <Tgroup> Group
- * @param <Tchildren> Children
+ * @param <G> Group
+ * @param <C> Children
  */
-public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends BaseExpandableListAdapter {
+public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandableListAdapter {
 
 	protected Context context;
 
-	protected List<Tgroup> groups;
+	protected List<G> groups;
 
-	protected List<List<Tchildren>> children;
+	protected List<List<C>> children;
 
 	/**
 	 * Constructor
@@ -28,8 +28,8 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	public AbstractExpandableListAdapter(final Context context) {
 		super();
 		this.context = context;
-		this.groups = new ArrayList<Tgroup>();
-		this.children = new ArrayList<List<Tchildren>>();
+		this.groups = new ArrayList<G>();
+		this.children = new ArrayList<>();
 
 	}
 
@@ -39,8 +39,7 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	 * @param groups Groups
 	 * @param children Children
 	 */
-	public AbstractExpandableListAdapter(final Context context,
-			final List<Tgroup> groups, final List<List<Tchildren>> children) {
+	public AbstractExpandableListAdapter(final Context context, final List<G> groups, final List<List<C>> children) {
 		super();
 		this.context = context;
 		this.groups = groups;
@@ -49,10 +48,10 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 
 	/**
 	 * Remove item from the list
-	 * @param class
+	 * @param object Children
 	 */
-	public void removeItem(final Tchildren object) {
-		for (final List<Tchildren> group : children) {
+	public void removeItem(final C object) {
+		for (final List<C> group : children) {
 			if (group.contains(object)) {
 				final int index = group.indexOf(object);
 				group.remove(index);
@@ -61,11 +60,11 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	}
 
 	@Override
-	public Tchildren getChild(final int groupPosition, final int childPosition) {
-		final List<Tchildren> groupChildren = children.get(groupPosition);
+	public C getChild(final int groupPosition, final int childPosition) {
+		final List<C> groupChildren = children.get(groupPosition);
 		return groupChildren != null
-				&& groupChildren.size() > 0 && childPosition >= 0 && childPosition < groupChildren.size() ?
-						groupChildren.get(childPosition) : null;
+				&& groupChildren.size() > 0 && childPosition >= 0 && childPosition < groupChildren.size()
+					? groupChildren.get(childPosition) : null;
 	}
 
 	@Override
@@ -77,10 +76,9 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 	}
 
 	@Override
-	public Tgroup getGroup(final int groupPosition) {
+	public G getGroup(final int groupPosition) {
 		final int groupCount = getGroupCount();
-		return groupCount > 0 && groupPosition >= 0 && groupPosition < groupCount ?
-				groups.get(groupPosition) : null;
+		return groupCount > 0 && groupPosition >= 0 && groupPosition < groupCount ? groups.get(groupPosition) : null;
 	}
 
 	@Override
@@ -107,19 +105,19 @@ public abstract class AbstractExpandableListAdapter<Tgroup, Tchildren> extends B
 		return true;
 	}
 
-	protected void addGroup(final Tgroup group) {
+	protected void addGroup(final G group) {
 		this.groups.add(group);
-		this.children.add(new ArrayList<Tchildren>());
+		this.children.add(new ArrayList<C>());
 	}
 
-	protected void addChildToGroup(final Tgroup group, final Tchildren child) {
+	protected void addChildToGroup(final G group, final C child) {
 		if (!groups.contains(group)) {
 			groups.add(group);
 		}
 
 		final int index = groups.indexOf(group);
 		if (children.size() < index + 1) {
-			children.add(new ArrayList<Tchildren>());
+			children.add(new ArrayList<C>());
 		}
 
 		children.get(index).add(child);

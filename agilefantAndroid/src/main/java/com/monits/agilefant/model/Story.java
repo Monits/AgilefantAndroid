@@ -10,10 +10,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Story extends Observable implements Serializable, Observer, Rankable<Story> {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 5178157997788833446L;
+	private static final int SHIFT = 32;
 
 	@SerializedName("id")
 	private long id;
@@ -42,19 +40,22 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	@SerializedName("iteration")
 	private Iteration iteration;
 
+	/**
+	 * Default constructor.
+	 */
 	public Story() {
 	}
 
 	/**
-	 * @param id
-	 * @param name
-	 * @param state
-	 * @param responsibles
-	 * @param metrics
-	 * @param tasks
-	 * @param rank
-	 * @param backlog
-	 * @param iteration
+	 * @param id The id
+	 * @param name The name
+	 * @param state The state
+	 * @param responsibles The responsibles
+	 * @param metrics The metrics
+	 * @param tasks The tasks
+	 * @param rank The rank
+	 * @param backlog The backlog
+	 * @param iteration The iteration
 	 */
 	public Story(final long id, final String name, final StateKey state, final List<User> responsibles,
 			final Metrics metrics, final List<Task> tasks, final int rank, final Backlog backlog,
@@ -69,6 +70,22 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 		this.rank = rank;
 		this.backlog = backlog;
 		this.iteration = iteration;
+	}
+
+	/**
+	 * Constructor.
+	 * Copy the data of the given object, and creates a new object with the same internal state.
+	 *
+	 *  @param story The story to copy
+	 */
+	public Story(final Story story) {
+		this(story.id, story.name, story.state, story.responsibles, story.metrics,
+			story.tasks != null ? new LinkedList<>(story.tasks) : null, story.rank, story.backlog, story.iteration);
+	}
+
+	@Override
+	public Story getCopy() {
+		return new Story(this);
 	}
 
 	/**
@@ -236,11 +253,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	}
 
 	@Override
-	public Story clone() {
-		return new Story(id, name, state, responsibles, metrics, tasks != null ? new LinkedList<Task>(tasks) : null, rank, backlog, iteration);
-	}
-
-	@Override
 	public void update(final Observable observable, final Object data) {
 		if (observable instanceof Task) {
 			long el = 0;
@@ -261,29 +273,29 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 		}
 	}
 
-	 @Override
-	 public int hashCode() {
-		 final int prime = 31;
-		 int result = 1;
-		 result = prime * result + (int) (id ^ (id >>> 32));
-		 return result;
-	 }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> SHIFT));
+		return result;
+	}
 
-	 @Override
-	 public boolean equals(final Object obj) {
-		 if (this == obj) {
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		 }
-		 if (obj == null) {
-			 return false;
-		 }
-		 if (!(obj instanceof Story)) {
-			 return false;
-		 }
-		 final Story other = (Story) obj;
-		 if (id != other.id) {
-			 return false;
-		 }
-		 return true;
-	 }
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Story)) {
+			return false;
+		}
+		final Story other = (Story) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -8,9 +8,21 @@ public class FilterableTeam extends UserChooser {
 
 	private List<Long> usersId;
 
+	/**
+	 * Default constructor.
+	 */
 	public FilterableTeam() {
 	}
 
+	/**
+	 * Constructor.
+	 * @param id The id
+	 * @param enabled Flag to see if it's enabled
+	 * @param matchedString The string that matched the users.
+	 * @param name The name
+	 * @param usersId The users ids
+	 * @param description A description
+	 */
 	public FilterableTeam(final long id, final boolean enabled, final String matchedString,
 			final String name, final List<Long> usersId, final String description) {
 		super(id, enabled, matchedString, name);

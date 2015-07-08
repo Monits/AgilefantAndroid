@@ -7,9 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Project implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 6674750903458874065L;
 
 	@SerializedName("id")
@@ -36,6 +33,9 @@ public class Project implements Serializable {
 	@SerializedName("root")
 	private Backlog parent;
 
+	/**
+	 * Default constructor.
+	 */
 	public Project() {
 	}
 
@@ -51,6 +51,15 @@ public class Project implements Serializable {
 		this.iterationList = iterationList;
 	}
 
+	/**
+	 * Constructor
+	 * @param id The id
+	 * @param title The title
+	 * @param iterationList The iterations
+	 * @param startDate The start date
+	 * @param endDate The end date
+	 * @param assignees The assignees
+	 */
 	public Project(final long id, final String title, final List<Iteration> iterationList,
 			final long startDate, final long endDate, final List<User> assignees) {
 		super();
@@ -106,26 +115,47 @@ public class Project implements Serializable {
 		this.iterationList = iterationList;
 	}
 
+	/**
+	 * @return The start date
+	 */
 	public long getStartDate() {
 		return startDate;
 	}
 
+	/**
+	 * Set the start date
+	 * @param startDate The date to set
+	 */
 	public void setStartDate(final long startDate) {
 		this.startDate = startDate;
 	}
 
+	/**
+	 * @return The end date
+	 */
 	public long getEndDate() {
 		return endDate;
 	}
 
+	/**
+	 * Set the end date
+	 * @param endDate The date to set
+	 */
 	public void setEndDate(final long endDate) {
 		this.endDate = endDate;
 	}
 
+	/**
+	 * @return The assignees
+	 */
 	public List<User> getAssignees() {
 		return assignees;
 	}
 
+	/**
+	 * Set the assignees
+	 * @param assignees The users to set
+	 */
 	public void setAssignees(final List<User> assignees) {
 		this.assignees = assignees;
 	}

@@ -45,16 +45,16 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	private DynamicExpandableListView storiesListView;
 
 	private StoriesAdapter storiesAdapter;
+
+	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
-
 			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
 					&& !StoriesFragment.this.isDetached()) {
 
-				final Task updatedTask =
-						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
+				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
 
 				for (final Story story : stories) {
 					final List<Task> tasks = story.getTasks();
@@ -73,11 +73,15 @@ public class StoriesFragment extends RoboFragment implements Observer {
 				storiesAdapter.setItems(stories);
 				storiesAdapter.notifyDataSetChanged();
 			}
-
-
 		}
 	};
 
+	/**
+	 * Return a new StoriesFragment with the given stories and iteration
+	 * @param stories The stories
+	 * @param mIteration The iteration
+	 * @return a new StoriesFragment with the given stories and iteration
+	 */
 	public static StoriesFragment newInstance(final ArrayList<Story> stories, final Iteration mIteration) {
 		final Bundle bundle = new Bundle();
 		bundle.putSerializable(STORIES, stories);
@@ -104,7 +108,8 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
 		storiesListView = (DynamicExpandableListView) rootView.findViewById(R.id.stories);
@@ -121,71 +126,42 @@ public class StoriesFragment extends RoboFragment implements Observer {
 			public void onSwapPositions(final int itemPosition, final int targetPosition,
 					final SwapDirection swapDirection, final long aboveItemId, final long belowItemId) {
 
-				if (aboveItemId == -1
-						&& swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
+				if (aboveItemId == -1 && swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
 
 					metricsService.rankStoryOver(
-							storiesAdapter.getGroup(itemPosition),
-							storiesAdapter.getGroup(targetPosition),
-							stories,
-							new Listener<Story>() {
-
-								@Override
-								public void onResponse(final Story arg0) {
-									Toast.makeText(
-											context,
-											R.string.feedback_success_update_story_rank,
-											Toast.LENGTH_SHORT)
-											.show();
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									storiesAdapter.setItems(stories);
-
-									Toast.makeText(
-											context,
-											R.string.feedback_failed_update_story_rank,
-											Toast.LENGTH_SHORT)
-											.show();
-								}
-							});
+						storiesAdapter.getGroup(itemPosition), storiesAdapter.getGroup(targetPosition), stories,
+						getSUccessListener(context), getErrorListener(context));
 				} else {
 					metricsService.rankStoryUnder(
-							storiesAdapter.getGroup(itemPosition),
-							storiesAdapter.getGroup(targetPosition),
-							stories,
-							new Listener<Story>() {
-
-								@Override
-								public void onResponse(final Story arg0) {
-									Toast.makeText(
-											context,
-											R.string.feedback_success_update_story_rank,
-											Toast.LENGTH_SHORT)
-											.show();
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									storiesAdapter.setItems(stories);
-
-									Toast.makeText(
-											context,
-											R.string.feedback_failed_update_story_rank,
-											Toast.LENGTH_SHORT)
-											.show();
-								}
-							});
+						storiesAdapter.getGroup(itemPosition), storiesAdapter.getGroup(targetPosition), stories,
+						getSUccessListener(context), getErrorListener(context));
 				}
 			}
 		});
 
 		return rootView;
+	}
+
+	private Listener<Story> getSUccessListener(final FragmentActivity context) {
+		return new Listener<Story>() {
+
+			@Override
+			public void onResponse(final Story arg0) {
+				Toast.makeText(context, R.string.feedback_success_update_story_rank, Toast.LENGTH_SHORT).show();
+			}
+		};
+	}
+
+	private ErrorListener getErrorListener(final FragmentActivity context) {
+		return new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(final VolleyError arg0) {
+				storiesAdapter.setItems(stories);
+
+				Toast.makeText(context, R.string.feedback_failed_update_story_rank, Toast.LENGTH_SHORT).show();
+			}
+		};
 	}
 
 	@Override

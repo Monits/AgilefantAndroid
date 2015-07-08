@@ -27,6 +27,11 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	private AdapterViewActionListener<Task> actionListener;
 	private final OnClickListener onClickListener;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param tasks The tasks
+	 */
 	public TaskWithoutStoryAdapter(final Context context, final List<Task> tasks) {
 		this.context = context;
 		this.tasks = tasks;
@@ -62,11 +67,16 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 		return getItem(position) != null ? getItem(position).getId() : -1;
 	}
 
-	public void setItems(final List<Task> tasks){
+	/**
+	 * Set the items
+	 * @param tasks The items to set
+	 */
+	public void setItems(final List<Task> tasks) {
 		this.tasks = tasks;
 		notifyDataSetChanged();
 	}
 
+	@SuppressWarnings("checkstyle:finalparameters")
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		Holder holder;

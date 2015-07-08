@@ -25,6 +25,10 @@ public class AutoCompleteIterationsAdapter extends BaseAdapter implements Filter
 
 	private final IterationFilter filter;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 */
 	public AutoCompleteIterationsAdapter(final Context context) {
 		this.context = context;
 		this.filter = new IterationFilter();
@@ -81,6 +85,10 @@ public class AutoCompleteIterationsAdapter extends BaseAdapter implements Filter
 		return filter;
 	}
 
+	/**
+	 * Set the items and notify the changes.
+	 * @param items The items to set
+	 */
 	public void setItems(final List<FilterableIteration> items) {
 		this.iterations = items;
 

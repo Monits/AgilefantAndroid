@@ -22,6 +22,11 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 	private final List<User> selectedUsers = new LinkedList<User>();
 	private OnUserChooserActionListener onUserChooserActionListener;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param attrs an attributes set
+	 */
 	public AutoCompleteUserChooserTextView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 
@@ -62,14 +67,30 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 		}
 	}
 
+	/**
+	 * Set the users
+	 * @param users The users to set
+	 */
 	public void setUsers(final List<User> users) {
 		selectedUsers.addAll(users);
 	}
 
+	/**
+	 * Listener for changes in the selected users.
+	 */
 	public static interface OnUserChooserActionListener {
+
+		/**
+		 * Called after a change in the selected users.
+		 * @param selectedUsers The selected users.
+		 */
 		public void onUserChooserAction(List<User> selectedUsers);
 	}
 
+	/**
+	 * Set the listener for userchooser action
+	 * @param listener The listener to set
+	 */
 	public void setOnUserChooserActionListener(final OnUserChooserActionListener listener) {
 		this.onUserChooserActionListener = listener;
 	}
@@ -78,7 +99,7 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 	 * Project's assignees only contain's the initials and the id of the user,
 	 * this method is to replace those incomplete current users with the complete objects
 	 *
-	 * @param filterableUsers
+	 * @param filterableUsers the filterable users
 	 */
 	public void populateCurrentSelectedUsers(final List<UserChooser> filterableUsers) {
 		for (int i = 0; i < selectedUsers.size(); i++) {
@@ -92,11 +113,18 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 		sendUserChooserAction();
 	}
 
+	/**
+	 * Remove a user from the selected ones
+	 * @param user The user to remove
+	 */
 	public void removeUser(final User user) {
 		selectedUsers.remove(user);
 		sendUserChooserAction();
 	}
 
+	/**
+	 * @return The selected user
+	 */
 	public List<User> getSelectedUsers() {
 		return Collections.unmodifiableList(selectedUsers);
 	}

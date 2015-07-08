@@ -14,9 +14,9 @@ public enum StateKey {
 
 	/**
 	 * Constructor.
-	 * @param state
+	 * @param state The state
 	 */
-	private StateKey (String state){
+	private StateKey(final String state) {
 		this.state = state;
 	}
 
@@ -31,8 +31,8 @@ public enum StateKey {
 	 * @return returns a list with the {@link StateKey} values, in human readable form to display.
 	 */
 	public static String[] getDisplayStates() {
-		StateKey[] stateKeys = StateKey.values();
-		String [] taskStates = new String[stateKeys.length];
+		final StateKey[] stateKeys = StateKey.values();
+		final String [] taskStates = new String[stateKeys.length];
 		for (int i = 0 ; i < stateKeys.length ; i++) {
 			taskStates[i] = stateKeys[i].getState();
 		}

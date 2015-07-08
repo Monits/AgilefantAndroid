@@ -27,6 +27,14 @@ import com.monits.volleyrequests.network.request.JsonRfcCompliantListenableReque
 
 public class StringJsonRfcCompliantRequest extends JsonRfcCompliantListenableRequest<String> {
 
+	/**
+	 * Constructor
+	 * @param method The http method
+	 * @param url The url
+	 * @param listener The success listener
+	 * @param errListener The error listener
+	 * @param jsonBody The json body
+	 */
 	public StringJsonRfcCompliantRequest(final int method, final String url,
 			final Listener<String> listener, final ErrorListener errListener, final String jsonBody) {
 		super(method, url, listener, errListener, jsonBody);

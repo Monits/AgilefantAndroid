@@ -50,11 +50,23 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 	private final Observer observer;
 	private final List<Project> projectList;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param observer An observer object
+	 */
 	public TaskAdapterViewActionListener(final FragmentActivity context, final Observer observer) {
 		this(context, observer, null);
 	}
 
-	public TaskAdapterViewActionListener(final FragmentActivity context, final Observer observer, final List<Project> projectList) {
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param observer An observer object
+	 * @param projectList The project list
+	 */
+	public TaskAdapterViewActionListener(final FragmentActivity context, final Observer observer,
+			final List<Project> projectList) {
 		super(context);
 
 		this.observer = observer;
@@ -68,209 +80,220 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 		super.onAction(view, object);
 
 		switch (view.getId()) {
-			case R.id.column_name:
-				final Builder confirmStartTrackingBuilder = new Builder(context);
-				confirmStartTrackingBuilder.setMessage(R.string.start_tracking_task_time);
-				confirmStartTrackingBuilder.setPositiveButton(R.string.dialog_start_tracking_task_time_positive, new OnClickListener() {
+		case R.id.column_name:
+			createTrackingDialog(object);
+			break;
 
-					@Override
-					public void onClick(final DialogInterface dialog, final int which) {
-						final Intent intent = new Intent(context, TaskTimeTrackingService.class);
-						intent.putExtra(TaskTimeTrackingService.EXTRA_TASK, object);
-						context.startService(intent);
+		case R.id.column_effort_left:
+			createPromptDialogFragment(object);
+			break;
 
+		case R.id.column_spent_effort:
+			final FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
+			transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
+			transaction.addToBackStack(null);
+			transaction.commit();
+			break;
+
+		case R.id.column_state:
+			createChangeStateDialog(object);
+			break;
+
+		case R.id.column_responsibles:
+			createUserChooser(object);
+			break;
+
+		case R.id.column_context:
+			getIterationDetails(object);
+			break;
+		}
+	}
+
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private void getIterationDetails(final Task object) {
+		final Iteration iteration = object.getIteration();
+
+		final ProgressDialog progressDialog = new ProgressDialog(context);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setCancelable(false);
+		progressDialog.setMessage(context.getString(R.string.loading));
+		progressDialog.show();
+
+		iterationService.getIteration(
+			iteration.getId(),
+			new Listener<Iteration>() {
+				@Override
+				public void onResponse(final Iteration response) {
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
 					}
-				});
-				confirmStartTrackingBuilder.setNegativeButton(R.string.dialog_start_tracking_task_time_negative, new OnClickListener() {
 
-					@Override
-					public void onClick(final DialogInterface dialog, final int which) {
-						dialog.dismiss();
-					}
-				});
-				final AlertDialog confirmStartTrackingDialog = confirmStartTrackingBuilder.create();
-				confirmStartTrackingDialog.show();
-
-				break;
-			case R.id.column_effort_left:
-
-				// Agilefant's tasks that are already done, can't have it's EL changed.
-				if (!object.getState().equals(StateKey.DONE)) {
-
-					final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
-							R.string.dialog_effortleft_title,
-							String.valueOf((float) object.getEffortLeft() / 60), // Made this way to avoid strings added in utils method.
-							InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
-
-					dialogFragment.setPromptDialogListener(new PromptDialogListener() {
-
-						@Override
-						public void onAccept(final String inputValue) {
-							metricsService.changeEffortLeft(
-									InputUtils.parseStringToDouble(inputValue),
-									object,
-									new Listener<Task>() {
-
-										@Override
-										public void onResponse(final Task arg0) {
-											Toast.makeText(
-													context, R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT).show();
-										}
-									},
-									new ErrorListener() {
-
-										@Override
-										public void onErrorResponse(final VolleyError arg0) {
-											Toast.makeText(
-													context, R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
-										}
-									});
-						}
-					});
-
-					dialogFragment.show(context.getSupportFragmentManager(), "effortLeftDialog");
-				}
-
-				break;
-
-			case R.id.column_spent_effort:
-
-				final FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
-				transaction.add(R.id.container, SpentEffortFragment.newInstance(object));
-				transaction.addToBackStack(null);
-				transaction.commit();
-
-				break;
-
-			case R.id.column_state:
-
-				final OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(final DialogInterface dialog, final int which) {
-						metricsService.taskChangeState(
-								StateKey.values()[which],
-								object,
-								new Listener<Task>() {
-
-									@Override
-									public void onResponse(final Task arg0) {
-										Toast.makeText(
-												context, R.string.feedback_successfully_updated_state, Toast.LENGTH_SHORT).show();
-									};
-								},
-								new ErrorListener() {
-
-									@Override
-									public void onErrorResponse(final VolleyError arg0) {
-										Toast.makeText(
-												context, R.string.feedback_failed_update_state, Toast.LENGTH_SHORT).show();
-									};
-								});
-
-						dialog.dismiss();
-					}
-				};
-
-				final AlertDialog.Builder builder = new Builder(context);
-				builder.setTitle(R.string.dialog_state_title);
-				builder.setSingleChoiceItems(
-						StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
-				builder.show();
-
-				break;
-
-			case R.id.column_responsibles:
-				final Fragment fragment = UserChooserFragment.newInstance(
-						object.getResponsibles(),
-						new OnUsersSubmittedListener() {
-
-							@Override
-							public void onSubmitUsers(final List<User> users) {
-								metricsService.changeTaskResponsibles(
-										users,
-										object,
-										new Listener<Task>() {
-
-											@Override
-											public void onResponse(final Task project) {
-												Toast.makeText(context, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
-											}
-										},
-										new ErrorListener() {
-
-											@Override
-											public void onErrorResponse(final VolleyError arg0) {
-												Toast.makeText(context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
-											}
-										});
+					// Workaround that may be patchy,
+					// but it depends on the request whether it comes or not, and how to get it.
+					if (iteration.getParent() == null && projectList != null) {
+						for (int i = 0; i < projectList.size(); i++) {
+							final Project project = projectList.get(i);
+							final List<Iteration> iterationList = project.getIterationList();
+							for (int j = 0; j < iterationList.size(); j++) {
+								final Iteration parentIteration = iterationList.get(j);
+								if (parentIteration.getId() ==  iteration.getId()) {
+									final Backlog backlog = new Backlog(project);
+									response.setParent(backlog);
+									break;
+								}
 							}
-						});
+						}
+					} else {
+						response.setParent(iteration.getParent());
+					}
 
-				context.getSupportFragmentManager().beginTransaction()
-					.add(android.R.id.content, fragment)
-					.addToBackStack(null)
-					.commit();
+					final Intent intent = new Intent(context, IterationActivity.class);
+					intent.putExtra(IterationActivity.ITERATION, response);
+					context.startActivity(intent);
+				}
+			},
+			new ErrorListener() {
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
+					}
 
-				break;
+					Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+				}
+			});
+	}
 
-			case R.id.column_context:
-				final Iteration iteration = object.getIteration();
+	private void createUserChooser(final Task object) {
+		final Fragment fragment = UserChooserFragment.newInstance(
+			object.getResponsibles(),
+			new OnUsersSubmittedListener() {
 
-				final ProgressDialog progressDialog = new ProgressDialog(context);
-				progressDialog.setIndeterminate(true);
-				progressDialog.setCancelable(false);
-				progressDialog.setMessage(context.getString(R.string.loading));
-				progressDialog.show();
-
-				iterationService.getIteration(
-						iteration.getId(),
-						new Listener<Iteration>() {
-
+				@Override
+				public void onSubmitUsers(final List<User> users) {
+					metricsService.changeTaskResponsibles(
+						users,
+						object,
+						new Listener<Task>() {
 							@Override
-							public void onResponse(final Iteration response) {
-								if (progressDialog != null && progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
-
-								final Intent intent = new Intent(context, IterationActivity.class);
-
-								// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-								if (iteration.getParent() == null && projectList != null) {
-									for (int i = 0; i < projectList.size(); i++) {
-										final Project project = projectList.get(i);
-										final List<Iteration> iterationList = project.getIterationList();
-										for (int j = 0; j < iterationList.size(); j++) {
-											final Iteration parentIteration = iterationList.get(j);
-											if (parentIteration.getId() ==  iteration.getId()) {
-												final Backlog backlog = new Backlog(project);
-												response.setParent(backlog);
-												break;
-											}
-										}
-									}
-								} else {
-									response.setParent(iteration.getParent());
-								}
-
-								intent.putExtra(IterationActivity.ITERATION, response);
-
-								context.startActivity(intent);
+							public void onResponse(final Task project) {
+								Toast.makeText(
+									context, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
 							}
 						},
 						new ErrorListener() {
-
 							@Override
 							public void onErrorResponse(final VolleyError arg0) {
-								if (progressDialog != null && progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
-
-								Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+								Toast.makeText(
+									context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
 							}
 						});
-				break;
+				}
+			});
+
+		context.getSupportFragmentManager().beginTransaction()
+			.add(android.R.id.content, fragment)
+			.addToBackStack(null)
+			.commit();
+	}
+
+	private void createChangeStateDialog(final Task object) {
+		final OnClickListener onChoiceSelectedListener = new OnClickListener() {
+
+			@Override
+			public void onClick(final DialogInterface dialog, final int which) {
+				metricsService.taskChangeState(
+					StateKey.values()[which],
+					object,
+					new Listener<Task>() {
+						@Override
+						public void onResponse(final Task arg0) {
+							Toast.makeText(
+									context, R.string.feedback_successfully_updated_state, Toast.LENGTH_SHORT).show();
+						}
+					},
+					new ErrorListener() {
+						@Override
+						public void onErrorResponse(final VolleyError arg0) {
+							Toast.makeText(
+								context, R.string.feedback_failed_update_state, Toast.LENGTH_SHORT).show();
+						}
+					});
+
+				dialog.dismiss();
+			}
+		};
+
+		final Builder builder = new Builder(context);
+		builder.setTitle(R.string.dialog_state_title);
+		builder.setSingleChoiceItems(
+			StateKey.getDisplayStates(), object.getState().ordinal(), onChoiceSelectedListener);
+		builder.show();
+	}
+
+	private void createPromptDialogFragment(final Task object) {
+		// Agilefant's tasks that are already done, can't have it's EL changed.
+		if (!object.getState().equals(StateKey.DONE)) {
+
+			final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
+					R.string.dialog_effortleft_title,
+					// Made this way to avoid strings added in utils method.
+					String.valueOf((float) object.getEffortLeft() / 60),
+					InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+			dialogFragment.setPromptDialogListener(new PromptDialogListener() {
+				@Override
+				public void onAccept(final String inputValue) {
+					metricsService.changeEffortLeft(
+						InputUtils.parseStringToDouble(inputValue),
+						object,
+						new Listener<Task>() {
+							@Override
+							public void onResponse(final Task arg0) {
+								Toast.makeText(
+									context, R.string.feedback_succesfully_updated_effort_left, Toast.LENGTH_SHORT)
+										.show();
+							}
+						},
+						new ErrorListener() {
+							@Override
+							public void onErrorResponse(final VolleyError arg0) {
+								Toast.makeText(
+									context, R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT).show();
+							}
+						});
+				}
+			});
+
+			dialogFragment.show(context.getSupportFragmentManager(), "effortLeftDialog");
 		}
+	}
+
+	private void createTrackingDialog(final Task object) {
+		final Builder confirmStartTrackingBuilder = new Builder(context);
+		confirmStartTrackingBuilder.setMessage(R.string.start_tracking_task_time);
+		confirmStartTrackingBuilder.setPositiveButton(
+			R.string.dialog_start_tracking_task_time_positive,
+			new OnClickListener() {
+				@Override
+				public void onClick(final DialogInterface dialog, final int which) {
+					final Intent intent = new Intent(context, TaskTimeTrackingService.class);
+					intent.putExtra(TaskTimeTrackingService.EXTRA_TASK, object);
+					context.startService(intent);
+				}
+			});
+
+		confirmStartTrackingBuilder.setNegativeButton(
+			R.string.dialog_start_tracking_task_time_negative,
+			new OnClickListener() {
+				@Override
+				public void onClick(final DialogInterface dialog, final int which) {
+					dialog.dismiss();
+				}
+			});
+
+		final AlertDialog confirmStartTrackingDialog = confirmStartTrackingBuilder.create();
+		confirmStartTrackingDialog.show();
 	}
 
 	@Override

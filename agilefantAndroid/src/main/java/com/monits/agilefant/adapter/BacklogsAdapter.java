@@ -31,7 +31,7 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.view.ProductExpandableListView;
 
-public class BacklogsAdapter extends BaseExpandableListAdapter{
+public class BacklogsAdapter extends BaseExpandableListAdapter {
 
 	@Inject
 	private IterationService iterationService;
@@ -39,10 +39,15 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	private List<Product> productList;
 	private final Context context;
 	private final LayoutInflater inflater;
-	private ProductExpandableListView listViewCache[];
+	private ProductExpandableListView[] listViewCache;
 
 	private static final int MAX_CHILDREN = 1024;
 
+	/**
+	 * Constructor
+	 * @param context     The context
+	 * @param productList The product list
+	 */
 	public BacklogsAdapter(final Context context, final List<Product> productList) {
 		if (productList != null) {
 			this.productList = productList;
@@ -54,6 +59,10 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		RoboGuice.injectMembers(context, this);
 	}
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 */
 	public BacklogsAdapter(final Context context) {
 		this(context, null);
 	}
@@ -69,26 +78,26 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 	}
 
 	@Override
-	public View getChildView(final int groupPosition, final int childPosition,
-			final boolean isLastChild, final View convertView, final ViewGroup parent) {
+	public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild,
+			final View convertView, final ViewGroup parent) {
 		View v;
 
 		if (listViewCache[groupPosition] != null) {
 			v = listViewCache[groupPosition];
 		} else {
-			final ProjectAdapter projectAdapter = new ProjectAdapter(
-					context, productList.get(groupPosition).getProjectList(), R.layout.project_item, R.layout.iteration_item);
+			final ProjectAdapter projectAdapter = new ProjectAdapter(context,
+				productList.get(groupPosition).getProjectList(), R.layout.project_item, R.layout.iteration_item);
 			final ProductExpandableListView delv = new ProductExpandableListView(context);
 			delv.setAdapter(projectAdapter);
 			delv.setIndicatorBounds(View.INVISIBLE, View.INVISIBLE);
 			delv.setGroupIndicator(null);
 			delv.setDivider(null);
 			delv.setChildDivider(null);
-
 			delv.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 				@Override
-				public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
+				public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position,
+						final long id) {
 					final long packedPosition = delv.getExpandableListPosition(position);
 					final int positionType = ExpandableListView.getPackedPositionType(packedPosition);
 
@@ -113,7 +122,8 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 				@Override
 				public boolean onChildClick(final ExpandableListView parent, final View v,
 						final int groupLevel2Position, final int childPosition, final long id) {
-					final Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position).getIterationList().get(childPosition);
+					final Iteration iteration = productList.get(groupPosition).getProjectList().get(groupLevel2Position)
+							.getIterationList().get(childPosition);
 					final Project project = productList.get(groupPosition).getProjectList().get(groupLevel2Position);
 
 					final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -121,38 +131,8 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 					progressDialog.setCancelable(false);
 					progressDialog.setMessage(context.getString(R.string.loading));
 					progressDialog.show();
-					iterationService.getIteration(
-							iteration.getId(),
-							new Listener<Iteration>() {
-
-								@Override
-								public void onResponse(final Iteration response) {
-									if (progressDialog != null && progressDialog.isShowing()) {
-										progressDialog.dismiss();
-									}
-
-									final Intent intent = new Intent(context, IterationActivity.class);
-
-									// Workaround that may be patchy, but it depends on the request whether it comes or not, and how to get it.
-									final Backlog backlog = new Backlog(project);
-									response.setParent(backlog);
-
-									intent.putExtra(IterationActivity.ITERATION, response);
-
-									context.startActivity(intent);
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									if (progressDialog != null && progressDialog.isShowing()) {
-										progressDialog.dismiss();
-									}
-
-									Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
-								}
-							});
+					iterationService.getIteration(iteration.getId(), getSuccessListener(project, progressDialog),
+						getErrorListener(progressDialog));
 
 					return true;
 				}
@@ -163,6 +143,43 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		}
 
 		return v;
+	}
+
+	private Listener<Iteration> getSuccessListener(final Project project, final ProgressDialog progressDialog) {
+		return new Listener<Iteration>() {
+
+			@Override
+			public void onResponse(final Iteration response) {
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				final Intent intent = new Intent(context, IterationActivity.class);
+
+				// Workaround that may be patchy,
+				// but it depends on the request whether it comes or not, and how to get it.
+				final Backlog backlog = new Backlog(project);
+				response.setParent(backlog);
+
+				intent.putExtra(IterationActivity.ITERATION, response);
+
+				context.startActivity(intent);
+			}
+		};
+	}
+
+	private ErrorListener getErrorListener(final ProgressDialog progressDialog) {
+		return new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(final VolleyError arg0) {
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+			}
+		};
 	}
 
 	@Override
@@ -185,9 +202,10 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		return productList != null ? productList.get(position).getId() : -1;
 	}
 
+	@SuppressWarnings("checkstyle:finalparameters")
 	@Override
 	public View getGroupView(final int position, final boolean isExpanded, View convertView, final ViewGroup parent) {
-		Holder holder;
+		final Holder holder;
 		if (null == convertView) {
 			holder = new Holder();
 			final View inflate = inflater.inflate(R.layout.product_item, null);
@@ -228,6 +246,10 @@ public class BacklogsAdapter extends BaseExpandableListAdapter{
 		public TextView icon;
 	}
 
+	/**
+	 * Set the backlogs
+	 * @param productList The backlogs to set
+	 */
 	public void setBacklogs(final List<Product> productList) {
 		this.productList = productList;
 		this.listViewCache = new ProductExpandableListView[productList.size()];

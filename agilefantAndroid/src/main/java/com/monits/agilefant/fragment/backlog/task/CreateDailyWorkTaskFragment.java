@@ -49,6 +49,9 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 
 	private Iteration iterationSelected;
 
+	/**
+	 * @return a new CreateDailyWorkTaskFragment
+	 */
 	public static CreateDailyWorkTaskFragment newInstance() {
 		return new CreateDailyWorkTaskFragment();
 	}

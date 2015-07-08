@@ -11,7 +11,8 @@ public interface OnSwapRowListener {
 	 * @param aboveItemId the id of the row above the dragged.
 	 * @param belowItemId the id of the row below the dragged one.
 	 */
-	void onSwapPositions(int itemPosition, int targetPosition, SwapDirection swapDirection, long aboveItemId, long belowItemId);
+	void onSwapPositions(int itemPosition, int targetPosition, SwapDirection swapDirection, long aboveItemId,
+		long belowItemId);
 
 	public static enum SwapDirection {
 		ABOVE_TARGET, BELOW_TARGET

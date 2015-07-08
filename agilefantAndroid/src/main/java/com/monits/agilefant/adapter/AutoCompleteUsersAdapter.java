@@ -25,6 +25,10 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 
 	private final Filter filter;
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 */
 	public AutoCompleteUsersAdapter(final Context context) {
 		this.context = context;
 		this.filter = new ItemFilter();
@@ -100,12 +104,19 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 		}
 	}
 
+	/**
+	 * Set the filterable users
+	 * @param filterableUsers The filterables users to set
+	 */
 	public void setFilterableUsers(final List<UserChooser> filterableUsers) {
 		this.filterableUsers = filterableUsers;
 
 		notifyDataSetChanged();
 	}
 
+	/**
+	 * @return The filterables users
+	 */
 	public List<UserChooser> getFilterableUsers() {
 		return filterableUsers;
 	}

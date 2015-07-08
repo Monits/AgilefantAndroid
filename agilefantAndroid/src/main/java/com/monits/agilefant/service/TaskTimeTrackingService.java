@@ -36,52 +36,9 @@ public class TaskTimeTrackingService extends RoboService {
 	public static final String EXTRA_NOTIFICATION_ID = "com.monits.agilefant.intent.extra.NOTIFICATION_ID";
 	public static final String EXTRA_TASK = "com.monits.agilefant.intent.extra.TASK";
 
-	private final Map<Long, NotificationHolder> notificationMap = new ConcurrentHashMap<Long, NotificationHolder>();
+	private final Map<Long, NotificationHolder> notificationMap = new ConcurrentHashMap<>();
 
-	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			final String action = intent.getAction();
-
-			final long notificationId = intent.getLongExtra(EXTRA_NOTIFICATION_ID, -1);
-			if (notificationMap.containsKey(notificationId)) {
-				final NotificationHolder notificationHolder = notificationMap.get(notificationId);
-
-				if (action.equals(ACTION_START_TRACKING)) {
-					startChronometer(notificationHolder);
-				} else if (action.equals(ACTION_PAUSE_TRACKING)) {
-					pauseChronometer(notificationHolder);
-				} else if (action.equals(ACTION_QUIT_TRACKING_TASK)) {
-					notificationMap.remove(notificationId);
-
-					mNotificationManager.cancel(notificationHolder.getNotificationId());
-
-					if (notificationMap.isEmpty()) {
-						stopSelf();
-					}
-				} else if (action.equals(ACTION_STOP_TRACKING)) {
-
-					if (notificationHolder.isChronometerRunning()) {
-						pauseChronometer(notificationHolder);
-					}
-
-					collapseStatusBar();
-
-					final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
-					dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-							| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-							| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-					dialogActivityIntent.putExtra(
-							SavingTaskTimeDialogActivity.EXTRA_TASK, notificationHolder.getTrackedTask());
-					dialogActivityIntent.putExtra(
-							SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS, Math.abs(notificationHolder.getElapsedTime()));
-
-					startActivity(dialogActivityIntent);
-				}
-			}
-		}
-	};
+	private final BroadcastReceiver broadcastReceiver = new TaskTimeTrackingServiceBroadcastReceiver();
 
 	private NotificationManager mNotificationManager;
 
@@ -122,7 +79,8 @@ public class TaskTimeTrackingService extends RoboService {
 				startIntent.putExtra(EXTRA_NOTIFICATION_ID, id);
 				sendBroadcast(startIntent);
 			} else {
-				Toast.makeText(TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
+				Toast.makeText(
+					TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
 			}
 
 
@@ -201,18 +159,15 @@ public class TaskTimeTrackingService extends RoboService {
 		final Notification notification;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			contentView.setImageViewResource(R.id.chronometer_status,
-					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
+				isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
 
 			mNotificationBuilder.setContent(contentView);
 			notification = mNotificationBuilder.build();
 		} else {
 			contentView.setTextViewCompoundDrawables(R.id.chronometer_status,
-					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play,
-							0,
-							0,
-							0);
+				isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play, 0, 0, 0);
 			contentView.setTextViewText(R.id.chronometer_status,
-					isChronometerRunning ? getString(R.string.notification_pause) : getString(R.string.notification_play));
+				isChronometerRunning ? getString(R.string.notification_pause) : getString(R.string.notification_play));
 
 			notification = mNotificationBuilder.build();
 			notification.bigContentView = contentView;
@@ -283,6 +238,51 @@ public class TaskTimeTrackingService extends RoboService {
 			}
 		} catch (final Exception e) {
 			Log.e(getClass().getName(), "Failed to close status bar", e);
+		}
+	}
+
+	private class TaskTimeTrackingServiceBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+			final String action = intent.getAction();
+
+			final long notificationId = intent.getLongExtra(EXTRA_NOTIFICATION_ID, -1);
+			if (notificationMap.containsKey(notificationId)) {
+				final NotificationHolder notificationHolder = notificationMap.get(notificationId);
+
+				if (action.equals(ACTION_START_TRACKING)) {
+					startChronometer(notificationHolder);
+				} else if (action.equals(ACTION_PAUSE_TRACKING)) {
+					pauseChronometer(notificationHolder);
+				} else if (action.equals(ACTION_QUIT_TRACKING_TASK)) {
+					notificationMap.remove(notificationId);
+
+					mNotificationManager.cancel(notificationHolder.getNotificationId());
+
+					if (notificationMap.isEmpty()) {
+						stopSelf();
+					}
+				} else if (action.equals(ACTION_STOP_TRACKING)) {
+
+					if (notificationHolder.isChronometerRunning()) {
+						pauseChronometer(notificationHolder);
+					}
+
+					collapseStatusBar();
+
+					final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
+					dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+						| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+					dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_TASK,
+							notificationHolder.getTrackedTask());
+					dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS,
+							Math.abs(notificationHolder.getElapsedTime()));
+
+					startActivity(dialogActivityIntent);
+				}
+			}
 		}
 	}
 }

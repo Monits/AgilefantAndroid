@@ -23,6 +23,11 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 	@Inject
 	private MetricsService metricsService;
 
+	/**
+	 * Return a new CreateStoryFragment with the given iteration id.
+	 * @param iterationId The iteration id.
+	 * @return a new CreateStoryFragment with the given iteration id.
+	 */
 	public static CreateStoryFragment newInstance(final long iterationId) {
 		final CreateStoryFragment fragment = new CreateStoryFragment();
 		return prepareFragmentForIteration(iterationId, fragment);

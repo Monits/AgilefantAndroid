@@ -19,17 +19,31 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	private final int childResId;
 
 	/**
-	 * @param context
+	 * Constructor
+	 * @param context The context
 	 */
 	public ProjectAdapter(final Context context) {
 		this(context, null);
 	}
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param projectList The list of projects.
+	 */
 	public ProjectAdapter(final Context context, final List<Project> projectList) {
 		this(context, projectList, R.layout.default_project_item, R.layout.default_iteration_item);
 	}
 
-	public ProjectAdapter(final Context context, final List<Project> projectList, final int groupResId, final int childResId) {
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param projectList The list of projects.
+	 * @param groupResId The group id
+	 * @param childResId THe child id
+	 */
+	public ProjectAdapter(final Context context, final List<Project> projectList, final int groupResId,
+			final int childResId) {
 		super(context);
 
 		setProjects(projectList);

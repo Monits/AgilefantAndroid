@@ -63,6 +63,11 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 		}
 	};
 
+	/**
+	 * Returns a new MyTasksFragment with the given task without stories
+	 * @param taskWithoutStories The task to set
+	 * @return a new MyTasksFragment with the given task without stories
+	 */
 	public static MyTasksFragment newInstance(final List<Task> taskWithoutStories) {
 		final MyTasksFragment tasksFragment = new MyTasksFragment();
 		final Bundle arguments = new Bundle();
@@ -89,32 +94,34 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		return inflater.inflate(R.layout.fragment_my_tasks, container, false);
 	}
 
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-	    inflater.inflate(R.menu.menu_dailywork_new_element, menu);
-	    super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.menu_dailywork_new_element, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_new_task:
-				MyTasksFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+		case R.id.action_new_task:
+			MyTasksFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
 				.replace(android.R.id.content, CreateDailyWorkTaskFragment.newInstance())
 				.addToBackStack(null)
 				.commit();
 
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	@SuppressWarnings("checkstyle:anoninnerlength")
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -128,43 +135,44 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 		progressDialog.show();
 
 		backlogService.getMyBacklogs(
-				new Listener<List<Project>>() {
+			new Listener<List<Project>>() {
 
-					@Override
-					public void onResponse(final List<Project> response) {
-						if (response != null) {
-							backlogsAdapter.setProjects(response);
+				@Override
+				public void onResponse(final List<Project> response) {
+					if (response != null) {
+						backlogsAdapter.setProjects(response);
 
-							final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
-							final View emptyView = view.findViewById(R.id.tasks_empty_view);
+						final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
+						final View emptyView = view.findViewById(R.id.tasks_empty_view);
 
-							final List<Project> projectList = new ArrayList<Project>();
+						final List<Project> projectList = new ArrayList<>();
 
-							for (int i = 0; i < backlogsAdapter.getGroupCount(); i++) {
-								projectList.add(backlogsAdapter.getGroup(i));
-							}
-
-							tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
-							tasksAdapter.setOnActionListener(new TaskAdapterViewActionListener(getActivity(), MyTasksFragment.this, projectList));
-							tasksListView.setAdapter(tasksAdapter);
-							tasksListView.setEmptyView(emptyView);
-
-							if (progressDialog != null && progressDialog.isShowing()) {
-								progressDialog.dismiss();
-							}
+						for (int i = 0; i < backlogsAdapter.getGroupCount(); i++) {
+							projectList.add(backlogsAdapter.getGroup(i));
 						}
-					}
-				},
-				new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
+						tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
+						tasksAdapter.setOnActionListener(
+								new TaskAdapterViewActionListener(getActivity(), MyTasksFragment.this, projectList));
+						tasksListView.setAdapter(tasksAdapter);
+						tasksListView.setEmptyView(emptyView);
+
 						if (progressDialog != null && progressDialog.isShowing()) {
 							progressDialog.dismiss();
 						}
-						Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
 					}
-				});
+				}
+			},
+			new ErrorListener() {
+
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
+					}
+					Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
+				}
+			});
 
 
 

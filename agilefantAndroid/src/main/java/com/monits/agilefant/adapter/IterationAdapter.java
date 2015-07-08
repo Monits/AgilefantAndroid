@@ -18,7 +18,13 @@ public class IterationAdapter extends BaseAdapter {
 	private final Context context;
 	private final int currentIterationIndex;
 
-	public IterationAdapter (final Context context, final List<Iteration> iterations, final int currentIterationIndex){
+	/**
+	 * Constructor
+	 * @param context The contexts
+	 * @param iterations The iterations.
+	 * @param currentIterationIndex The current iteration
+	 */
+	public IterationAdapter(final Context context, final List<Iteration> iterations, final int currentIterationIndex) {
 		this.iterations = iterations;
 		this.context = context;
 		this.currentIterationIndex = currentIterationIndex;

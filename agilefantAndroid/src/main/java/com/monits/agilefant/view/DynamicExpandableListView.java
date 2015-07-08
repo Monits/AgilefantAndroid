@@ -29,9 +29,28 @@ import com.monits.agilefant.listeners.OnSwapRowListener.SwapDirection;
 
 public class DynamicExpandableListView extends ExpandableListView {
 
-	private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
-	private final int MOVE_DURATION = 150;
-	private final int LINE_THICKNESS = 15;
+	private static final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
+	private static final int MOVE_DURATION = 150;
+	private static final int LINE_THICKNESS = 15;
+
+	/**
+	 * This TypeEvaluator is used to animate the BitmapDrawable back to its
+	 * final location when the user lifts his finger by modifying the
+	 * BitmapDrawable's bounds.
+	 */
+	private static final TypeEvaluator<Rect> S_BOUND_EVALUATOR = new TypeEvaluator<Rect>() {
+		@Override
+		public Rect evaluate(final float fraction, final Rect startValue, final Rect endValue) {
+			return new Rect(interpolate(startValue.left, endValue.left, fraction),
+					interpolate(startValue.top, endValue.top, fraction),
+					interpolate(startValue.right, endValue.right, fraction),
+					interpolate(startValue.bottom, endValue.bottom, fraction));
+		}
+
+		public int interpolate(final int start, final int end, final float fraction) {
+			return (int) (start + fraction * (end - start));
+		}
+	};
 
 	private int mLastEventY = -1;
 
@@ -44,7 +63,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	private boolean mIsMobileScrolling = false;
 	private int mSmoothScrollAmountAtEdge = 0;
 
-	private final int INVALID_ID = -1;
+	private static final int INVALID_ID = -1;
 	private long mAboveItemId = INVALID_ID;
 	private long mMobileItemId = INVALID_ID;
 	private long mBelowItemId = INVALID_ID;
@@ -53,7 +72,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	private Rect mHoverCellCurrentBounds;
 	private Rect mHoverCellOriginalBounds;
 
-	private final int INVALID_POINTER_ID = -1;
+	private static final int INVALID_POINTER_ID = -1;
 	private int mActivePointerId = INVALID_POINTER_ID;
 
 	private boolean mIsWaitingForScrollFinish = false;
@@ -65,65 +84,87 @@ public class DynamicExpandableListView extends ExpandableListView {
 	private boolean swapOcurred;
 	private OnSwapRowListener onSwapRowListener;
 
+	private final AbsListView.OnScrollListener mScrollListener = new DynamicExpandableListViewScrollListener();
+
+	/**
+	 * Listens for long clicks on any items in the listview. When a cell has
+	 * been selected, the hover cell is created and set up.
+	 */
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private final AdapterView.OnItemLongClickListener mOnItemLongClickListener =
+		new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> arg0, final View arg1, final int pos, final long id) {
+				final long packedPosition = getExpandableListPosition(pos);
+				final int positionType = ExpandableListView.getPackedPositionType(packedPosition);
+
+				if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+					// Dragging groups while expanded will cause the app to crash, collapsing all before!
+					for (int i = 0; i < getExpandableListAdapter().getGroupCount(); i++) {
+						collapseGroup(i);
+					}
+
+					mTotalOffset = 0;
+
+					final int position = pointToPosition(mDownX, mDownY);
+					final int itemNum = position - getFirstVisiblePosition();
+
+					final View selectedView = getChildAt(itemNum);
+					mMobileItemId = getExpandableListAdapter().getGroupId(position);
+					mHoverCell = getAndAddHoverView(selectedView);
+					selectedView.setVisibility(INVISIBLE);
+
+					mCellIsMobile = true;
+
+					updateNeighborViewsForID(mMobileItemId);
+
+					return true;
+				}
+
+				return false;
+			}
+		};
+
+	/**
+	 * Constructor
+	 * @param context The context
+	 */
 	public DynamicExpandableListView(final Context context) {
 		super(context);
 		init(context);
 	}
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param attrs a set of attributtes
+	 * @param defStyle the defStyle value
+	 */
 	public DynamicExpandableListView(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
 	}
 
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param attrs a set of attributtes
+	 */
 	public DynamicExpandableListView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
 	}
 
+	/**
+	 * Initializes the listview.
+	 * @param context The context
+	 */
 	public void init(final Context context) {
 		setOnItemLongClickListener(mOnItemLongClickListener);
 		setOnScrollListener(mScrollListener);
 		final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		mSmoothScrollAmountAtEdge = (int) (SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
 	}
-
-	/**
-	 * Listens for long clicks on any items in the listview. When a cell has
-	 * been selected, the hover cell is created and set up.
-	 */
-	private final AdapterView.OnItemLongClickListener mOnItemLongClickListener =
-			new AdapterView.OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(final AdapterView<?> arg0, final View arg1, final int pos, final long id) {
-					final long packedPosition = getExpandableListPosition(pos);
-					final int positionType = ExpandableListView.getPackedPositionType(packedPosition);
-
-					if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-						// Dragging groups while expanded will cause the app to crash, collapsing all before!
-						for (int i = 0; i < getExpandableListAdapter().getGroupCount(); i++) {
-							collapseGroup(i);
-						}
-
-						mTotalOffset = 0;
-
-						final int position = pointToPosition(mDownX, mDownY);
-						final int itemNum = position - getFirstVisiblePosition();
-
-						final View selectedView = getChildAt(itemNum);
-						mMobileItemId = getExpandableListAdapter().getGroupId(position);
-						mHoverCell = getAndAddHoverView(selectedView);
-						selectedView.setVisibility(INVISIBLE);
-
-						mCellIsMobile = true;
-
-						updateNeighborViewsForID(mMobileItemId);
-
-						return true;
-					}
-
-					return false;
-				}
-			};
 
 	/**
 	 * Creates the hover cell with the appropriate bitmap and of appropriate
@@ -167,10 +208,13 @@ public class DynamicExpandableListView extends ExpandableListView {
 		return bitmap;
 	}
 
-	/** Returns a bitmap showing a screenshot of the view passed in. */
+	/**
+	 * Returns a bitmap showing a screenshot of the view passed in.
+	 * @return the bitmap
+	 */
 	private Bitmap getBitmapFromView(final View v) {
 		final Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
-		final Canvas canvas = new Canvas (bitmap);
+		final Canvas canvas = new Canvas(bitmap);
 		v.draw(canvas);
 		return bitmap;
 	}
@@ -188,11 +232,15 @@ public class DynamicExpandableListView extends ExpandableListView {
 		mBelowItemId = adapter.getGroupId(position + 1);
 	}
 
-	/** Retrieves the view in the list corresponding to itemID */
-	public View getViewForID (final long itemID) {
+	/**
+	 * Retrieves the view in the list corresponding to itemID
+	 * @param itemID The item id
+	 * @return the view with the given id
+	 */
+	public View getViewForID(final long itemID) {
 		final int firstVisiblePosition = getFirstVisiblePosition();
 		final ExpandableListAdapter adapter = getExpandableListAdapter();
-		for(int i = 0; i < getChildCount(); i++) {
+		for (int i = 0; i < getChildCount(); i++) {
 			final View v = getChildAt(i);
 			final int position = firstVisiblePosition + i;
 			final long id = adapter.getGroupId(position);
@@ -203,8 +251,12 @@ public class DynamicExpandableListView extends ExpandableListView {
 		return null;
 	}
 
-	/** Retrieves the position in the list corresponding to itemID */
-	public int getPositionForID (final long itemID) {
+	/**
+	 * Retrieves the position in the list corresponding to itemID
+	 * @param itemID The item id
+	 * @return the position of the item with the given id, or -1 if the item wasn't found
+	 */
+	public int getPositionForID(final long itemID) {
 		final View v = getViewForID(itemID);
 		if (v == null) {
 			return -1;
@@ -227,67 +279,80 @@ public class DynamicExpandableListView extends ExpandableListView {
 	}
 
 	@Override
-	public boolean onTouchEvent (final MotionEvent event) {
+	public boolean onTouchEvent(final MotionEvent event) {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-			case MotionEvent.ACTION_DOWN:
-				mDownX = (int) event.getX();
-				mDownY = (int) event.getY();
-				mActivePointerId = event.getPointerId(0);
+		case MotionEvent.ACTION_DOWN:
+			mDownX = (int) event.getX();
+			mDownY = (int) event.getY();
+			mActivePointerId = event.getPointerId(0);
+			break;
+
+		case MotionEvent.ACTION_MOVE:
+			if (mActivePointerId == INVALID_POINTER_ID) {
 				break;
-			case MotionEvent.ACTION_MOVE:
+			}
 
-				if (mActivePointerId == INVALID_POINTER_ID) {
-					break;
-				}
+			final int pointerIndex = event.findPointerIndex(mActivePointerId);
 
-				int pointerIndex = event.findPointerIndex(mActivePointerId);
+			mLastEventY = (int) event.getY(pointerIndex);
+			final int deltaY = mLastEventY - mDownY;
 
-				mLastEventY = (int) event.getY(pointerIndex);
-				final int deltaY = mLastEventY - mDownY;
+			if (mCellIsMobile) {
+				mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left,
+						mHoverCellOriginalBounds.top + deltaY + mTotalOffset);
+				mHoverCell.setBounds(mHoverCellCurrentBounds);
+				invalidate();
 
-				if (mCellIsMobile) {
-					mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left,
-							mHoverCellOriginalBounds.top + deltaY + mTotalOffset);
-					mHoverCell.setBounds(mHoverCellCurrentBounds);
-					invalidate();
+				handleCellSwitch();
 
-					handleCellSwitch();
+				mIsMobileScrolling = false;
+				handleMobileCellScroll();
 
-					mIsMobileScrolling = false;
-					handleMobileCellScroll();
+				return false;
+			}
+			break;
 
-					return false;
-				}
-				break;
-			case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_UP:
+			handleActionUp();
+			break;
 
-				if (onSwapRowListener != null && swapOcurred) {
-					onSwapRowListener.onSwapPositions(itemPosition, targetItemPosition, swapDirection, mAboveItemId, mBelowItemId);
-				}
+		case MotionEvent.ACTION_CANCEL:
+			touchEventsCancelled();
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			handlePointerUp(event);
+			break;
 
-				touchEventsEnded();
-				break;
-			case MotionEvent.ACTION_CANCEL:
-				touchEventsCancelled();
-				break;
-			case MotionEvent.ACTION_POINTER_UP:
-				/* If a multitouch event took place and the original touch dictating
-				 * the movement of the hover cell has ended, then the dragging event
-				 * ends and the hover cell is animated to its corresponding position
-				 * in the listview. */
-				pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
-						MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-				final int pointerId = event.getPointerId(pointerIndex);
-				if (pointerId == mActivePointerId) {
-					touchEventsEnded();
-				}
-				break;
-			default:
-				break;
+		default:
+			break;
 		}
 
 		return super.onTouchEvent(event);
+	}
+
+	private void handlePointerUp(final MotionEvent event) {
+		/*
+		 * If a multitouch event took place and the original touch dictating
+		 * the movement of the hover cell has ended, then the dragging event
+		 * ends and the hover cell is animated to its corresponding position
+		 * in the listview.
+		 */
+		final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK)
+				>> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+		final int pointerId = event.getPointerId(pointerIndex);
+		if (pointerId == mActivePointerId) {
+			touchEventsEnded();
+		}
+	}
+
+	private void handleActionUp() {
+		if (onSwapRowListener != null && swapOcurred) {
+			onSwapRowListener.onSwapPositions(
+				itemPosition, targetItemPosition, swapDirection, mAboveItemId, mBelowItemId);
+		}
+
+		touchEventsEnded();
 	}
 
 	/**
@@ -299,6 +364,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	 * offset the cell being swapped to where it previously was and then animate it to
 	 * its new position.
 	 */
+	@SuppressWarnings("checkstyle:anoninnerlength")
 	private void handleCellSwitch() {
 		final int deltaY = mLastEventY - mDownY;
 		final int deltaYTotal = mHoverCellOriginalBounds.top + mTotalOffset + deltaY;
@@ -353,11 +419,9 @@ public class DynamicExpandableListView extends ExpandableListView {
 
 					final ObjectAnimator animator;
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-						animator = ObjectAnimator.ofFloat(switchView,
-								View.TRANSLATION_Y, 0);
+						animator = ObjectAnimator.ofFloat(switchView, View.TRANSLATION_Y, 0);
 					} else {
-						animator = ObjectAnimator.ofFloat(switchView,
-								"translationY", 0);
+						animator = ObjectAnimator.ofFloat(switchView, "translationY", 0);
 					}
 
 					animator.setDuration(MOVE_DURATION);
@@ -387,7 +451,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	 * Resets all the appropriate fields to a default state while also animating
 	 * the hover cell back to its correct location.
 	 */
-	private void touchEventsEnded () {
+	private void touchEventsEnded() {
 		final View mobileView = getViewForID(mMobileItemId);
 		if (mCellIsMobile || mIsWaitingForScrollFinish) {
 			mCellIsMobile = false;
@@ -406,7 +470,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 			mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mobileView.getTop());
 
 			final ObjectAnimator hoverViewAnimator = ObjectAnimator.ofObject(mHoverCell, "bounds",
-					sBoundEvaluator, mHoverCellCurrentBounds);
+					S_BOUND_EVALUATOR, mHoverCellCurrentBounds);
 			hoverViewAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 				@Override
 				public void onAnimationUpdate(final ValueAnimator valueAnimator) {
@@ -439,7 +503,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	/**
 	 * Resets all the appropriate fields to a default state.
 	 */
-	private void touchEventsCancelled () {
+	private void touchEventsCancelled() {
 		final View mobileView = getViewForID(mMobileItemId);
 		if (mCellIsMobile) {
 			mAboveItemId = INVALID_ID;
@@ -461,25 +525,6 @@ public class DynamicExpandableListView extends ExpandableListView {
 	}
 
 	/**
-	 * This TypeEvaluator is used to animate the BitmapDrawable back to its
-	 * final location when the user lifts his finger by modifying the
-	 * BitmapDrawable's bounds.
-	 */
-	private final static TypeEvaluator<Rect> sBoundEvaluator = new TypeEvaluator<Rect>() {
-		@Override
-		public Rect evaluate(final float fraction, final Rect startValue, final Rect endValue) {
-			return new Rect(interpolate(startValue.left, endValue.left, fraction),
-					interpolate(startValue.top, endValue.top, fraction),
-					interpolate(startValue.right, endValue.right, fraction),
-					interpolate(startValue.bottom, endValue.bottom, fraction));
-		}
-
-		public int interpolate(final int start, final int end, final float fraction) {
-			return (int) (start + fraction * (end - start));
-		}
-	};
-
-	/**
 	 *  Determines whether this listview is in a scrolling state invoked
 	 *  by the fact that the hover cell is out of the bounds of the listview;
 	 */
@@ -491,6 +536,9 @@ public class DynamicExpandableListView extends ExpandableListView {
 	 * This method is in charge of determining if the hover cell is above
 	 * or below the bounds of the listview. If so, the listview does an appropriate
 	 * upward or downward smooth scroll so as to reveal new items.
+	 * @param r The area to be used in the analysis
+	 *
+	 * @return True if the event was handled.
 	 */
 	public boolean handleMobileCellScroll(final Rect r) {
 		final int offset = computeVerticalScrollOffset();
@@ -514,13 +562,33 @@ public class DynamicExpandableListView extends ExpandableListView {
 	}
 
 	/**
+	 * Set the listener for swap events
+	 * @param onSwapRowListener The listener
+	 */
+	public void setOnSwapRowListener(final OnSwapRowListener onSwapRowListener) {
+		this.onSwapRowListener = onSwapRowListener;
+	}
+
+	public static interface Swappable {
+
+		/**
+		 * Swaps the item on the first adapter position with the item on the second adapter position.
+		 * Be sure to call {@link android.widget.BaseAdapter#notifyDataSetChanged()} if appropriate.
+		 *
+		 * @param positionOne First adapter position.
+		 * @param positionTwo Second adapter position.
+		 */
+		public void swapItems(int positionOne, int positionTwo);
+	}
+
+	/**
 	 * This scroll listener is added to the listview in order to handle cell swapping
 	 * when the cell is either at the top or bottom edge of the listview. If the hover
 	 * cell is at either edge of the listview, the listview will begin scrolling. As
 	 * scrolling takes place, the listview continuously checks if new cells became visible
 	 * and determines whether they are potential candidates for a cell swap.
 	 */
-	private final AbsListView.OnScrollListener mScrollListener = new AbsListView.OnScrollListener () {
+	private class DynamicExpandableListViewScrollListener implements AbsListView.OnScrollListener {
 
 		private int mPreviousFirstVisibleItem = -1;
 		private int mPreviousVisibleItemCount = -1;
@@ -530,7 +598,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 
 		@Override
 		public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
-							 final int totalItemCount) {
+				final int totalItemCount) {
 			mCurrentFirstVisibleItem = firstVisibleItem;
 			mCurrentVisibleItemCount = visibleItemCount;
 
@@ -598,21 +666,5 @@ public class DynamicExpandableListView extends ExpandableListView {
 				}
 			}
 		}
-	};
-
-	public void setOnSwapRowListener(final OnSwapRowListener onSwapRowListener) {
-		this.onSwapRowListener = onSwapRowListener;
-	}
-
-	public static interface Swappable {
-
-		/**
-		 * Swaps the item on the first adapter position with the item on the second adapter position.
-		 * Be sure to call {@link android.widget.BaseAdapter#notifyDataSetChanged()} if appropriate.
-		 *
-		 * @param positionOne First adapter position.
-		 * @param positionTwo Second adapter position.
-		 */
-		public void swapItems(int positionOne, int positionTwo);
 	}
 }

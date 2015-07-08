@@ -5,6 +5,7 @@ import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTitleStrip;
@@ -80,77 +81,84 @@ public class ProjectActivity extends BaseActivity {
 		pagerTitleStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 
 		projectService.getProjectData(
-				backlog.getId(),
-				new Listener<Project>() {
+			backlog.getId(),
+			new Listener<Project>() {
 
-					@Override
-					public void onResponse(final Project project) {
-						ProjectActivity.this.project = project;
+				@Override
+				public void onResponse(final Project project) {
+					ProjectActivity.this.project = project;
 
-						final List<Fragment> fragments = new LinkedList<Fragment>();
-						fragments.add(ProjectLeafStoriesFragment.newInstance(project));
-						pagerAdapter = new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
-						viewPager.setAdapter(pagerAdapter);
+					final List<Fragment> fragments = new LinkedList<>();
+					fragments.add(ProjectLeafStoriesFragment.newInstance(project));
+					pagerAdapter =
+							new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
+					viewPager.setAdapter(pagerAdapter);
 
-						viewFlipper.setDisplayedChild(ACTIVITY_VIEW);
+					viewFlipper.setDisplayedChild(ACTIVITY_VIEW);
 
-						final Backlog projectParent = project.getParent();
-						productLabel.setText(projectParent.getName());
-						projectLabel.setText(backlog.getName());
-						startLabel.setText(
-								DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
-						endLabel.setText(
-								DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
-						assigneesLabel.setText(
-								IterationUtils.getResposiblesDisplay(project.getAssignees()));
-					}
-				},
-				new ErrorListener() {
+					final Backlog projectParent = project.getParent();
+					productLabel.setText(projectParent.getName());
+					projectLabel.setText(backlog.getName());
+					startLabel.setText(
+							DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
+					endLabel.setText(
+							DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
+					assigneesLabel.setText(
+							IterationUtils.getResposiblesDisplay(project.getAssignees()));
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(ProjectActivity.this, R.string.failed_to_retrieve_project_details, Toast.LENGTH_SHORT).show();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					Toast.makeText(
+						ProjectActivity.this, R.string.failed_to_retrieve_project_details, Toast.LENGTH_SHORT).show();
+				}
+			});
 
-		assigneesLabel.setOnClickListener(new OnClickListener() {
+		assigneesLabel.setOnClickListener(getClickListener());
+	}
+
+	// Not much of an improvement on extract the listeners so we better suppress the warning
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private OnClickListener getClickListener() {
+		return new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
 				final Fragment fragment = UserChooserFragment.newInstance(
-						project.getAssignees(),
-						new OnUsersSubmittedListener() {
+					project.getAssignees(),
+					new OnUsersSubmittedListener() {
 
-							@Override
-							public void onSubmitUsers(final List<User> users) {
-								project.setAssignees(users);
-								assigneesLabel.setText(
-										IterationUtils.getResposiblesDisplay(users));
+						@Override
+						public void onSubmitUsers(final List<User> users) {
+							project.setAssignees(users);
+							assigneesLabel.setText(IterationUtils.getResposiblesDisplay(users));
 
-								projectService.updateProject(
-										project,
-										new Listener<Project>() {
-
-											@Override
-											public void onResponse(final Project project) {
-												Toast.makeText(ProjectActivity.this, R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
-											}
-										},
-										new ErrorListener() {
-
-											@Override
-											public void onErrorResponse(final VolleyError arg0) {
-												Toast.makeText(ProjectActivity.this, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
-											}
-										});
-							}
-						});
+							projectService.updateProject(
+								project,
+								new Listener<Project>() {
+									@Override
+									public void onResponse(final Project project) {
+										Toast.makeText(ProjectActivity.this,
+											R.string.feedback_success_updated_project, Toast.LENGTH_SHORT).show();
+									}
+								},
+								new ErrorListener() {
+									@Override
+									public void onErrorResponse(final VolleyError arg0) {
+										Toast.makeText(ProjectActivity.this,
+											R.string.feedback_failed_update_project, Toast.LENGTH_SHORT).show();
+									}
+								});
+						}
+					});
 
 				getSupportFragmentManager().beginTransaction()
 					.add(android.R.id.content, fragment)
 					.addToBackStack(null)
 					.commit();
 			}
-		});
+		};
 	}
 }

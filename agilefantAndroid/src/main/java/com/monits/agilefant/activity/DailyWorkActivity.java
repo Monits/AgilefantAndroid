@@ -65,37 +65,39 @@ public class DailyWorkActivity extends BaseActivity {
 		progressDialog.show();
 
 		dailyWorkService.getDailyWork(
-				new Listener<DailyWork>() {
+			new Listener<DailyWork>() {
 
-					@Override
-					public void onResponse(final DailyWork response) {
-						viewPager.setCurrentItem(0);
-						viewPager.setVisibility(View.VISIBLE);
+				@Override
+				public void onResponse(final DailyWork response) {
+					viewPager.setCurrentItem(0);
+					viewPager.setVisibility(View.VISIBLE);
 
-						final List<Fragment> fragments = new ArrayList<Fragment>();
-						fragments.add(MyQueueWorkFragment.newInstance(response.getQueuedTasks()));
-						fragments.add(MyStoriesFragment.newInstance(response.getStories()));
-						fragments.add(MyTasksFragment.newInstance(response.getTaskWithoutStories()));
+					final List<Fragment> fragments = new ArrayList<Fragment>();
+					fragments.add(MyQueueWorkFragment.newInstance(response.getQueuedTasks()));
+					fragments.add(MyStoriesFragment.newInstance(response.getStories()));
+					fragments.add(MyTasksFragment.newInstance(response.getTaskWithoutStories()));
 
-						viewPager.setAdapter(
-								new DailyWorkPagerAdapter(DailyWorkActivity.this, getSupportFragmentManager(), fragments));
+					viewPager.setAdapter(
+							new DailyWorkPagerAdapter(DailyWorkActivity.this, getSupportFragmentManager(), fragments));
 
-						if (progressDialog != null && progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
 					}
-				},
-				new ErrorListener() {
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						if (progressDialog != null && progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						Toast.makeText(DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work, Toast.LENGTH_SHORT).show();
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					if (progressDialog != null && progressDialog.isShowing()) {
+						progressDialog.dismiss();
 					}
-				});
+
+					Toast.makeText(
+						DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work, Toast.LENGTH_SHORT)
+							.show();
+				}
+			});
 	}
 
 }

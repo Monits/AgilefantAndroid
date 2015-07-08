@@ -17,9 +17,16 @@ public class Backlog implements Serializable {
 	@SerializedName("name")
 	private String name;
 
+	/**
+	 * Default constructor.
+	 */
 	public Backlog() {
 	}
 
+	/**
+	 * Constructor.
+	 * @param project To be used to get the project data
+	 */
 	public Backlog(final Project project) {
 		this.id = project.getId();
 		this.name = project.getTitle();

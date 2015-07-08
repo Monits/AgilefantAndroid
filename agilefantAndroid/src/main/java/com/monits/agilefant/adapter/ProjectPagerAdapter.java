@@ -15,7 +15,14 @@ public class ProjectPagerAdapter extends FragmentStatePagerAdapter {
 	private final List<Fragment> fragments;
 	private final Context context;
 
-	public ProjectPagerAdapter(final Context context, final FragmentManager fragmentManager, final List<Fragment> fragments) {
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param fragmentManager The fragment manager
+	 * @param fragments The fragments
+	 */
+	public ProjectPagerAdapter(final Context context, final FragmentManager fragmentManager,
+			final List<Fragment> fragments) {
 		super(fragmentManager);
 		this.context  = context;
 		this.fragments = fragments;

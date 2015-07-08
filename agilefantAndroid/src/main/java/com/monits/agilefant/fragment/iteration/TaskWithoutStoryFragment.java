@@ -46,6 +46,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 	private TaskWithoutStoryAdapter taskWithoutStoryAdapter;
 	private Iteration iteration;
 
+	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -54,8 +55,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
 					&& !TaskWithoutStoryFragment.this.isDetached()) {
 
-				final Task updatedTask =
-						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
+				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
 
 				final int indexOf = taskWithoutStory.indexOf(updatedTask);
 				if (indexOf != -1) {
@@ -65,7 +65,8 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 			}
 
 			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY)) {
-				final Task newTaskWithoutStory = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
+				final Task newTaskWithoutStory =
+						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
 
 				taskWithoutStory.add(newTaskWithoutStory);
 				taskWithoutStoryAdapter.setItems(taskWithoutStory);
@@ -74,7 +75,14 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		}
 	};
 
-	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory, final Iteration iteration) {
+	/**
+	 * Return a new TaskWithoutStoryFragment with the given tasks without story and iteration
+	 * @param taskWithoutStory The tasks
+	 * @param iteration The iteration
+	 * @return a new TaskWithoutStoryFragment with the given tasks without story and iteration
+	 */
+	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory,
+			final Iteration iteration) {
 		final Bundle bundle = new Bundle();
 		bundle.putSerializable(EXTRA_TASKS, taskWithoutStory);
 		bundle.putSerializable(EXTRA_ITERATION, iteration);
@@ -96,10 +104,11 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
-		this.taskWithoutStory= (List<Task>) arguments.getSerializable(EXTRA_TASKS);
+		this.taskWithoutStory = (List<Task>) arguments.getSerializable(EXTRA_TASKS);
 		this.iteration = (Iteration) arguments.getSerializable(EXTRA_ITERATION);
 	}
 
+	@SuppressWarnings("checkstyle:anoninnerlength")
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
@@ -110,7 +119,8 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		taskWithoutStoryListView.setItems(taskWithoutStory);
 
 		taskWithoutStoryAdapter = new TaskWithoutStoryAdapter(getActivity(), taskWithoutStory);
-		taskWithoutStoryAdapter.setOnActionListener(new TaskAdapterViewActionListener(getActivity(), TaskWithoutStoryFragment.this));
+		taskWithoutStoryAdapter.setOnActionListener(
+				new TaskAdapterViewActionListener(getActivity(), TaskWithoutStoryFragment.this));
 		taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
 		taskWithoutStoryListView.setOnSwapRowListener(new OnSwapRowListener() {
 
@@ -119,36 +129,33 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 					final SwapDirection direction, final long aboveItemId, final long belowItemId) {
 
 				final Task task = taskWithoutStory.get(itemPosition);
-				final Task targetTask =
-						aboveItemId != -1 ?
-								taskWithoutStory.get(taskWithoutStoryListView.getPositionForID(aboveItemId))
-								: null;
+				final Task targetTask = aboveItemId != -1
+						? taskWithoutStory.get(taskWithoutStoryListView.getPositionForID(aboveItemId)) : null;
 
 				task.setIteration(iteration);
 
-				metricsService.rankTaskUnder(
-						task,
-						targetTask,
-						taskWithoutStory,
-						new Listener<Task>() {
+				metricsService.rankTaskUnder(task, targetTask, taskWithoutStory,
+					new Listener<Task>() {
 
-							@Override
-							public void onResponse(final Task arg0) {
-								Toast.makeText(getActivity(), R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
+						@Override
+						public void onResponse(final Task arg0) {
+							Toast.makeText(
+								getActivity(), R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
+						}
+					},
+					new ErrorListener() {
+
+						@Override
+						public void onErrorResponse(final VolleyError arg0) {
+							Toast.makeText(
+								getActivity(), R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
+
+							// Re-Sorting is made on service layer, notifying the adapter.
+							if (isVisible()) {
+								taskWithoutStoryAdapter.sortAndNotify();
 							}
-						},
-						new ErrorListener() {
-
-							@Override
-							public void onErrorResponse(final VolleyError arg0) {
-								Toast.makeText(getActivity(), R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
-
-								// Re-Sorting is made on service layer, notifying the adapter.
-								if (isVisible()) {
-									taskWithoutStoryAdapter.sortAndNotify();
-								}
-							}
-						});
+						}
+					});
 			}
 		});
 

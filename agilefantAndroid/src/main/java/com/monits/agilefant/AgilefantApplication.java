@@ -14,8 +14,10 @@ public class AgilefantApplication extends Application {
 	public static final String EXTRA_TASK_UPDATED = "com.monits.agilefant.intent.extra.UPDATED_TASK";
 	public static final String EXTRA_NEW_STORY = "com.monits.agilefant.intent.extra.NEW_STORY";
 	public static final String ACTION_NEW_STORY = "com.monits.agilefant.intent.action.NEW_STORY";
-	public static final String ACTION_NEW_TASK_WITHOUT_STORY = "com.monits.agilefant.intent.action.NEW_TASK_WITHOUT_STORY";
-	public static final String EXTRA_NEW_TASK_WITHOUT_STORY = "com.monits.agilefant.intent.extra.NEW_TASK_WITHOUT_STORY";
+	public static final String ACTION_NEW_TASK_WITHOUT_STORY =
+			"com.monits.agilefant.intent.action.NEW_TASK_WITHOUT_STORY";
+	public static final String EXTRA_NEW_TASK_WITHOUT_STORY =
+			"com.monits.agilefant.intent.extra.NEW_TASK_WITHOUT_STORY";
 
 	@Inject
 	private BitmapLruCache bitmapCache;

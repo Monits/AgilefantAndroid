@@ -9,10 +9,12 @@ public class State {
 	private int textColorId;
 
 	/**
-	 * @param name
-	 * @param resourceId
+	 * Constructor
+	 * @param name The name
+	 * @param resourceId The resource id
+	 * @param textColorId The text color id.
 	 */
-	public State(String name, int resourceId, int textColorId) {
+	public State(final String name, final int resourceId, final int textColorId) {
 		this.name = name;
 		this.backgroundId = resourceId;
 		this.textColorId = textColorId;
@@ -28,7 +30,7 @@ public class State {
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -42,7 +44,7 @@ public class State {
 	/**
 	 * @param backgroundId the backgroundId to set
 	 */
-	public void setBackgroundId(int backgroundId) {
+	public void setBackgroundId(final int backgroundId) {
 		this.backgroundId = backgroundId;
 	}
 
@@ -56,7 +58,7 @@ public class State {
 	/**
 	 * @param textColorId the textColorId to set
 	 */
-	public void setTextColorId(int textColorId) {
+	public void setTextColorId(final int textColorId) {
 		this.textColorId = textColorId;
 	}
 }

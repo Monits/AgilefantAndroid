@@ -29,9 +29,9 @@ public class Metrics implements Serializable {
 	/**
 	 * Constructor using fields
 	 *
-	 * @param effortLeft
-	 * @param effortSpent
-	 * @param originalEstimate
+	 * @param effortLeft The effort left
+	 * @param effortSpent The effort spent
+	 * @param originalEstimate The original estimate
 	 */
 	public Metrics(final long effortLeft, final long effortSpent, final long originalEstimate) {
 		super();

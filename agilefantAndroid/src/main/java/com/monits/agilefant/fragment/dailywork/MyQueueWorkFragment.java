@@ -25,6 +25,11 @@ public class MyQueueWorkFragment extends RoboFragment implements Observer {
 
 	private List<Task> mTasks;
 
+	/**
+	 * Return a new MyQueueWorkFragment with the given queued tasks
+	 * @param queuedTasks The queued tasks
+	 * @return a new MyQueueWorkFragment with the given queued tasks
+	 */
 	public static MyQueueWorkFragment newInstance(final List<Task> queuedTasks) {
 		final MyQueueWorkFragment queueWorkFragment = new MyQueueWorkFragment();
 		final Bundle arguments = new Bundle();
@@ -47,7 +52,8 @@ public class MyQueueWorkFragment extends RoboFragment implements Observer {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_my_queued_work, container, false);
 	}
 

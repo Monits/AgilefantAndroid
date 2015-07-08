@@ -33,10 +33,18 @@ public class PromptDialogFragment extends DialogFragment {
 	private EditText mDialogInput;
 	private PromptDialogListener mDialogListener;
 
-	public static PromptDialogFragment newInstance(int title, String defValue, int inputType) {
-		PromptDialogFragment dialogFragment = new PromptDialogFragment();
+	/**
+	 * Returns a new PromptDialogFragment with the given arguments
+	 * @param title The title
+	 * @param defValue The default value
+	 * @param inputType The input type
+	 *
+	 * @return a new PromptDialogFragment with the given arguments
+	 */
+	public static PromptDialogFragment newInstance(final int title, final String defValue, final int inputType) {
+		final PromptDialogFragment dialogFragment = new PromptDialogFragment();
 
-		Bundle arguments = new Bundle();
+		final Bundle arguments = new Bundle();
 		arguments.putInt(TITLE_KEY, title);
 		arguments.putString(DEF_VALUE_KEY, defValue);
 		arguments.putInt(INPUT_TYPE_KEY, inputType);
@@ -47,31 +55,31 @@ public class PromptDialogFragment extends DialogFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Bundle arguments = getArguments();
+		final Bundle arguments = getArguments();
 		mTitle = arguments.getInt(TITLE_KEY);
 		mDefaultValue = arguments.getString(DEF_VALUE_KEY);
 		mInputType = arguments.getInt(INPUT_TYPE_KEY, InputType.TYPE_CLASS_TEXT);
 	}
 
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		View view = View.inflate(getActivity(), R.layout.dialog_prompt, null);
+	public Dialog onCreateDialog(final Bundle savedInstanceState) {
+		final View view = View.inflate(getActivity(), R.layout.dialog_prompt, null);
 
 		mDialogInput = (EditText) view.findViewById(R.id.dialog_prompt_input);
 		mDialogInput.setInputType(mInputType);
 		mDialogInput.setText(mDefaultValue);
 
-		AlertDialog.Builder builder = new Builder(getActivity());
+		final AlertDialog.Builder builder = new Builder(getActivity());
 		builder.setTitle(mTitle);
 		builder.setView(view);
 
 		builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(final DialogInterface dialog, final int which) {
 				if (mDialogListener != null) {
 					mDialogListener.onAccept(mDialogInput.getText().toString());
 				}
@@ -81,7 +89,7 @@ public class PromptDialogFragment extends DialogFragment {
 		builder.setNegativeButton(android.R.string.cancel, new OnClickListener() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(final DialogInterface dialog, final int which) {
 				// Just dismiss
 			}
 		});
@@ -94,7 +102,7 @@ public class PromptDialogFragment extends DialogFragment {
 	 * 
 	 * @param listener the listener.
 	 */
-	public void setPromptDialogListener(PromptDialogListener listener) {
+	public void setPromptDialogListener(final PromptDialogListener listener) {
 		mDialogListener = listener;
 	}
 

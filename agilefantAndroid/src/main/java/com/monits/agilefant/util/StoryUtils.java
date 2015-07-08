@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.monits.agilefant.model.Story;
 
-public class StoryUtils {
+public final class StoryUtils {
+
+	private StoryUtils() {
+		throw new AssertionError("Utility classes should not been instantiated");
+	}
 
 	/**
 	 * Searches the story in the given list that matches the given id.
@@ -14,8 +18,8 @@ public class StoryUtils {
 	 * 
 	 * @return the story, null otherwise.
 	 */
-	public static Story findStoryById(List<Story> stories, long id) {
-		for (Story story : stories) {
+	public static Story findStoryById(final List<Story> stories, final long id) {
+		for (final Story story : stories) {
 			if (story.getId() == id) {
 				return story;
 			}

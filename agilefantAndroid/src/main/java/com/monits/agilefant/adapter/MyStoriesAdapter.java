@@ -25,8 +25,11 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 	private final OnClickListener onClickGroupListener;
 	private AdapterViewActionListener<Story> groupActionListener;
 
-
-
+	/**
+	 * Constructor
+	 * @param context The context
+	 * @param stories The stories
+	 */
 	public MyStoriesAdapter(final Context context, final List<Story> stories) {
 		super(context);
 
@@ -68,6 +71,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		};
 	}
 
+	@SuppressWarnings("checkstyle:finalparameters")
 	@Override
 	public View getChildView(final int groupPosition, final int childPosition,
 			final boolean isLastChild, View convertView, final ViewGroup parent) {
@@ -102,6 +106,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		return convertView;
 	}
 
+	@SuppressWarnings("checkstyle:finalparameters")
 	@Override
 	public View getGroupView(final int groupPosition, final boolean isExpanded,
 			View convertView, final ViewGroup parent) {

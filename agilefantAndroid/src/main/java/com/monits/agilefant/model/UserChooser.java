@@ -12,11 +12,21 @@ public class UserChooser {
 
 	private String name;
 
+	/**
+	 * Default constructor.
+	 */
 	public UserChooser() {
 	}
 
-	public UserChooser(final long id, final boolean enabled,
-			final String matchedString, final String name) {
+
+	/**
+	 * Constructor
+	 * @param id The id.
+	 * @param enabled True if it's enabled.
+	 * @param matchedString The string that matched the user.
+	 * @param name The name
+	 */
+	public UserChooser(final long id, final boolean enabled, final String matchedString, final String name) {
 		this.id = id;
 		this.enabled = enabled;
 		this.matchedString = matchedString;

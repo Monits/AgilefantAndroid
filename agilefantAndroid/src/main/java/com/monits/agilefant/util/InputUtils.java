@@ -1,16 +1,19 @@
 package com.monits.agilefant.util;
 
-public class InputUtils {
+public final class InputUtils {
 
+	private InputUtils() {
+		throw new AssertionError("Utility classes should not been instantiated");
+	}
 	/**
 	 * Parses given string into double.
 	 * 
-	 * @param string
-	 * @return the double.
+	 * @param string The string to be parsed
+	 * @return the parsed double.
 	 */
-	public static double parseStringToDouble(String string) {
+	public static double parseStringToDouble(final String string) {
 		double el = 0;
-		if (!string.trim().equals("")) {
+		if (!"".equals(string.trim())) {
 			el = Double.valueOf(string.trim());
 		}
 

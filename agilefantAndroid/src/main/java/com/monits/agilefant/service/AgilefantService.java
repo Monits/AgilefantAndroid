@@ -19,14 +19,14 @@ public interface AgilefantService {
 
 	/**
 	 * Sets the domain you are working
-	 * @param domain
+	 * @param domain The domain
 	 */
 	void setDomain(String domain);
 
 	/**
 	 * Login in Agilefant with domain entered
-	 * @param userName
-	 * @param password
+	 * @param userName The username
+	 * @param password the password
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
@@ -51,7 +51,7 @@ public interface AgilefantService {
 	/**
 	 * Request the API to retrieve the iteration with the given ID
 	 *
-	 * @param Iteration id
+	 * @param id The iteration id
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
@@ -73,7 +73,8 @@ public interface AgilefantService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void taskChangeSpentEffort(long date, long minutesSpent, String description, long taskId, long userId, Listener<String> listener, ErrorListener error);
+	void taskChangeSpentEffort(long date, long minutesSpent, String description, long taskId, long userId,
+		Listener<String> listener, ErrorListener error);
 
 	/**
 	 * Retrieves the user with the given id.
@@ -115,7 +116,7 @@ public interface AgilefantService {
 	/**
 	 * Retrieves the leaf stories of the given project.
 	 *
-	 * @param projectId
+	 * @param projectId The project id
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
@@ -150,7 +151,8 @@ public interface AgilefantService {
 	/**
 	 * Updates the Story Iteration.
 	 *
-	 * @param Story the Story to update.
+	 * @param backlogId the backlog id
+	 * @param story the Story to update.
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
@@ -224,8 +226,7 @@ public interface AgilefantService {
 	 * @param listener  callback if the request was successful.
 	 * @param errorListener  callback if the request failed.
 	 */
-	void createTask(BacklogElementParameters parameters,
-			Listener<Task> listener, ErrorListener errorListener);
+	void createTask(BacklogElementParameters parameters, Listener<Task> listener, ErrorListener errorListener);
 
 	/**
 	 * Retrieves the list of the ongoing filterable iterations.
@@ -233,6 +234,5 @@ public interface AgilefantService {
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
-	void getCurrentFilterableIterations(
-			Listener<List<FilterableIteration>> listener, ErrorListener error);
+	void getCurrentFilterableIterations(Listener<List<FilterableIteration>> listener, ErrorListener error);
 }

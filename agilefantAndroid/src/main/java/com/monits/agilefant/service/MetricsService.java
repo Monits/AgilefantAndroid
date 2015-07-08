@@ -23,7 +23,10 @@ public interface MetricsService {
 	/**
 	 * Change spent Effort of task.
 	 *
-	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 * <blockquote>
+	 *     <b>NOTE:</b> This method will automatically update the current task as if the request was successfull.
+	 *     In case request fails, this changes will be rollbacked.
+	 * </blockquote>
 	 *
 	 * @param date Date
 	 * @param minutesSpent Minutes to enter
@@ -33,12 +36,16 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void taskChangeSpentEffort(Date date, long minutesSpent, String description, Task task, long userId, Listener<String> listener, ErrorListener error);
+	void taskChangeSpentEffort(Date date, long minutesSpent, String description, Task task, long userId,
+		Listener<String> listener, ErrorListener error);
 
 	/**
 	 * Change state of task
 	 *
-	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 * <blockquote>
+	 *     <b>NOTE:</b> This method will automatically update the current task as if the request was successfull.
+	 *     In case request fails, this changes will be rollbacked.
+	 * </blockquote>
 	 *
 	 * @param state State to enter
 	 * @param task the task to be modified.
@@ -50,7 +57,10 @@ public interface MetricsService {
 	/**
 	 * Change effort Left of task
 	 *
-	 * <blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 * <blockquote>
+	 *     <b>NOTE:</b> This method will automatically update the current task as if the request was successfull.
+	 *     In case request fails, this changes will be rollbacked.
+	 * </blockquote>
 	 *
 	 * @param effortLeft Hour to enter
 	 * @param task the task to be modified.
@@ -62,7 +72,10 @@ public interface MetricsService {
 	/**
 	 * Changes the story state.
 	 *
-	 *<blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *<blockquote>
+	 *      <b>NOTE:</b> This method will automatically update the current story as if the request was successfull.
+	 *      In case request fails, this changes will be rollbacked.
+	 *</blockquote>
 	 *
 	 * @param state State to set
 	 * @param story the story to be modified.
@@ -70,15 +83,18 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	void changeStoryState(StateKey state, Story story, boolean tasksToDone, Listener<Story> listener, ErrorListener error);
+	void changeStoryState(StateKey state, Story story, boolean tasksToDone, Listener<Story> listener,
+		ErrorListener error);
 
 	/**
 	 * Changes the story's responsibles.
 	 *
-	 *<blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *<blockquote>
+	 *      <b>NOTE:</b> This method will automatically update the current story as if the request was successfull.
+	 *      In case request fails, this changes will be rollbacked.
+	 *</blockquote>
 	 *
 	 * @param responsibles the responsibles to set.
-	 * @param state State to set
 	 * @param story the story to be modified.
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
@@ -88,10 +104,12 @@ public interface MetricsService {
 	/**
 	 * Changes the task's responsibles.
 	 *
-	 *<blockquote> <b>NOTE:</b> This method will automatically update the current task as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 *<blockquote>
+	 *      <b>NOTE:</b> This method will automatically update the current task as if the request was successfull.
+	 *      In case request fails, this changes will be rollbacked.
+	 *</blockquote>
 	 *
 	 * @param responsibles the responsibles to set.
-	 * @param state State to set
 	 * @param task the task to be modified.
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
@@ -101,7 +119,10 @@ public interface MetricsService {
 	/**
 	 * Change story's iteration
 	 *
-	 * <blockquote> <b>NOTE:</b> This method will automatically update the current story as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 * <blockquote>
+	 *     <b>NOTE:</b> This method will automatically update the current story as if the request was successfull.
+	 *     In case request fails, this changes will be rollbacked.
+	 * </blockquote>
 	 *
 	 * @param story the Story to be modified
 	 * @param iteration the Iteration to modify the Story
@@ -113,7 +134,10 @@ public interface MetricsService {
 	/**
 	 * Updates Task's rank under the given target task.
 	 *
-	 * <blockquote> <b>NOTE:</b> This method will automatically update all task's rank as if the request was successfull. In case request fails, this changes will be rollbacked.</blockquote>
+	 * <blockquote>
+	 *     <b>NOTE:</b> This method will automatically update all task's rank as if the request was successfull.
+	 *     In case request fails, this changes will be rollbacked.
+	 * </blockquote>
 	 *
 	 * @param task the task to be updated in rank.
 	 * @param targetTask the task to be ranked under.
@@ -132,7 +156,8 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
-	void rankStoryUnder(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener, ErrorListener error);
+	void rankStoryUnder(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener,
+		ErrorListener error);
 
 	/**
 	 * Updates Story's rank lower than the given target story. Useable when sorting project leaf stories.
@@ -144,7 +169,8 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
-	void rankStoryUnder(Story story, Story targetStory, Long backlogId, List<Story> allStories, Listener<Story> listener, ErrorListener error);
+	void rankStoryUnder(Story story, Story targetStory, Long backlogId, List<Story> allStories,
+		Listener<Story> listener, ErrorListener error);
 
 	/**
 	 * Updates Story's rank higher than the given target story.
@@ -155,7 +181,8 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
-	void rankStoryOver(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener, ErrorListener error);
+	void rankStoryOver(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener,
+		ErrorListener error);
 
 	/**
 	 * Updates Story's rank higher than the given target story. Useable when sorting project leaf stories.
@@ -167,7 +194,8 @@ public interface MetricsService {
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
-	void rankStoryOver(Story story, Story targetStory, Long backlogId, List<Story> allStories, Listener<Story> listener, ErrorListener error);
+	void rankStoryOver(Story story, Story targetStory, Long backlogId, List<Story> allStories, Listener<Story> listener,
+		ErrorListener error);
 
 	/**
 	 * Create Story
@@ -183,7 +211,7 @@ public interface MetricsService {
 	 *
 	 * @param parameters the values to create task without story
 	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
+	 * @param errorListener callback if the request failed
 	 */
 	void createTask(BacklogElementParameters parameters, Listener<Task> listener, ErrorListener errorListener);
 }

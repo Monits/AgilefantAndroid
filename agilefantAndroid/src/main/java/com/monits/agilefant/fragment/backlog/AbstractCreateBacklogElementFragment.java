@@ -54,14 +54,15 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 	private ViewSwitcher viewSwitcher;
 
-	private Button submit_btn;
+	private Button submitBtn;
 
 	private StateKey stateKey;
 
 	protected Long backlogId;
 	protected Long iterationId;
 
-	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForBacklog(final Long backlogId, final T fragment) {
+	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForBacklog(
+			final Long backlogId, final T fragment) {
 		final Bundle args = new Bundle();
 		args.putLong(ARGUMENT_BACKLOG_ID, backlogId);
 		fragment.setArguments(args);
@@ -69,7 +70,8 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		return fragment;
 	}
 
-	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForIteration(final Long iterationId, final T fragment) {
+	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForIteration(
+			final Long iterationId, final T fragment) {
 		final Bundle args = new Bundle();
 		args.putLong(ARGUMENT_ITERATION_ID, iterationId);
 		fragment.setArguments(args);
@@ -107,36 +109,30 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 		title = (TextView) view.findViewById(R.id.title);
 		title.setText(getTitleResourceId());
-
 		storyName = (EditText) view.findViewById(R.id.story_name);
-
 		viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
-
 		stateKey = StateKey.NOT_STARTED;
-
 		mResponsiblesInput = (AutoCompleteUserChooserTextView) view.findViewById(R.id.responsibles);
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(context);
 		mResponsiblesInput.setAdapter(autoCompleteUsersAdapter);
 
 		userService.getFilterableUsers(
-				new Listener<List<UserChooser>>() {
+			new Listener<List<UserChooser>>() {
+				@Override
+				public void onResponse(final List<UserChooser> response) {
+					viewSwitcher.setDisplayedChild(1);
 
-					@Override
-					public void onResponse(final List<UserChooser> response) {
-						viewSwitcher.setDisplayedChild(1);
+					autoCompleteUsersAdapter.setFilterableUsers(response);
+				}
+			},
+			new ErrorListener() {
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					Toast.makeText(getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT).show();
 
-						autoCompleteUsersAdapter.setFilterableUsers(response);
-					}
-				},
-				new ErrorListener() {
-
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT).show();
-
-						getFragmentManager().popBackStackImmediate();
-					}
-				});
+					getFragmentManager().popBackStackImmediate();
+				}
+			});
 
 		mResponsiblesInput.setOnUserChooserActionListener(
 			new AutoCompleteUserChooserTextView.OnUserChooserActionListener() {
@@ -150,17 +146,41 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		usersList = (ListView) view.findViewById(R.id.users_list);
 		selectedUsersAdapter = new SelectedUsersAdapter(getActivity());
 		selectedUsersAdapter.setOnRemoveUserListener(new OnRemoveUserListener() {
-
 			@Override
-			public void OnRemoveUser(final View view, final int position, final User user) {
+			public void onRemoveUser(final View view, final int position, final User user) {
 				mResponsiblesInput.removeUser(user);
 			}
 		});
 
 		usersList.setAdapter(selectedUsersAdapter);
 
-		final DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+		storyState = (TextView) view.findViewById(R.id.state);
+		storyState.setText(IterationUtils.getStateName(StateKey.NOT_STARTED));
+		storyState.setTextColor(
+			context.getResources().getColor(IterationUtils.getStateTextColor(StateKey.NOT_STARTED)));
+		storyState.setBackgroundResource(IterationUtils.getStateBackground(StateKey.NOT_STARTED));
+		storyState.setOnClickListener(getOnStateClickListener(context));
 
+		submitBtn = (Button) view.findViewById(R.id.submit_btn);
+		submitBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				final BacklogElementParameters parameters = new BacklogElementParameters.Builder()
+					.backlogId(backlogId)
+					.iterationId(iterationId)
+					.stateKey(stateKey)
+					.selectedUsers(mResponsiblesInput.getSelectedUsers())
+					.name(storyName.getText().toString())
+					.build();
+
+				onSubmit(parameters);
+			}
+		});
+	}
+
+	private OnClickListener getOnStateClickListener(final Context context) {
+
+		final DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
 				final StateKey state = StateKey.values()[which];
@@ -174,8 +194,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 			}
 		};
 
-		final OnClickListener onStateClickListener = new OnClickListener() {
-
+		return new OnClickListener() {
 			@Override
 			public void onClick(final View v) {
 				final AlertDialog.Builder builder = new Builder(context);
@@ -186,30 +205,6 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 				builder.show();
 			}
 		};
-
-		storyState = (TextView) view.findViewById(R.id.state);
-		storyState.setText(IterationUtils.getStateName(StateKey.NOT_STARTED));
-		storyState.setTextColor(context.getResources().getColor(IterationUtils.getStateTextColor(StateKey.NOT_STARTED)));
-		storyState.setBackgroundResource(IterationUtils.getStateBackground(StateKey.NOT_STARTED));
-		storyState.setOnClickListener(onStateClickListener);
-
-		submit_btn = (Button) view.findViewById(R.id.submit_btn);
-		submit_btn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View v) {
-				final BacklogElementParameters parameters = new BacklogElementParameters.Builder()
-					.backlogId(backlogId)
-					.iterationId(iterationId)
-					.stateKey(stateKey)
-					.selectedUsers(mResponsiblesInput.getSelectedUsers())
-					.name(storyName.getText().toString())
-					.build();
-
-				onSubmit(parameters);
-			}
-
-		});
 	}
 
 	/**

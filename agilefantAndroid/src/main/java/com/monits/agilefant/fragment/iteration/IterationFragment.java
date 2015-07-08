@@ -44,6 +44,11 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 	private TextView iterationNameTree;
 
+	/**
+	 * Creates a new IterationFragment with the given iteration
+	 * @param iteration The iteration
+	 * @return a new IterationFragment with the given iteration
+	 */
 	public static IterationFragment newInstance(final Iteration iteration) {
 		final Bundle arguments = new Bundle();
 		arguments.putSerializable(ITERATION, iteration);
@@ -62,7 +67,8 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+			final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_iteration, null);
 
 		startDate = (TextView) view.findViewById(R.id.iteration_start_date);
@@ -101,12 +107,12 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			endDate.setText(
 					DateUtils.formatDate(mIteration.getEndDate(), DateUtils.DATE_PATTERN));
 
-			final List<Fragment> fragments = new ArrayList<Fragment>();
+			final List<Fragment> fragments = new ArrayList<>();
 
-			final ArrayList<Story> storiesArray = new ArrayList<Story>();
+			final ArrayList<Story> storiesArray = new ArrayList<>();
 			storiesArray.addAll(mIteration.getStories());
 
-			final ArrayList<Task> tasksWithoutStory = new ArrayList<Task>();
+			final ArrayList<Task> tasksWithoutStory = new ArrayList<>();
 			tasksWithoutStory.addAll(mIteration.getTasksWithoutStory());
 
 			fragments.add(StoriesFragment.newInstance(storiesArray, mIteration));
@@ -132,7 +138,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 	@Override
 	public void onPageSelected(final int position) {
-		final ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter)this.viewPager.getAdapter();
+		final ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter) this.viewPager.getAdapter();
 		final Fragment fragment = pagerAdapter.getItem(position);
 
 		if (fragment instanceof StoriesFragment) {

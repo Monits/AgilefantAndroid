@@ -7,9 +7,13 @@ import java.util.Locale;
 
 import android.util.Log;
 
-public class DateUtils {
+public final class DateUtils {
 
 	public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
+
+	private DateUtils() {
+		throw new AssertionError("Utility classes should not been instantiated");
+	}
 
 	/**
 	 * Format Date

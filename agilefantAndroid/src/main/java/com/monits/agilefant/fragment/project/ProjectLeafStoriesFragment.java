@@ -80,6 +80,11 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		}
 	};
 
+	/**
+	 * Create a new ProjectLeafStoriesFragment with the given project
+	 * @param projectBacklog The project
+	 * @return a new ProjectLeafStoriesFragment with the given project
+	 */
 	public static ProjectLeafStoriesFragment newInstance(final Project projectBacklog) {
 		final ProjectLeafStoriesFragment fragment = new ProjectLeafStoriesFragment();
 
@@ -105,23 +110,23 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-	    inflater.inflate(R.menu.menu_project_new_element, menu);
+		inflater.inflate(R.menu.menu_project_new_element, menu);
 
-	    super.onCreateOptionsMenu(menu, inflater);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_new_story:
-				this.getActivity().getSupportFragmentManager().beginTransaction()
+		case R.id.action_new_story:
+			this.getActivity().getSupportFragmentManager().beginTransaction()
 				.replace(android.R.id.content, CreateLeafStoryFragment.newInstance(project.getId()))
 				.addToBackStack(null)
 				.commit();
 
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -129,8 +134,8 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 
-		final View view = LayoutInflater.from(getActivity())
-			.inflate(R.layout.fragment_project_leaf_stories, container, false);
+		final View view =
+				LayoutInflater.from(getActivity()).inflate(R.layout.fragment_project_leaf_stories, container, false);
 
 		setHasOptionsMenu(true);
 
@@ -141,73 +146,9 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		storiesAdapter = new ProjectLeafStoriesAdapter(context);
 
 		final Backlog backlog = new Backlog(project);
-		storiesAdapter.setOnActionListener(new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this, backlog));
-		storiesAdapter.setOnLongActionListener(new AdapterViewOnLongActionListener<Story>() {
-
-			@Override
-			public boolean onLongAction(final View view, final Story object) {
-				object.addObserver(ProjectLeafStoriesFragment.this);
-
-				final List<Iteration> iterations = new LinkedList<Iteration>(project.getIterationList());
-
-				final Iteration falseIteration = new Iteration();
-				falseIteration.setName(project.getTitle());
-				iterations.add(0, falseIteration);
-
-				int currentIterationIndex = iterations.indexOf(object.getIteration());
-				if (currentIterationIndex == -1) {
-					currentIterationIndex = 0;
-				}
-
-				final IterationAdapter iterationAdapter = new IterationAdapter(context, iterations, currentIterationIndex);
-
-				final ListView listView = new ListView(getActivity());
-				listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-				listView.setAdapter(iterationAdapter);
-
-				final AlertDialog.Builder builder = new Builder(context);
-				builder.setTitle(R.string.iteration_);
-				builder.setView(listView);
-				final AlertDialog dialog = builder.create();
-
-				listView.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-						for (int i = 0; i < listView.getCount(); i++) {
-							listView.setItemChecked(i, false);
-						}
-
-						listView.setItemChecked(position, true);
-
-						final Iteration iteration = position == 0 ? null : iterations.get(position);
-						metricsService.moveStory(
-								object,
-								iteration,
-								new Listener<Story>() {
-
-									@Override
-									public void onResponse(final Story response) {
-										Toast.makeText(context, R.string.feedback_ok_to_move_story, Toast.LENGTH_SHORT).show();
-									}
-								},
-								new ErrorListener() {
-									@Override
-									public void onErrorResponse(final VolleyError arg0) {
-										Toast.makeText(context, R.string.feedback_failed_to_move_story, Toast.LENGTH_SHORT).show();
-									}
-								}
-							);
-
-						dialog.dismiss();
-					}
-				});
-
-				dialog.show();
-
-				return true;
-			}
-		});
+		storiesAdapter.setOnActionListener(
+				new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this, backlog));
+		storiesAdapter.setOnLongActionListener(getOnLongActionListener(context));
 
 		storiesListView = (DynamicListView) view.findViewById(R.id.stories_list);
 		storiesEmptyView = view.findViewById(R.id.stories_empty_view);
@@ -218,29 +159,103 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		return view;
 	}
 
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private AdapterViewOnLongActionListener<Story> getOnLongActionListener(final FragmentActivity context) {
+		return new AdapterViewOnLongActionListener<Story>() {
+
+			@Override
+			public boolean onLongAction(final View view, final Story object) {
+				object.addObserver(ProjectLeafStoriesFragment.this);
+
+				final List<Iteration> iterations = new LinkedList<>(project.getIterationList());
+
+				final Iteration falseIteration = new Iteration();
+				falseIteration.setName(project.getTitle());
+				iterations.add(0, falseIteration);
+
+				int currentIterationIndex = iterations.indexOf(object.getIteration());
+				if (currentIterationIndex == -1) {
+					currentIterationIndex = 0;
+				}
+
+				final IterationAdapter iterationAdapter =
+						new IterationAdapter(context, iterations, currentIterationIndex);
+
+				final ListView listView = new ListView(getActivity());
+				listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+				listView.setAdapter(iterationAdapter);
+
+				final Builder builder = new Builder(context);
+				builder.setTitle(R.string.iteration_);
+				builder.setView(listView);
+				final AlertDialog dialog = builder.create();
+
+				listView.setOnItemClickListener(getOnItemClickListener(object, iterations, listView, dialog, context));
+
+				dialog.show();
+
+				return true;
+			}
+		};
+	}
+
+	@SuppressWarnings("checkstyle:anoninnerlength")
+	private OnItemClickListener getOnItemClickListener(final Story object, final List<Iteration> iterations,
+			final ListView listView, final AlertDialog dialog, final FragmentActivity context) {
+		return new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+				for (int i = 0; i < listView.getCount(); i++) {
+					listView.setItemChecked(i, false);
+				}
+
+				listView.setItemChecked(position, true);
+
+				final Iteration iteration = position == 0 ? null : iterations.get(position);
+				metricsService.moveStory(object, iteration,
+					new Listener<Story>() {
+						@Override
+						public void onResponse(final Story response) {
+							Toast.makeText(context, R.string.feedback_ok_to_move_story, Toast.LENGTH_SHORT).show();
+						}
+					},
+					new ErrorListener() {
+						@Override
+						public void onErrorResponse(final VolleyError arg0) {
+							Toast.makeText(context, R.string.feedback_failed_to_move_story, Toast.LENGTH_SHORT).show();
+						}
+					}
+				);
+
+				dialog.dismiss();
+			}
+		};
+	}
+
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		projectService.getProjectLeafStories(
-				project.getId(),
-				new Listener<List<Story>>() {
+			project.getId(),
+			new Listener<List<Story>>() {
 
-					@Override
-					public void onResponse(final List<Story> stories) {
-						ProjectLeafStoriesFragment.this.stories = stories;
-						storiesListView.setItems(stories);
+				@Override
+				public void onResponse(final List<Story> stories) {
+					ProjectLeafStoriesFragment.this.stories = stories;
+					storiesListView.setItems(stories);
 
-						storiesAdapter.setStories(stories);
+					storiesAdapter.setStories(stories);
 
-						viewFlipper.setDisplayedChild(1);
-					}
-				},
-				new ErrorListener() {
+					viewFlipper.setDisplayedChild(1);
+				}
+			},
+			new ErrorListener() {
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(getActivity(), "Failed to retrieve leaf stories.", Toast.LENGTH_SHORT).show();
-					}
-				});
+				@Override
+				public void onErrorResponse(final VolleyError arg0) {
+					Toast.makeText(getActivity(), "Failed to retrieve leaf stories.", Toast.LENGTH_SHORT).show();
+				}
+			});
 
 		super.onViewCreated(view, savedInstanceState);
 	}
@@ -259,16 +274,15 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	private final class OnSwapLeafStoriesListener implements OnSwapRowListener {
 		private final FragmentActivity context;
 
-		 private OnSwapLeafStoriesListener(final FragmentActivity context) {
-			 this.context = context;
-		 }
+		private OnSwapLeafStoriesListener(final FragmentActivity context) {
+			this.context = context;
+		}
 
 		@Override
 		public void onSwapPositions(final int itemPosition, final int targetPosition,
 				final SwapDirection swapDirection, final long aboveItemId, final long belowItemId) {
 
 			final Listener<Story> successListener = new Listener<Story>() {
-
 				@Override
 				public void onResponse(final Story arg0) {
 					Toast.makeText(context, R.string.feedback_success_update_story_rank, Toast.LENGTH_SHORT).show();
@@ -277,7 +291,6 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 			};
 
 			final ErrorListener errorListener = new ErrorListener() {
-
 				@Override
 				public void onErrorResponse(final VolleyError arg0) {
 					storiesAdapter.setStories(stories);
@@ -288,20 +301,12 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 			if (aboveItemId == -1 && swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
 				metricsService.rankStoryOver(
-						storiesAdapter.getItem(itemPosition),
-						storiesAdapter.getItem(targetPosition),
-						 project.getId(),
-						 stories,
-						 successListener,
-						 errorListener);
+					storiesAdapter.getItem(itemPosition), storiesAdapter.getItem(targetPosition), project.getId(),
+					stories, successListener, errorListener);
 			} else {
-				 metricsService.rankStoryUnder(
-						 storiesAdapter.getItem(itemPosition),
-						 storiesAdapter.getItem(targetPosition),
-						 project.getId(),
-						 stories,
-						 successListener,
-						 errorListener);
+				metricsService.rankStoryUnder(
+					storiesAdapter.getItem(itemPosition), storiesAdapter.getItem(targetPosition), project.getId(),
+					stories, successListener, errorListener);
 			}
 
 		}

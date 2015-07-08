@@ -69,37 +69,41 @@ public class HomeActivity extends RoboActivity {
 					progressDialog.setCancelable(false);
 					progressDialog.setMessage(HomeActivity.this.getString(R.string.loading));
 					progressDialog.show();
-					userService.login(
-							domainStr.trim(),
-							usernameStr,
-							passwordStr,
-							new Listener<User>() {
-
-								@Override
-								public void onResponse(final User arg0) {
-									if (progressDialog != null && progressDialog.isShowing()) {
-										progressDialog.dismiss();
-									}
-
-									final Intent intent = new Intent(HomeActivity.this, AllBackLogsActivity.class);
-									HomeActivity.this.startActivity(intent);
-								}
-							},
-							new ErrorListener() {
-
-								@Override
-								public void onErrorResponse(final VolleyError arg0) {
-									if (progressDialog != null && progressDialog.isShowing()) {
-										progressDialog.dismiss();
-									}
-
-									Toast.makeText(HomeActivity.this, getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();
-								}
-							});
-
+					userService.login(domainStr.trim(), usernameStr, passwordStr,
+						getSuccessListener(progressDialog), getErrorListener(progressDialog));
 				}
 			}
 		});
+	}
+
+	private Listener<User> getSuccessListener(final ProgressDialog progressDialog) {
+		return new Listener<User>() {
+
+			@Override
+			public void onResponse(final User arg0) {
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				final Intent intent = new Intent(HomeActivity.this, AllBackLogsActivity.class);
+				HomeActivity.this.startActivity(intent);
+			}
+		};
+	}
+
+	private ErrorListener getErrorListener(final ProgressDialog progressDialog) {
+		return new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(final VolleyError arg0) {
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				Toast.makeText(
+					HomeActivity.this, getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();
+			}
+		};
 	}
 
 	@Override

@@ -24,6 +24,11 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 	@Inject
 	private MetricsService metricsService;
 
+	/**
+	 * Return a new CreateTaskWithoutStory with the given iteration id
+	 * @param iterationId The iteration id
+	 * @return a new CreateTaskWithoutStory with the given iteration id
+	 */
 	public static CreateTaskWithoutStory newInstance(final long iterationId) {
 		final CreateTaskWithoutStory fragment = new CreateTaskWithoutStory();
 		return prepareFragmentForIteration(iterationId, fragment);

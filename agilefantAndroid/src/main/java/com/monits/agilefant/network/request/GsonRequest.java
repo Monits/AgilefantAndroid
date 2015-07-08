@@ -43,6 +43,8 @@ public class GsonRequest<T> extends RfcCompliantListenableRequest<T> {
 	 * 
 	 * @param method The request method, {@see Method}
 	 * @param url The url to be requested.
+	 * @param gson the json parser
+	 * @param clazz the request type
 	 * @param listener The listener for success.
 	 * @param errListener The listener for errors.
 	 */
@@ -64,7 +66,7 @@ public class GsonRequest<T> extends RfcCompliantListenableRequest<T> {
 		} catch (final UnsupportedEncodingException e) {
 			return Response.error(new ParseError(e));
 		} catch (final JsonSyntaxException e) {
-            return Response.error(new ParseError(e));
-        }
+			return Response.error(new ParseError(e));
+		}
 	}
 }

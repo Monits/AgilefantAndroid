@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class User implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -642609196033074436L;
 
 	@SerializedName("id")
@@ -20,6 +17,9 @@ public class User implements Serializable {
 	@SerializedName("fullName")
 	private String fullName;
 
+	/**
+	 * Default constructor.
+	 */
 	public User() {
 	}
 
@@ -51,10 +51,17 @@ public class User implements Serializable {
 		this.initials = initials;
 	}
 
+	/**
+	 * @return the users fullname
+	 */
 	public String getFullName() {
 		return fullName;
 	}
 
+	/**
+	 * Set the users fullname
+	 * @param fullName The fullname to set
+	 */
 	public void setFullName(final String fullName) {
 		this.fullName = fullName;
 	}
