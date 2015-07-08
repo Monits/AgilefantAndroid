@@ -14,8 +14,8 @@ import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
 
 public class DailyWorkPagerAdapter extends FragmentStatePagerAdapter {
 
-	private List<Fragment> fragments;
-	private Context context;
+	private final List<Fragment> fragments;
+	private final Context context;
 
 	/**
 	 * Constructor

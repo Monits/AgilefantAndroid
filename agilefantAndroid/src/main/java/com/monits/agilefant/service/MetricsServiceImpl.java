@@ -206,10 +206,10 @@ public class MetricsServiceImpl implements MetricsService {
 		story.setIteration(iteration);
 
 		final long backlogId;
-		if (iteration != null) {
-			backlogId = iteration.getId();
-		} else {
+		if (iteration == null) {
 			backlogId = story.getBacklog().getId();
+		} else {
+			backlogId = iteration.getId();
 		}
 
 		agilefantService.moveStory(

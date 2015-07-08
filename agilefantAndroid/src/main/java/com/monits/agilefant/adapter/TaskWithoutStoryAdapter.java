@@ -54,7 +54,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return tasks != null ? tasks.size() : 0;
+		return tasks == null ? 0 : tasks.size();
 	}
 
 	@Override
@@ -65,7 +65,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(final int position) {
-		return getItem(position) != null ? getItem(position).getId() : -1;
+		final Task task = getItem(position);
+		return task == null ? -1 : task.getId();
 	}
 
 	/**

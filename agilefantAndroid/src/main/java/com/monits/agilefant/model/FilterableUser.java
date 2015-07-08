@@ -10,6 +10,7 @@ public class FilterableUser extends UserChooser {
 	 * Default constructor.
 	 */
 	public FilterableUser() {
+		// Default constructor.
 	}
 
 	/**

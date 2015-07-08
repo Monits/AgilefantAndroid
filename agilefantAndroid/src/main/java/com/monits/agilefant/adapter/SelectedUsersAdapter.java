@@ -31,7 +31,7 @@ public class SelectedUsersAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return users != null ? users.size() : 0;
+		return users == null ? 0 : users.size();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class SelectedUsersAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(final int position) {
 		final User user = getItem(position);
-		return user != null ? user.getId() : 0;
+		return user == null ? 0 : user.getId();
 	}
 
 	@Override
@@ -98,7 +98,8 @@ public class SelectedUsersAdapter extends BaseAdapter {
 	/**
 	 * Interface for changes in the users list
 	 */
-	public static interface OnRemoveUserListener {
+	public interface OnRemoveUserListener {
+		
 		/**
 		 * Called after a user removal
 		 * @param view The view

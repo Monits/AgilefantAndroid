@@ -15,6 +15,7 @@ public class RootIteration implements Serializable {
 	 * Default constuctor.
 	 */
 	public RootIteration() {
+		// Default constructor.
 	}
 
 	/**

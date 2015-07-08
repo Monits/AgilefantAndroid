@@ -29,29 +29,29 @@ public class SplashActivity extends RoboActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (!userService.isLoggedIn()) {
-			startHomeActivity();
-		} else {
-
+		if (userService.isLoggedIn()) {
 			userService.login(
-					sharedPreferences.getString(UserService.DOMAIN_KEY, ""),
-					sharedPreferences.getString(UserService.USER_NAME_KEY, ""),
-					sharedPreferences.getString(UserService.PASSWORD_KEY, ""),
-					new Listener<User>() {
+				sharedPreferences.getString(UserService.DOMAIN_KEY, ""),
+				sharedPreferences.getString(UserService.USER_NAME_KEY, ""),
+				sharedPreferences.getString(UserService.PASSWORD_KEY, ""),
+				new Listener<User>() {
 
-						@Override
-						public void onResponse(final User arg0) {
-							final Intent intent = new Intent(SplashActivity.this, AllBackLogsActivity.class);
-							SplashActivity.this.startActivity(intent);
-						}
-					},
-					new ErrorListener() {
+					@Override
+					public void onResponse(final User arg0) {
+						final Intent intent = new Intent(SplashActivity.this, AllBackLogsActivity.class);
+						SplashActivity.this.startActivity(intent);
+					}
+				},
+				new ErrorListener() {
 
-						@Override
-						public void onErrorResponse(final VolleyError arg0) {
-							startHomeActivity();
-						}
-					});
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						startHomeActivity();
+					}
+				});
+
+		} else {
+			startHomeActivity();
 		}
 	}
 

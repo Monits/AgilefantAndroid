@@ -35,7 +35,6 @@ public class UserChooserFragment extends RoboFragment {
 
 	private ViewSwitcher viewSwitcher;
 
-	private ListView selectedUsersList;
 	private SelectedUsersAdapter selectedUsersAdapter;
 
 	private AutoCompleteUserChooserTextView userInput;
@@ -71,7 +70,7 @@ public class UserChooserFragment extends RoboFragment {
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
 
-		selectedUsersList = (ListView) view.findViewById(R.id.users_list);
+		final ListView selectedUsersList = (ListView) view.findViewById(R.id.users_list);
 		selectedUsersAdapter = new SelectedUsersAdapter(getActivity());
 		selectedUsersAdapter.setOnRemoveUserListener(new OnRemoveUserListener() {
 
@@ -149,7 +148,7 @@ public class UserChooserFragment extends RoboFragment {
 		this.onUsersSubmittedListener = listener;
 	}
 
-	public static interface OnUsersSubmittedListener {
+	public interface OnUsersSubmittedListener {
 
 		/**
 		 * This method is called when user's selection was done and confirmed, and returns the list of selected users.

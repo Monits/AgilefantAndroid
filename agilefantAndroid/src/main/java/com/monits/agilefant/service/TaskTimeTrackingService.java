@@ -68,8 +68,11 @@ public class TaskTimeTrackingService extends RoboService {
 			final Task taskToTrack = (Task) intent.getSerializableExtra(EXTRA_TASK);
 
 			final long id = taskToTrack.getId();
-			if (!notificationMap.containsKey(id)) {
+			if (notificationMap.containsKey(id)) {
+				Toast.makeText(
+					TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
 
+			} else {
 				final NotificationHolder notificationHolder = new NotificationHolder(this, taskToTrack);
 				notificationMap.put(id, notificationHolder);
 
@@ -78,9 +81,6 @@ public class TaskTimeTrackingService extends RoboService {
 				final Intent startIntent = new Intent(ACTION_START_TRACKING);
 				startIntent.putExtra(EXTRA_NOTIFICATION_ID, id);
 				sendBroadcast(startIntent);
-			} else {
-				Toast.makeText(
-					TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
 			}
 
 

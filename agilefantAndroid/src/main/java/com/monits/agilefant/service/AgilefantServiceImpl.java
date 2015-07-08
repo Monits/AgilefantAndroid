@@ -477,7 +477,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 				params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
 				params.put(TASK_ID, String.valueOf(task.getId()));
-				params.put(RANK_UNDER_ID, String.valueOf(targetTask != null ? targetTask.getId() : -1));
+				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
 
 				return params;
 			}

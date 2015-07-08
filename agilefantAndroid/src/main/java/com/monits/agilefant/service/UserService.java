@@ -12,37 +12,37 @@ public interface UserService {
 	/**
 	 * SharedPreferences domain key
 	 */
-	public static final String DOMAIN_KEY = "DOMAIN_KEY";
+	String DOMAIN_KEY = "DOMAIN_KEY";
 
 	/**
 	 * SharedPreferences user name key
 	 */
-	public static final String USER_NAME_KEY = "USER_NAME_KEY";
+	String USER_NAME_KEY = "USER_NAME_KEY";
 
 	/**
 	 * SharedPreferences password key
 	 */
-	public static final String PASSWORD_KEY = "PASSWORD_KEY";
+	String PASSWORD_KEY = "PASSWORD_KEY";
 
 	/**
 	 * SharedPreferences isLoggedin key
 	 */
-	public static final String ISLOGGEDIN_KEY = "ISLOGGEDIN_KEY";
+	String ISLOGGEDIN_KEY = "ISLOGGEDIN_KEY";
 
 	/**
 	 * SharedPreferences user fullName key
 	 */
-	public static final String FULLNAME_KEY = "USER_FULLNAME_KEY";
+	String FULLNAME_KEY = "USER_FULLNAME_KEY";
 
 	/**
 	 * SharedPreferences user id key
 	 */
-	public static final String USER_ID_KEY = "USER_ID_KEY";
+	String USER_ID_KEY = "USER_ID_KEY";
 
 	/**
 	 * SharedPreferences user initials key
 	 */
-	public static final String USER_INITIALS_KEY = "USER_INITIALS_KEY";
+	String USER_INITIALS_KEY = "USER_INITIALS_KEY";
 
 	/**
 	 * Login in Agilefant

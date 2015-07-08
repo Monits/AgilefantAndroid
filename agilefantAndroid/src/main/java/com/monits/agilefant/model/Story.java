@@ -46,6 +46,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 * Default constructor.
 	 */
 	public Story() {
+		// Default constructor.
 	}
 
 	/**
@@ -82,7 +83,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public Story(final Story story) {
 		this(story.id, story.name, story.state, story.responsibles, story.metrics,
-			story.tasks != null ? new LinkedList<>(story.tasks) : null, story.rank, story.backlog, story.iteration);
+			story.tasks == null ? null : new LinkedList<>(story.tasks), story.rank, story.backlog, story.iteration);
 	}
 
 	@Override
@@ -292,21 +293,18 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 			return false;
 		}
 		final Story other = (Story) obj;
-		if (id != other.id) {
-			return false;
-		}
-		return true;
+		return id == other.id;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder responsiblesToStringBuilder = new StringBuilder('[');
+		final StringBuilder responsiblesToStringBuilder = new StringBuilder("[");
 		for (final User responsible : responsibles) {
 			responsiblesToStringBuilder.append(responsible).append(", ");
 		}
 		responsiblesToStringBuilder.append(']');
 
-		final StringBuilder tasksToStringBuilder = new StringBuilder('[');
+		final StringBuilder tasksToStringBuilder = new StringBuilder("[");
 		for (final Task task : tasks) {
 			tasksToStringBuilder.append(task).append(", ");
 		}

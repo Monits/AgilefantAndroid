@@ -60,7 +60,6 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 
 	private ViewFlipper viewFlipper;
 	private DynamicListView storiesListView;
-	private View storiesEmptyView;
 
 	private ProjectLeafStoriesAdapter storiesAdapter;
 	private List<Story> stories;
@@ -151,7 +150,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		storiesAdapter.setOnLongActionListener(getOnLongActionListener(context));
 
 		storiesListView = (DynamicListView) view.findViewById(R.id.stories_list);
-		storiesEmptyView = view.findViewById(R.id.stories_empty_view);
+		final View storiesEmptyView = view.findViewById(R.id.stories_empty_view);
 		storiesListView.setEmptyView(storiesEmptyView);
 		storiesListView.setAdapter(storiesAdapter);
 		storiesListView.setOnSwapRowListener(new OnSwapLeafStoriesListener(context));

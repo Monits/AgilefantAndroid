@@ -5,6 +5,7 @@ public final class InputUtils {
 	private InputUtils() {
 		throw new AssertionError("Utility classes should not been instantiated");
 	}
+
 	/**
 	 * Parses given string into double.
 	 * 
@@ -13,6 +14,6 @@ public final class InputUtils {
 	 */
 	public static double parseStringToDouble(final String string) {
 		final String trim = string.trim();
-		return !trim.isEmpty() ? Double.parseDouble(trim) : 0;
+		return trim.isEmpty() ? 0 : Double.parseDouble(trim);
 	}
 }

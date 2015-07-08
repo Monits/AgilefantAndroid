@@ -135,15 +135,15 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		holder.state.setTag(R.id.tag_group_position, groupPosition);
 		holder.state.setOnClickListener(onClickGroupListener);
 
-		if (story.getIteration() != null) {
+		if (story.getIteration() == null) {
+			holder.context.setText(" - ");
+			holder.context.setOnClickListener(null);
+		} else {
 			final Iteration iteration = story.getIteration();
 
 			holder.context.setText(iteration.getName());
 			holder.context.setTag(R.id.tag_group_position, groupPosition);
 			holder.context.setOnClickListener(onClickGroupListener);
-		} else {
-			holder.context.setText(" - ");
-			holder.context.setOnClickListener(null);
 		}
 
 		return convertView;
@@ -176,12 +176,12 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 	@Override
 	public long getChildId(final int groupPosition, final int childPosition) {
 		final Task child = getChild(groupPosition, childPosition);
-		return child != null ? child.getId() : -1;
+		return child == null ? -1 : child.getId();
 	}
 
 	@Override
 	public long getGroupId(final int groupPosition) {
 		final Story group = getGroup(groupPosition);
-		return group != null ? group.getId() : -1;
+		return group == null ? -1 : group.getId();
 	}
 }

@@ -82,9 +82,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 			final View convertView, final ViewGroup parent) {
 		View v;
 
-		if (listViewCache[groupPosition] != null) {
-			v = listViewCache[groupPosition];
-		} else {
+		if (listViewCache[groupPosition] == null) {
 			final ProjectAdapter projectAdapter = new ProjectAdapter(context,
 				productList.get(groupPosition).getProjectList(), R.layout.project_item, R.layout.iteration_item);
 			final ProductExpandableListView delv = new ProductExpandableListView(context);
@@ -140,6 +138,8 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 
 			listViewCache[groupPosition] = delv;
 			v = delv;
+		} else {
+			v = listViewCache[groupPosition];
 		}
 
 		return v;
@@ -189,17 +189,17 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public Object getGroup(final int position) {
-		return productList != null ? productList.get(position) : null;
+		return productList == null ? null : productList.get(position);
 	}
 
 	@Override
 	public int getGroupCount() {
-		return productList != null ? productList.size() : 0;
+		return productList == null ? 0 : productList.size();
 	}
 
 	@Override
 	public long getGroupId(final int position) {
-		return productList != null ? productList.get(position).getId() : -1;
+		return productList == null ? -1 : productList.get(position).getId();
 	}
 
 	@SuppressWarnings("checkstyle:finalparameters")

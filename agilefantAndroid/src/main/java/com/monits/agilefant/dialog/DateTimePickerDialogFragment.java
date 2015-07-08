@@ -128,7 +128,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 	/**
 	 * Listener for changes in the date
 	 */
-	public static interface OnDateSetListener {
+	public interface OnDateSetListener {
 
 		/**
 		 * Called after the date is setup

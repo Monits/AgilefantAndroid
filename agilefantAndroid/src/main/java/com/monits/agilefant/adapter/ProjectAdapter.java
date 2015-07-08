@@ -138,12 +138,12 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	@Override
 	public long getChildId(final int groupPosition, final int childPosition) {
 		final Iteration child = getChild(groupPosition, childPosition);
-		return child != null ? child.getId() : -1;
+		return child == null ? -1 : child.getId();
 	}
 
 	@Override
 	public long getGroupId(final int groupPosition) {
 		final Project group = getGroup(groupPosition);
-		return group != null ? group.getId() : -1;
+		return group == null ? -1 : group.getId();
 	}
 }

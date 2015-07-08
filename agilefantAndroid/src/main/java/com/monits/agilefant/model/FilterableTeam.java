@@ -12,6 +12,7 @@ public class FilterableTeam extends UserChooser {
 	 * Default constructor.
 	 */
 	public FilterableTeam() {
+		// Default constructor.
 	}
 
 	/**
@@ -61,7 +62,7 @@ public class FilterableTeam extends UserChooser {
 
 	@Override
 	public String toString() {
-		final StringBuilder usersIdToStringBuilder = new StringBuilder('[');
+		final StringBuilder usersIdToStringBuilder = new StringBuilder("[");
 		for (final Long id : usersId) {
 			usersIdToStringBuilder.append(id).append(", ");
 		}

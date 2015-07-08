@@ -190,13 +190,13 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 	@Override
 	public long getGroupId(final int groupPosition) {
 		final Story group = getGroup(groupPosition);
-		return group != null ? group.getId() : -1;
+		return group == null ? -1 : group.getId();
 	}
 
 	@Override
 	public long getChildId(final int groupPosition, final int childPosition) {
 		final Task child = getChild(groupPosition, childPosition);
-		return child != null ? child.getId() : -1;
+		return child == null ? -1 : child.getId();
 	}
 
 	/**

@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Backlog implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -2908515098376303451L;
 
 	@SerializedName("id")
@@ -21,6 +18,7 @@ public class Backlog implements Serializable {
 	 * Default constructor.
 	 */
 	public Backlog() {
+		// Default constructor.
 	}
 
 	/**

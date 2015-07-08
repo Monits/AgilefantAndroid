@@ -151,7 +151,7 @@ public final class BacklogElementParameters {
 
 	@Override
 	public String toString() {
-		final StringBuilder selectedUsersToStringBuilder = new StringBuilder('[');
+		final StringBuilder selectedUsersToStringBuilder = new StringBuilder("[");
 		for (final User selectedUser : selectedUsers) {
 			selectedUsersToStringBuilder.append(selectedUser).append(", ");
 		}

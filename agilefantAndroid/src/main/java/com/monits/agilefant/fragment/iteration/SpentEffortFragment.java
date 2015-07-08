@@ -51,11 +51,8 @@ public class SpentEffortFragment extends RoboFragment {
 	private UserService userService;
 
 	private TextView mDateInput;
-	private Button mSubmitButton;
-	private EditText mResponsiblesInput;
 	private EditText mHoursInput;
 	private EditText mCommentInput;
-	private ImageButton mTriggerPickerButton;
 	private EditText mEffortLeftInput;
 
 
@@ -120,7 +117,7 @@ public class SpentEffortFragment extends RoboFragment {
 		mDateInput = (TextView) view.findViewById(R.id.date);
 		mDateInput.setText(formattedDate);
 
-		mResponsiblesInput = (EditText) view.findViewById(R.id.responsibles);
+		final EditText mResponsiblesInput = (EditText) view.findViewById(R.id.responsibles);
 		mResponsiblesInput.setText(userService.getLoggedUser().getInitials());
 
 		mHoursInput = (EditText) view.findViewById(R.id.effort_spent);
@@ -137,7 +134,7 @@ public class SpentEffortFragment extends RoboFragment {
 
 		mCommentInput = (EditText) view.findViewById(R.id.comment);
 
-		mTriggerPickerButton = (ImageButton) view.findViewById(R.id.datepicker_button);
+		final ImageButton mTriggerPickerButton = (ImageButton) view.findViewById(R.id.datepicker_button);
 		mTriggerPickerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -157,7 +154,7 @@ public class SpentEffortFragment extends RoboFragment {
 			}
 		});
 
-		mSubmitButton = (Button) view.findViewById(R.id.submit_btn);
+		final Button mSubmitButton = (Button) view.findViewById(R.id.submit_btn);
 		mSubmitButton.setOnClickListener(getOnClickListener());
 
 		return view;
@@ -302,15 +299,15 @@ public class SpentEffortFragment extends RoboFragment {
 	}
 
 	private boolean isValid() {
-		if (!ValidationUtils.validDate(DATE_PATTERN, mDateInput.getText().toString().trim())) {
-			Toast.makeText(getActivity(), R.string.error_validation_date, Toast.LENGTH_SHORT).show();
-			return false;
-		} else {
+		if (ValidationUtils.validDate(DATE_PATTERN, mDateInput.getText().toString().trim())) {
 			final String hoursInputValue = mHoursInput.getText().toString().trim();
 			if ("—".equals(hoursInputValue) || "".equals(hoursInputValue) || "0".equals(hoursInputValue)) {
 				Toast.makeText(getActivity(), R.string.error_validate_effort_left, Toast.LENGTH_SHORT).show();
 				return false;
 			}
+		} else {
+			Toast.makeText(getActivity(), R.string.error_validation_date, Toast.LENGTH_SHORT).show();
+			return false;
 		}
 		return true;
 	}

@@ -66,8 +66,6 @@ public class ProjectActivity extends BaseActivity {
 	@InjectView(value = R.id.assignees)
 	private TextView assigneesLabel;
 
-	private ProjectPagerAdapter pagerAdapter;
-
 	private Backlog backlog;
 
 	private Project project;
@@ -90,7 +88,7 @@ public class ProjectActivity extends BaseActivity {
 
 					final List<Fragment> fragments = new LinkedList<>();
 					fragments.add(ProjectLeafStoriesFragment.newInstance(project));
-					pagerAdapter =
+					final ProjectPagerAdapter pagerAdapter =
 							new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
 					viewPager.setAdapter(pagerAdapter);
 

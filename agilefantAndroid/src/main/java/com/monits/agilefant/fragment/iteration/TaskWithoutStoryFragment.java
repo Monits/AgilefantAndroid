@@ -129,8 +129,8 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 					final SwapDirection direction, final long aboveItemId, final long belowItemId) {
 
 				final Task task = taskWithoutStory.get(itemPosition);
-				final Task targetTask = aboveItemId != -1
-						? taskWithoutStory.get(taskWithoutStoryListView.getPositionForID(aboveItemId)) : null;
+				final Task targetTask = aboveItemId == -1
+						? null : taskWithoutStory.get(taskWithoutStoryListView.getPositionForID(aboveItemId));
 
 				task.setIteration(iteration);
 

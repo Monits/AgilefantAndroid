@@ -47,6 +47,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	 * Default constructor
 	 */
 	public Task() {
+		// Default constructor.
 	}
 
 	/**
@@ -288,15 +289,12 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 			return false;
 		}
 		final Task other = (Task) obj;
-		if (id != other.id) {
-			return false;
-		}
-		return true;
+		return id == other.id;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder responsiblesToStringBuilder = new StringBuilder('[');
+		final StringBuilder responsiblesToStringBuilder = new StringBuilder("[");
 		for (final User responsible : responsibles) {
 			responsiblesToStringBuilder.append(responsible).append(", ");
 		}

@@ -74,7 +74,7 @@ public class Product implements Serializable {
 
 	@Override
 	public String toString() {
-		final StringBuilder projectListToStringBuilder = new StringBuilder('[');
+		final StringBuilder projectListToStringBuilder = new StringBuilder("[");
 		for (final Project project : projectList) {
 			projectListToStringBuilder.append(project).append(", ");
 		}

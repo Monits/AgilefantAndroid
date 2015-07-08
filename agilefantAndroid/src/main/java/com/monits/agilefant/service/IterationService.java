@@ -24,6 +24,5 @@ public interface IterationService {
 	 * @param listener callback if the request was successful.
 	 * @param error callback if the request failed.
 	 */
-	public void getCurrentFilterableIterations(
-			Listener<List<FilterableIteration>> listener, ErrorListener error);
+	void getCurrentFilterableIterations(Listener<List<FilterableIteration>> listener, ErrorListener error);
 }

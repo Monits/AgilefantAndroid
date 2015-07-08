@@ -47,15 +47,11 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	private EditText storyName;
 	private AutoCompleteUserChooserTextView mResponsiblesInput;
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
-	private ListView usersList;
 	private SelectedUsersAdapter selectedUsersAdapter;
 
 	private TextView storyState;
-	private TextView title;
 
 	private ViewSwitcher viewSwitcher;
-
-	private Button submitBtn;
 
 	private StateKey stateKey;
 
@@ -112,7 +108,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		super.onViewCreated(view, savedInstanceState);
 		final Context context = AbstractCreateBacklogElementFragment.this.getActivity();
 
-		title = (TextView) view.findViewById(R.id.title);
+		final TextView title = (TextView) view.findViewById(R.id.title);
 		title.setText(getTitleResourceId());
 		storyName = (EditText) view.findViewById(R.id.story_name);
 		viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
@@ -148,7 +144,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 			}
 		);
 
-		usersList = (ListView) view.findViewById(R.id.users_list);
+		final ListView usersList = (ListView) view.findViewById(R.id.users_list);
 		selectedUsersAdapter = new SelectedUsersAdapter(getActivity());
 		selectedUsersAdapter.setOnRemoveUserListener(new OnRemoveUserListener() {
 			@Override
@@ -166,17 +162,17 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		storyState.setBackgroundResource(IterationUtils.getStateBackground(StateKey.NOT_STARTED));
 		storyState.setOnClickListener(getOnStateClickListener(context));
 
-		submitBtn = (Button) view.findViewById(R.id.submit_btn);
+		final Button submitBtn = (Button) view.findViewById(R.id.submit_btn);
 		submitBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(final View v) {
 				final BacklogElementParameters parameters = new BacklogElementParameters.Builder()
-					.backlogId(backlogId)
-					.iterationId(iterationId)
-					.stateKey(stateKey)
-					.selectedUsers(mResponsiblesInput.getSelectedUsers())
-					.name(storyName.getText().toString())
-					.build();
+						.backlogId(backlogId)
+						.iterationId(iterationId)
+						.stateKey(stateKey)
+						.selectedUsers(mResponsiblesInput.getSelectedUsers())
+						.name(storyName.getText().toString())
+						.build();
 
 				onSubmit(parameters);
 			}

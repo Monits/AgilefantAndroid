@@ -57,11 +57,11 @@ public class DynamicExpandableListView extends ExpandableListView {
 	private int mDownY = -1;
 	private int mDownX = -1;
 
-	private int mTotalOffset = 0;
+	private int mTotalOffset;
 
-	private boolean mCellIsMobile = false;
-	private boolean mIsMobileScrolling = false;
-	private int mSmoothScrollAmountAtEdge = 0;
+	private boolean mCellIsMobile;
+	private boolean mIsMobileScrolling;
+	private int mSmoothScrollAmountAtEdge;
 
 	private static final int INVALID_ID = -1;
 	private long mAboveItemId = INVALID_ID;
@@ -75,7 +75,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	private static final int INVALID_POINTER_ID = -1;
 	private int mActivePointerId = INVALID_POINTER_ID;
 
-	private boolean mIsWaitingForScrollFinish = false;
+	private boolean mIsWaitingForScrollFinish;
 	private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
 
 	private int itemPosition;
@@ -373,14 +373,12 @@ public class DynamicExpandableListView extends ExpandableListView {
 		final View mobileView = getViewForID(mMobileItemId);
 		final View aboveView = getViewForID(mAboveItemId);
 
-		final boolean isBelow = (belowView != null) && (deltaYTotal > belowView.getTop());
-		final boolean isAbove = (aboveView != null) && (deltaYTotal < aboveView.getTop());
+		final boolean isBelow = belowView != null && deltaYTotal > belowView.getTop();
+		final boolean isAbove = aboveView != null && deltaYTotal < aboveView.getTop();
 
 		if (isBelow || isAbove) {
 
-			final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
 			final View switchView = isBelow ? belowView : aboveView;
-			itemPosition = getPositionForView(mobileView);
 
 			if (switchView == null) {
 				updateNeighborViewsForID(mMobileItemId);
@@ -390,6 +388,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 			targetItemPosition = getPositionForView(switchView);
 			swapDirection = isBelow ? SwapDirection.BELOW_TARGET : SwapDirection.ABOVE_TARGET;
 
+			itemPosition = getPositionForView(mobileView);
 			swapElements(itemPosition, targetItemPosition);
 
 			mDownY = mLastEventY;
@@ -401,6 +400,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 
 			updateNeighborViewsForID(mMobileItemId);
 
+			final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
 			final ViewTreeObserver observer = getViewTreeObserver();
 			observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 				@SuppressLint("NewApi")
@@ -542,17 +542,17 @@ public class DynamicExpandableListView extends ExpandableListView {
 	 */
 	public boolean handleMobileCellScroll(final Rect r) {
 		final int offset = computeVerticalScrollOffset();
-		final int height = getHeight();
-		final int extent = computeVerticalScrollExtent();
-		final int range = computeVerticalScrollRange();
 		final int hoverViewTop = r.top;
-		final int hoverHeight = r.height();
 
 		if (hoverViewTop <= 0 && offset > 0) {
 			smoothScrollBy(-mSmoothScrollAmountAtEdge, 0);
 			return true;
 		}
 
+		final int height = getHeight();
+		final int extent = computeVerticalScrollExtent();
+		final int range = computeVerticalScrollRange();
+		final int hoverHeight = r.height();
 		if (hoverViewTop + hoverHeight >= height && (offset + extent) < range) {
 			smoothScrollBy(mSmoothScrollAmountAtEdge, 0);
 			return true;
@@ -569,7 +569,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 		this.onSwapRowListener = onSwapRowListener;
 	}
 
-	public static interface Swappable {
+	public interface Swappable {
 
 		/**
 		 * Swaps the item on the first adapter position with the item on the second adapter position.
@@ -578,7 +578,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 		 * @param positionOne First adapter position.
 		 * @param positionTwo Second adapter position.
 		 */
-		public void swapItems(int positionOne, int positionTwo);
+		void swapItems(int positionOne, int positionTwo);
 	}
 
 	/**

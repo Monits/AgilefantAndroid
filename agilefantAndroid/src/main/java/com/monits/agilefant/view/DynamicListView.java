@@ -99,11 +99,11 @@ public class DynamicListView extends ListView {
 	private int mDownY = -1;
 	private int mDownX = -1;
 
-	private int mTotalOffset = 0;
+	private int mTotalOffset;
 
-	private boolean mCellIsMobile = false;
-	private boolean mIsMobileScrolling = false;
-	private int mSmoothScrollAmountAtEdge = 0;
+	private boolean mCellIsMobile;
+	private boolean mIsMobileScrolling;
+	private int mSmoothScrollAmountAtEdge;
 
 	private static final int INVALID_ID = -1;
 	private long mAboveItemId = INVALID_ID;
@@ -117,7 +117,7 @@ public class DynamicListView extends ListView {
 	private static final int INVALID_POINTER_ID = -1;
 	private int mActivePointerId = INVALID_POINTER_ID;
 
-	private boolean mIsWaitingForScrollFinish = false;
+	private boolean mIsWaitingForScrollFinish;
 	private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
 
 	private int itemPosition;
@@ -397,12 +397,11 @@ public class DynamicListView extends ListView {
 		final View mobileView = getViewForID(mMobileItemId);
 		final View aboveView = getViewForID(mAboveItemId);
 
-		final boolean isBelow = (belowView != null) && (deltaYTotal > belowView.getTop());
-		final boolean isAbove = (aboveView != null) && (deltaYTotal < aboveView.getTop());
+		final boolean isBelow = belowView != null && deltaYTotal > belowView.getTop();
+		final boolean isAbove = aboveView != null && deltaYTotal < aboveView.getTop();
 
 		if (isBelow || isAbove) {
 
-			final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
 			final View switchView = isBelow ? belowView : aboveView;
 			itemPosition = getPositionForView(mobileView);
 
@@ -426,6 +425,7 @@ public class DynamicListView extends ListView {
 
 			updateNeighborViewsForID(mMobileItemId);
 
+			final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
 			final ViewTreeObserver observer = getViewTreeObserver();
 			observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 				@SuppressLint("NewApi")
@@ -566,17 +566,17 @@ public class DynamicListView extends ListView {
 	 */
 	public boolean handleMobileCellScroll(final Rect r) {
 		final int offset = computeVerticalScrollOffset();
-		final int height = getHeight();
-		final int extent = computeVerticalScrollExtent();
-		final int range = computeVerticalScrollRange();
 		final int hoverViewTop = r.top;
-		final int hoverHeight = r.height();
 
 		if (hoverViewTop <= 0 && offset > 0) {
 			smoothScrollBy(-mSmoothScrollAmountAtEdge, 0);
 			return true;
 		}
 
+		final int height = getHeight();
+		final int extent = computeVerticalScrollExtent();
+		final int range = computeVerticalScrollRange();
+		final int hoverHeight = r.height();
 		if (hoverViewTop + hoverHeight >= height && (offset + extent) < range) {
 			smoothScrollBy(mSmoothScrollAmountAtEdge, 0);
 			return true;

@@ -36,7 +36,7 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 
 	@Override
 	public int getCount() {
-		return filteredUsers != null ? filteredUsers.size() : 0;
+		return filteredUsers == null ? 0 : filteredUsers.size();
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 	@Override
 	public long getItemId(final int position) {
 		final UserChooser user = getItem(position);
-		return user != null ? user.getId() : 0;
+		return user == null ? 0 : user.getId();
 	}
 
 	@Override

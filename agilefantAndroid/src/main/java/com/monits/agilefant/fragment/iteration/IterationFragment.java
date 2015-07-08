@@ -74,7 +74,9 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 		if (mIteration != null) {
 
 			final Backlog parent = mIteration.getParent();
-			if (parent != null) {
+			if (parent == null) {
+				view.findViewById(R.id.path_layout).setVisibility(View.GONE);
+			} else {
 				view.findViewById(R.id.path_layout).setVisibility(View.VISIBLE);
 
 				product.setText(mIteration.getRootIteration().getName());
@@ -90,8 +92,6 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 						startActivity(intent);
 					}
 				});
-			} else {
-				view.findViewById(R.id.path_layout).setVisibility(View.GONE);
 			}
 
 			startDate.setText(

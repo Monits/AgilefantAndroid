@@ -24,6 +24,7 @@ public class Metrics implements Serializable {
 	 * Default constructor
 	 */
 	public Metrics() {
+		// Default constructor.
 	}
 
 	/**

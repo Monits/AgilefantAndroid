@@ -42,7 +42,6 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	private static final String ITERATION = "ITERATION";
 
 	private List<Story> stories;
-	private DynamicExpandableListView storiesListView;
 
 	private StoriesAdapter storiesAdapter;
 
@@ -112,7 +111,8 @@ public class StoriesFragment extends RoboFragment implements Observer {
 			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
-		storiesListView = (DynamicExpandableListView) rootView.findViewById(R.id.stories);
+		final DynamicExpandableListView storiesListView =
+				(DynamicExpandableListView) rootView.findViewById(R.id.stories);
 		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
 
 		final FragmentActivity context = getActivity();

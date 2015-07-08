@@ -37,6 +37,7 @@ public class Project implements Serializable {
 	 * Default constructor.
 	 */
 	public Project() {
+		// Default constructor.
 	}
 
 	/**
@@ -91,7 +92,7 @@ public class Project implements Serializable {
 	 */
 	public String getTitle() {
 		//Agilefant gives name in one endpoint and title in another.
-		return name != null ? name : title;
+		return name == null ? title : name;
 	}
 
 	/**

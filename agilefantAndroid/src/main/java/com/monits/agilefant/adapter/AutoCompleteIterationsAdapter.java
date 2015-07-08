@@ -36,7 +36,7 @@ public class AutoCompleteIterationsAdapter extends BaseAdapter implements Filter
 
 	@Override
 	public int getCount() {
-		return filteredIterations != null ? filteredIterations.size() : 0;
+		return filteredIterations == null ? 0 : filteredIterations.size();
 	}
 
 	@Override

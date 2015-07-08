@@ -106,7 +106,7 @@ public class PromptDialogFragment extends DialogFragment {
 		mDialogListener = listener;
 	}
 
-	public static interface PromptDialogListener {
+	public interface PromptDialogListener {
 
 		/**
 		 * Called when the dialog is accepted.

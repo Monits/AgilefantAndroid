@@ -77,13 +77,13 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 	/**
 	 * Listener for changes in the selected users.
 	 */
-	public static interface OnUserChooserActionListener {
+	public interface OnUserChooserActionListener {
 
 		/**
 		 * Called after a change in the selected users.
 		 * @param selectedUsers The selected users.
 		 */
-		public void onUserChooserAction(List<User> selectedUsers);
+		void onUserChooserAction(List<User> selectedUsers);
 	}
 
 	/**

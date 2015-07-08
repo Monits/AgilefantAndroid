@@ -13,8 +13,8 @@ import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
 
 public class BacklogsPagerAdapter extends FragmentStatePagerAdapter {
 
-	private List<Fragment> fragments;
-	private Context context;
+	private final List<Fragment> fragments;
+	private final Context context;
 
 	/**
 	 * Constructor

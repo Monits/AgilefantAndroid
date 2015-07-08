@@ -48,6 +48,7 @@ public class Iteration implements Serializable {
 	 * Default constructor
 	 */
 	public Iteration() {
+		// Default constructor.
 	}
 
 	/**
@@ -208,16 +209,12 @@ public class Iteration implements Serializable {
 		}
 
 		final Iteration other = (Iteration) obj;
-		if (id != other.id) {
-			return false;
-		}
-
-		return true;
+		return id == other.id;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder storiesToStringBuilder = new StringBuilder('[');
+		final StringBuilder storiesToStringBuilder = new StringBuilder("[");
 		if (stories != null && !stories.isEmpty()) {
 			for (final Story story : stories) {
 				storiesToStringBuilder.append(story).append(", ");

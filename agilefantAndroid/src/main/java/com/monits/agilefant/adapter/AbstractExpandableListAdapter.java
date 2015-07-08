@@ -31,7 +31,7 @@ public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandable
 	public AbstractExpandableListAdapter(final Context context) {
 		super();
 		this.context = context;
-		this.groups = new ArrayList<G>();
+		this.groups = new ArrayList<>();
 		this.children = new ArrayList<>();
 
 	}
@@ -75,7 +75,7 @@ public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandable
 
 	@Override
 	public int getChildrenCount(final int groupPosition) {
-		return children != null ? children.get(groupPosition).size() : 0;
+		return children == null ? 0 : children.get(groupPosition).size();
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandable
 
 	@Override
 	public int getGroupCount() {
-		return groups != null ? groups.size() : 0;
+		return groups == null ? 0 : groups.size();
 	}
 
 	@Override

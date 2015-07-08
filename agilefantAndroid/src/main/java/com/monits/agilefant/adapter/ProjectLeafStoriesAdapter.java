@@ -69,7 +69,7 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return stories != null ? stories.size() : 0;
+		return stories == null ? 0 : stories.size();
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(final int position) {
 		final Story story = getItem(position);
-		return story != null ? story.getId() : -1;
+		return story == null ? -1 : story.getId();
 	}
 
 	@Override
@@ -122,14 +122,14 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 		holder.state.setTag(position);
 		holder.state.setOnClickListener(onClickListener);
 
-		if (story.getIteration() != null) {
+		if (story.getIteration() == null) {
+			holder.iteration.setText(" - ");
+			holder.iteration.setOnClickListener(null);
+		} else {
 			final Iteration iteration = story.getIteration();
 
 			holder.iteration.setText(iteration.getName());
 			holder.iteration.setOnClickListener(onClickListener);
-		} else {
-			holder.iteration.setText(" - ");
-			holder.iteration.setOnClickListener(null);
 		}
 
 		holder.iteration.setTag(position);

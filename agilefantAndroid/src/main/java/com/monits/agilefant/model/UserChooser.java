@@ -2,6 +2,8 @@ package com.monits.agilefant.model;
 
 import android.annotation.SuppressLint;
 
+import java.util.Locale;
+
 public class UserChooser {
 
 	private long id;
@@ -16,8 +18,8 @@ public class UserChooser {
 	 * Default constructor.
 	 */
 	public UserChooser() {
+		// Default constructor.
 	}
-
 
 	/**
 	 * Constructor
@@ -89,7 +91,7 @@ public class UserChooser {
 	 */
 	@SuppressLint("DefaultLocale")
 	public boolean match(final String filterString) {
-		return matchedString.toLowerCase().contains(filterString.toLowerCase());
+		return matchedString.toLowerCase(Locale.getDefault()).contains(filterString.toLowerCase(Locale.getDefault()));
 	}
 
 	@Override

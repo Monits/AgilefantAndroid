@@ -47,18 +47,18 @@ public class MyTasksAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return tasks != null ? tasks.size() : 0;
+		return tasks == null ? 0 : tasks.size();
 	}
 
 	@Override
 	public Task getItem(final int position) {
-		return tasks != null ? tasks.get(position) : null;
+		return tasks == null ? null : tasks.get(position);
 	}
 
 	@Override
 	public long getItemId(final int position) {
 		final Task item = getItem(position);
-		return item != null ? item.getId() : 0;
+		return item == null ? 0 : item.getId();
 	}
 
 	@SuppressWarnings("checkstyle:finalparameters")
@@ -91,15 +91,15 @@ public class MyTasksAdapter extends BaseAdapter {
 		holder.state.setTag(position);
 		holder.state.setOnClickListener(onClickListener);
 
-		if (task.getIteration() != null) {
+		if (task.getIteration() == null) {
+			holder.context.setText(" - ");
+			holder.context.setOnClickListener(null);
+		} else {
 			final Iteration iteration = task.getIteration();
 
 			holder.context.setText(iteration.getName());
 			holder.context.setTag(position);
 			holder.context.setOnClickListener(onClickListener);
-		} else {
-			holder.context.setText(" - ");
-			holder.context.setOnClickListener(null);
 		}
 
 		return convertView;

@@ -15,7 +15,7 @@ public interface BacklogService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	public void getAllBacklogs(Listener<List<Product>> listener, ErrorListener error);
+	void getAllBacklogs(Listener<List<Product>> listener, ErrorListener error);
 
 	/**
 	 * Get my backlogs
@@ -23,6 +23,6 @@ public interface BacklogService {
 	 * @param listener callback if the request was successful
 	 * @param error callback if the request failed
 	 */
-	public void getMyBacklogs(Listener<List<Project>> listener, ErrorListener error);
+	void getMyBacklogs(Listener<List<Project>> listener, ErrorListener error);
 
 }
