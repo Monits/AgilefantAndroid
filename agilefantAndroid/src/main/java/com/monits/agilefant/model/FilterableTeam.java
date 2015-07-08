@@ -58,4 +58,17 @@ public class FilterableTeam extends UserChooser {
 	public void setUsersId(final List<Long> usersId) {
 		this.usersId = usersId;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder usersIdToStringBuilder = new StringBuilder('[');
+		for (final Long id : usersId) {
+			usersIdToStringBuilder.append(id).append(", ");
+		}
+		usersIdToStringBuilder.append(']');
+
+		return new StringBuilder("FilterableTeam [description: ").append(description)
+				.append(", usersId: ").append(usersIdToStringBuilder.toString()).append(']')
+				.toString();
+	}
 }

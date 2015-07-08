@@ -6,6 +6,8 @@ import java.util.Locale;
 
 import android.util.Log;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public final class ValidationUtils {
 
 	private ValidationUtils() {
@@ -18,6 +20,8 @@ public final class ValidationUtils {
 	 * @param date The date to validate
 	 * @return true if the date matched the pattern
 	 */
+	@SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_RETURN_FALSE",
+			justification = "We are logging the exception if there's a problem")
 	public static boolean validDate(final String pattern, final String date) {
 		final SimpleDateFormat dateFormatter = new SimpleDateFormat(pattern, Locale.US);
 

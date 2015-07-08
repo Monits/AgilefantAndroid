@@ -251,11 +251,11 @@ public class TaskTimeTrackingService extends RoboService {
 			if (notificationMap.containsKey(notificationId)) {
 				final NotificationHolder notificationHolder = notificationMap.get(notificationId);
 
-				if (action.equals(ACTION_START_TRACKING)) {
+				if (ACTION_START_TRACKING.equals(action)) {
 					startChronometer(notificationHolder);
-				} else if (action.equals(ACTION_PAUSE_TRACKING)) {
+				} else if (ACTION_PAUSE_TRACKING.equals(action)) {
 					pauseChronometer(notificationHolder);
-				} else if (action.equals(ACTION_QUIT_TRACKING_TASK)) {
+				} else if (ACTION_QUIT_TRACKING_TASK.equals(action)) {
 					notificationMap.remove(notificationId);
 
 					mNotificationManager.cancel(notificationHolder.getNotificationId());
@@ -263,7 +263,7 @@ public class TaskTimeTrackingService extends RoboService {
 					if (notificationMap.isEmpty()) {
 						stopSelf();
 					}
-				} else if (action.equals(ACTION_STOP_TRACKING)) {
+				} else if (ACTION_STOP_TRACKING.equals(action)) {
 
 					if (notificationHolder.isChronometerRunning()) {
 						pauseChronometer(notificationHolder);

@@ -159,7 +159,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 	 * Initializes the listview.
 	 * @param context The context
 	 */
-	public void init(final Context context) {
+	public final void init(final Context context) {
 		setOnItemLongClickListener(mOnItemLongClickListener);
 		setOnScrollListener(mScrollListener);
 		final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
@@ -665,6 +665,18 @@ public class DynamicExpandableListView extends ExpandableListView {
 					handleCellSwitch();
 				}
 			}
+		}
+
+		@Override
+		public String toString() {
+
+			return new StringBuilder("DynamicExpandableListViewScrollListener [mPreviousFirstVisibleItem: ")
+				.append(mPreviousFirstVisibleItem)
+				.append(", mPreviousVisibleItemCount: ").append(mPreviousVisibleItemCount)
+				.append(", mCurrentFirstVisibleItem: ").append(mCurrentFirstVisibleItem)
+				.append(", mCurrentVisibleItemCount: ").append(mCurrentVisibleItemCount)
+				.append(", mCurrentScrollState: ").append(mCurrentScrollState)
+				.append(']').toString();
 		}
 	}
 }

@@ -2,6 +2,7 @@ package com.monits.agilefant.fragment.backlog;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -61,6 +62,8 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	protected Long backlogId;
 	protected Long iterationId;
 
+	@SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+			justification = "We're adding necessary params to the fragment")
 	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForBacklog(
 			final Long backlogId, final T fragment) {
 		final Bundle args = new Bundle();
@@ -70,6 +73,8 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		return fragment;
 	}
 
+	@SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+			justification = "We're adding necessary params to the fragment")
 	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForIteration(
 			final Long iterationId, final T fragment) {
 		final Bundle args = new Bundle();

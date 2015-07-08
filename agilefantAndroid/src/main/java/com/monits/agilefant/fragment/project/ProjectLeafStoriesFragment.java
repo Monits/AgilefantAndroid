@@ -70,7 +70,7 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 
-			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_STORY)) {
+			if (AgilefantApplication.ACTION_NEW_STORY.equals(intent.getAction())) {
 				final Story newStory = (Story) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_STORY);
 				stories.add(newStory);
 
@@ -286,7 +286,6 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 				@Override
 				public void onResponse(final Story arg0) {
 					Toast.makeText(context, R.string.feedback_success_update_story_rank, Toast.LENGTH_SHORT).show();
-
 				}
 			};
 
@@ -296,10 +295,9 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 					storiesAdapter.setStories(stories);
 					Toast.makeText(context, R.string.feedback_failed_update_story_rank, Toast.LENGTH_SHORT).show();
 				}
-
 			};
 
-			if (aboveItemId == -1 && swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
+			if (aboveItemId == -1 && swapDirection == SwapDirection.ABOVE_TARGET) {
 				metricsService.rankStoryOver(
 					storiesAdapter.getItem(itemPosition), storiesAdapter.getItem(targetPosition), project.getId(),
 					stories, successListener, errorListener);

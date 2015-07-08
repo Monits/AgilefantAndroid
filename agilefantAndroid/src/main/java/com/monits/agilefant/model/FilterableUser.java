@@ -51,4 +51,9 @@ public class FilterableUser extends UserChooser {
 		final String initials = getUser().getInitials();
 		return super.match(filterString) || (initials != null && initials.equalsIgnoreCase(filterString));
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("FilterableUser [user: ").append(user).append(']').toString();
+	}
 }

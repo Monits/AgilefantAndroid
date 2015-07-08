@@ -17,6 +17,8 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Manages metrics in Agilefant
  * @author Ivan Corbalan
@@ -87,7 +89,7 @@ public class MetricsServiceImpl implements MetricsService {
 
 		// Updating current task prior to sending request to the API
 		final Task fallbackTask = task.getCopy();
-		task.setEffortLeft(Double.valueOf(effortLeft * MINUTES).longValue());
+		task.setEffortLeft((long) (effortLeft * MINUTES));
 
 		agilefantService.updateTask(
 			task,
@@ -337,6 +339,7 @@ public class MetricsServiceImpl implements MetricsService {
 	 * @param source the list to be updated.
 	 * @param fallbackList the list containing the values to be updated with.
 	 */
+	@SuppressFBWarnings(value = "LII_LIST_INDEXED_ITERATING", justification = "We are iterating two lists")
 	public <T extends Rankable<T>> void rollbackRanks(final List<T> source, final List<T> fallbackList) {
 
 		for (int i = 0; i < source.size(); i++) {

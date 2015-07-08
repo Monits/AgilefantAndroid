@@ -53,4 +53,9 @@ public class ProductExpandableListView extends ExpandableListView {
 	public void setExpanded(final boolean expanded) {
 		this.expanded = expanded;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("ProductExpandableListView [expanded: ").append(expanded).append(']').toString();
+	}
 }

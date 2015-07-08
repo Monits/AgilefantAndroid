@@ -64,4 +64,9 @@ public class SelectStateDialogFragment extends DialogFragment {
 
 		return builder.create();
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("SelectStateDialogFragment [mTask: ").append(mTask).append(']').toString();
+	}
 }

@@ -71,4 +71,18 @@ public class Product implements Serializable {
 	public void setProjectList(final List<Project> projectList) {
 		this.projectList = projectList;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder projectListToStringBuilder = new StringBuilder('[');
+		for (final Project project : projectList) {
+			projectListToStringBuilder.append(project).append(", ");
+		}
+		projectListToStringBuilder.append(']');
+
+		return new StringBuilder("Product [id: ").append(id)
+				.append(", title: ").append(title)
+				.append(", projectList: ").append(projectListToStringBuilder.toString())
+				.toString();
+	}
 }

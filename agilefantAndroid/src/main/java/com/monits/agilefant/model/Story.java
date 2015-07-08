@@ -11,7 +11,9 @@ import com.google.gson.annotations.SerializedName;
 public class Story extends Observable implements Serializable, Observer, Rankable<Story> {
 
 	private static final long serialVersionUID = 5178157997788833446L;
+
 	private static final int SHIFT = 32;
+	private static final int PRIME = 31;
 
 	@SerializedName("id")
 	private long id;
@@ -261,7 +263,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 
 			for (final Task task : tasks) {
 				// Agilefant's stories don't consider this states on it's metrics.
-				if (!task.getState().equals(StateKey.DEFERRED)) {
+				if (task.getState() != StateKey.DEFERRED) {
 					oe += task.getOriginalEstimate();
 					el += task.getEffortLeft();
 				}
@@ -275,10 +277,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> SHIFT));
-		return result;
+		return PRIME + (int) (id ^ (id >>> SHIFT));
 	}
 
 	@Override
@@ -297,5 +296,32 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder responsiblesToStringBuilder = new StringBuilder('[');
+		for (final User responsible : responsibles) {
+			responsiblesToStringBuilder.append(responsible).append(", ");
+		}
+		responsiblesToStringBuilder.append(']');
+
+		final StringBuilder tasksToStringBuilder = new StringBuilder('[');
+		for (final Task task : tasks) {
+			tasksToStringBuilder.append(task).append(", ");
+		}
+		tasksToStringBuilder.append(']');
+
+		return new StringBuilder("Story [id: ").append(id)
+			.append(", name: ").append(name)
+			.append(", state: ").append(state)
+			.append(", responsibles: ").append(responsiblesToStringBuilder.toString())
+			.append(", metrics: ").append(metrics)
+			.append(", tasks: ").append(tasksToStringBuilder.toString())
+			.append(", rank: ").append(rank)
+			.append(", backlog: ").append(backlog)
+			.append(", iteration: ").append(iteration)
+			.append(']')
+			.toString();
 	}
 }

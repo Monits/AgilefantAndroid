@@ -94,6 +94,24 @@ public final class BacklogElementParameters {
 		public BacklogElementParameters build() {
 			return new BacklogElementParameters(this);
 		}
+
+		@Override
+		public String toString() {
+			final StringBuilder selectedUsersStringBuilder = new StringBuilder("[");
+			for (final User user : selectedUsers) {
+				selectedUsersStringBuilder.append(user).append(", ");
+			}
+			selectedUsersStringBuilder.append(']');
+
+			return new StringBuilder("BacklogElementParameters.Builder [backlogId: ").append(backlogId)
+				.append(", stateKey: ").append(stateKey)
+				.append(", name: ").append(name)
+				.append(", selectedUsers: ").append(selectedUsersStringBuilder.toString())
+				.append(", name: ").append(name)
+				.append(", iterationId: ").append(iterationId)
+				.append(']')
+				.toString();
+		}
 	}
 
 	/**
@@ -129,5 +147,22 @@ public final class BacklogElementParameters {
 	 */
 	public Long getIterationId() {
 		return iterationId;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder selectedUsersToStringBuilder = new StringBuilder('[');
+		for (final User selectedUser : selectedUsers) {
+			selectedUsersToStringBuilder.append(selectedUser).append(", ");
+		}
+		selectedUsersToStringBuilder.append(']');
+
+		return new StringBuilder("Story [backlogId: ").append(backlogId)
+				.append(", stateKey: ").append(stateKey)
+				.append(", name: ").append(name)
+				.append(", selectedUsers: ").append(selectedUsersToStringBuilder.toString())
+				.append(", iterationId: ").append(iterationId)
+				.append(']')
+				.toString();
 	}
 }

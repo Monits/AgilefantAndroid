@@ -81,4 +81,12 @@ public class Metrics implements Serializable {
 	public void setOriginalEstimate(final long originalEstimate) {
 		this.originalEstimate = originalEstimate;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Metrics [effortLeft: ").append(effortLeft)
+				.append(", effortSpent: ").append(effortSpent)
+				.append(", originalEstimate: ").append(originalEstimate)
+				.append(']').toString();
+	}
 }

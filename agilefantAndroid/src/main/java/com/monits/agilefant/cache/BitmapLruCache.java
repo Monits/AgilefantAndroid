@@ -7,6 +7,8 @@ import android.support.v4.util.LruCache;
 public class BitmapLruCache extends LruCache<String, Bitmap> implements ImageCache {
 
 	public static final int KB = 1024;
+	public static final int DEFAULT_RATIO = 8;
+	public static final int MEMORY_RATIO = DEFAULT_RATIO;
 
 	/**
 	 * Default constructor.
@@ -41,8 +43,7 @@ public class BitmapLruCache extends LruCache<String, Bitmap> implements ImageCac
 
 	private static int getDefaultLruCacheSize() {
 		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / KB);
-		final int cacheSize = maxMemory / 8;
 
-		return cacheSize;
+		return maxMemory / MEMORY_RATIO;
 	}
 }

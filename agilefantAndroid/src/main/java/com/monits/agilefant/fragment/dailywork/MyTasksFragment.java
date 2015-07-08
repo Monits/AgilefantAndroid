@@ -53,7 +53,7 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 
-			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY)) {
+			if (AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY.equals(intent.getAction())) {
 				final Task task = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
 
 				mTasks.add(task);

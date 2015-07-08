@@ -59,4 +59,9 @@ public class Backlog implements Serializable {
 	public void setName(final String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Backlog [id: ").append(id).append(", name: ").append(name).append(']').toString();
+	}
 }

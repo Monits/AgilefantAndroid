@@ -103,11 +103,9 @@ public class AutoCompleteIterationsAdapter extends BaseAdapter implements Filter
 			final String filterString = constraint.toString().toLowerCase();
 			final FilterResults results = new FilterResults();
 
-			final int count = iterations.size();
-			final List<FilterableIteration> filteredList = new ArrayList<FilterableIteration>(count);
+			final List<FilterableIteration> filteredList = new ArrayList<>(iterations.size());
 
-			for (int i = 0; i < count; i++) {
-				final FilterableIteration iteration = iterations.get(i);
+			for (final FilterableIteration iteration : iterations) {
 				final String matchedString = iteration.getMatchedString().toLowerCase();
 				if (filterString != null && iteration.isEnabled()
 						&& (matchedString.contains(filterString)

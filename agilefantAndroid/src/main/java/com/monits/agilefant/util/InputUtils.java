@@ -12,11 +12,7 @@ public final class InputUtils {
 	 * @return the parsed double.
 	 */
 	public static double parseStringToDouble(final String string) {
-		double el = 0;
-		if (!"".equals(string.trim())) {
-			el = Double.valueOf(string.trim());
-		}
-
-		return el;
+		final String trim = string.trim();
+		return !trim.isEmpty() ? Double.parseDouble(trim) : 0;
 	}
 }

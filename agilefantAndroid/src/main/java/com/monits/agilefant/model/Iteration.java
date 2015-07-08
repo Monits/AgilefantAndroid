@@ -11,10 +11,11 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 public class Iteration implements Serializable {
+
 	private static final long serialVersionUID = 4014161739613202291L;
 
-	private static final int INT = 32;
-	private static final int SHIFT = INT;
+	private static final int PRIME = 31;
+	private static final int SHIFT = 32;
 
 	@SerializedName("id")
 	private long id;
@@ -189,10 +190,7 @@ public class Iteration implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> SHIFT));
-		return result;
+		return PRIME + (int) (id ^ (id >>> SHIFT));
 	}
 
 	@Override
@@ -215,6 +213,29 @@ public class Iteration implements Serializable {
 		}
 
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder storiesToStringBuilder = new StringBuilder('[');
+		if (stories != null && !stories.isEmpty()) {
+			for (final Story story : stories) {
+				storiesToStringBuilder.append(story).append(", ");
+			}
+		}
+		storiesToStringBuilder.append(']');
+
+		return new StringBuilder("Iteration [id: ").append(id)
+			.append(", title: ").append(title)
+			.append(", name: ").append(name)
+			.append(", stories: ").append(storiesToStringBuilder.toString())
+			.append(", startDate: ").append(startDate)
+			.append(", endDate: ").append(endDate)
+			.append(", tasksWithoutStory: ").append(tasksWithoutStory)
+			.append(", rootIteration: ").append(rootIteration)
+			.append(", parent: ").append(parent)
+			.append(']')
+			.toString();
 	}
 
 }

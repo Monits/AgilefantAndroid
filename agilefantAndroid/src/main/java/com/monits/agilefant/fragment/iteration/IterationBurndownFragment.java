@@ -22,7 +22,6 @@ public class IterationBurndownFragment extends RoboFragment {
 	private static final String URL = "/drawIterationBurndown.action?backlogId=%backlogId%&timeZoneOffset=%timeZone%";
 
 	private long id;
-	private ImageView burndown;
 
 	@Inject
 	private ImageLoader imageLoader;
@@ -57,7 +56,7 @@ public class IterationBurndownFragment extends RoboFragment {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_iteration_burndown, null);
-		burndown = (ImageView) rootView.findViewById(R.id.burndown);
+		final ImageView burndown = (ImageView) rootView.findViewById(R.id.burndown);
 
 		final int timeZone = TimeZone.getDefault().getRawOffset() / (60 * 1000);
 

@@ -100,6 +100,8 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 			getIterationDetails(iteration, progressDialog);
 
 			break;
+		default:
+			break;
 		}
 	}
 
@@ -241,5 +243,11 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 	@Override
 	protected Observer getObserver() {
 		return observer;
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("StoryAdapterViewActionListener [observer: ").append(observer)
+				.append(", mBacklog: ").append(mBacklog).append(']').toString();
 	}
 }

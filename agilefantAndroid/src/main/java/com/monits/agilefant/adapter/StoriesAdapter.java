@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.listeners.AdapterViewActionListener;
+import com.monits.agilefant.model.Metrics;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.HoursUtils;
@@ -126,7 +127,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 	@Override
 	public View getGroupView(final int groupPosition, final boolean isExpanded,
 			View convertView, final ViewGroup parent) {
-		HolderGroup holder;
+		final HolderGroup holder;
 		if (null == convertView) {
 			holder = new HolderGroup();
 			final View inflate = inflater.inflate(R.layout.stories_item, null);
@@ -155,9 +156,10 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 
 		holder.responsibles.setText(IterationUtils.getResposiblesDisplay(story.getResponsibles()));
 
-		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getEffortLeft()));
-		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getOriginalEstimate()));
-		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(story.getMetrics().getEffortSpent()));
+		final Metrics metrics = story.getMetrics();
+		holder.effortLeft.setText(HoursUtils.convertMinutesToHours(metrics.getEffortLeft()));
+		holder.originalEstimate.setText(HoursUtils.convertMinutesToHours(metrics.getOriginalEstimate()));
+		holder.spendEffort.setText(HoursUtils.convertMinutesToHours(metrics.getEffortSpent()));
 
 		holder.state.setTag(R.id.tag_group_position, groupPosition);
 		holder.state.setOnClickListener(onClickGroupListener);
@@ -201,7 +203,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 	 * Set the stories.
 	 * @param stories The stories to set
 	 */
-	public void setItems(final List<Story> stories) {
+	public final void setItems(final List<Story> stories) {
 		clear();
 
 		Collections.sort(stories, RankComparator.INSTANCE);
@@ -235,7 +237,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 		notifyDataSetChanged();
 	}
 
-	class HolderGroup {
+	static class HolderGroup {
 		public TextView name;
 		public TextView state;
 		public TextView responsibles;
@@ -244,7 +246,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 		public TextView spendEffort;
 	}
 
-	class HolderChild {
+	static class HolderChild {
 		public TextView name;
 		public TextView state;
 		public TextView responsibles;

@@ -59,7 +59,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 	@Override
 	public Task getItem(final int position) {
-		return getCount() > 0 && position < getCount() && position >= 0 ? tasks.get(position) : null;
+		final long count = getCount();
+		return count > 0 && position < count && position >= 0 ? tasks.get(position) : null;
 	}
 
 	@Override
@@ -144,7 +145,7 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	class Holder {
+	static class Holder {
 		public TextView name;
 		public TextView state;
 		public TextView responsibles;

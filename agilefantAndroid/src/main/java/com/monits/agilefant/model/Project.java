@@ -173,4 +173,34 @@ public class Project implements Serializable {
 	public void setParent(final Backlog parent) {
 		this.parent = parent;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder iterationListToStringBuilder = new StringBuilder("[");
+		if (iterationList != null && !iterationList.isEmpty()) {
+			for (final Iteration iteration : iterationList) {
+				iterationListToStringBuilder.append(iteration).append(", ");
+			}
+		}
+		iterationListToStringBuilder.append(']');
+
+		final StringBuilder assigneesToStringBuilder = new StringBuilder("[");
+		if (assignees != null && !assignees.isEmpty()) {
+			for (final User responsible : assignees) {
+				assigneesToStringBuilder.append(responsible).append(", ");
+			}
+		}
+		assigneesToStringBuilder.append(']');
+
+		return new StringBuilder("Project [id: ").append(id)
+				.append(", title: ").append(title)
+				.append(", name: ").append(name)
+				.append(", iterationList: ").append(iterationListToStringBuilder.toString())
+				.append(", startDate: ").append(startDate)
+				.append(", endDate: ").append(endDate)
+				.append(", assignees: ").append(assigneesToStringBuilder.toString())
+				.append(", parent: ").append(parent)
+				.append(']')
+				.toString();
+	}
 }

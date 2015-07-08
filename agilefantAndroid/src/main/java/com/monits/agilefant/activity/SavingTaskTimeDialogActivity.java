@@ -62,7 +62,7 @@ public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
 	}
 
 	private long millisToMinutes(final long millis) {
-		return Math.round((millis / MILLIS_IN_SECOND) / SECONDS_IN_MINUTE);
+		return (millis / MILLIS_IN_SECOND) / SECONDS_IN_MINUTE;
 	}
 
 	private long getSpentEffort(final long minutes) {

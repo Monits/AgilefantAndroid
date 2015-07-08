@@ -61,4 +61,12 @@ public class State {
 	public void setTextColorId(final int textColorId) {
 		this.textColorId = textColorId;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("State [name: ").append(name)
+				.append(", backgroundId: ").append(backgroundId)
+				.append(", textColorId: ").append(textColorId)
+				.append(']').toString();
+	}
 }

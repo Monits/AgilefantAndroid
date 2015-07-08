@@ -31,18 +31,9 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 
 	private Iteration mIteration;
 
-	private TextView startDate;
-	private TextView endDate;
-
 	private ViewPager viewPager;
 
 	private PagerTitleStrip pagerTabStrip;
-
-	private TextView product;
-
-	private TextView project;
-
-	private TextView iterationNameTree;
 
 	/**
 	 * Creates a new IterationFragment with the given iteration
@@ -71,13 +62,14 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_iteration, null);
 
-		startDate = (TextView) view.findViewById(R.id.iteration_start_date);
-		endDate = (TextView) view.findViewById(R.id.iteration_end_date);
+		final TextView startDate = (TextView) view.findViewById(R.id.iteration_start_date);
+		final TextView endDate = (TextView) view.findViewById(R.id.iteration_end_date);
+		final TextView product = (TextView) view.findViewById(R.id.product);
+		final TextView project = (TextView) view.findViewById(R.id.project);
+		final TextView iterationNameTree = (TextView) view.findViewById(R.id.iteration_name_tree);
+
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
 		pagerTabStrip = (PagerTitleStrip) view.findViewById(R.id.pager_header);
-		product = (TextView) view.findViewById(R.id.product);
-		project = (TextView) view.findViewById(R.id.project);
-		iterationNameTree = (TextView) view.findViewById(R.id.iteration_name_tree);
 
 		if (mIteration != null) {
 

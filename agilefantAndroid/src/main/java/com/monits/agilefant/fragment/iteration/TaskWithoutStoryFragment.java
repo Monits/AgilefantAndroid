@@ -52,7 +52,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 
-			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
+			if (AgilefantApplication.ACTION_TASK_UPDATED.equals(intent.getAction())
 					&& !TaskWithoutStoryFragment.this.isDetached()) {
 
 				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
@@ -64,7 +64,7 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 				}
 			}
 
-			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY)) {
+			if (AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY.equals(intent.getAction())) {
 				final Task newTaskWithoutStory =
 						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
 

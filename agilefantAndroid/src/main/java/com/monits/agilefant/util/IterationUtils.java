@@ -1,8 +1,7 @@
 package com.monits.agilefant.util;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.State;
@@ -13,10 +12,10 @@ public final class IterationUtils {
 
 	private static final String NONE = "(none)";
 
-	private static Map<StateKey, State> states;
+	private static EnumMap<StateKey, State> states;
 
 	static {
-		states = new HashMap<StateKey, State>();
+		states = new EnumMap<>(StateKey.class);
 		states.put(StateKey.IMPLEMENTED,
 			new State(StateKey.IMPLEMENTED.getState(), R.drawable.state_light_green, android.R.color.black));
 		states.put(StateKey.BLOCKED,

@@ -175,7 +175,7 @@ public class SpentEffortFragment extends RoboFragment {
 				float el = 0;
 				final String effortLeft = mEffortLeftInput.getText().toString();
 				if (!"".equals(effortLeft)) {
-					el = Float.valueOf(effortLeft);
+					el = Float.parseFloat(effortLeft);
 				}
 
 				if (el == 0 && taskState != StateKey.IMPLEMENTED && taskState != StateKey.DONE) {

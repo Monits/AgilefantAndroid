@@ -3,6 +3,7 @@ package com.monits.agilefant.service;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -253,10 +254,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void retrieveUser(final Long id, final Listener<User> listener, final ErrorListener error) {
 		final StringBuilder url = new StringBuilder().append(getHost()).append(RETRIEVE_USER_ACTION);
 		if (id != null) {
-			url.append("?")
-				.append(USER_ID)
-				.append("=")
-				.append(id);
+			url.append('?').append(USER_ID).append('=').append(id);
 		}
 
 		final GsonRequest<User> request = new GsonRequest<>(
@@ -343,7 +341,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
 				}
 
-				return body.toString().getBytes();
+				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
 
@@ -416,7 +414,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
 				}
 
-				return body.toString().getBytes();
+				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
 
@@ -458,7 +456,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
 				}
 
-				return body.toString().getBytes();
+				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
 
@@ -643,7 +641,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
 				}
 
-				return body.toString().getBytes();
+				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
 
@@ -684,7 +682,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
 				}
 
-				return body.toString().getBytes();
+				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
 

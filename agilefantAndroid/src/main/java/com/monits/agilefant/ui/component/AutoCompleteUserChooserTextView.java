@@ -58,8 +58,7 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 	}
 
 	private void addUsersFromTeam(final List<Long> usersId, final List<UserChooser> filterableUsers) {
-		for (int i = 0; i < filterableUsers.size(); i++) {
-			final UserChooser user = filterableUsers.get(i);
+		for (final UserChooser user : filterableUsers) {
 			if (user instanceof FilterableUser && user.isEnabled() && usersId.contains(user.getId())
 					&& !selectedUsers.contains(((FilterableUser) user).getUser())) {
 				selectedUsers.add(((FilterableUser) user).getUser());

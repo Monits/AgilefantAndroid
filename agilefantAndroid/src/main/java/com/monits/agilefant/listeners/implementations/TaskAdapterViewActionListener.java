@@ -106,6 +106,8 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 		case R.id.column_context:
 			getIterationDetails(object);
 			break;
+		default:
+			break;
 		}
 	}
 
@@ -131,11 +133,9 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 					// Workaround that may be patchy,
 					// but it depends on the request whether it comes or not, and how to get it.
 					if (iteration.getParent() == null && projectList != null) {
-						for (int i = 0; i < projectList.size(); i++) {
-							final Project project = projectList.get(i);
+						for (final Project project : projectList) {
 							final List<Iteration> iterationList = project.getIterationList();
-							for (int j = 0; j < iterationList.size(); j++) {
-								final Iteration parentIteration = iterationList.get(j);
+							for (final Iteration parentIteration : iterationList) {
 								if (parentIteration.getId() ==  iteration.getId()) {
 									final Backlog backlog = new Backlog(project);
 									response.setParent(backlog);
@@ -233,7 +233,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 	private void createPromptDialogFragment(final Task object) {
 		// Agilefant's tasks that are already done, can't have it's EL changed.
-		if (!object.getState().equals(StateKey.DONE)) {
+		if (object.getState() != StateKey.DONE) {
 
 			final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
 					R.string.dialog_effortleft_title,

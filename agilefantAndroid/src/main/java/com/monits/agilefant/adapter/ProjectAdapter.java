@@ -108,17 +108,12 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		return ret;
 	}
 
-	@Override
-	public boolean isChildSelectable(final int arg0, final int arg1) {
-		return true;
-	}
-
 	/**
 	 * set the projects to display.
 	 *
 	 * @param projectList the projects.
 	 */
-	public void setProjects(final List<Project> projectList) {
+	public final void setProjects(final List<Project> projectList) {
 		if (projectList != null) {
 			for (final Project project : projectList) {
 				super.addGroup(project);
@@ -131,12 +126,12 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		notifyDataSetChanged();
 	}
 
-	class HolderGroup {
+	static class HolderGroup {
 		public TextView title;
 		public TextView icon;
 	}
 
-	class HolderChild {
+	static class HolderChild {
 		public TextView title;
 	}
 

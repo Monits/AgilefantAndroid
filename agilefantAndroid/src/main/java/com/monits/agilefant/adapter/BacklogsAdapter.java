@@ -241,7 +241,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 		return true;
 	}
 
-	class Holder {
+	static class Holder {
 		public TextView title;
 		public TextView icon;
 	}

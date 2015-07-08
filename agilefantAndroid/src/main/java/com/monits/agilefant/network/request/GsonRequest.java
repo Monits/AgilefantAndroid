@@ -69,4 +69,12 @@ public class GsonRequest<T> extends RfcCompliantListenableRequest<T> {
 			return Response.error(new ParseError(e));
 		}
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("GsonRequest [gson: ").append(gson)
+				.append(", clazz: ").append(clazz)
+				.append(']')
+				.toString();
+	}
 }

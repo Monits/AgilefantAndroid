@@ -51,7 +51,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
-			if (intent.getAction().equals(AgilefantApplication.ACTION_TASK_UPDATED)
+			if (AgilefantApplication.ACTION_TASK_UPDATED.equals(intent.getAction())
 					&& !StoriesFragment.this.isDetached()) {
 
 				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
@@ -66,7 +66,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 				}
 			}
 
-			if (intent.getAction().equals(AgilefantApplication.ACTION_NEW_STORY)) {
+			if (AgilefantApplication.ACTION_NEW_STORY.equals(intent.getAction())) {
 				final Story newStory = (Story) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_STORY);
 				stories.add(newStory);
 
@@ -126,7 +126,7 @@ public class StoriesFragment extends RoboFragment implements Observer {
 			public void onSwapPositions(final int itemPosition, final int targetPosition,
 					final SwapDirection swapDirection, final long aboveItemId, final long belowItemId) {
 
-				if (aboveItemId == -1 && swapDirection.equals(SwapDirection.ABOVE_TARGET)) {
+				if (aboveItemId == -1 && swapDirection == SwapDirection.ABOVE_TARGET) {
 
 					metricsService.rankStoryOver(
 						storiesAdapter.getGroup(itemPosition), storiesAdapter.getGroup(targetPosition), stories,

@@ -78,13 +78,11 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 		protected FilterResults performFiltering(final CharSequence constraint) {
 			final FilterResults results = new FilterResults();
 
-			final int count = filterableUsers.size();
-			final ArrayList<UserChooser> usersList = new ArrayList<UserChooser>(count);
+			final ArrayList<UserChooser> usersList = new ArrayList<>(filterableUsers.size());
 
 			if (constraint != null) {
 				final String filterString = constraint.toString();
-				for (int i = 0; i < count; i++) {
-					final UserChooser userChooser = filterableUsers.get(i);
+				for (final UserChooser userChooser : filterableUsers) {
 					if (userChooser.isEnabled() && userChooser.match(filterString)) {
 						usersList.add(userChooser);
 					}

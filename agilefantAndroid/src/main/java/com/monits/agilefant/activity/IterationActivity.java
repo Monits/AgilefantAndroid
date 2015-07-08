@@ -66,4 +66,9 @@ public class IterationActivity extends BaseActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "IterationActivity [iteration_id:" + iteration.getId() + ']';
+	}
 }

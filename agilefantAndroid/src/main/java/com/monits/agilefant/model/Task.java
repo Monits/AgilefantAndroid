@@ -9,7 +9,9 @@ import com.google.gson.annotations.SerializedName;
 public class Task extends Observable implements Serializable, Rankable<Task> {
 
 	private static final long serialVersionUID = 2576001407807164868L;
+
 	private static final int SHIFT = 32;
+	public static final int PRIME = 31;
 
 	@SerializedName("effortLeft")
 	private long effortLeft;
@@ -205,7 +207,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	public void setState(final StateKey state, final boolean resetELIfDone) {
 		this.state = state;
 
-		if (state.equals(StateKey.DONE) && resetELIfDone) {
+		if (state == StateKey.DONE && resetELIfDone) {
 			this.effortLeft = 0;
 		}
 
@@ -271,10 +273,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> SHIFT));
-		return result;
+		return PRIME + (int) (id ^ (id >>> SHIFT));
 	}
 
 	@Override
@@ -293,5 +292,27 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder responsiblesToStringBuilder = new StringBuilder('[');
+		for (final User responsible : responsibles) {
+			responsiblesToStringBuilder.append(responsible).append(", ");
+		}
+		responsiblesToStringBuilder.append(']');
+
+		return new StringBuilder("Task [id: ").append(id)
+			.append(", name: ").append(name)
+			.append(", effortLeft: ").append(effortLeft)
+			.append(", effortSpent: ").append(effortSpent)
+			.append(", originalEstimate: ").append(originalEstimate)
+			.append(", responsibles: ").append(responsiblesToStringBuilder.toString())
+			.append(", state: ").append(state)
+			.append(", rank: ").append(rank)
+			.append(", iteration: ").append(iteration)
+			.append(", story: ").append(story)
+			.append(']')
+			.toString();
 	}
 }

@@ -3,6 +3,7 @@ package com.monits.agilefant.activity;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import roboguice.RoboGuice;
 import roboguice.activity.event.OnActivityResultEvent;
 import roboguice.activity.event.OnConfigurationChangedEvent;
@@ -37,6 +38,7 @@ public class RoboActionBarActivity extends ActionBarActivity implements RoboCont
 	protected EventManager eventManager;
 
 	// RoboGuice's bug workaround, in order to use AppCompat without making the app crash.
+	@SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL", justification = "RoboGuice's bug workaround")
 	@Inject
 	private ContentViewListener ignored;
 

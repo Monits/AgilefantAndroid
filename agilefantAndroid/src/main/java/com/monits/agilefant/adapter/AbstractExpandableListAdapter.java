@@ -6,6 +6,8 @@ import java.util.List;
 import android.content.Context;
 import android.widget.BaseExpandableListAdapter;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Abstract Expandable List Adapter
  * @author Ivan Corbalan
@@ -17,6 +19,7 @@ public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandable
 
 	protected Context context;
 
+	@SuppressFBWarnings(value = "DLC_DUBIOUS_LIST_COLLECTION", justification = "We do care about the insertion order")
 	protected List<G> groups;
 
 	protected List<List<C>> children;

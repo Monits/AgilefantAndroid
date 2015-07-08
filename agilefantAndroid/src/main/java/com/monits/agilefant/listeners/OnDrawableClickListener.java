@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 public abstract class OnDrawableClickListener implements OnTouchListener {
 
+	private static final int FUZZ = 40;
 	private final Drawable drawable;
-	private final int fuzz = 40;
 
 	/**
 	 * Constructor
@@ -29,8 +29,8 @@ public abstract class OnDrawableClickListener implements OnTouchListener {
 			final int x = (int) event.getX();
 			final int y = (int) event.getY();
 			final Rect bounds = drawable.getBounds();
-			if (x >= (v.getRight() - bounds.width() - fuzz) && x <= (v.getRight() - v.getPaddingRight() + fuzz)
-					&& y >= (v.getPaddingTop() - fuzz) && y <= (v.getHeight() - v.getPaddingBottom()) + fuzz) {
+			if (x >= (v.getRight() - bounds.width() - FUZZ) && x <= (v.getRight() - v.getPaddingRight() + FUZZ)
+					&& y >= (v.getPaddingTop() - FUZZ) && y <= (v.getHeight() - v.getPaddingBottom()) + FUZZ) {
 
 				return onDrawableClick(event);
 			}

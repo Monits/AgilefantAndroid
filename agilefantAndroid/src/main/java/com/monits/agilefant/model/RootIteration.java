@@ -31,4 +31,9 @@ public class RootIteration implements Serializable {
 	public void setName(final String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("RootIteration [name: ").append(name).append(']').toString();
+	}
 }

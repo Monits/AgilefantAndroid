@@ -3,7 +3,7 @@ package com.monits.agilefant.util;
 public final class HoursUtils {
 
 	private static final int MINUTES_OF_A_HOUR = 60;
-	public static final String HOURS = "h";
+	public static final char HOURS = 'h';
 	public static final int MINUTES_IN_HOUR = 60;
 
 	private HoursUtils() {
@@ -35,8 +35,8 @@ public final class HoursUtils {
 	public static long convertHoursStringToMinutes(final String hours) {
 		Double ret = 0.0;
 		if (hours != null && !"".equals(hours)) {
-			if (hours.endsWith(HOURS)) {
-				ret = Double.valueOf(hours.split(HOURS)[0]);
+			if (hours.endsWith(String.valueOf(HOURS))) {
+				ret = Double.valueOf(hours.split(String.valueOf(HOURS))[0]);
 			} else {
 				ret = Double.valueOf(hours);
 			}
