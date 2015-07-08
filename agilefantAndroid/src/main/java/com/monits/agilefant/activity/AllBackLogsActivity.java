@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.BacklogsPagerAdapter;
@@ -28,6 +29,9 @@ public class AllBackLogsActivity extends BaseActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+
 		final List<Fragment> fragments = new ArrayList<>();
 		fragments.add(MyBacklogsFragment.newInstance());
 		fragments.add(AllBacklogsFragment.newInstance());
@@ -38,5 +42,6 @@ public class AllBackLogsActivity extends BaseActivity {
 		pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.color.all_backlogs_title_background_color));
 		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
 		pagerTabStrip.setDrawFullUnderline(true);
+
 	}
 }

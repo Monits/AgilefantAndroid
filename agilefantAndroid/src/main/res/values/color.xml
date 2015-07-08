@@ -13,4 +13,10 @@
 	<color name="blue_light">#1E5EEE</color>
 	<color name="agilefant_light_blue_text">#2889F9</color>
 	<color name="agilefant_light_blue_selected_row">#87B6D9</color>
+
+    <color name="action_bar_color">#54759E</color>
+    <color name="action_bar_color_dark">#4D6685</color>
+    <color name="action_bar_text">#ffffff</color>
+    <color name="action_bar_popup_text_color">#000000</color>
+
 </resources>

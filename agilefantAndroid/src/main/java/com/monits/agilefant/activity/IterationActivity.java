@@ -3,6 +3,7 @@ package com.monits.agilefant.activity;
 import roboguice.inject.ContentView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,6 +27,9 @@ public class IterationActivity extends BaseActivity {
 		if (savedInstanceState != null) {
 			return;
 		}
+
+		final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);
