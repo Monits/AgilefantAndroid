@@ -373,7 +373,7 @@ public class DynamicListView extends ListView {
 	private void handleActionUp() {
 		if (onSwapRowListener != null && swapOcurred) {
 			onSwapRowListener.onSwapPositions(
-				itemPosition, targetItemPosition, swapDirection, mAboveItemId, mBelowItemId);
+					itemPosition, targetItemPosition, swapDirection, mAboveItemId, mBelowItemId);
 		}
 
 		touchEventsEnded();
@@ -425,7 +425,6 @@ public class DynamicListView extends ListView {
 
 			updateNeighborViewsForID(mMobileItemId);
 
-			final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
 			final ViewTreeObserver observer = getViewTreeObserver();
 			observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 				@SuppressLint("NewApi")
@@ -433,7 +432,7 @@ public class DynamicListView extends ListView {
 				public boolean onPreDraw() {
 					observer.removeOnPreDrawListener(this);
 
-					final View switchView = getViewForID(switchItemID);
+					final View switchView = isBelow ? belowView : aboveView;
 
 					mTotalOffset += deltaY;
 

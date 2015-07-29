@@ -400,7 +400,6 @@ public class DynamicExpandableListView extends ExpandableListView {
 
 			updateNeighborViewsForID(mMobileItemId);
 
-			final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
 			final ViewTreeObserver observer = getViewTreeObserver();
 			observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 				@SuppressLint("NewApi")
@@ -408,7 +407,7 @@ public class DynamicExpandableListView extends ExpandableListView {
 				public boolean onPreDraw() {
 					observer.removeOnPreDrawListener(this);
 
-					final View switchView = getViewForID(switchItemID);
+					final View switchView = isBelow ? belowView : aboveView;
 
 					mTotalOffset += deltaY;
 
