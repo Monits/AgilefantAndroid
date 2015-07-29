@@ -3,14 +3,10 @@ package com.monits.agilefant.activity;
 import java.util.LinkedList;
 import java.util.List;
 
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -33,8 +29,7 @@ import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.util.DateUtils;
 import com.monits.agilefant.util.IterationUtils;
 
-@ContentView(R.layout.activity_project)
-public class ProjectActivity extends BaseActivity {
+public class ProjectActivity extends BaseToolbaredActivity {
 
 	private static final int ACTIVITY_VIEW = 1;
 
@@ -43,43 +38,24 @@ public class ProjectActivity extends BaseActivity {
 	@Inject
 	private ProjectService projectService;
 
-	@InjectView(value = R.id.root_flipper)
 	private ViewFlipper viewFlipper;
-
-	@InjectView(value = R.id.product)
 	private TextView productLabel;
-
-	@InjectView(value = R.id.project)
 	private TextView projectLabel;
-
-	@InjectView(value = R.id.project_start_date)
 	private TextView startLabel;
-
-	@InjectView(value = R.id.project_end_date)
 	private TextView endLabel;
-
-	@InjectView(value = R.id.pager)
 	private ViewPager viewPager;
-
-	@InjectView(value = R.id.pager_header)
-	private PagerTitleStrip pagerTitleStrip;
-
-	@InjectView(value = R.id.assignees)
 	private TextView assigneesLabel;
-
 	private Backlog backlog;
-
 	private Project project;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
-
+		setContentView(R.layout.activity_project);
 		backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
 
+		final PagerTitleStrip pagerTitleStrip = (PagerTitleStrip) findViewById(R.id.pager_header);
 		pagerTitleStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 
 		projectService.getProjectData(
@@ -94,19 +70,23 @@ public class ProjectActivity extends BaseActivity {
 					fragments.add(ProjectLeafStoriesFragment.newInstance(project));
 					final ProjectPagerAdapter pagerAdapter =
 							new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
+					viewPager = (ViewPager) findViewById(R.id.pager);
 					viewPager.setAdapter(pagerAdapter);
 
+					viewFlipper = (ViewFlipper) findViewById(R.id.root_flipper);
 					viewFlipper.setDisplayedChild(ACTIVITY_VIEW);
 
 					final Backlog projectParent = project.getParent();
+
+					productLabel = (TextView) findViewById(R.id.product);
 					productLabel.setText(projectParent.getName());
+					projectLabel = (TextView) findViewById(R.id.project);
 					projectLabel.setText(backlog.getName());
-					startLabel.setText(
-							DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
-					endLabel.setText(
-							DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
-					assigneesLabel.setText(
-							IterationUtils.getResposiblesDisplay(project.getAssignees()));
+					startLabel = (TextView) findViewById(R.id.project_start_date);
+					startLabel.setText(DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
+					endLabel = (TextView) findViewById(R.id.project_end_date);
+					endLabel.setText(DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
+					assigneesLabel.setText(IterationUtils.getResposiblesDisplay(project.getAssignees()));
 				}
 			},
 			new ErrorListener() {
@@ -118,6 +98,7 @@ public class ProjectActivity extends BaseActivity {
 				}
 			});
 
+		assigneesLabel = (TextView) findViewById(R.id.assignees);
 		assigneesLabel.setOnClickListener(getClickListener());
 	}
 

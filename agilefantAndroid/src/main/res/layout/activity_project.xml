@@ -14,15 +14,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <android.support.v7.widget.Toolbar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/toolbar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            app:theme="@style/Toolbar"
-            app:popupTheme="@style/Toolbar_Popup" />
-
         <LinearLayout
             android:id="@+id/path_layout"
             android:layout_width="match_parent"

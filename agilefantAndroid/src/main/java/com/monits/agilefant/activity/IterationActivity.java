@@ -1,9 +1,7 @@
 package com.monits.agilefant.activity;
 
-import roboguice.inject.ContentView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,8 +11,7 @@ import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
 import com.monits.agilefant.fragment.iteration.IterationFragment;
 import com.monits.agilefant.model.Iteration;
 
-@ContentView(R.layout.activity_iteration)
-public class IterationActivity extends BaseActivity {
+public class IterationActivity extends BaseToolbaredActivity {
 
 	public static final String ITERATION = "ITERATION";
 
@@ -23,13 +20,11 @@ public class IterationActivity extends BaseActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_iteration);
 
 		if (savedInstanceState != null) {
 			return;
 		}
-
-		final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
 
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);

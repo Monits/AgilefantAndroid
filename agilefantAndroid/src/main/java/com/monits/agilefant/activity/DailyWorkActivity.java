@@ -6,8 +6,6 @@ package com.monits.agilefant.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,14 +31,7 @@ import com.monits.agilefant.service.DailyWorkService;
  * @author gmuniz
  *
  */
-@ContentView(R.layout.activity_daily_work)
-public class DailyWorkActivity extends BaseActivity {
-
-	@InjectView(R.id.pager)
-	private ViewPager viewPager;
-
-	@InjectView(R.id.pager_header)
-	private PagerTabStrip pagerTabStrip;
+public class DailyWorkActivity extends BaseToolbaredActivity {
 
 	@Inject
 	private DailyWorkService dailyWorkService;
@@ -55,6 +46,9 @@ public class DailyWorkActivity extends BaseActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.activity_daily_work);
+
+		final PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_header);
 		pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.color.all_backlogs_title_background_color));
 		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
 		pagerTabStrip.setDrawFullUnderline(true);
@@ -64,6 +58,7 @@ public class DailyWorkActivity extends BaseActivity {
 		progressDialog.setMessage(getString(R.string.loading));
 		progressDialog.show();
 
+		final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 		dailyWorkService.getDailyWork(
 			new Listener<DailyWork>() {
 
