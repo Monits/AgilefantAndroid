@@ -95,11 +95,22 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	}
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState) {
+	public void onPause() {
+		getActivity().unregisterReceiver(broadcastReceiver);
+		super.onPause();
+	}
 
+	@Override
+	public void onResume() {
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+
+		super.onResume();
+	}
+
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
 
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(BACKLOG);
