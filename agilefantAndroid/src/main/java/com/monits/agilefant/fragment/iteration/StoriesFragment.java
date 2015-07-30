@@ -180,7 +180,7 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 	}
 
 	@Override
-	public int getTitleBackgroudResourceId() {
+	public int getTitleBackgroundResourceId() {
 		return R.drawable.gradient_stories_title;
 	}
 

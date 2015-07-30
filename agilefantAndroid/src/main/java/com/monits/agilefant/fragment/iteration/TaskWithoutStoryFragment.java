@@ -177,7 +177,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	}
 
 	@Override
-	public int getTitleBackgroudResourceId() {
+	public int getTitleBackgroundResourceId() {
 		return R.drawable.gradient_task_without_story_title;
 	}
 

@@ -70,7 +70,7 @@ public class IterationBurndownFragment extends BaseDetailTabFragment {
 	}
 
 	@Override
-	public int getTitleBackgroudResourceId() {
+	public int getTitleBackgroundResourceId() {
 		return R.drawable.gradient_burndown_title;
 	}
 

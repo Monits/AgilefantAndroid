@@ -15,7 +15,7 @@ public abstract class BaseDetailTabFragment extends RoboFragment {
 	 * @return The id of the title background resource
 	 */
 	@DrawableRes
-	public abstract int getTitleBackgroudResourceId();
+	public abstract int getTitleBackgroundResourceId();
 
 	/**
 	 * @return The id of the title color resource

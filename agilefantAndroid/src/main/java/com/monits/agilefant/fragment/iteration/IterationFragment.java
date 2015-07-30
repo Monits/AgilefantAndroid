@@ -70,6 +70,8 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			final ArrayList<Task> tasksWithoutStory = new ArrayList<>();
 			tasksWithoutStory.addAll(mIteration.getTasksWithoutStory());
 
+			final IterationDetailsFragment iterationDetailsFragment = IterationDetailsFragment.newInstance(mIteration);
+			fragments.add(iterationDetailsFragment);
 			fragments.add(StoriesFragment.newInstance(storiesArray, mIteration));
 			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory, mIteration));
 			fragments.add(IterationBurndownFragment.newInstance(mIteration.getId()));
@@ -77,7 +79,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
 			this.viewPager.addOnPageChangeListener(this);
 
-			pagerTabStrip.setBackgroundResource(R.drawable.gradient_stories_title);
+			pagerTabStrip.setBackgroundResource(iterationDetailsFragment.getTitleBackgroundResourceId());
 		}
 
 		return view;
@@ -96,7 +98,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 		final ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter) this.viewPager.getAdapter();
 		final BaseDetailTabFragment fragment = (BaseDetailTabFragment) pagerAdapter.getItem(position);
 
-		pagerTabStrip.setBackgroundResource(fragment.getTitleBackgroudResourceId());
+		pagerTabStrip.setBackgroundResource(fragment.getTitleBackgroundResourceId());
 		pagerTabStrip.setTextColor(getResources().getColor(fragment.getColorResourceId()));
 	}
 }

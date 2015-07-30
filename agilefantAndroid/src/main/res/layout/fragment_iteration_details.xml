@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/path_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal"
+        tools:ignore="RtlHardcoded" >
+
+        <TextView
+            android:id="@+id/product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/all_backlogs_child_text_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/path_separator"
+           android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/all_backlogs_child_text_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/path_separator"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_name_tree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/all_backlogs_child_text_color" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        tools:ignore="RtlHardcoded" >
+
+        <TextView
+            android:id="@+id/start_date"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="@string/start_date"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/start_date"
+            android:layout_toRightOf="@id/start_date"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/end_date"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/start_date"
+            android:text="@string/end_date"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/end_date"
+            android:layout_toRightOf="@id/end_date"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+    </RelativeLayout>
+
+</LinearLayout>

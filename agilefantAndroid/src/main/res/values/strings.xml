@@ -109,4 +109,5 @@
 	<string name="feedback_failed_current_iterations_retrieval">Failed to retrieve current iterations!</string>
 	<string name="validation_empty_context">Context can\'t be empty!</string>
 	<string name="new_element">New</string>
+	<string name="iteration_details">Iteration details</string>
 </resources>
