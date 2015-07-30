@@ -14,7 +14,7 @@ import com.google.inject.Inject;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.AgilefantService;
 
-public class IterationBurndownFragment extends RoboFragment {
+public class IterationBurndownFragment extends BaseDetailTabFragment {
 
 
 	private static final String PARAMS_ID = "id";
@@ -67,5 +67,20 @@ public class IterationBurndownFragment extends RoboFragment {
 				ImageLoader.getImageListener(burndown, R.drawable.agilefant_logo_home, R.drawable.agilefant_logo_home));
 
 		return rootView;
+	}
+
+	@Override
+	public int getTitleBackgroudResourceId() {
+		return R.drawable.gradient_burndown_title;
+	}
+
+	@Override
+	public int getColorResourceId() {
+		return android.R.color.white;
+	}
+
+	@Override
+	public int getTitleResourceId() {
+		return R.string.burndown;
 	}
 }

@@ -33,7 +33,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.view.DynamicExpandableListView;
 
-public class StoriesFragment extends RoboFragment implements Observer {
+public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 
 	@Inject
 	private MetricsService metricsService;
@@ -177,5 +177,20 @@ public class StoriesFragment extends RoboFragment implements Observer {
 	public void onDestroy() {
 		getActivity().unregisterReceiver(broadcastReceiver);
 		super.onDestroy();
+	}
+
+	@Override
+	public int getTitleBackgroudResourceId() {
+		return R.drawable.gradient_stories_title;
+	}
+
+	@Override
+	public int getColorResourceId() {
+		return android.R.color.white;
+	}
+
+	@Override
+	public int getTitleResourceId() {
+		return R.string.stories;
 	}
 }

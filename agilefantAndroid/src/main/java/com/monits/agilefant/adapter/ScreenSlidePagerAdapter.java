@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
 import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
 import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
@@ -42,14 +43,8 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(final int position) {
-		if (getItem(position) instanceof StoriesFragment) {
-			return context.getResources().getString(R.string.stories);
-		} else if (getItem(position) instanceof IterationBurndownFragment) {
-			return context.getResources().getString(R.string.burndown);
-		} else if (getItem(position) instanceof TaskWithoutStoryFragment) {
-			return context.getResources().getString(R.string.task_without_story);
-		} else {
-			return context.getResources().getString(R.string.no_title);
-		}
+		final BaseDetailTabFragment fragment = (BaseDetailTabFragment) getItem(position);
+
+		return context.getResources().getString(fragment.getTitleResourceId());
 	}
 }

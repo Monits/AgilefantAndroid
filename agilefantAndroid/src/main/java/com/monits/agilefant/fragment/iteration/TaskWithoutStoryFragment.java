@@ -30,7 +30,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.view.DynamicListView;
 
-public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
+public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements Observer {
 
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
 
@@ -176,4 +176,18 @@ public class TaskWithoutStoryFragment extends RoboFragment implements Observer {
 		super.onDestroy();
 	}
 
+	@Override
+	public int getTitleBackgroudResourceId() {
+		return R.drawable.gradient_task_without_story_title;
+	}
+
+	@Override
+	public int getColorResourceId() {
+		return android.R.color.white;
+	}
+
+	@Override
+	public int getTitleResourceId() {
+		return R.string.task_without_story;
+	}
 }
