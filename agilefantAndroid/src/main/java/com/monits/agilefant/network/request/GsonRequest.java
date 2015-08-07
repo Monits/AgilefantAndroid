@@ -30,7 +30,7 @@ import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
 /**
  * A request that returns a JSON to be decoded by GSON.
- * 
+ *
  * Based on the original work by Volley's author ficusk: https://gist.github.com/ficusk/5474673
  */
 public class GsonRequest<T> extends RfcCompliantListenableRequest<T> {

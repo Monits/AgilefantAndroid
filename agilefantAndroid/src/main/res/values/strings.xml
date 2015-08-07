@@ -110,4 +110,7 @@
 	<string name="validation_empty_context">Context can\'t be empty!</string>
 	<string name="new_element">New</string>
 	<string name="iteration_details">Iteration details</string>
+	<string name="original_estimate">Orig. Est.</string>
+	<string name="stories_done">Stories done</string>
+	<string name="task_done">Task done</string>
 </resources>

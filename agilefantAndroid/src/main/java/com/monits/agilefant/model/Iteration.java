@@ -16,6 +16,7 @@ public class Iteration implements Serializable {
 
 	private static final int PRIME = 31;
 	private static final int SHIFT = 32;
+    private static final int HUNDRED_PERCENT = 100;
 
 	@SerializedName("id")
 	private long id;
@@ -187,6 +188,99 @@ public class Iteration implements Serializable {
 	 */
 	public void setParent(final Backlog parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return The effort left in minutes
+	 */
+	public long getEffortLeft() {
+		long effortLeft = 0;
+		for (final Story story : stories) {
+			effortLeft += story.getMetrics().getEffortLeft();
+		}
+
+		return effortLeft;
+	}
+
+	/**
+	 * @return The original estimate in minutes.
+	 */
+	public long getOriginalEstimate() {
+		long originalEstimate = 0;
+		for (final Story story : stories) {
+			originalEstimate += story.getMetrics().getOriginalEstimate();
+		}
+
+		return originalEstimate;
+	}
+
+	/**
+	 * @return The effort spent in minutes.
+	 */
+	public long getEffortSpent() {
+		long effortSpent = 0;
+		for (final Story story : stories) {
+			effortSpent += story.getMetrics().getEffortSpent();
+		}
+
+		return effortSpent;
+	}
+
+	/**
+	 * @return The percentage of completed stories
+	 */
+	public int getCompletedStoriesPercentage() {
+		int completedStories = 0;
+
+		if (!stories.isEmpty()) {
+			for (final Story story : stories) {
+				if (story.getState() == StateKey.DONE) {
+					completedStories++;
+				}
+			}
+		}
+
+		return stories.isEmpty() ? 0 : completedStories * HUNDRED_PERCENT / stories.size();
+	}
+
+	/**
+	 * @return The percentage of completed tasks
+	 */
+	public int getCompletedTaskPercentage() {
+		int completedTasks = 0;
+
+		int totalTasks = 0;
+		if (!stories.isEmpty()) {
+			for (final Story story : stories) {
+				final List<Task> tasks = story.getTasks();
+				completedTasks += getCompletedTaskAmount(story.getTasks());
+				totalTasks += tasks.size();
+			}
+		}
+
+		if (!tasksWithoutStory.isEmpty()) {
+			totalTasks += tasksWithoutStory.size();
+			for (final Task two : tasksWithoutStory) {
+				if (two.getState() == StateKey.DONE) {
+					completedTasks++;
+				}
+			}
+		}
+
+		return totalTasks == 0 ? 0 : completedTasks * HUNDRED_PERCENT / totalTasks;
+	}
+
+	private int getCompletedTaskAmount(final List<Task> tasks) {
+		int completedTasks = 0;
+		if (!tasks.isEmpty()) {
+			for (final Task two : tasks) {
+				if (two.getState() == StateKey.DONE) {
+					completedTasks++;
+				}
+			}
+		}
+
+		return completedTasks;
 	}
 
 	@Override

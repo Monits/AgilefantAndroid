@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,6 +9,7 @@
         android:id="@+id/path_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:orientation="horizontal"
         tools:ignore="RtlHardcoded" >
@@ -22,10 +23,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:text="@string/path_separator"
-           android:textColor="@android:color/black" />
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/project"
@@ -36,8 +37,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:text="@string/path_separator"
             android:textColor="@android:color/black" />
 
@@ -51,6 +52,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         tools:ignore="RtlHardcoded" >
 
@@ -87,6 +89,95 @@
             android:layout_toRightOf="@id/end_date"
             android:textColor="@android:color/black"
             tools:ignore="RtlHardcoded" />
-    </RelativeLayout>
 
+        <!-- Effort Left -->
+        <TextView
+            android:id="@+id/effort_left"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/end_date"
+            android:text="@string/effort_left"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_effort_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/effort_left"
+            android:layout_toRightOf="@id/effort_left"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+
+        <!-- Original Estimate -->
+        <TextView
+            android:id="@+id/original_estimate"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/effort_left"
+            android:text="@string/original_estimate"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_original_estimate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/original_estimate"
+            android:layout_toRightOf="@id/original_estimate"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+
+        <!-- Spent Effort -->
+        <TextView
+            android:id="@+id/spent_effort"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iteration_original_estimate"
+            android:text="@string/spent_effort"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_spent_effort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/spent_effort"
+            android:layout_toRightOf="@id/spent_effort"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+
+        <!-- Stories Done -->
+        <TextView
+            android:id="@+id/stories_done"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spent_effort"
+            android:text="@string/stories_done"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_stories_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/stories_done"
+            android:layout_toRightOf="@id/stories_done"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+
+        <!-- Task Done -->
+        <TextView
+            android:id="@+id/task_done"
+            android:layout_width="@dimen/iteration_titles"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/stories_done"
+            android:text="@string/task_done"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/iteration_task_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/task_done"
+            android:layout_toRightOf="@id/task_done"
+            android:textColor="@android:color/black"
+            tools:ignore="RtlHardcoded" />
+    </RelativeLayout>
 </LinearLayout>

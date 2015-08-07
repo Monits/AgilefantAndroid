@@ -12,6 +12,7 @@ import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.util.DateUtils;
+import com.monits.agilefant.util.HoursUtils;
 
 public class IterationDetailsFragment extends BaseDetailTabFragment {
 
@@ -43,9 +44,14 @@ public class IterationDetailsFragment extends BaseDetailTabFragment {
 
 			final TextView startDate = (TextView) rootView.findViewById(R.id.iteration_start_date);
 			final TextView endDate = (TextView) rootView.findViewById(R.id.iteration_end_date);
+			final TextView iterationNameTree = (TextView) rootView.findViewById(R.id.iteration_name_tree);
 			final TextView product = (TextView) rootView.findViewById(R.id.product);
 			final TextView project = (TextView) rootView.findViewById(R.id.project);
-			final TextView iterationNameTree = (TextView) rootView.findViewById(R.id.iteration_name_tree);
+			final TextView effortLeft = (TextView) rootView.findViewById(R.id.iteration_effort_left);
+			final TextView originalEstimate = (TextView) rootView.findViewById(R.id.iteration_original_estimate);
+			final TextView spentEffort = (TextView) rootView.findViewById(R.id.iteration_spent_effort);
+			final TextView storiesDone = (TextView) rootView.findViewById(R.id.iteration_stories_done);
+			final TextView taskDone = (TextView) rootView.findViewById(R.id.iteration_task_done);
 
 			final Backlog parent = iteration.getParent();
 			if (parent == null) {
@@ -70,6 +76,12 @@ public class IterationDetailsFragment extends BaseDetailTabFragment {
 
 			startDate.setText(DateUtils.formatDate(iteration.getStartDate(), DateUtils.DATE_PATTERN));
 			endDate.setText(DateUtils.formatDate(iteration.getEndDate(), DateUtils.DATE_PATTERN));
+
+			effortLeft.setText(HoursUtils.convertMinutesToHours(iteration.getEffortLeft()));
+			originalEstimate.setText(HoursUtils.convertMinutesToHours(iteration.getOriginalEstimate()));
+			spentEffort.setText(HoursUtils.convertMinutesToHours(iteration.getEffortSpent()));
+			storiesDone.setText(String.valueOf(iteration.getCompletedStoriesPercentage()) + '%');
+			taskDone.setText(String.valueOf(iteration.getCompletedTaskPercentage()) + '%');
 		}
 
 		return rootView;
