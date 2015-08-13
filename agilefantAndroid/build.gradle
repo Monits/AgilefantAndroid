@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
-apply plugin: 'checkstyle'
+apply plugin: 'com.monits.staticCodeAnalysis'
 
 android {
     compileSdkVersion 22
@@ -34,92 +32,6 @@ dependencies {
     compile files('libs/guice-4.0-no_aop.jar')
     compile files('libs/javax.inject-1.jar')
     compile files('libs/roboguice-2.0.jar')
-
-    checkstyle 'com.puppycrawl.tools:checkstyle:6.7'
-
-    findbugs 'com.google.code.findbugs:findbugs:3.0.1'
-    findbugs configurations.findbugsPlugins.dependencies
-
-    // To keep everything tidy, we set these apart
-    findbugsPlugins('com.monits:findbugs-plugin:0.2.0-SNAPSHOT') {
-        transitive = false
-    }
-    findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:6.2.1'
 }
-
-// linters!
-task downloadCheckstyleXml {
-    new File("${project.rootDir}/config/checkstyle/").mkdirs()
-    ant.get(src: 'http://static.monits.com/checkstyle.xml', dest: "${project.rootDir}/config/checkstyle/checkstyle.xml")
-}
-
-task checkstyle(type: Checkstyle, dependsOn: downloadCheckstyleXml) {
-    configFile file("${project.rootDir}/config/checkstyle/checkstyle.xml")
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    classpath = project.configurations.compile
-}
-
-task findbugs(type: FindBugs) {
-    dependsOn project.tasks.withType(JavaCompile)
-    classes = files("$project.buildDir/intermediates/classes/")
-    ignoreFailures = true
-    effort = "max"
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
-
-    reports {
-        xml {
-            destination "$project.buildDir/reports/findbugs/findbugs.xml"
-            xml.withMessages true
-        }
-    }
-
-    pluginClasspath = project.configurations.findbugsPlugins
-    classpath = project.configurations.compile
-}
-
-pmd {
-    toolVersion = '5.3.2'
-}
-
-task pmd(type: Pmd) {
-    ignoreFailures = true
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
-
-    ruleSets = ['http://static.monits.com/pmd.xml']
-}
-
-// add CPD to check
-check << {
-    File outDir = new File("$project.buildDir/reports/pmd/")
-    outDir.mkdirs()
-    ant.taskdef(name: 'cpd', classname: 'net.sourceforge.pmd.cpd.CPDTask',
-            classpath: configurations.pmd.asPath)
-    ant.cpd(minimumTokenCount: '100', format: 'xml',
-            outputFile: new File(outDir , 'cpd.xml')) {
-        fileset(dir: "src") {
-            include(name: '**/*.java')
-            exclude(name: '**/gen/**')
-        }
-    }
-}
-
-check.dependsOn 'checkstyle', 'pmd', 'findbugs'
 
 

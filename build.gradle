@@ -2,9 +2,13 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'http://nexus.monits.com/content/repositories/oss-releases'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.monits:static-code-analysis-plugin:1.2.0'
     }
 }
 
