@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'com.monits:static-code-analysis-plugin:1.2.0'
+        classpath 'com.monits:static-code-analysis-plugin:1.+'
     }
 }
 
@@ -23,5 +23,5 @@ allprojects {
 
 // PMD 5.2+ requires gradle 2.4+
 wrapper {
-    gradleVersion = '2.4'
+    gradleVersion = '2.6'
 }

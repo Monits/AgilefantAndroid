@@ -1,12 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.monits.staticCodeAnalysis'
 
+version = "2.1.0-SNAPSHOT"
+group = "com.monits"
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.monits.agilefant"
+        versionName project.version
         minSdkVersion 11
         targetSdkVersion 22
     }
