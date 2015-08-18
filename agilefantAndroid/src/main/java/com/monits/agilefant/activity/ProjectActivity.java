@@ -1,8 +1,5 @@
 package com.monits.agilefant.activity;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTitleStrip;
@@ -18,7 +15,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.inject.Inject;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.ProjectPagerAdapter;
+import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment.OnUsersSubmittedListener;
@@ -28,6 +25,9 @@ import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.util.DateUtils;
 import com.monits.agilefant.util.IterationUtils;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ProjectActivity extends BaseToolbaredActivity {
 
@@ -45,6 +45,7 @@ public class ProjectActivity extends BaseToolbaredActivity {
 	private TextView endLabel;
 	private ViewPager viewPager;
 	private TextView assigneesLabel;
+
 	private Backlog backlog;
 	private Project project;
 
@@ -68,8 +69,8 @@ public class ProjectActivity extends BaseToolbaredActivity {
 
 					final List<Fragment> fragments = new LinkedList<>();
 					fragments.add(ProjectLeafStoriesFragment.newInstance(project));
-					final ProjectPagerAdapter pagerAdapter =
-							new ProjectPagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
+					final ScreenSlidePagerAdapter pagerAdapter =
+							new ScreenSlidePagerAdapter(ProjectActivity.this, getSupportFragmentManager(), fragments);
 					viewPager = (ViewPager) findViewById(R.id.pager);
 					viewPager.setAdapter(pagerAdapter);
 
@@ -143,5 +144,10 @@ public class ProjectActivity extends BaseToolbaredActivity {
 					.commit();
 			}
 		};
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectFragment [backlog: " + backlog + "project" + project + ']';
 	}
 }

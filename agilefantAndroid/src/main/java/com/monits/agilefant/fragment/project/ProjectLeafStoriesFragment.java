@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -35,6 +36,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.IterationAdapter;
 import com.monits.agilefant.adapter.ProjectLeafStoriesAdapter;
 import com.monits.agilefant.fragment.backlog.story.CreateLeafStoryFragment;
+import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
 import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
 import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
@@ -46,7 +48,7 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.view.DynamicListView;
 
-public class ProjectLeafStoriesFragment extends RoboFragment implements Observer {
+public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements Observer {
 
 	private static final String BACKLOG = "PROJECT_BACKLOG";
 
@@ -59,6 +61,9 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 	private MetricsService metricsService;
 
 	private ViewFlipper viewFlipper;
+
+	@SuppressFBWarnings(
+		value = "MISSING_FIELD_IN_TO_STRING", justification = "It's a view, we don't need this in toString")
 	private DynamicListView storiesListView;
 
 	private ProjectLeafStoriesAdapter storiesAdapter;
@@ -276,6 +281,26 @@ public class ProjectLeafStoriesFragment extends RoboFragment implements Observer
 			storiesAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
 		}
+	}
+
+	@Override
+	public int getTitleBackgroundResourceId() {
+		return R.drawable.gradient_stories_title;
+	}
+
+	@Override
+	public int getColorResourceId() {
+		return 0;
+	}
+
+	@Override
+	public int getTitleResourceId() {
+		return R.string.backlog;
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectLeafStoriesFragment [project: " + project + ']';
 	}
 
 	/**
