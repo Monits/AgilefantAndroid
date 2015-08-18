@@ -2,6 +2,7 @@ bin/
 gen/
 .*
 !.gitignore
+!.gitflowconfig
 target/
 !.arc*
 
