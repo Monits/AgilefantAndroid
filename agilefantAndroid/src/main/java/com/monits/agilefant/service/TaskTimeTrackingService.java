@@ -124,7 +124,7 @@ public class TaskTimeTrackingService extends RoboService {
 				isChronometerRunning);
 
 		final NotificationCompat.Builder mNotificationBuilder = notificationHolder.getNotificationBuilder()
-			.setSmallIcon(R.drawable.ic_launcher)
+			.setSmallIcon(R.drawable.ic_small_icon)
 			.setOnlyAlertOnce(true)
 			.setDefaults(Notification.DEFAULT_LIGHTS)
 			.setOngoing(true)

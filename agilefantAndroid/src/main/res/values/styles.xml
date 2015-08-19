@@ -28,4 +28,8 @@
         <item name="android:background">@color/action_bar_text</item>
         <item name="android:textColorPrimary">@color/action_bar_popup_text_color</item>
     </style>
+
+    <style name="Notification.Title" parent="TextAppearance.StatusBar.EventContent.Title">
+    </style>
+
 </resources>
