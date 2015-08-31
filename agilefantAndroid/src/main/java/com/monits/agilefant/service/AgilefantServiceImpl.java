@@ -2,6 +2,7 @@ package com.monits.agilefant.service;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -9,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.http.HttpStatus;
 
 import android.content.SharedPreferences;
 
@@ -44,6 +43,8 @@ import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.GsonRequest;
 import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
@@ -126,6 +127,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private SharedPreferences sharedPreferences;
 
 	@Inject
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING", justification = "We do not want this in the toString")
 	private Gson gson;
 
 	@Inject
@@ -141,7 +143,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 			@Override
 			public void onErrorResponse(final VolleyError volleyError) {
 				final NetworkResponse response = volleyError.networkResponse;
-				if (response != null && response.statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+				if (response != null && response.statusCode == HttpURLConnection.HTTP_MOVED_TEMP) {
 					final String location = response.headers.get("Location");
 					if (location != null && location.split(";")[0].equals(getHost() + LOGIN_OK)) {
 						listener.onResponse(location);
@@ -439,7 +441,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					}
 
 					appendURLEncodedParam(body, RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
-					appendURLEncodedParam(body, TASK_STATE, String.valueOf(task.getState().name()), paramsEncoding);
+					appendURLEncodedParam(body, TASK_STATE, task.getState().name(), paramsEncoding);
 
 					/*
 					 *  This 2 values, EL and OE, for sending requests it needs # of hours, not in minutes,
@@ -498,23 +500,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, getHost());
 
-		final GsonRequest<Story> request = new GsonRequest<Story>(
-				Method.POST, url, gson, Story.class, listener, error) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
-
-				params.put(STORY_ID, String.valueOf(story.getId()));
-				params.put(TARGET_STORY_ID, String.valueOf(targetStory.getId()));
-
-				if (backlogId != null) {
-					params.put(BACKLOG_ID, String.valueOf(backlogId));
-				}
-
-				return params;
-			}
-		};
+		final GsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener, error);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -531,8 +517,15 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, getHost());
 
-		final GsonRequest<Story> request = new GsonRequest<Story>(
-				Method.POST, url, gson, Story.class, listener, error) {
+		final GsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener, error);
+
+		enqueueWithReloginPolicyAttached(request);
+	}
+
+	private GsonRequest<Story> newGsonRequest(final Story story, final Story targetStory, final Long backlogId,
+		final String url, final Listener<Story> listener, final ErrorListener error) {
+
+		return new GsonRequest<Story>(Method.POST, url, gson, Story.class, listener, error) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -548,8 +541,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 				return params;
 			}
 		};
-
-		enqueueWithReloginPolicyAttached(request);
 	}
 
 	/**
@@ -626,7 +617,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					}
 
 					appendURLEncodedParam(body, STORY_DESCRIPTION, "", paramsEncoding);
-					appendURLEncodedParam(body, STORY_NAME, String.valueOf(parameters.getName()), paramsEncoding);
+					appendURLEncodedParam(body, STORY_NAME, parameters.getName(), paramsEncoding);
 					appendURLEncodedParam(body, STORY_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
 					appendURLEncodedParam(body, STORY_STORY_POINTS, "", paramsEncoding);
 					appendURLEncodedParam(body, STORY_STORY_VALUE, "", paramsEncoding);
@@ -674,7 +665,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 					appendURLEncodedParam(body, RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
 					appendURLEncodedParam(body, TASK_EFFORT_LEFT, "", paramsEncoding);
-					appendURLEncodedParam(body, TASK_NAME, String.valueOf(parameters.getName()), paramsEncoding);
+					appendURLEncodedParam(body, TASK_NAME, parameters.getName(), paramsEncoding);
 					appendURLEncodedParam(body, TASK_ORIGINAL_ESTIMATE, "", paramsEncoding);
 					appendURLEncodedParam(body, TASK_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
 
@@ -706,6 +697,11 @@ public class AgilefantServiceImpl implements AgilefantService {
 		requestQueue.add(RequeueAfterRequestDecorator.wrap(request, reloginRequeuePolicy));
 	}
 
+	@Override
+	public String toString() {
+		return "AgilefantServiceImpl{host=" + host + '}';
+	}
+
 	/**
 	 * Implementation of {@link RequeuePolicy} which will attempt to re-login before requeueing.
 	 *
@@ -719,7 +715,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		@Override
 		public boolean shouldRequeue(final NetworkResponse networkResponse) {
-			return networkResponse != null && networkResponse.statusCode == HttpStatus.SC_MOVED_TEMPORARILY;
+			return networkResponse != null && networkResponse.statusCode == HttpURLConnection.HTTP_MOVED_TEMP;
 		}
 
 		@Override

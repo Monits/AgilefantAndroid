@@ -11,12 +11,15 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
+
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme" tools:ignore="NewApi">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:colorPrimaryDark">@color/action_bar_color_dark</item>
+        <item name="colorAccent">@color/cyan</item>
+
     </style>
 
     <style name="Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
@@ -32,4 +35,10 @@
     <style name="Notification.Title" parent="TextAppearance.StatusBar.EventContent.Title">
     </style>
 
+    <style name="fab_labels" parent="AppBaseTheme">
+        <item name="android:textColorPrimary">@color/fab_label_primary_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">@dimen/margin_fab_label_Right</item>
+        <item name="android:background">@drawable/state_fab_text</item>
+    </style>
 </resources>

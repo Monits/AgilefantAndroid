@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/iteration_menu_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="false"
+    android:background="@android:color/transparent"
+    tools:ignore="RtlHardcoded">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/iteration_add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_new"
+        android:gravity="bottom|right"
+        android:layout_margin="16dp"
+        tools:ignore="RtlHardcoded"
+        android:layout_gravity="right|bottom"/>
+
+    <LinearLayout
+        android:id="@+id/fab_buttons_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/fab_menu_background"
+        android:gravity="right|bottom"
+        android:orientation="vertical"
+        android:layout_gravity="right|bottom">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/margin_fab_menu_right"
+            tools:ignore="RtlHardcoded"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_task"
+                style="@style/fab_labels"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/iteration_fab_new_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_new"
+                android:layout_margin="@dimen/margin_fab"
+                app:fabSize="mini"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/margin_fab_menu_button"
+            android:layout_marginRight="@dimen/margin_fab_menu_right"
+            tools:ignore="RtlHardcoded">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/fab_labels"
+                android:text="@string/new_story"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/iteration_fab_new_story"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_new"
+                android:layout_margin="@dimen/margin_fab"
+                app:fabSize="mini"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

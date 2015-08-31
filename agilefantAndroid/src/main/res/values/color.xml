@@ -20,4 +20,8 @@
     <color name="action_bar_popup_text_color">#000000</color>
     <color name="divider">@android:color/darker_gray</color>
 
+    <color name="fab_menu_background">#CCd4d4d4</color>
+    <color name="fab_label_primary_color">#95000000</color>
+
+
 </resources>

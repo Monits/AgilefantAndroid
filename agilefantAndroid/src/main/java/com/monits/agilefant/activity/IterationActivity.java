@@ -1,9 +1,12 @@
 package com.monits.agilefant.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
@@ -16,6 +19,10 @@ public class IterationActivity extends BaseToolbaredActivity {
 	public static final String ITERATION = "ITERATION";
 
 	private Iteration iteration;
+	private LinearLayout optionsContainer;
+	private boolean fabInited;
+
+
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -34,40 +41,75 @@ public class IterationActivity extends BaseToolbaredActivity {
 		transaction.commit();
 	}
 
-
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.menu_iteration_new_element, menu);
-		return true;
+	protected void onStart() {
+		super.onStart();	// Let the toolbar be configured...
+
+		// And do our magic on top
+		if (!fabInited) {
+			final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
+			final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
+			initFABs(fabContainer);
+			fabInited = true;
+		}
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_new_story:
-			final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iteration.getId());
-			getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, createStoryFragment)
-				.addToBackStack(null)
-				.commit();
+	private void initFABs(final View fabContainer) {
+		final FloatingActionButton addFAB = (FloatingActionButton) fabContainer.findViewById(R.id.iteration_add_fab);
+		final FloatingActionButton addStoryFAB =
+				(FloatingActionButton) fabContainer.findViewById(R.id.iteration_fab_new_story);
+		final FloatingActionButton addTaskFAB =
+				(FloatingActionButton) fabContainer.findViewById(R.id.iteration_fab_new_task);
+		optionsContainer = (LinearLayout) fabContainer.findViewById(R.id.fab_buttons_container);
 
-			return true;
-		case R.id.action_new_task:
-			final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory.newInstance(iteration.getId());
-			getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, createTaskWithoutStory)
-				.addToBackStack(null)
-				.commit();
-			return true;
+		View.OnClickListener animationClick = new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				animationFABMenu();
+			}
+		};
 
-		default:
-			return super.onOptionsItemSelected(item);
+		optionsContainer.setOnClickListener(animationClick);
+
+		addFAB.setOnClickListener(animationClick);
+
+		addStoryFAB.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iteration.getId());
+				animationFABMenu();
+				replaceFragment(createStoryFragment);
+			}
+		});
+
+		addTaskFAB.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory
+						.newInstance(iteration.getId());
+				animationFABMenu();
+				replaceFragment(createTaskWithoutStory);
+			}
+		});
+	}
+
+	private void animationFABMenu() {
+		if (optionsContainer.getVisibility() == View.INVISIBLE) {
+			optionsContainer.setVisibility(View.VISIBLE);
+		} else {
+			optionsContainer.setVisibility(View.INVISIBLE);
 		}
+	}
+
+	private void replaceFragment(final Fragment fragment) {
+		getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, fragment)
+				.addToBackStack(null)
+				.commit();
 	}
 
 	@Override
 	public String toString() {
-		return "IterationActivity [iteration_id:" + iteration.getId() + ']';
+		return "IterationActivity [iteration_id:" + iteration.getId() + ", fabInited:" + fabInited + ']';
 	}
 }
