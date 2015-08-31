@@ -124,28 +124,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	}
 
 	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_project_new_element, menu);
-
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_new_story:
-			this.getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, CreateLeafStoryFragment.newInstance(project.getId()))
-				.addToBackStack(null)
-				.commit();
-
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 

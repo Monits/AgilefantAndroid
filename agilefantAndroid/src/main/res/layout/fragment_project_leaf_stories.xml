@@ -32,7 +32,8 @@
             android:dividerHeight="@dimen/divider_stories_task"
             android:groupIndicator="@null"
             android:listSelector="@android:color/transparent"
-            android:paddingBottom="@dimen/divider_stories_task" />
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/padding_fab_scroll"/>
 
         <TextView
             android:id="@+id/stories_empty_view"
