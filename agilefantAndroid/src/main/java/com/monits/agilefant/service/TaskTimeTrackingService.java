@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import roboguice.service.RoboService;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +26,7 @@ import com.monits.agilefant.activity.SavingTaskTimeDialogActivity;
 import com.monits.agilefant.model.NotificationHolder;
 import com.monits.agilefant.model.Task;
 
-public class TaskTimeTrackingService extends RoboService {
+public class TaskTimeTrackingService extends Service {
 
 	public static final String ACTION_START_TRACKING = "com.monits.agilefant.intent.action.START_TRACKING";
 	public static final String ACTION_PAUSE_TRACKING = "com.monits.agilefant.intent.action.PAUSE_TRACKING";
@@ -49,6 +49,7 @@ public class TaskTimeTrackingService extends RoboService {
 
 	@Override
 	public void onCreate() {
+		super.onCreate();
 		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		final IntentFilter intentFilter = new IntentFilter();
@@ -58,8 +59,6 @@ public class TaskTimeTrackingService extends RoboService {
 		intentFilter.addAction(ACTION_QUIT_TRACKING_TASK);
 
 		registerReceiver(broadcastReceiver, intentFilter);
-
-		super.onCreate();
 	}
 
 	@Override
@@ -98,8 +97,8 @@ public class TaskTimeTrackingService extends RoboService {
 	@Override
 	public void onDestroy() {
 		mNotificationManager.cancelAll();
-
 		unregisterReceiver(broadcastReceiver);
+		super.onDestroy();
 	}
 
 	/**
@@ -224,6 +223,8 @@ public class TaskTimeTrackingService extends RoboService {
 		}
 	}
 
+	// FIXME : We need to find a better fix
+	@SuppressWarnings("ResourceType")
 	private void collapseStatusBar() {
 		final Object sbservice = getSystemService("statusbar");
 

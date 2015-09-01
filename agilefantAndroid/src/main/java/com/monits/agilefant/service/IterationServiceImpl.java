@@ -4,14 +4,24 @@ import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.FilterableIteration;
 import com.monits.agilefant.model.Iteration;
 
+import javax.inject.Inject;
+
+
 public class IterationServiceImpl implements IterationService {
 
+	private final AgilefantService agilefantService;
+
+	/**
+	 * @param agilefantService Injected via constructor by Dagger
+	 */
+
 	@Inject
-	private AgilefantService agilefantService;
+	public IterationServiceImpl(final AgilefantService agilefantService) {
+		this.agilefantService = agilefantService;
+	}
 
 	@Override
 	public void getIteration(final long id, final Listener<Iteration> listener, final ErrorListener error) {

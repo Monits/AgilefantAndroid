@@ -1,20 +1,29 @@
 package com.monits.agilefant.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.flurry.android.FlurryAgent;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.UserService;
 
-public class BaseActivity extends RoboActionBarActivity {
+import javax.inject.Inject;
+
+public class BaseActivity extends AppCompatActivity {
 
 	@Inject
-	private UserService userService;
+	UserService userService;
+
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		AgilefantApplication.getObjectGraph().inject(this);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {

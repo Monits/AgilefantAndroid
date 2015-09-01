@@ -5,11 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import roboguice.fragment.RoboFragment;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +25,7 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.dialog.DateTimePickerDialogFragment;
 import com.monits.agilefant.dialog.DateTimePickerDialogFragment.OnDateSetListener;
@@ -36,7 +38,9 @@ import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.InputUtils;
 import com.monits.agilefant.util.ValidationUtils;
 
-public class SpentEffortFragment extends RoboFragment {
+import javax.inject.Inject;
+
+public class SpentEffortFragment extends Fragment {
 
 	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 
@@ -45,15 +49,19 @@ public class SpentEffortFragment extends RoboFragment {
 	public static final int MINUTES = 60;
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	@Inject
-	private UserService userService;
+	UserService userService;
 
-	private TextView mDateInput;
-	private EditText mHoursInput;
-	private EditText mCommentInput;
-	private EditText mEffortLeftInput;
+	@Bind(R.id.date)
+	TextView mDateInput;
+	@Bind(R.id.effort_spent)
+	EditText mHoursInput;
+	@Bind(R.id.comment)
+	EditText mCommentInput;
+	@Bind(R.id.effort_left)
+	EditText mEffortLeftInput;
 
 
 	private SimpleDateFormat dateFormatter;
@@ -98,6 +106,7 @@ public class SpentEffortFragment extends RoboFragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		final Bundle arguments = getArguments();
 		task = (Task) arguments.getSerializable(TASK);
@@ -110,17 +119,14 @@ public class SpentEffortFragment extends RoboFragment {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_spent_effort, null);
-
+		ButterKnife.bind(this, view);
 		final Date time = Calendar.getInstance().getTime();
 		final String formattedDate = dateFormatter.format(time);
 
-		mDateInput = (TextView) view.findViewById(R.id.date);
 		mDateInput.setText(formattedDate);
 
 		final EditText mResponsiblesInput = (EditText) view.findViewById(R.id.responsibles);
 		mResponsiblesInput.setText(userService.getLoggedUser().getInitials());
-
-		mHoursInput = (EditText) view.findViewById(R.id.effort_spent);
 
 		mEffortLeftInput = (EditText) view.findViewById(R.id.effort_left);
 		mEffortLeftInput.setText(String.valueOf((float) task.getEffortLeft() / MINUTES));
@@ -131,8 +137,6 @@ public class SpentEffortFragment extends RoboFragment {
 			mHoursInput.setText(HoursUtils.convertMinutesToHours(minutesSpent));
 			mEffortLeftInput.setText(String.valueOf(difference < 0 ? 0 : difference));
 		}
-
-		mCommentInput = (EditText) view.findViewById(R.id.comment);
 
 		final ImageButton mTriggerPickerButton = (ImageButton) view.findViewById(R.id.datepicker_button);
 		mTriggerPickerButton.setOnClickListener(new OnClickListener() {

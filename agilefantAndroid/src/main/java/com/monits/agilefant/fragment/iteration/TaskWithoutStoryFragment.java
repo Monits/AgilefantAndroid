@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import roboguice.fragment.RoboFragment;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +20,6 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
@@ -30,6 +30,8 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.view.DynamicListView;
 
+import javax.inject.Inject;
+
 public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements Observer {
 
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
@@ -37,11 +39,12 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	private static final String EXTRA_ITERATION = "com.monits.agilefant.extra.ITERATION";
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	private List<Task> taskWithoutStory;
 
-	private DynamicListView taskWithoutStoryListView;
+	@Bind(R.id.task_without_story)
+	DynamicListView taskWithoutStoryListView;
 
 	private TaskWithoutStoryAdapter taskWithoutStoryAdapter;
 	private Iteration iteration;
@@ -97,7 +100,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		AgilefantApplication.getObjectGraph().inject(this);
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
@@ -114,7 +117,8 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_task_without_story, container, false);
 
-		taskWithoutStoryListView = (DynamicListView) rootView.findViewById(R.id.task_without_story);
+		ButterKnife.bind(this, rootView);
+
 		taskWithoutStoryListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
 		taskWithoutStoryListView.setItems(taskWithoutStory);
 

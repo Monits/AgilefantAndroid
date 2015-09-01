@@ -11,17 +11,19 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.MetricsService;
+
+import javax.inject.Inject;
+
 public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	/**
 	 * Return a new CreateStoryFragment with the given iteration id.
@@ -31,6 +33,12 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 	public static CreateStoryFragment newInstance(final long iterationId) {
 		final CreateStoryFragment fragment = new CreateStoryFragment();
 		return prepareFragmentForIteration(iterationId, fragment);
+	}
+
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	@Override

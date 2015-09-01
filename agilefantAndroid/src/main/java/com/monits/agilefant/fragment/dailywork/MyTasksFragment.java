@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import roboguice.fragment.RoboFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.MyTasksAdapter;
@@ -35,12 +34,14 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.BacklogService;
 
-public class MyTasksFragment extends RoboFragment implements Observer {
+import javax.inject.Inject;
+
+public class MyTasksFragment extends Fragment implements Observer {
 
 	private static final String TASKS_KEY = "TASKS";
 
 	@Inject
-	private BacklogService backlogService;
+	BacklogService backlogService;
 
 	private List<Task> mTasks;
 
@@ -96,6 +97,7 @@ public class MyTasksFragment extends RoboFragment implements Observer {
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
+		AgilefantApplication.getObjectGraph().inject(this);
 		setHasOptionsMenu(true);
 		return inflater.inflate(R.layout.fragment_my_tasks, container, false);
 	}

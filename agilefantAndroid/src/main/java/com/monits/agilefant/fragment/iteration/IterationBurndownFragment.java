@@ -2,7 +2,6 @@ package com.monits.agilefant.fragment.iteration;
 
 import java.util.TimeZone;
 
-import roboguice.fragment.RoboFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.AgilefantService;
+
+import javax.inject.Inject;
 
 public class IterationBurndownFragment extends BaseDetailTabFragment {
 
@@ -24,10 +25,10 @@ public class IterationBurndownFragment extends BaseDetailTabFragment {
 	private long id;
 
 	@Inject
-	private ImageLoader imageLoader;
+	ImageLoader imageLoader;
 
 	@Inject
-	private AgilefantService agilefantService;
+	AgilefantService agilefantService;
 
 	/**
 	 * Creates a new IterationBurndownFragment for the given iteration id
@@ -47,6 +48,8 @@ public class IterationBurndownFragment extends BaseDetailTabFragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		final Bundle arguments = getArguments();
 		id = arguments.getLong(PARAMS_ID, 0);

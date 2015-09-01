@@ -8,17 +8,28 @@ import android.content.SharedPreferences.Editor;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.User;
 
+import javax.inject.Inject;
+
 public class UserServiceImpl implements UserService {
 
-	@Inject
-	private AgilefantService agilefantService;
+	private final AgilefantService agilefantService;
+
+	private final SharedPreferences sharedPreferences;
+
+	/**
+	 * @param agilefantService Injected via constructor by Dagger
+	 * @param sharedPreferences Injected via constructor by Dagger
+	 */
 
 	@Inject
-	private SharedPreferences sharedPreferences;
+	public UserServiceImpl(final AgilefantService agilefantService,
+						final SharedPreferences sharedPreferences) {
+		this.agilefantService = agilefantService;
+		this.sharedPreferences = sharedPreferences;
+	}
 
 	@Override
 	public void login(final String domain, final String userName, final String password, final Listener<User> listener,

@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
@@ -30,7 +31,6 @@ import android.widget.ViewFlipper;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.IterationAdapter;
@@ -48,6 +48,8 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.view.DynamicListView;
 
+import javax.inject.Inject;
+
 public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements Observer {
 
 	private static final String BACKLOG = "PROJECT_BACKLOG";
@@ -55,12 +57,13 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	private Project project;
 
 	@Inject
-	private ProjectService projectService;
+	ProjectService projectService;
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
-	private ViewFlipper viewFlipper;
+	@Bind(R.id.root_flipper)
+	ViewFlipper viewFlipper;
 
 	@SuppressFBWarnings(
 		value = "MISSING_FIELD_IN_TO_STRING", justification = "It's a view, we don't need this in toString")
@@ -119,7 +122,7 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(BACKLOG);
-
+		AgilefantApplication.getObjectGraph().inject(this);
 		super.onCreate(savedInstanceState);
 	}
 
@@ -131,8 +134,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 				LayoutInflater.from(getActivity()).inflate(R.layout.fragment_project_leaf_stories, container, false);
 
 		setHasOptionsMenu(true);
-
-		viewFlipper = (ViewFlipper) view.findViewById(R.id.root_flipper);
 
 		final FragmentActivity context = getActivity();
 
@@ -228,6 +229,7 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
+		ButterKnife.bind(this, view);
 		projectService.getProjectLeafStories(
 			project.getId(),
 			new Listener<List<Story>>() {

@@ -2,7 +2,8 @@ package com.monits.agilefant.adapter;
 
 import java.util.List;
 
-import roboguice.RoboGuice;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +21,7 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.activity.ProjectActivity;
@@ -31,10 +32,12 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.view.ProductExpandableListView;
 
+import javax.inject.Inject;
+
 public class BacklogsAdapter extends BaseExpandableListAdapter {
 
 	@Inject
-	private IterationService iterationService;
+	IterationService iterationService;
 
 	private List<Product> productList;
 	private final Context context;
@@ -53,10 +56,9 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 			this.productList = productList;
 			this.listViewCache = new ProductExpandableListView[productList.size()];
 		}
-
 		this.context = context;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		RoboGuice.injectMembers(context, this);
+		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	/**
@@ -207,11 +209,8 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 	public View getGroupView(final int position, final boolean isExpanded, View convertView, final ViewGroup parent) {
 		final Holder holder;
 		if (null == convertView) {
-			holder = new Holder();
 			final View inflate = inflater.inflate(R.layout.product_item, null);
-			holder.title = (TextView) inflate.findViewById(R.id.title);
-			holder.icon = (TextView) inflate.findViewById(R.id.icon);
-
+			holder = new Holder(inflate);
 			convertView = inflate;
 			convertView.setTag(holder);
 		} else {
@@ -242,8 +241,14 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 	}
 
 	static class Holder {
-		public TextView title;
-		public TextView icon;
+		@Bind(R.id.title)
+		TextView title;
+		@Bind(R.id.icon)
+		TextView icon;
+
+		public Holder(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 
 	/**

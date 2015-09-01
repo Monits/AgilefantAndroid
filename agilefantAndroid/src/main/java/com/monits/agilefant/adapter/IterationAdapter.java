@@ -12,6 +12,9 @@ import android.widget.CheckBox;
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.Iteration;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class IterationAdapter extends BaseAdapter {
 
 	private final List<Iteration> iterations;
@@ -51,11 +54,9 @@ public class IterationAdapter extends BaseAdapter {
 		final View ret;
 		final ViewHolder holder;
 		if (convertView == null) {
-			holder = new ViewHolder();
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			final View view = inflater.inflate(R.layout.iteration_item_change, parent, false);
-
-			holder.check = (CheckBox) view.findViewById(R.id.check);
+			holder = new ViewHolder(view);
 
 			view.setTag(holder);
 			ret = view;
@@ -71,7 +72,12 @@ public class IterationAdapter extends BaseAdapter {
 		return ret;
 	}
 
-	private static class ViewHolder {
+	static class ViewHolder {
+		@Bind(R.id.check)
 		CheckBox check;
+
+		public ViewHolder(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 }

@@ -29,7 +29,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.FilterableIteration;
@@ -43,6 +42,8 @@ import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.GsonRequest;
 import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
+
+import javax.inject.Inject;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -123,15 +124,25 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
 
-	@Inject
-	private SharedPreferences sharedPreferences;
+	private final SharedPreferences sharedPreferences;
 
-	@Inject
 	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING", justification = "We do not want this in the toString")
-	private Gson gson;
+	private final Gson gson;
 
+	private final RequestQueue requestQueue;
+
+	/**
+	 * @param sharedPreferences Injected via constructor by Dagger
+	 * @param gson Injected via constructor by Dagger
+	 * @param requestQueue Injected via constructor by Dagger
+	 */
 	@Inject
-	private RequestQueue requestQueue;
+	public AgilefantServiceImpl(final SharedPreferences sharedPreferences,
+								final Gson gson, final RequestQueue requestQueue) {
+		this.gson = gson;
+		this.sharedPreferences = sharedPreferences;
+		this.requestQueue = requestQueue;
+	}
 
 	@Override
 	public void login(final String userName, final String password, final Listener<String> listener,

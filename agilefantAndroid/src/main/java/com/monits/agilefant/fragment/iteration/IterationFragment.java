@@ -3,7 +3,8 @@ package com.monits.agilefant.fragment.iteration;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.fragment.RoboFragment;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,15 +21,17 @@ import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 
-public class IterationFragment extends RoboFragment implements OnPageChangeListener {
+public class IterationFragment extends Fragment implements OnPageChangeListener {
 
 	private static final String ITERATION = "iteration";
 
 	private Iteration mIteration;
 
-	private ViewPager viewPager;
+	@Bind(R.id.pager)
+	ViewPager viewPager;
 
-	private PagerTitleStrip pagerTabStrip;
+	@Bind(R.id.pager_header)
+	PagerTitleStrip pagerTabStrip;
 
 	/**
 	 * Creates a new IterationFragment with the given iteration
@@ -56,10 +59,7 @@ public class IterationFragment extends RoboFragment implements OnPageChangeListe
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_iteration, null);
-
-		viewPager = (ViewPager) view.findViewById(R.id.pager);
-		pagerTabStrip = (PagerTitleStrip) view.findViewById(R.id.pager_header);
-
+		ButterKnife.bind(this, view);
 		if (mIteration != null) {
 
 			final List<Fragment> fragments = new ArrayList<>();

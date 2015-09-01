@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
@@ -23,18 +23,22 @@ import com.monits.agilefant.util.IterationUtils;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class ProjectDetailsFragment extends BaseDetailTabFragment {
 
 	private static final String PARAMS_PROJECT = "project";
 	private static final String PARAMS_BACKLOG = "backlog";
 
 	@Inject
-	private ProjectService projectService;
+	ProjectService projectService;
 
 	private Project project;
 	private Backlog backlog;
-
-	private TextView assigneesLabel;
+	@Bind(R.id.assignees)
+	TextView assigneesLabel;
 
 	/**
 	 * Return a new instance of ProjectDetailsFragment
@@ -57,6 +61,8 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		AgilefantApplication.getObjectGraph().inject(this);
+
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(PARAMS_PROJECT);
 		backlog = (Backlog) arguments.getSerializable(PARAMS_BACKLOG);
@@ -66,7 +72,7 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_project_details, container, false);
-
+		ButterKnife.bind(this, rootView);
 		final TextView productLabel = (TextView) rootView.findViewById(R.id.product);
 		final TextView projectLabel = (TextView) rootView.findViewById(R.id.project);
 		final TextView startLabel = (TextView) rootView.findViewById(R.id.project_start_date);
@@ -76,7 +82,6 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 		projectLabel.setText(backlog.getName());
 		startLabel.setText(DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
 		endLabel.setText(DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
-		assigneesLabel = (TextView) rootView.findViewById(R.id.assignees);
 		assigneesLabel.setText(IterationUtils.getResposiblesDisplay(project.getAssignees()));
 		assigneesLabel.setOnClickListener(getClickListener());
 

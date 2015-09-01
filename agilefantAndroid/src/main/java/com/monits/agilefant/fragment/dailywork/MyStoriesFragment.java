@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import roboguice.fragment.RoboFragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionList
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
 import com.monits.agilefant.model.Story;
 
-public class MyStoriesFragment extends RoboFragment implements Observer {
+public class MyStoriesFragment extends Fragment implements Observer {
 
 	private static final String STORIES_KEY = "STORIES";
 

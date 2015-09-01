@@ -1,10 +1,12 @@
 package com.monits.agilefant;
 
-import roboguice.RoboGuice;
 import android.app.Application;
 
-import com.google.inject.Inject;
+import com.monits.agilefant.dagger.DaggerObjectGraph;
+import com.monits.agilefant.dagger.ObjectGraph;
 import com.monits.agilefant.cache.BitmapLruCache;
+
+import javax.inject.Inject;
 
 public class AgilefantApplication extends Application {
 
@@ -19,14 +21,19 @@ public class AgilefantApplication extends Application {
 	public static final String EXTRA_NEW_TASK_WITHOUT_STORY =
 			"com.monits.agilefant.intent.extra.NEW_TASK_WITHOUT_STORY";
 
+	private static ObjectGraph objectGraph;
+
 	@Inject
-	private BitmapLruCache bitmapCache;
+	BitmapLruCache bitmapCache;
 
 	@Override
 	public void onCreate() {
-		RoboGuice.getInjector(this).injectMembers(this);
-
 		super.onCreate();
+		objectGraphSetter(this);
+	}
+
+	private static void objectGraphSetter(final Application app) {
+		objectGraph = DaggerObjectGraph.Initializer.init(app);
 	}
 
 	@Override
@@ -34,6 +41,10 @@ public class AgilefantApplication extends Application {
 		bitmapCache.evictAll();
 
 		super.onLowMemory();
+	}
+
+	public static ObjectGraph getObjectGraph() {
+		return objectGraph;
 	}
 }
 

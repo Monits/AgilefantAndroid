@@ -2,10 +2,10 @@ package com.monits.agilefant.fragment.backlog;
 
 import java.util.List;
 
-import roboguice.fragment.RoboFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.activity.ProjectActivity;
@@ -31,13 +31,15 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.service.BacklogService;
 import com.monits.agilefant.service.IterationService;
 
-public class MyBacklogsFragment extends RoboFragment {
+import javax.inject.Inject;
+
+public class MyBacklogsFragment extends Fragment {
 
 	@Inject
-	private BacklogService backlogService;
+	BacklogService backlogService;
 
 	@Inject
-	private IterationService iterationService;
+	IterationService iterationService;
 
 	private ProjectAdapter backlogsAdapter;
 
@@ -51,6 +53,10 @@ public class MyBacklogsFragment extends RoboFragment {
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
+
+		// Agilefant injection
+		AgilefantApplication.getObjectGraph().inject(this);
+
 		return inflater.inflate(R.layout.fragment_backlogs, container, false);
 	}
 

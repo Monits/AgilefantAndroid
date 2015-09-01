@@ -5,11 +5,13 @@ package com.monits.agilefant.service;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.StoryUtils;
+
+import javax.inject.Inject;
+
 
 /**
  * @author gmuniz
@@ -17,11 +19,21 @@ import com.monits.agilefant.util.StoryUtils;
  */
 public class DailyWorkServiceImpl implements DailyWorkService {
 
-	@Inject
-	private UserService userService;
+	private final UserService userService;
+
+	private final AgilefantService agilefantService;
+
+	/**
+	 * @param agilefantService Injected via constructor by Dagger
+	 * @param userService Injected via constructor by Dagger
+	 */
 
 	@Inject
-	private AgilefantService agilefantService;
+	public DailyWorkServiceImpl(final AgilefantService agilefantService,
+								final UserService userService) {
+		this.agilefantService = agilefantService;
+		this.userService = userService;
+	}
 
 	@Override
 	public void getDailyWork(final Listener<DailyWork> listener, final ErrorListener error) {

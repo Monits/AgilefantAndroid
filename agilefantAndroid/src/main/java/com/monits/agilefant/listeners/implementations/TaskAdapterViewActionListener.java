@@ -3,7 +3,6 @@ package com.monits.agilefant.listeners.implementations;
 import java.util.List;
 import java.util.Observer;
 
-import roboguice.RoboGuice;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -20,7 +19,7 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.dialog.PromptDialogFragment;
@@ -39,13 +38,15 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.TaskTimeTrackingService;
 import com.monits.agilefant.util.InputUtils;
 
+import javax.inject.Inject;
+
 public class TaskAdapterViewActionListener extends AbstractObservableAdapterViewActionListener<Task> {
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	@Inject
-	private IterationService iterationService;
+	IterationService iterationService;
 
 	private final Observer observer;
 	private final List<Project> projectList;
@@ -71,8 +72,7 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 
 		this.observer = observer;
 		this.projectList = projectList;
-
-		RoboGuice.injectMembers(context, this);
+		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	@Override

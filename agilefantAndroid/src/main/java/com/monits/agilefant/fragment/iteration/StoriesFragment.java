@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import roboguice.fragment.RoboFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.StoriesAdapter;
@@ -33,10 +31,12 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.view.DynamicExpandableListView;
 
+import javax.inject.Inject;
+
 public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	private static final String STORIES = "STORIES";
 	private static final String ITERATION = "ITERATION";
@@ -97,6 +97,7 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		AgilefantApplication.getObjectGraph().inject(this);
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);

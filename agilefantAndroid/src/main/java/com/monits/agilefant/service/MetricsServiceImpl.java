@@ -8,7 +8,6 @@ import java.util.List;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Rankable;
 import com.monits.agilefant.model.StateKey;
@@ -16,6 +15,8 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
+
+import javax.inject.Inject;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -27,8 +28,17 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class MetricsServiceImpl implements MetricsService {
 
 	public static final int MINUTES = 60;
+
+	private final AgilefantService agilefantService;
+
+	/**
+	 * @param agilefantService Injected via constructor by Dagger
+	 */
+
 	@Inject
-	private AgilefantService agilefantService;
+	public MetricsServiceImpl(final AgilefantService agilefantService) {
+		this.agilefantService = agilefantService;
+	}
 
 	@Override
 	public void taskChangeSpentEffort(final Date date, final long minutesSpent, final String description,

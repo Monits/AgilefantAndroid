@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.model.Backlog;
@@ -21,14 +21,14 @@ import com.monits.agilefant.service.ProjectService;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.fragment.RoboFragment;
+import javax.inject.Inject;
 
-public class ProjectFragment extends RoboFragment {
+public class ProjectFragment extends Fragment {
 
 	private static final String BACKLOG = "backlog";
 
 	@Inject
-	private ProjectService projectService;
+	ProjectService projectService;
 
 	private Backlog backlog;
 
@@ -51,7 +51,7 @@ public class ProjectFragment extends RoboFragment {
 	public void onCreate(final Bundle savedInstanceState) {
 		final Bundle arguments = getArguments();
 		backlog = (Backlog) arguments.getSerializable(BACKLOG);
-
+		AgilefantApplication.getObjectGraph().inject(this);
 		super.onCreate(savedInstanceState);
 	}
 

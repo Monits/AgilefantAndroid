@@ -4,14 +4,24 @@ import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 
+import javax.inject.Inject;
+
+
 public class ProjectServiceImpl implements ProjectService {
 
+	private final AgilefantService agilefantService;
+
+	/**
+	 * @param agilefantService Injected via constructor by Dagger
+	 */
+
 	@Inject
-	private AgilefantService agilefantService;
+	public ProjectServiceImpl(final AgilefantService agilefantService) {
+		this.agilefantService = agilefantService;
+	}
 
 	@Override
 	public void getProjectData(final long projectId, final Listener<Project> listener, final ErrorListener error) {

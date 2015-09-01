@@ -3,7 +3,6 @@ package com.monits.agilefant.listeners.implementations;
 import java.util.List;
 import java.util.Observer;
 
-import roboguice.RoboGuice;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -17,7 +16,7 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
@@ -30,13 +29,15 @@ import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.service.MetricsService;
 
+import javax.inject.Inject;
+
 public class StoryAdapterViewActionListener extends AbstractObservableAdapterViewActionListener<Story> {
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	@Inject
-	private IterationService iterationService;
+	IterationService iterationService;
 
 	private final Observer observer;
 	private final Backlog mBacklog;
@@ -59,11 +60,10 @@ public class StoryAdapterViewActionListener extends AbstractObservableAdapterVie
 	public StoryAdapterViewActionListener(final FragmentActivity context, final Observer observer,
 			final Backlog backlog) {
 		super(context);
-
 		this.observer = observer;
 		this.mBacklog = backlog;
+		AgilefantApplication.getObjectGraph().inject(this);
 
-		RoboGuice.injectMembers(context, this);
 	}
 
 	@Override

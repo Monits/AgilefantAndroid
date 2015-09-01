@@ -3,7 +3,8 @@ package com.monits.agilefant.adapter;
 import java.util.Collections;
 import java.util.List;
 
-import roboguice.RoboGuice;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,8 +33,6 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 	 */
 	public MyStoriesAdapter(final Context context, final List<Story> stories) {
 		super(context);
-
-		RoboGuice.injectMembers(context, this);
 
 		Collections.sort(stories, RankComparator.INSTANCE);
 		for (final Story story : stories) {
@@ -78,12 +77,8 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 
 		final ViewHolder holder;
 		if (convertView == null) {
-			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.my_tasks_item_nocontext, null);
-
-			holder.name = (TextView) convertView.findViewById(R.id.column_name);
-			holder.state = (TextView) convertView.findViewById(R.id.column_state);
-
+			holder = new ViewHolder(convertView);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -113,12 +108,8 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 
 		final ViewHolder holder;
 		if (convertView == null) {
-			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.my_story_item, null);
-
-			holder.name = (TextView) convertView.findViewById(R.id.column_name);
-			holder.context = (TextView) convertView.findViewById(R.id.column_context);
-			holder.state = (TextView) convertView.findViewById(R.id.column_state);
+			holder = new ViewHolder(convertView);
 
 			convertView.setTag(holder);
 		} else {
@@ -167,10 +158,17 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 		this.groupActionListener = listener;
 	}
 
-	private static class ViewHolder {
-		public TextView name;
-		public TextView context;
-		public TextView state;
+	static class ViewHolder {
+		@Bind(R.id.column_name)
+		TextView name;
+		@Bind(R.id.column_context)
+		TextView context;
+		@Bind(R.id.column_state)
+		TextView state;
+
+		public ViewHolder(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 
 	@Override

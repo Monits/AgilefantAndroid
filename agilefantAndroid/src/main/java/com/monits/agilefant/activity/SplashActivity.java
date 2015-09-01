@@ -1,7 +1,6 @@
 package com.monits.agilefant.activity;
 
-import roboguice.activity.RoboActivity;
-import roboguice.inject.ContentView;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,24 +9,26 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.flurry.android.FlurryAgent;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
 
-@ContentView(R.layout.activity_splash)
-public class SplashActivity extends RoboActivity {
+import javax.inject.Inject;
+
+public class SplashActivity extends Activity {
 
 	@Inject
-	private UserService userService;
+	UserService userService;
 
 	@Inject
-	private SharedPreferences sharedPreferences;
+	SharedPreferences sharedPreferences;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_splash);
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		if (userService.isLoggedIn()) {
 			userService.login(
@@ -63,8 +64,8 @@ public class SplashActivity extends RoboActivity {
 
 	@Override
 	protected void onStop() {
-		super.onStop();
 		FlurryAgent.onEndSession(this);
+		super.onStop();
 	}
 
 	private void startHomeActivity() {

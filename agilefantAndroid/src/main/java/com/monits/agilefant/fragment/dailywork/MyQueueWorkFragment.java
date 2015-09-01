@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import roboguice.fragment.RoboFragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,7 @@ import com.monits.agilefant.adapter.MyTasksAdapter;
 import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
 import com.monits.agilefant.model.Task;
 
-public class MyQueueWorkFragment extends RoboFragment implements Observer {
+public class MyQueueWorkFragment extends Fragment implements Observer {
 
 	private static final String TASKS_KEY = "TASKS";
 

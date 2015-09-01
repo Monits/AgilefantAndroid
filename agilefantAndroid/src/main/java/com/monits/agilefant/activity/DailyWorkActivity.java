@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.DailyWorkPagerAdapter;
 import com.monits.agilefant.fragment.dailywork.MyQueueWorkFragment;
@@ -27,6 +27,8 @@ import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.service.DailyWorkService;
 
+import javax.inject.Inject;
+
 /**
  * @author gmuniz
  *
@@ -34,7 +36,7 @@ import com.monits.agilefant.service.DailyWorkService;
 public class DailyWorkActivity extends BaseToolbaredActivity {
 
 	@Inject
-	private DailyWorkService dailyWorkService;
+	DailyWorkService dailyWorkService;
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
@@ -45,6 +47,8 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		setContentView(R.layout.activity_daily_work);
 

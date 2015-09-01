@@ -2,7 +2,8 @@ package com.monits.agilefant.adapter;
 
 import java.util.List;
 
-import roboguice.RoboGuice;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +37,6 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 	 * @param context The context
 	 */
 	public ProjectLeafStoriesAdapter(final Context context) {
-		RoboGuice.injectMembers(context, this);
 
 		this.context = context;
 
@@ -92,14 +92,9 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 		final ViewHolder holder;
 		final View ret;
 		if (convertView == null) {
-			holder = new ViewHolder();
 			ret = LayoutInflater.from(context)
 					.inflate(R.layout.item_project_leaf_story, parent, false);
-
-			holder.name = (TextView) ret.findViewById(R.id.column_name);
-			holder.iteration = (TextView) ret.findViewById(R.id.column_context);
-			holder.state = (TextView) ret.findViewById(R.id.column_state);
-			holder.responsibles = (TextView) ret.findViewById(R.id.column_responsibles);
+			holder = new ViewHolder(ret);
 
 			ret.setTag(holder);
 		} else {
@@ -166,10 +161,18 @@ public class ProjectLeafStoriesAdapter extends BaseAdapter {
 		this.actionListener = listener;
 	}
 
-	private static class ViewHolder {
+	static class ViewHolder {
+		@Bind(R.id.column_name)
 		TextView name;
+		@Bind(R.id.column_context)
 		TextView iteration;
+		@Bind(R.id.column_responsibles)
 		TextView responsibles;
+		@Bind(R.id.column_state)
 		TextView state;
+
+		public ViewHolder(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 }
