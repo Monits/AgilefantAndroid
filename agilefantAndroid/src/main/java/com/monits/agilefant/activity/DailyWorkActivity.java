@@ -3,12 +3,8 @@
  */
 package com.monits.agilefant.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -21,13 +17,12 @@ import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.DailyWorkPagerAdapter;
-import com.monits.agilefant.fragment.dailywork.MyQueueWorkFragment;
-import com.monits.agilefant.fragment.dailywork.MyStoriesFragment;
-import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.service.DailyWorkService;
 
 import javax.inject.Inject;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author gmuniz
@@ -35,6 +30,12 @@ import javax.inject.Inject;
  */
 public class DailyWorkActivity extends BaseToolbaredActivity {
 
+	private final static String DAILYWORK = "dailywork";
+
+	private DailyWork dailyWork;
+
+	@SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+			justification = "The field is necessary for dependency injection")
 	@Inject
 	DailyWorkService dailyWorkService;
 
@@ -57,27 +58,36 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
 		pagerTabStrip.setDrawFullUnderline(true);
 
+		final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+
+		viewPager.setVisibility(View.VISIBLE);
+
+		if (savedInstanceState != null) {
+
+			dailyWork = (DailyWork) savedInstanceState.getSerializable(DAILYWORK);
+
+			viewPager.setAdapter(
+					new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, DailyWorkActivity.this));
+
+			return;
+		}
+
 		final ProgressDialog progressDialog = new ProgressDialog(this);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setMessage(getString(R.string.loading));
 		progressDialog.show();
 
-		final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 		dailyWorkService.getDailyWork(
 			new Listener<DailyWork>() {
 
 				@Override
 				public void onResponse(final DailyWork response) {
 					viewPager.setCurrentItem(0);
-					viewPager.setVisibility(View.VISIBLE);
 
-					final List<Fragment> fragments = new ArrayList<Fragment>();
-					fragments.add(MyQueueWorkFragment.newInstance(response.getQueuedTasks()));
-					fragments.add(MyStoriesFragment.newInstance(response.getStories()));
-					fragments.add(MyTasksFragment.newInstance(response.getTaskWithoutStories()));
+					dailyWork = response;
 
-					viewPager.setAdapter(
-							new DailyWorkPagerAdapter(DailyWorkActivity.this, getSupportFragmentManager(), fragments));
+					viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), response,
+							DailyWorkActivity.this));
 
 					if (progressDialog != null && progressDialog.isShowing()) {
 						progressDialog.dismiss();
@@ -99,4 +109,9 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 			});
 	}
 
+	@Override
+	protected void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(DAILYWORK, dailyWork);
+	}
 }
