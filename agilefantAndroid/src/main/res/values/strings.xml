@@ -8,8 +8,6 @@
     <string name="error_validation_date">Date : Invalid format (yyyy-mm-dd hh:mm)</string>
 
     <string name="app_name">Agilefant</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="log_in">Log In</string>
@@ -82,9 +80,8 @@
 	<string name="feedback_failed_to_move_story">Failed to move story!</string>
 	<string name="start_tracking_task_time">Do you want to start tracking the task time?</string>
 	<string name="dialog_start_tracking_task_time_negative">Cancel</string>
-	<string name="dialog_start_tracking_task_time_positive">Ok</string>
+	<string name="dialog_start_tracking_task_time_positive">@android:string/ok</string>
 	<string name="already_tracking_task_error">Already tracking a task, finish it before starting a new one!</string>
-	<string name="dialog_set_task_time">Do you want to set your task time?</string>
 	<string name="feedback_success_updated_task_rank">Successfully updated task\'s rank</string>
 	<string name="feedback_failed_update_tasks_rank">Failed to update task\'s rank</string>
 	<string name="notification_pause">Pause</string>
@@ -92,8 +89,6 @@
 	<string name="notification_submit">Submit</string>
 	<string name="notification_content_text">Tracking: %1$s.</string>
 	<string name="chronometer_format">Elapsed Time: %s</string>
-	<string name="error_saving_time">Error saving task time</string>
-	<string name="time_saved">Task time saved</string>
 	<string name="feedback_failed_update_story_rank">Failed to update the story\'s rank!</string>
 	<string name="feedback_success_update_story_rank">Successfully updated the story\'s rank!</string>
 	<string name="error_validate_effort_left">Please fill effort spent with a value other than 0</string>
@@ -113,4 +108,12 @@
 	<string name="original_estimate">Orig. Est.</string>
 	<string name="stories_done">Stories done</string>
 	<string name="task_done">Task done</string>
+
+	<string name="state_not_started">N</string>
+	<string name="state_started">I</string>
+	<string name="state_pending">P</string>
+	<string name="state_blocked">B</string>
+	<string name="state_implemented">R</string>
+	<string name="state_done">D</string>
+	<string name="state_deferred">D</string>
 </resources>

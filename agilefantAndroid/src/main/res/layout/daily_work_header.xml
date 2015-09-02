@@ -11,7 +11,7 @@
         android:id="@+id/column_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.7"
+        android:layout_weight="0.45"
         android:text="@string/name"
         android:textColor="@android:color/black" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/column_context"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.85"
+        android:layout_weight="0.95"
         android:text="@string/context"
         android:textColor="@android:color/black" />
 
@@ -27,7 +27,7 @@
         android:id="@+id/column_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.85"
+        android:layout_weight="1"
         android:text="@string/state"
         android:textColor="@android:color/black" />
 

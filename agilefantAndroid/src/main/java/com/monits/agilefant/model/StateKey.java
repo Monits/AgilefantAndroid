@@ -1,29 +1,32 @@
 package com.monits.agilefant.model;
+import android.support.annotation.StringRes;
 
+import com.monits.agilefant.R;
 public enum StateKey {
 
-	NOT_STARTED("Not Started"),
-	STARTED("In Progress"),
-	PENDING("Pending"),
-	BLOCKED("Blocked"),
-	IMPLEMENTED("Ready"),
-	DONE("Done"),
-	DEFERRED("Deferred");
+	NOT_STARTED(R.string.state_not_started),
+	STARTED(R.string.state_started),
+	PENDING(R.string.state_pending),
+	BLOCKED(R.string.state_blocked),
+	IMPLEMENTED(R.string.state_implemented),
+	DONE(R.string.state_done),
+	DEFERRED(R.string.state_deferred);
 
-	private String state;
+	private int state;
 
 	/**
 	 * Constructor.
 	 * @param state The state
 	 */
-	private StateKey(final String state) {
+	private StateKey(@StringRes final int state) {
 		this.state = state;
 	}
 
 	/**
 	 * @return State
 	 */
-	public String getState() {
+	@StringRes
+	public int getState() {
 		return state;
 	}
 
@@ -34,7 +37,7 @@ public enum StateKey {
 		final StateKey[] stateKeys = StateKey.values();
 		final String [] taskStates = new String[stateKeys.length];
 		for (int i = 0 ; i < stateKeys.length ; i++) {
-			taskStates[i] = stateKeys[i].getState();
+			taskStates[i] = stateKeys[i].name();
 		}
 
 		return taskStates;

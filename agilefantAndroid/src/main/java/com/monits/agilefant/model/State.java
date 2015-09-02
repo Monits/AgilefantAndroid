@@ -1,8 +1,12 @@
 package com.monits.agilefant.model;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
+
 public class State {
 
-	private String name;
+	private int name;
 
 	private int backgroundId;
 
@@ -14,7 +18,8 @@ public class State {
 	 * @param resourceId The resource id
 	 * @param textColorId The text color id.
 	 */
-	public State(final String name, final int resourceId, final int textColorId) {
+	public State(@StringRes final int name, @DrawableRes final int resourceId,
+					@ColorRes final int textColorId) {
 		this.name = name;
 		this.backgroundId = resourceId;
 		this.textColorId = textColorId;
@@ -23,20 +28,22 @@ public class State {
 	/**
 	 * @return the name
 	 */
-	public String getName() {
+	@StringRes
+	public int getName() {
 		return name;
 	}
 
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(final String name) {
+	public void setName(@StringRes final int name) {
 		this.name = name;
 	}
 
 	/**
 	 * @return the backgroundId
 	 */
+	@DrawableRes
 	public int getBackgroundId() {
 		return backgroundId;
 	}
@@ -44,13 +51,14 @@ public class State {
 	/**
 	 * @param backgroundId the backgroundId to set
 	 */
-	public void setBackgroundId(final int backgroundId) {
+	public void setBackgroundId(@DrawableRes final int backgroundId) {
 		this.backgroundId = backgroundId;
 	}
 
 	/**
 	 * @return the textColorId
 	 */
+	@ColorRes
 	public int getTextColorId() {
 		return textColorId;
 	}
@@ -58,7 +66,7 @@ public class State {
 	/**
 	 * @param textColorId the textColorId to set
 	 */
-	public void setTextColorId(final int textColorId) {
+	public void setTextColorId(@ColorRes final int textColorId) {
 		this.textColorId = textColorId;
 	}
 
