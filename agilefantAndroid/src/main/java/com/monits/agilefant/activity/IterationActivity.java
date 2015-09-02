@@ -22,22 +22,26 @@ public class IterationActivity extends BaseToolbaredActivity {
 	private LinearLayout optionsContainer;
 	private boolean fabInited;
 
-
+	private IterationFragment iterationFragment;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_iteration);
 
-		if (savedInstanceState != null) {
-			return;
-		}
+		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);
 
-		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.container, IterationFragment.newInstance(iteration));
+		if (savedInstanceState == null) {
+			iterationFragment = IterationFragment.newInstance(iteration);
+		} else {
+			iterationFragment = (IterationFragment) getSupportFragmentManager().getFragment(savedInstanceState,
+					IterationFragment.class.getName());
+		}
+
+		transaction.replace(R.id.container, iterationFragment);
 		transaction.commit();
 	}
 
@@ -109,7 +113,13 @@ public class IterationActivity extends BaseToolbaredActivity {
 	}
 
 	@Override
+	protected void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		getSupportFragmentManager().putFragment(outState, iterationFragment.getClass().getName(), iterationFragment);
+	}
+
+	@Override
 	public String toString() {
-		return "IterationActivity [iteration_id:" + iteration.getId() + ", fabInited:" + fabInited + ']';
+		return "IterationActivity{" + "iteration=" + iteration + ", iterationFragment=" + iterationFragment + '}';
 	}
 }
