@@ -1,5 +1,6 @@
 package com.monits.agilefant.fragment.dailywork;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -50,7 +51,11 @@ public class MyStoriesFragment extends Fragment implements Observer {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mStories = (List<Story>) getArguments().getSerializable(STORIES_KEY);
+		if (savedInstanceState == null) {
+			mStories = (List<Story>) getArguments().getSerializable(STORIES_KEY);
+		} else {
+			mStories = (List<Story>) savedInstanceState.getSerializable(STORIES_KEY);
+		}
 	}
 
 	@Override
@@ -81,5 +86,11 @@ public class MyStoriesFragment extends Fragment implements Observer {
 			storiesAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
 		}
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(STORIES_KEY, (Serializable) mStories);
 	}
 }

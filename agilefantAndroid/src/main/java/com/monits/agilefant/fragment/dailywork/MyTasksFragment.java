@@ -1,5 +1,6 @@
 package com.monits.agilefant.fragment.dailywork;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -91,7 +92,11 @@ public class MyTasksFragment extends Fragment implements Observer {
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
-		mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
+		if (savedInstanceState == null) {
+			mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
+		} else {
+			mTasks = (List<Task>) savedInstanceState.getSerializable(TASKS_KEY);
+		}
 	}
 
 	@Override
@@ -137,47 +142,45 @@ public class MyTasksFragment extends Fragment implements Observer {
 		progressDialog.show();
 
 		backlogService.getMyBacklogs(
-			new Listener<List<Project>>() {
+				new Listener<List<Project>>() {
 
-				@Override
-				public void onResponse(final List<Project> response) {
-					if (response != null) {
-						backlogsAdapter.setProjects(response);
+					@Override
+					public void onResponse(final List<Project> response) {
+						if (response != null) {
+							backlogsAdapter.setProjects(response);
 
-						final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
-						final View emptyView = view.findViewById(R.id.tasks_empty_view);
+							final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
+							final View emptyView = view.findViewById(R.id.tasks_empty_view);
 
-						final List<Project> projectList = new ArrayList<>();
+							final List<Project> projectList = new ArrayList<>();
 
-						for (int i = 0; i < backlogsAdapter.getGroupCount(); i++) {
-							projectList.add(backlogsAdapter.getGroup(i));
+							for (int i = 0; i < backlogsAdapter.getGroupCount(); i++) {
+								projectList.add(backlogsAdapter.getGroup(i));
+							}
+
+							tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
+							tasksAdapter.setOnActionListener(
+									new TaskAdapterViewActionListener(getActivity(),
+											MyTasksFragment.this, projectList));
+							tasksListView.setAdapter(tasksAdapter);
+							tasksListView.setEmptyView(emptyView);
+
+							if (progressDialog != null && progressDialog.isShowing()) {
+								progressDialog.dismiss();
+							}
 						}
+					}
+				},
+				new ErrorListener() {
 
-						tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
-						tasksAdapter.setOnActionListener(
-								new TaskAdapterViewActionListener(getActivity(), MyTasksFragment.this, projectList));
-						tasksListView.setAdapter(tasksAdapter);
-						tasksListView.setEmptyView(emptyView);
-
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
 						if (progressDialog != null && progressDialog.isShowing()) {
 							progressDialog.dismiss();
 						}
+						Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
 					}
-				}
-			},
-			new ErrorListener() {
-
-				@Override
-				public void onErrorResponse(final VolleyError arg0) {
-					if (progressDialog != null && progressDialog.isShowing()) {
-						progressDialog.dismiss();
-					}
-					Toast.makeText(getActivity(), R.string.error_retrieve_my_backlogs, Toast.LENGTH_SHORT).show();
-				}
-			});
-
-
-
+				});
 	}
 
 	@Override
@@ -194,5 +197,16 @@ public class MyTasksFragment extends Fragment implements Observer {
 			tasksAdapter.notifyDataSetChanged();
 			observable.deleteObserver(MyTasksFragment.this);
 		}
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(TASKS_KEY, (Serializable) mTasks);
+	}
+
+	@Override
+	public String toString() {
+		return "MyTasksFragment{" + "backlogsAdapter=" + backlogsAdapter + ", mTasks=" + mTasks + '}';
 	}
 }

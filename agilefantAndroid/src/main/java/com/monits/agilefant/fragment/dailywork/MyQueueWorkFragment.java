@@ -1,5 +1,6 @@
 package com.monits.agilefant.fragment.dailywork;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -48,7 +49,11 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
+		if (savedInstanceState == null) {
+			mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
+		} else {
+			mTasks = (List<Task>) savedInstanceState.getSerializable(TASKS_KEY);
+		}
 	}
 
 	@Override
@@ -77,5 +82,11 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 			tasksAdapter.notifyDataSetChanged();
 			observable.deleteObserver(MyQueueWorkFragment.this);
 		}
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(TASKS_KEY, (Serializable) mTasks);
 	}
 }
