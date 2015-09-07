@@ -14,12 +14,12 @@ import com.monits.agilefant.model.Backlog;
 public class ProjectActivity extends BaseToolbaredActivity {
 
 	public static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.PROJECT";
+	private ProjectFragment fragment;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_iteration);
-
 
 		final Backlog backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
 
@@ -28,7 +28,15 @@ public class ProjectActivity extends BaseToolbaredActivity {
 		initFABs(fabContainer, backlog.getId());
 
 		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.container, ProjectFragment.newInstance(backlog));
+
+		if (savedInstanceState == null) {
+			fragment = ProjectFragment.newInstance(backlog);
+		} else {
+			fragment = (ProjectFragment) getSupportFragmentManager().getFragment(savedInstanceState,
+					ProjectFragment.class.getName());
+		}
+
+		transaction.replace(R.id.container, fragment);
 		transaction.commit();
 	}
 
@@ -44,5 +52,16 @@ public class ProjectActivity extends BaseToolbaredActivity {
 						.commit();
 			}
 		});
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectActivity{" + "fragment=" + fragment + '}';
+	}
+
+	@Override
+	protected void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		getSupportFragmentManager().putFragment(outState, ProjectFragment.class.getName(), fragment);
 	}
 }

@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name=".activity.ProjectActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|screenSize"
             android:label="@string/project_details"
             android:parentActivityName=".activity.AllBackLogsActivity"
             tools:ignore="UnusedAttribute">
