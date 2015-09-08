@@ -258,7 +258,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 		TextView effortLeft;
 		@Bind(R.id.column_original_estimate)
 		TextView originalEstimate;
-		@Bind(R.id.spent_effort)
+		@Bind(R.id.column_spent_effort)
 		TextView spendEffort;
 
 		public HolderChild(final View view) {
