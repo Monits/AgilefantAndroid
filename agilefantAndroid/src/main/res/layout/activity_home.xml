@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_splash_background" 
     android:orientation="vertical"
-    tools:context=".HomeActivity" >
+    tools:context=".HomeActivity"
+    tools:ignore="RtlHardcoded" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         android:background="@drawable/margin_login" >
 
         <LinearLayout
-            android:id="@+id/title"
+            android:id="@+id/login_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -50,24 +51,26 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/icon"
+            android:id="@+id/app_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/title"
+            android:layout_below="@id/login_title"
             android:layout_margin="10dp"
-            android:background="@drawable/agilefant_logo_home" />
+            android:background="@drawable/agilefant_logo_home"
+            android:contentDescription="@string/agilefant_login" />
 
         <EditText
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
+            android:layout_below="@id/login_title"
             android:layout_marginRight="20dp"
-            android:layout_toRightOf="@id/icon"
+            android:layout_toRightOf="@id/app_icon"
             android:hint="@string/username"
             android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/password"
@@ -75,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_name"
             android:layout_marginRight="20dp"
-            android:layout_toRightOf="@id/icon"
+            android:layout_toRightOf="@id/app_icon"
             android:hint="@string/password"
             android:inputType="textPassword"
             android:textColor="@android:color/black"
@@ -87,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/password"
             android:layout_marginTop="20dp"
-            android:layout_toRightOf="@id/icon"
+            android:layout_toRightOf="@id/app_icon"
             android:text="@string/log_in"
             android:textSize="14sp" />
     </RelativeLayout>
