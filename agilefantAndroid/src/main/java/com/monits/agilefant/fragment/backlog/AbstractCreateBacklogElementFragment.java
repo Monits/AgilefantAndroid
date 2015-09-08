@@ -117,7 +117,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		final Context context = AbstractCreateBacklogElementFragment.this.getActivity();
 
-		final TextView title = (TextView) view.findViewById(R.id.title);
+		final TextView title = (TextView) view.findViewById(R.id.dialog_title);
 		title.setText(getTitleResourceId());
 
 		stateKey = StateKey.NOT_STARTED;
@@ -184,6 +184,15 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 				onSubmit(parameters);
 			}
 		});
+	}
+
+	@Override
+	public String toString() {
+		return "AbstractCreateBacklogElementFragment {"
+				+ "stateKey=" + stateKey
+				+ ", backlogId=" + backlogId
+				+ ", iterationId=" + iterationId
+				+ '}';
 	}
 
 	private OnClickListener getOnStateClickListener(final Context context) {
