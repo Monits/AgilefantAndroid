@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources> 
+<resources>
 	<string-array name="roboguice_modules">
 		<item>com.monits.agilefant.module.AgilefantModule</item>
 		<item>com.monits.agilefant.module.GsonModule</item>

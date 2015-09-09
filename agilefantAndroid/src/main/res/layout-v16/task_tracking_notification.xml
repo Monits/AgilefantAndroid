@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
@@ -62,7 +61,7 @@
             android:scaleType="fitCenter"
             android:text="@string/notification_pause"
             android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"
-            tools:ignore="RtlHardcoded" />
+             />
 
         <Button
             android:id="@+id/chronometer_stop"

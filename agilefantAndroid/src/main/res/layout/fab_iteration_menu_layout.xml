@@ -2,13 +2,11 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/iteration_menu_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="false"
-    android:background="@android:color/transparent"
-    tools:ignore="RtlHardcoded">
+    android:background="@android:color/transparent">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/iteration_add_fab"
@@ -17,7 +15,6 @@
         android:src="@drawable/ic_action_new"
         android:gravity="bottom|right"
         android:layout_margin="16dp"
-        tools:ignore="RtlHardcoded"
         android:layout_gravity="right|bottom"/>
 
     <LinearLayout
@@ -36,7 +33,6 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginRight="@dimen/margin_fab_menu_right"
-            tools:ignore="RtlHardcoded"
             android:id="@+id/linearLayout">
 
             <TextView
@@ -62,8 +58,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginBottom="@dimen/margin_fab_menu_button"
-            android:layout_marginRight="@dimen/margin_fab_menu_right"
-            tools:ignore="RtlHardcoded">
+            android:layout_marginRight="@dimen/margin_fab_menu_right">
 
             <TextView
                 android:layout_width="wrap_content"

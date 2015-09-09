@@ -7,7 +7,7 @@
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <ViewSwitcher
         android:id="@+id/view_switcher"

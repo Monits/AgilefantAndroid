@@ -8,8 +8,7 @@
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp"
-    tools:ignore="RtlHardcoded,RtlSymmetry">
+    android:padding="10dp">
 
     <ViewSwitcher
         android:id="@+id/view_switcher"

@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_splash_background" 
     android:orientation="vertical"
-    tools:context=".HomeActivity"
-    tools:ignore="RtlHardcoded" >
+    tools:context=".HomeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
