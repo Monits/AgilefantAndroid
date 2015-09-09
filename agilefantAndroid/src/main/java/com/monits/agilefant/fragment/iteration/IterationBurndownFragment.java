@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.service.AgilefantService;
+import com.monits.agilefant.view.ScaleImageView;
 
 import javax.inject.Inject;
 
@@ -57,9 +57,9 @@ public class IterationBurndownFragment extends BaseDetailTabFragment {
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-			final Bundle savedInstanceState) {
+							final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_iteration_burndown, null);
-		final ImageView burndown = (ImageView) rootView.findViewById(R.id.burndown);
+		final ScaleImageView burndown = (ScaleImageView) rootView.findViewById(R.id.burndown);
 
 		final int timeZone = TimeZone.getDefault().getRawOffset() / (60 * 1000);
 
@@ -86,4 +86,5 @@ public class IterationBurndownFragment extends BaseDetailTabFragment {
 	public int getTitleResourceId() {
 		return R.string.burndown;
 	}
+
 }

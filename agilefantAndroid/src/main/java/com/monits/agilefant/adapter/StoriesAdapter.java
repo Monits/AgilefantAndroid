@@ -77,7 +77,7 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 		if (null == convertView) {
 			final View inflate = inflater.inflate(R.layout.task_item, null);
 			convertView = inflate;
-			holder = new HolderChild(convertView);
+			holder = new HolderChild(inflate);
 
 			convertView.setTag(holder);
 		} else {
