@@ -12,7 +12,7 @@
     android:paddingTop="5dp" >
 
     <TextView
-        android:id="@id/column_name"
+        android:id="@+id/column_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -20,7 +20,7 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@id/column_state"
+        android:id="@+id/column_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -31,7 +31,7 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@id/column_responsibles"
+        android:id="@+id/column_responsibles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -39,7 +39,7 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@id/column_effort_left"
+        android:id="@+id/column_effort_left"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -47,7 +47,7 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@id/column_original_estimate"
+        android:id="@+id/column_original_estimate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -55,7 +55,7 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@id/column_spent_effort"
+        android:id="@+id/column_spent_effort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
