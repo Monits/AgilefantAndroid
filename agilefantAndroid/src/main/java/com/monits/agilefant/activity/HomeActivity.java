@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -105,8 +106,13 @@ public class HomeActivity extends Activity {
 					progressDialog.dismiss();
 				}
 
+				String error = getResources().getString(R.string.login_error);
+				if (arg0 instanceof NoConnectionError) {
+					error = getResources().getString(R.string.connection_error);
+				}
+
 				Toast.makeText(
-					HomeActivity.this, getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();
+					HomeActivity.this, error, Toast.LENGTH_LONG).show();
 			}
 		};
 	}

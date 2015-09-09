@@ -5,6 +5,7 @@
     <string name="error_retrieve_backlogs">Failed to retrieve all backlogs.</string>
     <string name="error_retrieve_my_backlogs">Failed to retrieve my backlogs.</string>
     <string name="login_error">Invalid username or password, please try again.</string>
+    <string name="connection_error">Check your connection and try again.</string>
     <string name="error_validation_date">Date : Invalid format (yyyy-mm-dd hh:mm)</string>
 
     <string name="app_name">Agilefant</string>
