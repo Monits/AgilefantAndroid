@@ -11,7 +11,7 @@
         android:id="@+id/column_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="@integer/column_name"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:textColor="@android:color/black" />
@@ -20,7 +20,7 @@
         android:id="@+id/column_context"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:layout_weight="@integer/column_context"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:textColor="@color/blue_light" />
@@ -36,14 +36,20 @@
         android:textColor="@android:color/black"
         android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/column_state"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:gravity="center"
+        android:layout_weight="@integer/column_state"
         android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:textColor="@android:color/black" />
+        android:paddingRight="2dp">
+
+        <TextView
+            android:id="@+id/column_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
 
 </LinearLayout>
