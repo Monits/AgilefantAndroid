@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_action_new"
         android:gravity="bottom|right"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/margin_main_fab"
         android:layout_gravity="right|bottom"/>
 
     <LinearLayout
@@ -35,7 +35,9 @@
             android:layout_marginRight="@dimen/margin_fab_menu_right"
             android:id="@+id/linearLayout">
 
+
             <TextView
+                android:id="@+id/task_fab_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/new_task"
@@ -61,6 +63,7 @@
             android:layout_marginRight="@dimen/margin_fab_menu_right">
 
             <TextView
+                android:id="@+id/story_fab_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/fab_labels"

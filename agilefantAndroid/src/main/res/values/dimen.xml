@@ -8,6 +8,7 @@
     <dimen name="padding_fab_scroll">75dp</dimen>
     <dimen name="margin_fab_menu_right">10dp</dimen>
     <dimen name="margin_fab">0dp</dimen>
+    <dimen name="margin_main_fab">0dp</dimen>
     <dimen name="margin_fab_menu_button">75dp</dimen>
     <dimen name="margin_fab_label_Right">26dp</dimen>
 

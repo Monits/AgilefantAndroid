@@ -6,7 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
@@ -21,6 +24,13 @@ public class IterationActivity extends BaseToolbaredActivity {
 	private Iteration iteration;
 	private LinearLayout optionsContainer;
 	private boolean fabInited;
+	private FloatingActionButton addFAB;
+	private FloatingActionButton addStoryFAB;
+	private FloatingActionButton addTaskFAB;
+
+	private TextView storyFABLabel;
+	private TextView taskFABLabel;
+	private final static long DELAY = 90;
 
 	private IterationFragment iterationFragment;
 
@@ -59,12 +69,15 @@ public class IterationActivity extends BaseToolbaredActivity {
 	}
 
 	private void initFABs(final View fabContainer) {
-		final FloatingActionButton addFAB = (FloatingActionButton) fabContainer.findViewById(R.id.iteration_add_fab);
-		final FloatingActionButton addStoryFAB =
+		addFAB = (FloatingActionButton) fabContainer.findViewById(R.id.iteration_add_fab);
+		addStoryFAB =
 				(FloatingActionButton) fabContainer.findViewById(R.id.iteration_fab_new_story);
-		final FloatingActionButton addTaskFAB =
+		addTaskFAB =
 				(FloatingActionButton) fabContainer.findViewById(R.id.iteration_fab_new_task);
 		optionsContainer = (LinearLayout) fabContainer.findViewById(R.id.fab_buttons_container);
+
+		storyFABLabel = (TextView) fabContainer.findViewById(R.id.story_fab_label);
+		taskFABLabel = (TextView) fabContainer.findViewById(R.id.task_fab_label);
 
 		View.OnClickListener animationClick = new View.OnClickListener() {
 			@Override
@@ -74,33 +87,62 @@ public class IterationActivity extends BaseToolbaredActivity {
 		};
 
 		optionsContainer.setOnClickListener(animationClick);
-
 		addFAB.setOnClickListener(animationClick);
 
-		addStoryFAB.setOnClickListener(new View.OnClickListener() {
+		final View.OnClickListener fabMenuStoryItemsClick = new View.OnClickListener() {
 			@Override
-			public void onClick(final View v) {
-				final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iteration.getId());
+			public void onClick(final View view) {
 				animationFABMenu();
-				replaceFragment(createStoryFragment);
+				replaceFragment(CreateStoryFragment.newInstance(iteration.getId()));
 			}
-		});
+		};
 
-		addTaskFAB.setOnClickListener(new View.OnClickListener() {
+		addStoryFAB.setOnClickListener(fabMenuStoryItemsClick);
+		storyFABLabel.setOnClickListener(fabMenuStoryItemsClick);
+
+
+		final View.OnClickListener fabMenuTaskItemsClick = new View.OnClickListener() {
 			@Override
-			public void onClick(final View v) {
-				final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory
-						.newInstance(iteration.getId());
+			public void onClick(final View view) {
 				animationFABMenu();
-				replaceFragment(createTaskWithoutStory);
+				replaceFragment(CreateTaskWithoutStory.newInstance(iteration.getId()));
 			}
-		});
+		};
+		addTaskFAB.setOnClickListener(fabMenuTaskItemsClick);
+		taskFABLabel.setOnClickListener(fabMenuTaskItemsClick);
 	}
 
-	private void animationFABMenu() {
+
+	private void animationFABMenu() { //Open animation
 		if (optionsContainer.getVisibility() == View.INVISIBLE) {
+			final Animation rotateIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_in);
+			addFAB.setAnimation(rotateIn);
+
 			optionsContainer.setVisibility(View.VISIBLE);
-		} else {
+			final Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_in);
+
+			optionsContainer.setAnimation(fadeIn);
+
+			//Clear animation for correct repeat
+			addStoryFAB.clearAnimation();
+			storyFABLabel.clearAnimation();
+			addTaskFAB.clearAnimation();
+			taskFABLabel.clearAnimation();
+
+			setAnimationFabItems(storyFABLabel, 0);
+			setAnimationFabItems(addStoryFAB, 0);
+
+			setAnimationFabItems(taskFABLabel, DELAY);
+			setAnimationFabItems(addTaskFAB, DELAY);
+
+		} else { //Close fab menu animation
+			final Animation rotateOut =
+					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_out);
+			addFAB.setAnimation(rotateOut);
+
+			final Animation fadeOut =
+					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_out) ;
+			optionsContainer.setAnimation(fadeOut);
 			optionsContainer.setVisibility(View.INVISIBLE);
 		}
 	}
@@ -112,6 +154,13 @@ public class IterationActivity extends BaseToolbaredActivity {
 				.commit();
 	}
 
+	private void setAnimationFabItems(final View v, final long delay) {
+		final Animation anim =
+				AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_item_scale);
+		anim.setStartOffset(delay);
+		v.setAnimation(anim);
+	}
+
 	@Override
 	protected void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -120,6 +169,7 @@ public class IterationActivity extends BaseToolbaredActivity {
 
 	@Override
 	public String toString() {
-		return "IterationActivity{" + "iteration=" + iteration + ", iterationFragment=" + iterationFragment + '}';
+		return "IterationActivity{" + "iteration=" + iteration + ", iterationFragment=" + iterationFragment
+				+ "fabInited=" + fabInited + '}';
 	}
 }
