@@ -1,6 +1,7 @@
 package com.monits.agilefant.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -9,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -25,6 +27,8 @@ public class ScaleImageView extends ImageView {
 
 	// This are all values on a 3x3 Matrix
 	private static final int MATRIX_SIZE = 9;
+
+	private float bottomMargin;
 
 	// Mode enum
 	private enum Action {
@@ -68,6 +72,7 @@ public class ScaleImageView extends ImageView {
 	 */
 	public ScaleImageView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
+		buildConfiguration(context, attrs);
 	}
 
 	/**
@@ -77,6 +82,17 @@ public class ScaleImageView extends ImageView {
 	 */
 	public ScaleImageView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
+		buildConfiguration(context, attrs);
+	}
+
+	private void buildConfiguration(final Context context, final AttributeSet attrs) {
+		//check attributes you need, for example all paddings
+		final int [] attributes = new int [] { android.R.attr.layout_marginBottom };
+
+		//then obtain typed array
+		final TypedArray arr = context.obtainStyledAttributes(attrs, attributes);
+		bottomMargin = arr.getDimension(0, 0);
+		arr.recycle();
 	}
 
 	@Override
@@ -190,6 +206,8 @@ public class ScaleImageView extends ImageView {
 		// fill matrixValues
 		matrix.getValues(matrixValues);
 
+		setMarginBottom(getBorderDistances(matrixValues));
+
 		// We don't let user to zoom out more than original position
 		if (newDistance < oldDistance && matrixValues[Matrix.MSCALE_X] <= LIMIT_OUT) {
 
@@ -243,11 +261,9 @@ public class ScaleImageView extends ImageView {
 		// fills matrixValues
 		matrix.getValues(matrixValues);
 
-		// We establish borders distance values
-		final float left = matrixValues[Matrix.MTRANS_X];
-		final float top = matrixValues[Matrix.MTRANS_Y];
-		final float right = left + matrixValues[Matrix.MSCALE_X] * getBitmap().getWidth() - getWidth();
-		final float bottom = top + matrixValues[Matrix.MSCALE_X] * getBitmap().getHeight() - getHeight();
+		final RectF rectF = getBorderDistances(matrixValues);
+
+		setMarginBottom(rectF);
 
 		float x = motionEvent.getX();
 		float y = motionEvent.getY();
@@ -255,12 +271,12 @@ public class ScaleImageView extends ImageView {
 		// Limits X edge dragging
 		if (motionEvent.getX() > oldPosition.x) {
 			//Moving left
-			if (left >= 0) {
+			if (rectF.left >= 0) {
 				x = oldPosition.x;
 			}
 		} else {
 			// Moving right
-			if (right <= 0) {
+			if (rectF.right <= 0) {
 				x = oldPosition.x;
 			}
 		}
@@ -268,12 +284,12 @@ public class ScaleImageView extends ImageView {
 		// Limits Y edge dragging
 		if (motionEvent.getY() > oldPosition.y) {
 			// Moving top
-			if (top >= 0) {
+			if (rectF.top >= 0) {
 				y = oldPosition.y;
 			}
 		} else {
 			// Moving bottom
-			if (bottom <= 0) {
+			if (rectF.bottom <= 0) {
 				y = oldPosition.y;
 			}
 		}
@@ -286,6 +302,29 @@ public class ScaleImageView extends ImageView {
 
 		// Updates old position
 		oldPosition.set(x, y);
+	}
+
+	private void setMarginBottom(final RectF rectF) {
+		final ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) getLayoutParams();
+		final float bottomMargin = this.bottomMargin - rectF.bottom;
+
+		if (rectF.bottom > 0) {
+			params.setMargins(0, 0, 0, (int) bottomMargin);
+		} else {
+			params.setMargins(0, 0, 0, (int) this.bottomMargin);
+		}
+		setLayoutParams(params);
+	}
+
+	@SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX", justification = "Are constants used from a specific class.")
+	private RectF getBorderDistances(final float[] matrixValues) {
+		// We establish borders distance values
+		final RectF rectF = new RectF();
+		rectF.set(matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y],
+				matrixValues[Matrix.MTRANS_X] + matrixValues[Matrix.MSCALE_X] * getBitmap().getWidth() - getWidth(),
+				matrixValues[Matrix.MTRANS_Y] + matrixValues[Matrix.MSCALE_X] * getBitmap().getHeight() - getHeight());
+
+		return rectF;
 	}
 
 	private Bitmap getBitmap() {
