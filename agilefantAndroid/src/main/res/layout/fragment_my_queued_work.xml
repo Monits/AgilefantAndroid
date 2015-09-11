@@ -16,7 +16,8 @@
         android:layout_marginTop="@dimen/divider_stories_task"
         android:divider="@android:color/transparent"
         android:dividerHeight="3dp"
-        android:paddingBottom="3dp" />
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/padding_fab_scroll"/>
 
     <TextView
         android:id="@+id/queue_empty_view"

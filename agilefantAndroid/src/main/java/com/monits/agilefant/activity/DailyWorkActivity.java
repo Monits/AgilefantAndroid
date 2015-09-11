@@ -5,6 +5,7 @@ package com.monits.agilefant.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.DailyWorkPagerAdapter;
+import com.monits.agilefant.fragment.backlog.task.CreateDailyWorkTaskFragment;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.service.DailyWorkService;
 
@@ -85,7 +87,6 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 					viewPager.setCurrentItem(0);
 
 					dailyWork = response;
-
 					viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), response,
 							DailyWorkActivity.this));
 
@@ -107,6 +108,18 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 							.show();
 				}
 			});
+
+		final FloatingActionButton addTaskWithOutStoryFAB =
+				(FloatingActionButton) findViewById(R.id.daily_work_add_fab);
+		addTaskWithOutStoryFAB.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View view) {
+				getSupportFragmentManager().beginTransaction()
+						.replace(android.R.id.content, CreateDailyWorkTaskFragment.newInstance())
+						.addToBackStack(null)
+						.commit();
+			}
+		});
 	}
 
 	@Override

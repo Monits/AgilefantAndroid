@@ -115,27 +115,6 @@ public class MyTasksFragment extends Fragment implements Observer {
 		return inflater.inflate(R.layout.fragment_my_tasks, container, false);
 	}
 
-	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_dailywork_new_element, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_new_task:
-			MyTasksFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, CreateDailyWorkTaskFragment.newInstance())
-				.addToBackStack(null)
-				.commit();
-
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
