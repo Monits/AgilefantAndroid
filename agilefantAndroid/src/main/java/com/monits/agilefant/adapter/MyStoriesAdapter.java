@@ -19,6 +19,8 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.RankComparator;
 
+import javax.annotation.Nullable;
+
 public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task> {
 
 	private final OnClickListener onClickChildListener;
@@ -161,6 +163,7 @@ public class MyStoriesAdapter extends AbstractExpandableListAdapter<Story, Task>
 	static class ViewHolder {
 		@Bind(R.id.column_name)
 		TextView name;
+		@Nullable
 		@Bind(R.id.column_context)
 		TextView context;
 		@Bind(R.id.column_state)
