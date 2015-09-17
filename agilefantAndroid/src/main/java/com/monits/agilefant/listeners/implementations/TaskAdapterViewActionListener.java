@@ -27,7 +27,6 @@ import com.monits.agilefant.dialog.PromptDialogFragment.PromptDialogListener;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment.OnUsersSubmittedListener;
-import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.StateKey;
@@ -136,9 +135,8 @@ public class TaskAdapterViewActionListener extends AbstractObservableAdapterView
 						for (final Project project : projectList) {
 							final List<Iteration> iterationList = project.getIterationList();
 							for (final Iteration parentIteration : iterationList) {
-								if (parentIteration.getId() ==  iteration.getId()) {
-									final Backlog backlog = new Backlog(project);
-									response.setParent(backlog);
+								if (parentIteration.getId() == iteration.getId()) {
+									response.setParent(iteration);
 									break;
 								}
 							}

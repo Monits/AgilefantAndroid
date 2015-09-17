@@ -3,8 +3,9 @@ package com.monits.agilefant.model;
 import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
+import com.monits.agilefant.model.backlog.BacklogType;
 
-public class Backlog implements Serializable {
+public abstract class Backlog implements Serializable {
 
 	private static final long serialVersionUID = -2908515098376303451L;
 
@@ -14,6 +15,8 @@ public class Backlog implements Serializable {
 	@SerializedName("name")
 	private String name;
 
+	private boolean expanded;
+
 	/**
 	 * Default constructor.
 	 */
@@ -22,12 +25,13 @@ public class Backlog implements Serializable {
 	}
 
 	/**
-	 * Constructor.
-	 * @param project To be used to get the project data
+	 * Constructor
+	 * @param id	The id of this backlog
+	 * @param name	The human-readable name for this backlog
 	 */
-	public Backlog(final Project project) {
-		this.id = project.getId();
-		this.name = project.getTitle();
+	public Backlog(final long id, final String name) {
+		this.id = id;
+		this.name = name;
 	}
 
 	/**
@@ -58,8 +62,23 @@ public class Backlog implements Serializable {
 		this.name = name;
 	}
 
+	public boolean isExpanded() {
+		return expanded;
+	}
+
+	public void setExpanded(final boolean expanded) {
+		this.expanded = expanded;
+	}
+
+	/**
+	 * Backlog type
+	 * @return return the type of the backlog
+	 */
+	public abstract BacklogType getType();
+
 	@Override
 	public String toString() {
-		return new StringBuilder("Backlog [id: ").append(id).append(", name: ").append(name).append(']').toString();
+		return new StringBuilder("Backlog [id: ").append(id).append(", name: ").append(name)
+				.append(", expanded: ").append(expanded).append(']').toString();
 	}
 }

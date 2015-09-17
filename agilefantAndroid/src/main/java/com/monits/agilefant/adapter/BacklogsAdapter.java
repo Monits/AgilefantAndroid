@@ -25,7 +25,6 @@ import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.activity.ProjectActivity;
-import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
@@ -107,7 +106,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 						final Project project = projectAdapter.getGroup(groupPosition);
 
 						final Intent intent = new Intent(context, ProjectActivity.class);
-						intent.putExtra(ProjectActivity.EXTRA_BACKLOG, new Backlog(project));
+						intent.putExtra(ProjectActivity.EXTRA_BACKLOG, project);
 						context.startActivity(intent);
 
 						return true;
@@ -160,8 +159,7 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 
 				// Workaround that may be patchy,
 				// but it depends on the request whether it comes or not, and how to get it.
-				final Backlog backlog = new Backlog(project);
-				response.setParent(backlog);
+				response.setParent(project);
 
 				intent.putExtra(IterationActivity.ITERATION, response);
 
@@ -241,9 +239,9 @@ public class BacklogsAdapter extends BaseExpandableListAdapter {
 	}
 
 	static class Holder {
-		@Bind(R.id.title)
+		@Bind(R.id.txt_title)
 		TextView title;
-		@Bind(R.id.icon)
+		@Bind(R.id.txt_icon)
 		TextView icon;
 
 		public Holder(final View view) {

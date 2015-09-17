@@ -17,9 +17,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,12 +32,10 @@ import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.IterationAdapter;
 import com.monits.agilefant.adapter.ProjectLeafStoriesAdapter;
-import com.monits.agilefant.fragment.backlog.story.CreateLeafStoryFragment;
 import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
 import com.monits.agilefant.listeners.AdapterViewOnLongActionListener;
 import com.monits.agilefant.listeners.OnSwapRowListener;
 import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
-import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
@@ -139,9 +134,8 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 		storiesAdapter = new ProjectLeafStoriesAdapter(context);
 
-		final Backlog backlog = new Backlog(project);
 		storiesAdapter.setOnActionListener(
-				new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this, backlog));
+				new StoryAdapterViewActionListener(context, ProjectLeafStoriesFragment.this, project));
 		storiesAdapter.setOnLongActionListener(getOnLongActionListener(context));
 
 		storiesListView = (DynamicListView) view.findViewById(R.id.stories_list);

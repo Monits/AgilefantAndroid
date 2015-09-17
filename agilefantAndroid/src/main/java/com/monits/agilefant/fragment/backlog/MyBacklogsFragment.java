@@ -25,7 +25,6 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.adapter.ProjectAdapter;
-import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.service.BacklogService;
@@ -87,7 +86,7 @@ public class MyBacklogsFragment extends Fragment {
 					final Project project = backlogsAdapter.getGroup(groupPosition);
 
 					final Intent intent = new Intent(getActivity(), ProjectActivity.class);
-					intent.putExtra(ProjectActivity.EXTRA_BACKLOG, new Backlog(project));
+					intent.putExtra(ProjectActivity.EXTRA_BACKLOG, project);
 					startActivity(intent);
 
 					return true;
@@ -174,8 +173,7 @@ public class MyBacklogsFragment extends Fragment {
 
 				// Workaround that may be patchy,
 				// but it depends on the request whether it comes or not, and how to get it.
-				final Backlog iterationParent = new Backlog(project);
-				response.setParent(iterationParent);
+				response.setParent(project);
 
 				intent.putExtra(IterationActivity.ITERATION, response);
 
