@@ -1,6 +1,7 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.monits.agilefant.model.backlog.BacklogType;
@@ -71,10 +72,28 @@ public abstract class Backlog implements Serializable {
 	}
 
 	/**
+	 * Get Title
+	 * @return title of Backlog
+	 */
+	public abstract String getTitle();
+
+	/**
 	 * Backlog type
 	 * @return return the type of the backlog
 	 */
 	public abstract BacklogType getType();
+
+	/**
+	 * getParent method
+	 * @return Backlog parent
+	 */
+	public abstract Backlog getParent();
+
+	/**
+	 * getChildren
+	 * @return Backlog list of Children
+	 */
+	public abstract List<Backlog> getChildren();
 
 	@Override
 	public String toString() {

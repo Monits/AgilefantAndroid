@@ -127,9 +127,9 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	}
 
 	static class HolderGroup {
-		@Bind(R.id.title)
+		@Bind(R.id.txt_title)
 		TextView title;
-		@Bind(R.id.icon)
+		@Bind(R.id.txt_icon)
 		TextView icon;
 
 		public HolderGroup(final View view) {
@@ -138,7 +138,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	}
 
 	static class HolderChild {
-		@Bind(R.id.title)
+		@Bind(R.id.txt_title)
 		TextView title;
 
 		public HolderChild(final View view) {
@@ -156,5 +156,14 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	public long getGroupId(final int groupPosition) {
 		final Project group = getGroup(groupPosition);
 		return group == null ? -1 : group.getId();
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectAdapter{"
+				+ "inflater=" + inflater
+				+ ", groupResId=" + groupResId
+				+ ", childResId=" + childResId
+				+ '}';
 	}
 }

@@ -4,7 +4,7 @@ import com.monits.agilefant.activity.BaseActivity;
 import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
 import com.monits.agilefant.activity.SplashActivity;
-import com.monits.agilefant.adapter.BacklogsAdapter;
+import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.fragment.backlog.AllBacklogsFragment;
 import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
@@ -49,9 +49,9 @@ public interface Graph {
 	void inject(final AllBacklogsFragment allBacklogsFragment);
 
 	/**
-	 * @param backlogsAdapter Injects BacklogsAdapter
+	 * @param iterationViewHolder Injects IterationViewHolder
 	 */
-	void inject(final BacklogsAdapter backlogsAdapter);
+	void inject(final IterationViewHolder iterationViewHolder);
 
 	/**
 	 * @param dailyWorkActivity Injects DailyWorkActivity

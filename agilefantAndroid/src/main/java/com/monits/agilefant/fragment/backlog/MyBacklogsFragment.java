@@ -181,4 +181,11 @@ public class MyBacklogsFragment extends Fragment {
 			}
 		};
 	}
+
+	@Override
+	public String toString() {
+		return "MyBacklogsFragment{"
+				+ "backlogsAdapter=" + backlogsAdapter
+				+ '}';
+	}
 }

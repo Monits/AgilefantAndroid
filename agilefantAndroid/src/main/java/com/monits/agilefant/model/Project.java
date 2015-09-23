@@ -1,6 +1,7 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
@@ -66,12 +67,8 @@ public class Project extends Backlog implements Serializable {
 		this.assignees = assignees;
 	}
 
-	/**
-	 * @return The project title
-	 *
-	 */
+	@Override
 	public String getTitle() {
-		//Agilefant gives name in one endpoint and title in another.
 		return getName() == null ? title : getName();
 	}
 
@@ -146,6 +143,11 @@ public class Project extends Backlog implements Serializable {
 	 */
 	public Backlog getParent() {
 		return parent;
+	}
+
+	@Override
+	public List<Backlog> getChildren() {
+		return new ArrayList<Backlog>(iterationList);
 	}
 
 	/**

@@ -4,10 +4,11 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -15,7 +16,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.BacklogsAdapter;
+import com.monits.agilefant.adapter.AllBacklogsAdapter;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.service.BacklogService;
 
@@ -26,7 +27,7 @@ public class AllBacklogsFragment extends Fragment {
 	@Inject
 	BacklogService backlogService;
 
-	private BacklogsAdapter backlogsAdapter;
+	private AllBacklogsAdapter allBacklogsAdapter;
 
 	/**
 	 * @return a new AllBacklogsFragment
@@ -39,15 +40,16 @@ public class AllBacklogsFragment extends Fragment {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		AgilefantApplication.getObjectGraph().inject(this);
-		return inflater.inflate(R.layout.fragment_backlogs, container, false);
+		return inflater.inflate(R.layout.fragment_all_backlogs, container, false);
 	}
 
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		final ExpandableListView allBacklogs = (ExpandableListView) view.findViewById(R.id.all_backlogs);
+		final RecyclerView allBacklogs = (RecyclerView) view.findViewById(R.id.all_backlogs);
 
-		backlogsAdapter = new BacklogsAdapter(getActivity());
-		allBacklogs.setAdapter(backlogsAdapter);
+		allBacklogsAdapter = new AllBacklogsAdapter(getActivity());
+		allBacklogs.setLayoutManager(new LinearLayoutManager(getActivity()));
+		allBacklogs.setAdapter(allBacklogsAdapter);
 
 		final View loadingView = view.findViewById(R.id.loading_view);
 		loadingView.setVisibility(View.VISIBLE);
@@ -57,7 +59,7 @@ public class AllBacklogsFragment extends Fragment {
 				@Override
 				public void onResponse(final List<Product> response) {
 					if (response != null) {
-						backlogsAdapter.setBacklogs(response);
+						allBacklogsAdapter.setBacklogs(response);
 					}
 
 					loadingView.setVisibility(View.GONE);

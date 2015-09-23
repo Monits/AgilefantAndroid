@@ -1,8 +1,8 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
 import com.monits.agilefant.model.backlog.BacklogType;
 
@@ -57,9 +57,7 @@ public class Iteration extends Backlog implements Serializable {
 		this.title = title;
 	}
 
-	/**
-	 * @return The iteration title
-	 */
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -94,24 +92,10 @@ public class Iteration extends Backlog implements Serializable {
 	}
 
 	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(final long startDate) {
-		this.startDate = startDate;
-	}
-
-	/**
 	 * @return the endDate
 	 */
 	public long getEndDate() {
 		return endDate;
-	}
-
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(final long endDate) {
-		this.endDate = endDate;
 	}
 
 	/**
@@ -122,13 +106,6 @@ public class Iteration extends Backlog implements Serializable {
 	}
 
 	/**
-	 * @param tasksWithoutStory the tasksWithoutStory to set
-	 */
-	public void setTasksWithoutStory(final List<Task> tasksWithoutStory) {
-		this.tasksWithoutStory = tasksWithoutStory;
-	}
-
-	/**
 	 * @return the rootIteration
 	 */
 	public RootIteration getRootIteration() {
@@ -136,17 +113,15 @@ public class Iteration extends Backlog implements Serializable {
 	}
 
 	/**
-	 * @param rootIteration the rootIteration to set
-	 */
-	public void setRootIteration(final RootIteration rootIteration) {
-		this.rootIteration = rootIteration;
-	}
-
-	/**
 	 * @return The parent backlog
 	 */
 	public Backlog getParent() {
 		return parent;
+	}
+
+	@Override
+	public List<Backlog> getChildren() {
+		return Collections.emptyList();
 	}
 
 	/**
@@ -271,6 +246,7 @@ public class Iteration extends Backlog implements Serializable {
 
 		final Iteration other = (Iteration) obj;
 		return getId() == other.getId();
+
 	}
 
 	@Override

@@ -117,4 +117,6 @@
 	<string name="state_implemented">R</string>
 	<string name="state_done">D</string>
 	<string name="state_deferred">D</string>
+	<string name="plus_expanded">+</string>
+	<string name="minus_expanded">-</string>
 </resources>

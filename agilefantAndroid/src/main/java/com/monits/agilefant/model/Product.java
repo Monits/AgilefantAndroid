@@ -1,6 +1,7 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
@@ -28,9 +29,7 @@ public class Product extends Backlog implements Serializable {
 		this.projectList = projectList;
 	}
 
-	/**
-	 * @return The product title
-	 */
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -59,6 +58,16 @@ public class Product extends Backlog implements Serializable {
 	@Override
 	public BacklogType getType() {
 		return BacklogType.PRODUCT;
+	}
+
+	@Override
+	public Backlog getParent() {
+		return null;
+	}
+
+	@Override
+	public List<Backlog> getChildren() {
+		return new ArrayList<Backlog>(projectList);
 	}
 
 	@Override
