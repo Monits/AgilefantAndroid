@@ -11,7 +11,6 @@ import com.monits.agilefant.adapter.recyclerviewholders.ItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.BacklogViewHolder;
 import com.monits.agilefant.model.Backlog;
-import com.monits.agilefant.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +74,10 @@ public class AllBacklogsAdapter extends RecyclerView.Adapter<BacklogViewHolder> 
 
 	/**
 	 * Add products to Backlogs
-	 * @param productlist List of products
+	 * @param backlogs List of backlogs
 	 */
-	public void setBacklogs(final List<Product> productlist) {
-		this.backLogsList = new ArrayList<Backlog>(productlist);
+	public void setBacklogs(final List<? extends Backlog> backlogs) {
+		this.backLogsList = new ArrayList<>(backlogs);
 		notifyDataSetChanged();
 	}
 

@@ -40,7 +40,7 @@ public class AllBacklogsFragment extends Fragment {
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		AgilefantApplication.getObjectGraph().inject(this);
-		return inflater.inflate(R.layout.fragment_all_backlogs, container, false);
+		return inflater.inflate(R.layout.fragment_backlogs, container, false);
 	}
 
 	@Override
