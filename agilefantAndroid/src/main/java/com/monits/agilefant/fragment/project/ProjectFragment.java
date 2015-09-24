@@ -76,7 +76,7 @@ public class ProjectFragment extends Fragment {
 					public void onResponse(final Project project) {
 						final List<Fragment> fragments = new ArrayList<>();
 
-						fragments.add(ProjectDetailsFragment.newInstance(project, backlog));
+						fragments.add(ProjectDetailsFragment.newInstance(project));
 						fragments.add(ProjectLeafStoriesFragment.newInstance(project));
 
 						final ScreenSlidePagerAdapter pagerAdapter =

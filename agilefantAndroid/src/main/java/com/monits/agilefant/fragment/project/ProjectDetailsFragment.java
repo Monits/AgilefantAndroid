@@ -14,7 +14,6 @@ import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
-import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.ProjectService;
@@ -30,26 +29,23 @@ import butterknife.ButterKnife;
 public class ProjectDetailsFragment extends BaseDetailTabFragment {
 
 	private static final String PARAMS_PROJECT = "project";
-	private static final String PARAMS_BACKLOG = "backlog";
 
 	@Inject
 	ProjectService projectService;
 
 	private Project project;
-	private Backlog backlog;
+
 	@Bind(R.id.assignees)
 	TextView assigneesLabel;
 
 	/**
 	 * Return a new instance of ProjectDetailsFragment
 	 * @param project The project
-	 * @param backlog The backlog
 	 * @return a new ProjectDetailsFragment object
 	 */
-	public static ProjectDetailsFragment newInstance(final Project project, final Backlog backlog) {
+	public static ProjectDetailsFragment newInstance(final Project project) {
 		final Bundle bundle = new Bundle();
 		bundle.putSerializable(PARAMS_PROJECT, project);
-		bundle.putSerializable(PARAMS_BACKLOG, backlog);
 
 		final ProjectDetailsFragment fragment = new ProjectDetailsFragment();
 		fragment.setArguments(bundle);
@@ -65,7 +61,6 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(PARAMS_PROJECT);
-		backlog = (Backlog) arguments.getSerializable(PARAMS_BACKLOG);
 	}
 
 	@Override
@@ -78,8 +73,8 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 		final TextView startLabel = (TextView) rootView.findViewById(R.id.project_start_date);
 		final TextView endLabel = (TextView) rootView.findViewById(R.id.project_end_date);
 
-		productLabel.setText(backlog.getName());
-		projectLabel.setText(backlog.getName());
+		productLabel.setText(project.getParent().getName());
+		projectLabel.setText(project.getTitle());
 		startLabel.setText(DateUtils.formatDate(project.getStartDate(), DateUtils.DATE_PATTERN));
 		endLabel.setText(DateUtils.formatDate(project.getEndDate(), DateUtils.DATE_PATTERN));
 		assigneesLabel.setText(IterationUtils.getResposiblesDisplay(project.getAssignees()));
@@ -150,6 +145,6 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 
 	@Override
 	public String toString() {
-		return "ProjectDetailsFragment [project: " + project + ", backlog: " + backlog + ']';
+		return "ProjectDetailsFragment [project: " + project + ", backlog: " + project.getParent() + ']';
 	}
 }
