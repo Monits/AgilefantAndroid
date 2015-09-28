@@ -13,13 +13,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -27,10 +25,8 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.MyTasksAdapter;
 import com.monits.agilefant.adapter.ProjectAdapter;
-import com.monits.agilefant.fragment.backlog.task.CreateDailyWorkTaskFragment;
-import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
+import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.BacklogService;
@@ -49,7 +45,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 
 	private List<Project> mProjects;
 
-	private MyTasksAdapter tasksAdapter;
+	private TasksRecyclerAdapter tasksAdapter;
 
 	private ProjectAdapter backlogsAdapter;
 
@@ -65,7 +61,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 				final Task task = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
 
 				mTasks.add(task);
-				tasksAdapter.setItems(mTasks);
+				tasksAdapter.setTasks(mTasks);
 				tasksAdapter.notifyDataSetChanged();
 			}
 		}
@@ -121,8 +117,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 		super.onViewCreated(view, savedInstanceState);
 
 		backlogsAdapter = new ProjectAdapter(getActivity());
-		final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
-		final View emptyView = view.findViewById(R.id.tasks_empty_view);
+		final RecyclerView tasksListView = (RecyclerView) view.findViewById(R.id.tasks_list);
 
 		if (mProjects == null) {
 			final ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -139,7 +134,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 							if (response != null) {
 
 								mProjects = response;
-								setProjectsList(tasksListView, emptyView);
+								setProjectsList(tasksListView);
 
 								if (progressDialog != null && progressDialog.isShowing()) {
 									progressDialog.dismiss();
@@ -159,27 +154,18 @@ public class MyTasksFragment extends Fragment implements Observer {
 						}
 					});
 		} else {
-			setProjectsList(tasksListView, emptyView);
+			setProjectsList(tasksListView);
 		}
 	}
 
 
-	private void setProjectsList(final ListView tasksListView, final View emptyView) {
+	private void setProjectsList(final RecyclerView tasksListView) {
 
 		backlogsAdapter.setProjects(mProjects);
 
-		final List<Project> projectList = new ArrayList<>();
-
-		for (int i = 0; i < backlogsAdapter.getGroupCount(); i++) {
-			projectList.add(backlogsAdapter.getGroup(i));
-		}
-
-		tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
-		tasksAdapter.setOnActionListener(
-				new TaskAdapterViewActionListener(getActivity(),
-						MyTasksFragment.this, projectList));
+		tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+		tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		tasksListView.setAdapter(tasksAdapter);
-		tasksListView.setEmptyView(emptyView);
 	}
 
 	@Override

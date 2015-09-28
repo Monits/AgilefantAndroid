@@ -5,6 +5,7 @@ import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
 import com.monits.agilefant.activity.SplashActivity;
 import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
+import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.fragment.backlog.AllBacklogsFragment;
 import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
@@ -142,4 +143,9 @@ public interface Graph {
 	 * @param baseActivity Injects BaseActivity
 	 */
 	void inject(final BaseActivity baseActivity);
+
+	/**
+	 * @param taskItemViewHolder Injects TasksViews
+	 */
+	void inject(final TaskItemViewHolder taskItemViewHolder);
 }
