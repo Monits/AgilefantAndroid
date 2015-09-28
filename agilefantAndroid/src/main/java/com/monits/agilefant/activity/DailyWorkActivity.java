@@ -24,6 +24,8 @@ import com.monits.agilefant.service.DailyWorkService;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -41,6 +43,9 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 	@Inject
 	DailyWorkService dailyWorkService;
 
+	@Bind(R.id.pager)
+	ViewPager viewPager;
+
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_dailywork, menu);
@@ -50,65 +55,74 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_daily_work);
+
+		ButterKnife.bind(this);
 
 		AgilefantApplication.getObjectGraph().inject(this);
 
-		setContentView(R.layout.activity_daily_work);
 
 		final PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_header);
 		pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.color.all_backlogs_title_background_color));
 		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
 		pagerTabStrip.setDrawFullUnderline(true);
-
-		final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-
 		viewPager.setVisibility(View.VISIBLE);
 
-		if (savedInstanceState != null) {
+		if (savedInstanceState == null) {
+
+			getDailyWork();
+
+		} else {
 
 			dailyWork = (DailyWork) savedInstanceState.getSerializable(DAILYWORK);
 
 			viewPager.setAdapter(
 					new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, DailyWorkActivity.this));
-
-			return;
 		}
 
+		initializeFab();
+
+
+	}
+
+	private void getDailyWork() {
 		final ProgressDialog progressDialog = new ProgressDialog(this);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setMessage(getString(R.string.loading));
 		progressDialog.show();
 
 		dailyWorkService.getDailyWork(
-			new Listener<DailyWork>() {
+				new Listener<DailyWork>() {
 
-				@Override
-				public void onResponse(final DailyWork response) {
-					viewPager.setCurrentItem(0);
+					@Override
+					public void onResponse(final DailyWork response) {
+						viewPager.setCurrentItem(0);
 
-					dailyWork = response;
-					viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), response,
-							DailyWorkActivity.this));
+						dailyWork = response;
+						viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), response,
+								DailyWorkActivity.this));
 
-					if (progressDialog != null && progressDialog.isShowing()) {
-						progressDialog.dismiss();
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
 					}
-				}
-			},
-			new ErrorListener() {
+				},
+				new ErrorListener() {
 
-				@Override
-				public void onErrorResponse(final VolleyError arg0) {
-					if (progressDialog != null && progressDialog.isShowing()) {
-						progressDialog.dismiss();
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+
+						Toast.makeText(
+								DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work,
+								Toast.LENGTH_SHORT).show();
 					}
+				});
+	}
 
-					Toast.makeText(
-						DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work, Toast.LENGTH_SHORT)
-							.show();
-				}
-			});
-
+	private void initializeFab() {
 		final FloatingActionButton addTaskWithOutStoryFAB =
 				(FloatingActionButton) findViewById(R.id.daily_work_add_fab);
 		addTaskWithOutStoryFAB.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +135,7 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 			}
 		});
 	}
+
 
 	@Override
 	protected void onSaveInstanceState(final Bundle outState) {
