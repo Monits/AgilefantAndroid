@@ -41,7 +41,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	private Iteration iteration;
 
 	@SerializedName("story")
-	private Backlog story;
+	private Story story;
 
 	/**
 	 * Default constructor
@@ -231,14 +231,14 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the story
 	 */
-	public Backlog getStory() {
+	public Story getStory() {
 		return story;
 	}
 
 	/**
 	 * @param story the story to set
 	 */
-	public void setStory(final Backlog story) {
+	public void setStory(final Story story) {
 		this.story = story;
 	}
 
