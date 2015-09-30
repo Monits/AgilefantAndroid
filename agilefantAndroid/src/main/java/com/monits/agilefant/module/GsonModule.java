@@ -34,7 +34,6 @@ public class GsonModule {
 			public Backlog deserialize(final JsonElement json, final Type typeOfT,
 									final JsonDeserializationContext context) throws JsonParseException {
 				final String classType = json.getAsJsonObject().get("class").getAsString();
-
 				if (classType.endsWith("Product")) {
 					return context.deserialize(json, Product.class);
 				} else if (classType.endsWith("Iteration")) {

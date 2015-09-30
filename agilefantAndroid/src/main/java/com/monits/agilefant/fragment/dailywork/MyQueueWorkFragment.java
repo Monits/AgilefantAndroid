@@ -8,21 +8,21 @@ import java.util.Observer;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.MyTasksAdapter;
-import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
+import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Task;
 
 public class MyQueueWorkFragment extends Fragment implements Observer {
 
 	private static final String TASKS_KEY = "TASKS";
 
-	private MyTasksAdapter tasksAdapter;
+	private TasksRecyclerAdapter tasksAdapter;
 
 	private List<Task> mTasks;
 
@@ -65,14 +65,17 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
-		final ListView tasksListView = (ListView) view.findViewById(R.id.tasks_list);
+		final RecyclerView tasksListView = (RecyclerView) view.findViewById(R.id.tasks_list);
 		final View emptyView = view.findViewById(R.id.queue_empty_view);
 
-		tasksAdapter = new MyTasksAdapter(getActivity(), mTasks);
-		tasksAdapter.setOnActionListener(new TaskAdapterViewActionListener(getActivity(), MyQueueWorkFragment.this));
-		tasksListView.setAdapter(tasksAdapter);
-		tasksListView.setEmptyView(emptyView);
+		if (mTasks.isEmpty()) {
+			emptyView.setVisibility(View.VISIBLE);
+			tasksListView.setVisibility(View.GONE);
+		} else {
+			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			tasksListView.setAdapter(tasksAdapter);
+		}
 	}
 
 	@Override

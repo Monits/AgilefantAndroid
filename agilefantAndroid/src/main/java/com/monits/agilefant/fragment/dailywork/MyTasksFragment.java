@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -163,9 +164,19 @@ public class MyTasksFragment extends Fragment implements Observer {
 
 		backlogsAdapter.setProjects(mProjects);
 
-		tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
-		tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-		tasksListView.setAdapter(tasksAdapter);
+		// If list is empty we show an empty message
+		if (mTasks.isEmpty()) {
+
+			final TextView emptyView = (TextView) getView().findViewById(R.id.tasks_empty_view);
+			tasksListView.setVisibility(View.GONE);
+			emptyView.setVisibility(View.VISIBLE);
+
+		} else {
+
+			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+			tasksListView.setAdapter(tasksAdapter);
+		}
 	}
 
 	@Override

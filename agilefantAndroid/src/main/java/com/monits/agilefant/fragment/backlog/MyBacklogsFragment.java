@@ -70,7 +70,13 @@ public class MyBacklogsFragment extends Fragment {
 				@Override
 				public void onResponse(final List<Project> response) {
 					if (response != null) {
-						backlogsAdapter.setBacklogs(response);
+						// If list is empty we show an empty message
+						if (response.isEmpty()) {
+							emptyView.setVisibility(View.VISIBLE);
+							allbackLogs.setVisibility(View.GONE);
+						} else {
+							backlogsAdapter.setBacklogs(response);
+						}
 					}
 
 					loadingView.setVisibility(View.GONE);

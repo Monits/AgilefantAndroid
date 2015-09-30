@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -46,6 +47,7 @@ public class AllBacklogsFragment extends Fragment {
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		final RecyclerView allBacklogs = (RecyclerView) view.findViewById(R.id.all_backlogs);
+		final TextView emptyView = (TextView) view.findViewById(R.id.backlogs_empty);
 
 		allBacklogsAdapter = new AllBacklogsAdapter(getActivity());
 		allBacklogs.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -59,7 +61,13 @@ public class AllBacklogsFragment extends Fragment {
 				@Override
 				public void onResponse(final List<Product> response) {
 					if (response != null) {
-						allBacklogsAdapter.setBacklogs(response);
+						// If list is empty we show an empty message
+						if (response.isEmpty()) {
+							allBacklogs.setVisibility(View.GONE);
+							emptyView.setVisibility(View.VISIBLE);
+						} else {
+							allBacklogsAdapter.setBacklogs(response);
+						}
 					}
 
 					loadingView.setVisibility(View.GONE);
