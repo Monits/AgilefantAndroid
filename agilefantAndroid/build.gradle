@@ -38,13 +38,13 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.monits:volley-requests:1.0.1'
     compile files('libs/flurryAnalytics_3.4.0.jar')
+
     // ButterKNife dependency
     compile 'com.jakewharton:butterknife:7.0.1'
     // dagger dependencies
     compile 'com.google.dagger:dagger:2.0'
     apt "com.google.dagger:dagger-compiler:2.0"
     provided 'javax.annotation:jsr250-api:1.0'
-
 }
 
 
