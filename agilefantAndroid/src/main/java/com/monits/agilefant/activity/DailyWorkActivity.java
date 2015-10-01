@@ -6,7 +6,7 @@ package com.monits.agilefant.activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.PagerTabStrip;
+
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
@@ -61,11 +61,6 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 
 		AgilefantApplication.getObjectGraph().inject(this);
 
-
-		final PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_header);
-		pagerTabStrip.setBackgroundDrawable(getResources().getDrawable(R.color.all_backlogs_title_background_color));
-		pagerTabStrip.setTabIndicatorColorResource(R.color.all_backlogs_title_text_color);
-		pagerTabStrip.setDrawFullUnderline(true);
 		viewPager.setVisibility(View.VISIBLE);
 
 		if (savedInstanceState == null) {
@@ -81,7 +76,6 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 		}
 
 		initializeFab();
-
 
 	}
 

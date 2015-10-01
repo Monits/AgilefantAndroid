@@ -10,18 +10,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" >
-
-        <android.support.v4.view.PagerTabStrip
-            android:id="@+id/pager_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/all_backlogs_title_background_color"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:textColor="@color/cyan"
-            android:textStyle="bold" />
-    </android.support.v4.view.ViewPager>
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/daily_work_add_fab"
