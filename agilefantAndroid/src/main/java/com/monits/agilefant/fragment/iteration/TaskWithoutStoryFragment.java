@@ -12,23 +12,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.TaskWithoutStoryAdapter;
-import com.monits.agilefant.listeners.OnSwapRowListener;
-import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
+import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
-import com.monits.agilefant.view.DynamicListView;
+import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 
 import javax.inject.Inject;
 
@@ -44,10 +40,9 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	private List<Task> taskWithoutStory;
 
 	@Bind(R.id.task_without_story)
-	DynamicListView taskWithoutStoryListView;
+	RecyclerView taskWithoutStoryListView;
 
-	private TaskWithoutStoryAdapter taskWithoutStoryAdapter;
-	private Iteration iteration;
+	private TasksRecyclerAdapter taskWithoutStoryAdapter;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -72,7 +67,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 						(Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY);
 
 				taskWithoutStory.add(newTaskWithoutStory);
-				taskWithoutStoryAdapter.setItems(taskWithoutStory);
+				taskWithoutStoryAdapter.setTasks(taskWithoutStory);
 				taskWithoutStoryAdapter.notifyDataSetChanged();
 			}
 		}
@@ -108,60 +103,23 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 
 		final Bundle arguments = getArguments();
 		this.taskWithoutStory = (List<Task>) arguments.getSerializable(EXTRA_TASKS);
-		this.iteration = (Iteration) arguments.getSerializable(EXTRA_ITERATION);
 	}
 
-	@SuppressWarnings("checkstyle:anoninnerlength")
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-			final Bundle savedInstanceState) {
+		final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_task_without_story, container, false);
-
 		ButterKnife.bind(this, rootView);
+		if (taskWithoutStory.isEmpty()) {
+			rootView.findViewById(R.id.stories_empty_view).setVisibility(View.VISIBLE);
+		} else {
+			taskWithoutStoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		taskWithoutStoryListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
-		taskWithoutStoryListView.setItems(taskWithoutStory);
+			taskWithoutStoryAdapter = new TasksRecyclerAdapter(getActivity(), taskWithoutStory);
 
-		taskWithoutStoryAdapter = new TaskWithoutStoryAdapter(getActivity(), taskWithoutStory);
-		taskWithoutStoryAdapter.setOnActionListener(
-				new TaskAdapterViewActionListener(getActivity(), TaskWithoutStoryFragment.this));
-		taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
-		taskWithoutStoryListView.setOnSwapRowListener(new OnSwapRowListener() {
-
-			@Override
-			public void onSwapPositions(final int itemPosition, final int swappedItemPosition,
-					final SwapDirection direction, final long aboveItemId, final long belowItemId) {
-
-				final Task task = taskWithoutStory.get(itemPosition);
-				final Task targetTask = aboveItemId == -1
-						? null : taskWithoutStory.get(taskWithoutStoryListView.getPositionForID(aboveItemId));
-
-				task.setIteration(iteration);
-
-				metricsService.rankTaskUnder(task, targetTask, taskWithoutStory,
-					new Listener<Task>() {
-
-						@Override
-						public void onResponse(final Task arg0) {
-							Toast.makeText(
-								getActivity(), R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
-						}
-					},
-					new ErrorListener() {
-
-						@Override
-						public void onErrorResponse(final VolleyError arg0) {
-							Toast.makeText(
-								getActivity(), R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
-
-							// Re-Sorting is made on service layer, notifying the adapter.
-							if (isVisible()) {
-								taskWithoutStoryAdapter.sortAndNotify();
-							}
-						}
-					});
-			}
-		});
+			taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
+			taskWithoutStoryListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
+		}
 
 		return rootView;
 	}
@@ -171,6 +129,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 		if (isVisible()) {
 			taskWithoutStoryAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
+
 		}
 	}
 
