@@ -6,7 +6,7 @@ import java.util.Observable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Serializable, Rankable<Task> {
+public class Task extends Observable implements Serializable, Rankable<Task>, WorkItem {
 
 	private static final long serialVersionUID = 2576001407807164868L;
 
@@ -100,6 +100,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the effortLeft
 	 */
+	@Override
 	public long getEffortLeft() {
 		return effortLeft;
 	}
@@ -116,6 +117,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the effortSpent
 	 */
+	@Override
 	public long getEffortSpent() {
 		return effortSpent;
 	}
@@ -132,6 +134,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the originalEstimate
 	 */
+	@Override
 	public long getOriginalEstimate() {
 		return originalEstimate;
 	}
@@ -146,6 +149,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the name
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -160,6 +164,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the id
 	 */
+	@Override
 	public long getId() {
 		return id;
 	}
@@ -174,6 +179,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the responsibles
 	 */
+	@Override
 	public List<User> getResponsibles() {
 		return responsibles;
 	}
@@ -190,6 +196,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the state
 	 */
+	@Override
 	public StateKey getState() {
 		return state;
 	}

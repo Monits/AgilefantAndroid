@@ -1,14 +1,14 @@
 package com.monits.agilefant.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.google.gson.annotations.SerializedName;
-
-public class Story extends Observable implements Serializable, Observer, Rankable<Story> {
+public class Story extends Observable implements Serializable, Observer, Rankable<Story>, WorkItem {
 
 	private static final long serialVersionUID = 5178157997788833446L;
 
@@ -94,6 +94,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	/**
 	 * @return the id
 	 */
+	@Override
 	public long getId() {
 		return id;
 	}
@@ -108,6 +109,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	/**
 	 * @return the name
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -122,6 +124,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	/**
 	 * @return the state
 	 */
+	@Override
 	public StateKey getState() {
 		return state;
 	}
@@ -185,7 +188,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	}
 
 	@Override
-	public int  getRank() {
+	public int getRank() {
 		return rank;
 	}
 
@@ -274,6 +277,21 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 
 			this.metrics = new Metrics(el, es, oe);
 		}
+	}
+
+	@Override
+	public long getEffortLeft() {
+		return metrics.getEffortLeft();
+	}
+
+	@Override
+	public long getEffortSpent() {
+		return metrics.getEffortSpent();
+	}
+
+	@Override
+	public long getOriginalEstimate() {
+		return metrics.getOriginalEstimate();
 	}
 
 	@Override
