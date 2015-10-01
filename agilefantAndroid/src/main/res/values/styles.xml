@@ -18,13 +18,16 @@
     <style name="AppTheme" parent="AppBaseTheme" tools:ignore="NewApi">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:colorPrimaryDark">@color/action_bar_color_dark</item>
+        <item name="android:colorAccent">@color/cyan</item>
         <item name="colorAccent">@color/cyan</item>
-
+        <item name="android:textColorPrimary">@color/action_bar_text</item>
+        <item name="selectableItemBackground">@color/action_bar_color</item>
+        <item name="tabIndicatorColor">@color/action_bar_text</item>
+        <item name="tabTextColor">@color/tab_not_selected_text</item>
     </style>
 
     <style name="Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">@color/action_bar_color</item>
-        <item name="android:textColorPrimary">@color/action_bar_text</item>
     </style>
 
     <style name="Toolbar_Popup" parent="Base.ThemeOverlay.AppCompat.ActionBar">
@@ -36,7 +39,7 @@
     </style>
 
     <style name="fab_labels" parent="AppBaseTheme">
-        <item name="android:textColorPrimary">@color/fab_label_primary_color</item>
+        <item name="android:textColor">@color/fab_label_primary_color</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginRight">@dimen/margin_fab_label_Right</item>
         <item name="android:background">@drawable/state_fab_text</item>

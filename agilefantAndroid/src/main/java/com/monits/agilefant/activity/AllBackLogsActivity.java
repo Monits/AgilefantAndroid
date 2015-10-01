@@ -1,6 +1,7 @@
 package com.monits.agilefant.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
@@ -27,6 +28,9 @@ public class AllBackLogsActivity extends BaseToolbaredActivity {
 		final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setAdapter(new BacklogsPagerAdapter(this, getSupportFragmentManager(), fragments));
 		viewPager.setCurrentItem(0);
+
+		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
+		tabLayout.setupWithViewPager(viewPager);
 
 	}
 }

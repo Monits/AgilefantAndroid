@@ -4,10 +4,6 @@
     <color name="all_backlogs_child_text_color">#1E5EEE</color>
     <color name="all_backlogs_title_background_color">#d0e6f6</color>
     <color name="all_backlogs_title_text_color">#e17009</color>
-    <color name="storie_background_color">#e9eeff</color>
-    <color name="task_background_color">#eeeeee</color>
-    <color name="task_stories_header_background_color">#cccccc</color>
-    <color name="iteration_title">#2e6e9e</color>
     <color name="traslucent_black">#DD000000</color>
 	<color name="cyan">#2E6E9E</color>
 	<color name="blue_light">#1E5EEE</color>
@@ -23,5 +19,5 @@
     <color name="fab_menu_background">#CCd4d4d4</color>
     <color name="fab_label_primary_color">#95000000</color>
 
-
+    <color name="tab_not_selected_text">#CCd4d4d4</color>
 </resources>
