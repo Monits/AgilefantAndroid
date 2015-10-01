@@ -1,13 +1,5 @@
 package com.monits.agilefant.fragment.project;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
@@ -43,7 +35,16 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.view.DynamicListView;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements Observer {
 
@@ -255,16 +256,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 			storiesAdapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
 		}
-	}
-
-	@Override
-	public int getTitleBackgroundResourceId() {
-		return R.drawable.gradient_stories_title;
-	}
-
-	@Override
-	public int getColorResourceId() {
-		return 0;
 	}
 
 	@Override

@@ -96,17 +96,6 @@ public class IterationDetailsFragment extends BaseDetailTabFragment {
 	}
 
 	@Override
-	public int getTitleBackgroundResourceId() {
-		// TODO: Create its own background
-		return R.drawable.gradient_burndown_title;
-	}
-
-	@Override
-	public int getColorResourceId() {
-		return android.R.color.white;
-	}
-
-	@Override
 	public int getTitleResourceId() {
 		return R.string.iteration_details;
 	}

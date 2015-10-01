@@ -7,6 +7,8 @@ import java.util.Observer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,12 +39,15 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	@Inject
 	MetricsService metricsService;
 
-	private List<Task> taskWithoutStory;
-
+	@SuppressFBWarnings(
+		value = "MISSING_FIELD_IN_TO_STRING", justification = "It's a view, we don't need this in toString")
 	@Bind(R.id.task_without_story)
 	RecyclerView taskWithoutStoryListView;
 
 	private TasksRecyclerAdapter taskWithoutStoryAdapter;
+
+	private List<Task> taskWithoutStory;
+	private Iteration iteration;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -140,17 +145,15 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	}
 
 	@Override
-	public int getTitleBackgroundResourceId() {
-		return R.drawable.gradient_task_without_story_title;
-	}
-
-	@Override
-	public int getColorResourceId() {
-		return android.R.color.white;
-	}
-
-	@Override
 	public int getTitleResourceId() {
 		return R.string.task_without_story;
+	}
+
+	@Override
+	public String toString() {
+		return "TaskWithoutStoryFragment{ "
+				+ "iteration=" + iteration
+				+ ", taskWithoutStory=" + taskWithoutStory
+				+ '}';
 	}
 }

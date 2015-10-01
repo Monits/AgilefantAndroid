@@ -2,7 +2,6 @@ package com.monits.agilefant.fragment.project;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,8 +60,6 @@ public class ProjectFragment extends Fragment {
 		final View rootView = inflater.inflate(R.layout.fragment_iteration, container, false);
 
 		final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.pager);
-		final PagerTitleStrip pagerTabStrip = (PagerTitleStrip) rootView.findViewById(R.id.pager_header);
-		pagerTabStrip.setBackgroundResource(R.drawable.gradient_stories_title);
 
 		if (backlog != null) {
 

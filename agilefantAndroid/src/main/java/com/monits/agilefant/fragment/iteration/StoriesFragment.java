@@ -1,10 +1,5 @@
 package com.monits.agilefant.fragment.iteration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +25,11 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.view.DynamicExpandableListView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.inject.Inject;
 
@@ -178,16 +178,6 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 	public void onDestroy() {
 		getActivity().unregisterReceiver(broadcastReceiver);
 		super.onDestroy();
-	}
-
-	@Override
-	public int getTitleBackgroundResourceId() {
-		return R.drawable.gradient_stories_title;
-	}
-
-	@Override
-	public int getColorResourceId() {
-		return android.R.color.white;
 	}
 
 	@Override

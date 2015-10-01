@@ -1,16 +1,8 @@
 package com.monits.agilefant.fragment.iteration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +13,13 @@ import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 
-public class IterationFragment extends Fragment implements OnPageChangeListener {
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+public class IterationFragment extends Fragment {
 
 	private static final String ITERATION = "iteration";
 
@@ -29,9 +27,6 @@ public class IterationFragment extends Fragment implements OnPageChangeListener 
 
 	@Bind(R.id.pager)
 	ViewPager viewPager;
-
-	@Bind(R.id.pager_header)
-	PagerTitleStrip pagerTabStrip;
 
 	/**
 	 * Creates a new IterationFragment with the given iteration
@@ -58,7 +53,7 @@ public class IterationFragment extends Fragment implements OnPageChangeListener 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
-		final View view = inflater.inflate(R.layout.fragment_iteration, null);
+		final View view = inflater.inflate(R.layout.fragment_iteration, container, false);
 		ButterKnife.bind(this, view);
 		if (mIteration != null) {
 
@@ -77,28 +72,13 @@ public class IterationFragment extends Fragment implements OnPageChangeListener 
 			fragments.add(IterationBurndownFragment.newInstance(mIteration.getId()));
 
 			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
-			this.viewPager.addOnPageChangeListener(this);
-
-			pagerTabStrip.setBackgroundResource(iterationDetailsFragment.getTitleBackgroundResourceId());
 		}
 
 		return view;
 	}
 
 	@Override
-	public void onPageScrollStateChanged(final int state) {
-	}
-
-	@Override
-	public void onPageScrolled(final int arg0, final float arg1, final int arg2) {
-	}
-
-	@Override
-	public void onPageSelected(final int position) {
-		final ScreenSlidePagerAdapter pagerAdapter = (ScreenSlidePagerAdapter) this.viewPager.getAdapter();
-		final BaseDetailTabFragment fragment = (BaseDetailTabFragment) pagerAdapter.getItem(position);
-
-		pagerTabStrip.setBackgroundResource(fragment.getTitleBackgroundResourceId());
-		pagerTabStrip.setTextColor(getResources().getColor(fragment.getColorResourceId()));
+	public String toString() {
+		return "IterationFragment{ mIteration= " + mIteration + '}';
 	}
 }

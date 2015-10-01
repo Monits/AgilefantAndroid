@@ -23,6 +23,7 @@ import com.monits.agilefant.util.IterationUtils;
 import java.util.List;
 
 import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -126,16 +127,6 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 						});
 				}
 			});
-	}
-
-	@Override
-	public int getTitleBackgroundResourceId() {
-		return R.drawable.gradient_stories_title;
-	}
-
-	@Override
-	public int getColorResourceId() {
-		return 0;
 	}
 
 	@Override
