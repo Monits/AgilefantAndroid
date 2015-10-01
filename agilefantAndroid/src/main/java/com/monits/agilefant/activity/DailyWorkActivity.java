@@ -6,6 +6,7 @@ package com.monits.agilefant.activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -46,6 +47,9 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 	@Bind(R.id.pager)
 	ViewPager viewPager;
 
+	@Bind(R.id.pager_header)
+	TabLayout tabLayout;
+
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_dailywork, menu);
@@ -63,6 +67,8 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 
 		viewPager.setVisibility(View.VISIBLE);
 
+		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
 		if (savedInstanceState == null) {
 
 			getDailyWork();
@@ -73,6 +79,8 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 
 			viewPager.setAdapter(
 					new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, DailyWorkActivity.this));
+
+			tabLayout.setupWithViewPager(viewPager);
 		}
 
 		initializeFab();
@@ -95,6 +103,7 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 						dailyWork = response;
 						viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), response,
 								DailyWorkActivity.this));
+						tabLayout.setupWithViewPager(viewPager);
 
 						if (progressDialog != null && progressDialog.isShowing()) {
 							progressDialog.dismiss();
@@ -129,7 +138,6 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 			}
 		});
 	}
-
 
 	@Override
 	protected void onSaveInstanceState(final Bundle outState) {
