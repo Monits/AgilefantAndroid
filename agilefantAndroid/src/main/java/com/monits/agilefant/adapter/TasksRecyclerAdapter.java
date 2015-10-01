@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolderUpdateTracker;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
 import com.monits.agilefant.model.Task;
 
@@ -15,7 +16,8 @@ import java.util.List;
 /**
  * Created by edipasquale on 25/09/15.
  */
-public class TasksRecyclerAdapter extends RecyclerView.Adapter<TaskItemViewHolder> {
+public class TasksRecyclerAdapter extends RecyclerView.Adapter<TaskItemViewHolder>
+		implements TaskItemViewHolderUpdateTracker {
 
 	private List<Task> taskList;
 	private final LayoutInflater inflater;
@@ -35,7 +37,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TaskItemViewHolde
 	public TaskItemViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
 		final View view = inflater.inflate(R.layout.my_tasks_item, parent, false);
 
-		return new TaskItemViewHolder(view, context);
+		return new TaskItemViewHolder(view, context, this);
 	}
 
 	@Override
@@ -46,6 +48,17 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TaskItemViewHolde
 	@Override
 	public int getItemCount() {
 		return taskList.size();
+	}
+
+	@Override
+	public void onUpdate(final Task updatedTask) {
+		for (int i = 0; i < taskList.size(); i++) {
+			if (updatedTask.getId() == taskList.get(i).getId()) {
+				taskList.set(i, updatedTask);
+				notifyItemChanged(i);
+				break;
+			}
+		}
 	}
 
 	public void setTasks(final List<Task> taskList) {

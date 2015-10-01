@@ -54,13 +54,17 @@ public class TaskItemViewHolder extends RecyclerView.ViewHolder {
 
 	private Task task;
 
+	private final TaskItemViewHolderUpdateTracker updater;
 
 	/**
 	 * @param itemView view's Item
 	 * @param context it's context
+	 * @param updater It's an update listener
 	 */
-	public TaskItemViewHolder(final View itemView, final Context context) {
+	public TaskItemViewHolder(final View itemView, final Context context,
+							final TaskItemViewHolderUpdateTracker updater) {
 		super(itemView);
+		this.updater = updater;
 		this.context = context;
 		ButterKnife.bind(this, itemView);
 		AgilefantApplication.getObjectGraph().inject(this);
@@ -98,14 +102,14 @@ public class TaskItemViewHolder extends RecyclerView.ViewHolder {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
 				metricsService.taskChangeState(
-						StateKey.values()[which],
-						task,
+						StateKey.values()[which], task,
 						new Response.Listener<Task>() {
 							@Override
-							public void onResponse(final Task arg0) {
+							public void onResponse(final Task updatedTask) {
 								Toast.makeText(
 										context, R.string.feedback_successfully_updated_state,
 										Toast.LENGTH_SHORT).show();
+								updater.onUpdate(updatedTask);
 							}
 						},
 						new Response.ErrorListener() {
@@ -199,6 +203,7 @@ public class TaskItemViewHolder extends RecyclerView.ViewHolder {
 	/**
 	 * @return Object's description as a string
 	 */
+	@Override
 	public String toString() {
 		return new StringBuilder("Task Item id ").append(task.getId())
 				.append(", Task item name ").append(task.getName())
