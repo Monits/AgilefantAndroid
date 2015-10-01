@@ -1,6 +1,7 @@
 package com.monits.agilefant.fragment.project;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -63,8 +64,7 @@ public class ProjectFragment extends Fragment {
 
 		if (backlog != null) {
 
-			final List<Fragment> fragments = new ArrayList<>();
-
+			// FIXME: We should avoid re-do the request each time we create this view.
 			projectService.getProjectData(
 				backlog.getId(),
 				new Response.Listener<Project>() {
@@ -76,9 +76,11 @@ public class ProjectFragment extends Fragment {
 						fragments.add(ProjectDetailsFragment.newInstance(project));
 						fragments.add(ProjectLeafStoriesFragment.newInstance(project));
 
-						final ScreenSlidePagerAdapter pagerAdapter =
-								new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments);
-						viewPager.setAdapter(pagerAdapter);
+						viewPager.setAdapter(
+								new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
+
+						final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.pager_header);
+						tabLayout.setupWithViewPager(viewPager);
 					}
 				},
 				new Response.ErrorListener() {
@@ -89,8 +91,6 @@ public class ProjectFragment extends Fragment {
 							getActivity(), R.string.failed_to_retrieve_project_details, Toast.LENGTH_SHORT).show();
 					}
 				});
-
-			viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
 		}
 
 		return rootView;

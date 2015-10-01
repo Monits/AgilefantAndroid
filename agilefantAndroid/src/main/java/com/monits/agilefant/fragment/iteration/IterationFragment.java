@@ -1,6 +1,7 @@
 package com.monits.agilefant.fragment.iteration;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -71,7 +72,11 @@ public class IterationFragment extends Fragment {
 			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory, mIteration));
 			fragments.add(IterationBurndownFragment.newInstance(mIteration.getId()));
 
-			this.viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
+			viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));
+
+			final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pager_header);
+			tabLayout.setupWithViewPager(viewPager);
+			tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 		}
 
 		return view;
