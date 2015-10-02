@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 
 public class MyQueueWorkFragment extends Fragment implements Observer {
 
@@ -74,6 +75,7 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 		} else {
 			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			tasksListView.addItemDecoration(new SpacesSeparatorItemDecoration(getActivity()));
 			tasksListView.setAdapter(tasksAdapter);
 		}
 	}

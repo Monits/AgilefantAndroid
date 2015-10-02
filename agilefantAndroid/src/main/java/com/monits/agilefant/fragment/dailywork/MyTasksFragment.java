@@ -30,6 +30,7 @@ import com.monits.agilefant.adapter.ProjectAdapter;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.service.BacklogService;
 
 import javax.inject.Inject;
@@ -175,6 +176,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 
 			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
 			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+			tasksListView.addItemDecoration(new SpacesSeparatorItemDecoration(getActivity()));
 			tasksListView.setAdapter(tasksAdapter);
 		}
 	}
