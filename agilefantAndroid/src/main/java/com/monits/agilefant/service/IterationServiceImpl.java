@@ -1,11 +1,13 @@
 package com.monits.agilefant.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.FilterableIteration;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.util.RankComparator;
 
 import javax.inject.Inject;
 
@@ -25,7 +27,15 @@ public class IterationServiceImpl implements IterationService {
 
 	@Override
 	public void getIteration(final long id, final Listener<Iteration> listener, final ErrorListener error) {
-		agilefantService.getIteration(id, listener, error);
+		agilefantService.getIteration(id, new Listener<Iteration>() {
+			@Override
+			public void onResponse(final Iteration iteration) {
+				// Sort taks by rank before returning
+				Collections.sort(iteration.getTasksWithoutStory(), RankComparator.INSTANCE);
+
+				listener.onResponse(iteration);
+			}
+		}, error);
 	}
 
 	@Override
