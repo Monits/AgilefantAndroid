@@ -44,4 +44,10 @@
         <item name="android:layout_marginRight">@dimen/margin_fab_label_Right</item>
         <item name="android:background">@drawable/state_fab_text</item>
     </style>
+
+    <style name="InputTextStyle" parent="android:Widget.EditText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

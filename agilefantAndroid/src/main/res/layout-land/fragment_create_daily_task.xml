@@ -77,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/name"
                         android:singleLine="true"
-                        android:textSize="16sp"
+                        style="@style/InputTextStyle"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -129,7 +129,7 @@
                         android:completionThreshold="1"
                         android:hint="@string/search_user"
                         android:singleLine="true"
-                        android:textSize="16sp"
+                        style="@style/InputTextStyle"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -157,7 +157,7 @@
                         android:dropDownAnchor="@+id/context_label"
                         android:dropDownWidth="match_parent"
                         android:hint="@string/context_hint"
-                        android:textSize="16sp"
+                        style="@style/InputTextStyle"
                         android:layout_weight="1" />
                 </LinearLayout>
 

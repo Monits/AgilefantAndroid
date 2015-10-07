@@ -79,7 +79,7 @@
                         android:inputType="text"
                         android:hint="@string/name"
                         android:singleLine="true"
-                        android:textSize="16sp"
+                        style="@style/InputTextStyle"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -133,7 +133,7 @@
                         android:completionThreshold="1"
                         android:hint="@string/search_user"
                         android:singleLine="true"
-                        android:textSize="16sp"
+                        style="@style/InputTextStyle"
                         android:layout_weight="1"
                         android:gravity="left" />
                 </LinearLayout>
