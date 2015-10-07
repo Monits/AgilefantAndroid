@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +22,6 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.TaskTimeTrackingService;
 import com.monits.agilefant.util.IterationUtils;
 
-
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -33,7 +31,7 @@ import butterknife.OnClick;
 /**
  * Created by edipasquale on 25/09/15.
  */
-public class TaskItemViewHolder extends RecyclerView.ViewHolder {
+public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
 	private final Context context;
 
@@ -73,6 +71,7 @@ public class TaskItemViewHolder extends RecyclerView.ViewHolder {
 	/**
 	 * @param task This view references that Task object
 	 */
+	@Override
 	public void onBindView(final Task task) {
 
 		this.task = task;
@@ -86,10 +85,11 @@ public class TaskItemViewHolder extends RecyclerView.ViewHolder {
 		columnState.setBackgroundResource(IterationUtils.getStateBackground(task.getState()));
 
 		// Initialize context column
-		if (task.getIteration() == null) {
+		final Iteration iteration = this.task.getIteration();
+		if (iteration == null) {
 			columnContext.setText(context.getResources().getString(R.string.minus_expanded));
 		} else {
-			columnContext.setText(task.getIteration().getName());
+			columnContext.setText(iteration.getName());
 		}
 	}
 
