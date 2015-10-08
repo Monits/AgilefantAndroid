@@ -7,7 +7,6 @@ import java.util.Observer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,6 +15,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,31 +23,20 @@ import android.view.ViewGroup;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
-import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
-
-import javax.inject.Inject;
+import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 
 public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements Observer {
 
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
 
-	private static final String EXTRA_ITERATION = "com.monits.agilefant.extra.ITERATION";
-
-	@Inject
-	MetricsService metricsService;
-
-	@SuppressFBWarnings(
-		value = "MISSING_FIELD_IN_TO_STRING", justification = "It's a view, we don't need this in toString")
 	@Bind(R.id.task_without_story)
 	RecyclerView taskWithoutStoryListView;
 
 	private TasksRecyclerAdapter taskWithoutStoryAdapter;
 
 	private List<Task> taskWithoutStory;
-	private Iteration iteration;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -81,14 +70,11 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	/**
 	 * Return a new TaskWithoutStoryFragment with the given tasks without story and iteration
 	 * @param taskWithoutStory The tasks
-	 * @param iteration The iteration
 	 * @return a new TaskWithoutStoryFragment with the given tasks without story and iteration
 	 */
-	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory,
-			final Iteration iteration) {
+	public static TaskWithoutStoryFragment newInstance(final ArrayList<Task> taskWithoutStory) {
 		final Bundle bundle = new Bundle();
 		bundle.putSerializable(EXTRA_TASKS, taskWithoutStory);
-		bundle.putSerializable(EXTRA_ITERATION, iteration);
 
 		final TaskWithoutStoryFragment taskWithoutStoryFragment = new TaskWithoutStoryFragment();
 		taskWithoutStoryFragment.setArguments(bundle);
@@ -100,7 +86,6 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AgilefantApplication.getObjectGraph().inject(this);
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
@@ -108,6 +93,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 
 		final Bundle arguments = getArguments();
 		this.taskWithoutStory = (List<Task>) arguments.getSerializable(EXTRA_TASKS);
+
 	}
 
 	@Override
@@ -124,6 +110,11 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 
 			taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
 			taskWithoutStoryListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
+
+			final WorkItemTouchHelperCallback workItemTouchHelperCallback =
+					new WorkItemTouchHelperCallback(taskWithoutStoryAdapter);
+			final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
+			itemTouchHelper.attachToRecyclerView(taskWithoutStoryListView);
 		}
 
 		return rootView;
@@ -151,9 +142,10 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 
 	@Override
 	public String toString() {
-		return "TaskWithoutStoryFragment{ "
-				+ "iteration=" + iteration
-				+ ", taskWithoutStory=" + taskWithoutStory
+
+		return "TaskWithoutStoryFragment{"
+				+ "taskWithoutStory=" + taskWithoutStory
+				+ "taskWithoutStoryAdapter=" + taskWithoutStoryAdapter
 				+ '}';
 	}
 }

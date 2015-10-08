@@ -69,7 +69,7 @@ public class IterationFragment extends Fragment {
 			final IterationDetailsFragment iterationDetailsFragment = IterationDetailsFragment.newInstance(mIteration);
 			fragments.add(iterationDetailsFragment);
 			fragments.add(StoriesFragment.newInstance(storiesArray, mIteration));
-			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory, mIteration));
+			fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
 			fragments.add(IterationBurndownFragment.newInstance(mIteration.getId()));
 
 			viewPager.setAdapter(new ScreenSlidePagerAdapter(getActivity(), getChildFragmentManager(), fragments));

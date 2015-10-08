@@ -4,6 +4,7 @@ import com.monits.agilefant.activity.BaseActivity;
 import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
 import com.monits.agilefant.activity.SplashActivity;
+import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
@@ -96,11 +97,6 @@ public interface Graph {
 	void inject(final SpentEffortFragment spentEffortFragment);
 
 	/**
-	 * @param taskWithoutStoryFragment Injects TaskWithoutStoryFragment
-	 */
-	void inject(final TaskWithoutStoryFragment taskWithoutStoryFragment);
-
-	/**
 	 * @param projectDetailsFragment Injects ProjectDetailsFragment
 	 */
 	void inject(final ProjectDetailsFragment projectDetailsFragment);
@@ -153,5 +149,10 @@ public interface Graph {
 	/**
 	 * @param storyItemViewHolder Injects story views
 	 */
-	void inject(final StoryItemViewHolder storyItemViewHolder);
+	 void inject(final StoryItemViewHolder storyItemViewHolder);
+
+	/**
+	 * @param tasksRecyclerAdapter Injects TaskRecyclerAdapter
+	 */
+	void inject(final TasksRecyclerAdapter tasksRecyclerAdapter);
 }
