@@ -139,6 +139,11 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 		return originalEstimate;
 	}
 
+	@Override
+	public WorkItemType getType() {
+		return WorkItemType.TASK;
+	}
+
 	/**
 	 * @param originalEstimate the originalEstimate to set
 	 */

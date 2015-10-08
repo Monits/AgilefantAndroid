@@ -46,4 +46,10 @@ public interface WorkItem {
 	 * @return long The original estimate.
 	 */
 	long getOriginalEstimate();
+
+	/**
+	 * Work item type
+	 * @return return the type of the work item
+	 */
+	WorkItemType getType();
 }

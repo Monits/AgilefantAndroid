@@ -42,6 +42,8 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	@SerializedName("iteration")
 	private Iteration iteration;
 
+	private transient boolean expanded;
+
 	/**
 	 * Default constructor.
 	 */
@@ -295,6 +297,26 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	}
 
 	@Override
+	public WorkItemType getType() {
+		return WorkItemType.STORY;
+	}
+
+	/**
+	 * @return True if work item is expanded
+	 */
+	public boolean isExpanded() {
+		return expanded;
+	}
+
+	/**
+	 * @param expanded expanded to set
+	 */
+	public void setExpanded(final boolean expanded) {
+		this.expanded = expanded;
+	}
+
+
+	@Override
 	public int hashCode() {
 		return PRIME + (int) (id ^ (id >>> SHIFT));
 	}
@@ -337,6 +359,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 			.append(", rank: ").append(rank)
 			.append(", backlog: ").append(backlog)
 			.append(", iteration: ").append(iteration)
+			.append(", expanded: ").append(expanded)
 			.append(']')
 			.toString();
 	}
