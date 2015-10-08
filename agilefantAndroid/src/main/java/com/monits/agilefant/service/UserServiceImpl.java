@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 					editor.putString(PASSWORD_KEY, password);
 					editor.putString(DOMAIN_KEY, domain);
 
-					editor.commit();
+					editor.apply();
 
 					retrieveUser(new Listener<User>() {
 
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void logout() {
-		sharedPreferences.edit().putBoolean(ISLOGGEDIN_KEY, false).commit();
+		sharedPreferences.edit().putBoolean(ISLOGGEDIN_KEY, false).apply();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
 			editor.putLong(USER_ID_KEY, user.getId());
 			editor.putString(USER_INITIALS_KEY, user.getInitials());
 			editor.putString(FULLNAME_KEY, user.getFullName());
-			editor.commit();
+			editor.apply();
 		}
 	}
 

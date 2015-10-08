@@ -1,6 +1,7 @@
 package com.monits.agilefant;
 
 import android.app.Application;
+import android.os.StrictMode;
 
 import com.monits.agilefant.dagger.DaggerObjectGraph;
 import com.monits.agilefant.dagger.ObjectGraph;
@@ -30,6 +31,7 @@ public class AgilefantApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		objectGraphSetter(this);
+		strictModeVerification();
 	}
 
 	private static void objectGraphSetter(final Application app) {
@@ -45,6 +47,22 @@ public class AgilefantApplication extends Application {
 
 	public static ObjectGraph getObjectGraph() {
 		return objectGraph;
+	}
+
+	/**
+    * Verifies the code for bad implementations and leaks
+    */
+	private static void strictModeVerification() {
+		if (BuildConfig.DEBUG) {
+			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+					.detectAll()
+					.penaltyLog()
+					.build());
+			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+					.detectAll()
+					.penaltyLog()
+					.build());
+		}
 	}
 }
 
