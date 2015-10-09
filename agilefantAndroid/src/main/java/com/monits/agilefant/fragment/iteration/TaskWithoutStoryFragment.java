@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.TasksRecyclerAdapter;
+import com.monits.agilefant.adapter.TasksWithoutStoryRecyclerAdapter;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
@@ -34,7 +34,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	@Bind(R.id.task_without_story)
 	RecyclerView taskWithoutStoryListView;
 
-	private TasksRecyclerAdapter taskWithoutStoryAdapter;
+	private TasksWithoutStoryRecyclerAdapter taskWithoutStoryAdapter;
 
 	private List<Task> taskWithoutStory;
 
@@ -106,7 +106,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 		} else {
 			taskWithoutStoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-			taskWithoutStoryAdapter = new TasksRecyclerAdapter(getActivity(), taskWithoutStory);
+			taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(getActivity(), taskWithoutStory);
 
 			taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
 			taskWithoutStoryListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
@@ -142,7 +142,6 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 
 	@Override
 	public String toString() {
-
 		return "TaskWithoutStoryFragment{"
 				+ "taskWithoutStory=" + taskWithoutStory
 				+ "taskWithoutStoryAdapter=" + taskWithoutStoryAdapter

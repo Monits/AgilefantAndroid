@@ -2,9 +2,13 @@ package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,14 +18,23 @@ import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
+import com.monits.agilefant.dialog.PromptDialogFragment;
+import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
+import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.TaskTimeTrackingService;
+import com.monits.agilefant.util.HoursUtils;
+import com.monits.agilefant.util.InputUtils;
 import com.monits.agilefant.util.IterationUtils;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -33,16 +46,31 @@ import butterknife.OnClick;
  */
 public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
-	private final Context context;
-
 	@Bind(R.id.column_name)
 	TextView columnName;
 
 	@Bind(R.id.column_state)
 	TextView columnState;
 
+	@Nullable
 	@Bind(R.id.column_context)
 	TextView columnContext;
+
+	@Nullable
+	@Bind(R.id.column_responsibles)
+	TextView columnResponsibles;
+
+	@Nullable
+	@Bind(R.id.column_original_estimate)
+	TextView columnOriginalEstimate;
+
+	@Nullable
+	@Bind(R.id.column_spent_effort)
+	TextView columnSpentEffort;
+
+	@Nullable
+	@Bind(R.id.column_effort_left)
+	TextView columnEffortLeft;
 
 	@Inject
 	MetricsService metricsService;
@@ -51,15 +79,15 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	IterationService iterationService;
 
 	private Task task;
-
 	private final TaskItemViewHolderUpdateTracker updater;
+	private final FragmentActivity context;
 
 	/**
 	 * @param itemView view's Item
 	 * @param context it's context
 	 * @param updater It's an update listener
 	 */
-	public TaskItemViewHolder(final View itemView, final Context context,
+	public TaskItemViewHolder(final View itemView, final FragmentActivity context,
 							final TaskItemViewHolderUpdateTracker updater) {
 		super(itemView);
 		this.updater = updater;
@@ -85,11 +113,30 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 		columnState.setBackgroundResource(IterationUtils.getStateBackground(task.getState()));
 
 		// Initialize context column
-		final Iteration iteration = this.task.getIteration();
-		if (iteration == null) {
-			columnContext.setText(context.getResources().getString(R.string.minus_expanded));
-		} else {
-			columnContext.setText(iteration.getName());
+		final Iteration iteration = task.getIteration();
+
+		if (columnContext != null) {
+			if (iteration == null) {
+				columnContext.setText(context.getResources().getString(R.string.minus_expanded));
+			} else {
+				columnContext.setText(iteration.getName());
+			}
+		}
+
+		if (columnResponsibles != null) {
+			columnResponsibles.setText(IterationUtils.getResposiblesDisplay(task.getResponsibles()));
+		}
+
+		if (columnEffortLeft != null) {
+			columnEffortLeft.setText(HoursUtils.convertMinutesToHours(task.getEffortLeft()));
+		}
+
+		if (columnOriginalEstimate != null) {
+			columnOriginalEstimate.setText(HoursUtils.convertMinutesToHours(task.getOriginalEstimate()));
+		}
+
+		if (columnSpentEffort != null) {
+			columnSpentEffort.setText(HoursUtils.convertMinutesToHours(task.getEffortSpent()));
 		}
 	}
 
@@ -106,10 +153,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 						new Response.Listener<Task>() {
 							@Override
 							public void onResponse(final Task updatedTask) {
-								Toast.makeText(
-										context, R.string.feedback_successfully_updated_state,
-										Toast.LENGTH_SHORT).show();
-								updater.onUpdate(updatedTask);
+								update(R.string.feedback_successfully_updated_state, updatedTask);
 							}
 						},
 						new Response.ErrorListener() {
@@ -164,6 +208,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	/**
 	 * Click listener for context column
 	 */
+	@Nullable
 	@OnClick(R.id.column_context)
 	void getIterationDetails() {
 		final Iteration iteration = task.getIteration();
@@ -198,6 +243,94 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 						Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
 					}
 				});
+	}
+
+	@Nullable
+	@OnClick(R.id.column_spent_effort)
+	void spentEffort() {
+		final FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
+		transaction.add(R.id.container, SpentEffortFragment.newInstance(task));
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	@Nullable
+	@OnClick(R.id.column_effort_left)
+	void createPromptDialogFragment() {
+		// Agilefant's tasks that are already done, can't have it's EL changed.
+		if (task.getState() != StateKey.DONE) {
+
+			final PromptDialogFragment dialogFragment = PromptDialogFragment.newInstance(
+					R.string.dialog_effortleft_title,
+					// Made this way to avoid strings added in utils method.
+					String.valueOf((float) task.getEffortLeft() / 60),
+					InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+			dialogFragment.setPromptDialogListener(new PromptDialogFragment.PromptDialogListener() {
+				@Override
+				public void onAccept(final String inputValue) {
+					metricsService.changeEffortLeft(
+							InputUtils.parseStringToDouble(inputValue),
+							task,
+							new Response.Listener<Task>() {
+								@Override
+								public void onResponse(final Task response) {
+									update(R.string.feedback_succesfully_updated_effort_left, response);
+								}
+							},
+							new Response.ErrorListener() {
+								@Override
+								public void onErrorResponse(final VolleyError arg0) {
+									Toast.makeText(
+											context, R.string.feedback_failed_update_effort_left, Toast.LENGTH_SHORT)
+											.show();
+								}
+							});
+				}
+			});
+
+			dialogFragment.show(context.getSupportFragmentManager(), "effortLeftDialog");
+		}
+	}
+
+	@Nullable
+	@OnClick(R.id.column_responsibles)
+	void createUserChooser() {
+		final Fragment fragment = UserChooserFragment.newInstance(
+				task.getResponsibles(),
+				new UserChooserFragment.OnUsersSubmittedListener() {
+
+					@Override
+					public void onSubmitUsers(final List<User> users) {
+						metricsService.changeTaskResponsibles(
+								users,
+								task,
+								new Response.Listener<Task>() {
+									@Override
+									public void onResponse(final Task response) {
+										update(R.string.feedback_success_updated_project, response);
+									}
+								},
+								new Response.ErrorListener() {
+									@Override
+									public void onErrorResponse(final VolleyError arg0) {
+										Toast.makeText(
+												context, R.string.feedback_failed_update_project, Toast.LENGTH_SHORT)
+												.show();
+									}
+								});
+					}
+				});
+
+		context.getSupportFragmentManager().beginTransaction()
+				.add(android.R.id.content, fragment)
+				.addToBackStack(null)
+				.commit();
+	}
+
+	private void update(@StringRes final int message, final Task updatedTask) {
+		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+		updater.onUpdate(updatedTask);
 	}
 
 	/**
