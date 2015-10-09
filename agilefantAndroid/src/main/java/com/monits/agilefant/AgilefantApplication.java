@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import com.monits.agilefant.dagger.DaggerObjectGraph;
 import com.monits.agilefant.dagger.ObjectGraph;
 import com.monits.agilefant.cache.BitmapLruCache;
+import com.squareup.leakcanary.LeakCanary;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,7 @@ public class AgilefantApplication extends Application {
 		super.onCreate();
 		objectGraphSetter(this);
 		strictModeVerification();
+		LeakCanary.install(this);
 	}
 
 	private static void objectGraphSetter(final Application app) {
