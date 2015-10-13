@@ -45,8 +45,7 @@
                 android:hint="@string/domain"
                 android:inputType="textUri"
                 android:padding="10dp"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                style="@style/InputTextMediumStyle" />
         </LinearLayout>
 
         <ImageView
@@ -67,8 +66,7 @@
             android:layout_marginRight="20dp"
             android:layout_toRightOf="@id/app_icon"
             android:hint="@string/username"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
+            style="@style/InputTextMediumStyle"
             android:singleLine="true"/>
 
         <EditText
@@ -80,8 +78,7 @@
             android:layout_toRightOf="@id/app_icon"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            style="@style/InputTextMediumStyle" />
 
         <Button
             android:id="@+id/login"

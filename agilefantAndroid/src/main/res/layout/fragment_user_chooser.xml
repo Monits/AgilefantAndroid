@@ -46,7 +46,8 @@
                 android:layout_below="@+id/titlebar"
                 android:completionThreshold="1"
                 android:hint="@string/search_user"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/InputTextBigStyle"/>
 
             <ListView
                 android:id="@+id/users_list"

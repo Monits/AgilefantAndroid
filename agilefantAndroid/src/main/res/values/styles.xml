@@ -45,9 +45,19 @@
         <item name="android:background">@drawable/state_fab_text</item>
     </style>
 
-    <style name="InputTextStyle" parent="android:Widget.EditText">
+    <style name="InputTextBigStyle" parent="android:Widget.EditText">
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="InputTextSmallStyle" parent="android:Widget.EditText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="InputTextMediumStyle" parent="android:Widget.EditText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>
