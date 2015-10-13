@@ -5,26 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.StoriesAdapter;
-import com.monits.agilefant.listeners.OnSwapRowListener;
-import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
-import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
+import com.monits.agilefant.adapter.WorkItemAdapter;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.MetricsService;
-import com.monits.agilefant.view.DynamicExpandableListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,17 +27,24 @@ import java.util.Observer;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
+
+	@Bind(R.id.stories)
+	/* default */ RecyclerView recyclerView;
+
+	@Bind(R.id.stories_empty_view)
+	/* default */ TextView emptyView;
 
 	private static final String STORIES = "STORIES";
 	private static final String ITERATION = "ITERATION";
 
-	private List<Story> stories;
-
-	private StoriesAdapter storiesAdapter;
+	private WorkItemAdapter storiesAdapter;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -54,23 +55,15 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 					&& !StoriesFragment.this.isDetached()) {
 
 				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
-
-				for (final Story story : stories) {
-					final List<Task> tasks = story.getTasks();
-					final int indexOf = tasks.indexOf(updatedTask);
-					if (indexOf != -1) {
-						tasks.get(indexOf).updateValues(updatedTask);
-						storiesAdapter.notifyDataSetChanged();
-					}
-				}
+				storiesAdapter.updateTask(updatedTask);
 			}
 
 			if (AgilefantApplication.ACTION_NEW_STORY.equals(intent.getAction())) {
 				final Story newStory = (Story) intent.getSerializableExtra(AgilefantApplication.EXTRA_NEW_STORY);
-				stories.add(newStory);
+				storiesAdapter.addStory(newStory);
 
-				storiesAdapter.setItems(stories);
-				storiesAdapter.notifyDataSetChanged();
+				emptyView.setVisibility(View.GONE);
+				recyclerView.setVisibility(View.VISIBLE);
 			}
 		}
 	};
@@ -104,7 +97,8 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
-		this.stories = (List<Story>) arguments.getSerializable(STORIES);
+		storiesAdapter = new WorkItemAdapter(getActivity());
+		storiesAdapter.setWorkItems((List<Story>) arguments.getSerializable(STORIES));
 	}
 
 	@Override
@@ -112,57 +106,17 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 			final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
-		final DynamicExpandableListView storiesListView =
-				(DynamicExpandableListView) rootView.findViewById(R.id.stories);
-		storiesListView.setEmptyView(rootView.findViewById(R.id.stories_empty_view));
+		ButterKnife.bind(this, rootView);
 
-		final FragmentActivity context = getActivity();
-		storiesAdapter = new StoriesAdapter(rootView.getContext(), stories);
-		storiesAdapter.setOnChildActionListener(new TaskAdapterViewActionListener(context, StoriesFragment.this));
-		storiesAdapter.setOnGroupActionListener(new StoryAdapterViewActionListener(context, StoriesFragment.this));
-		storiesListView.setAdapter(storiesAdapter);
-		storiesListView.setOnSwapRowListener(new OnSwapRowListener() {
+		recyclerView.setAdapter(storiesAdapter);
+		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-			@Override
-			public void onSwapPositions(final int itemPosition, final int targetPosition,
-					final SwapDirection swapDirection, final long aboveItemId, final long belowItemId) {
-
-				if (aboveItemId == -1 && swapDirection == SwapDirection.ABOVE_TARGET) {
-
-					metricsService.rankStoryOver(
-						storiesAdapter.getGroup(itemPosition), storiesAdapter.getGroup(targetPosition), stories,
-						getSUccessListener(context), getErrorListener(context));
-				} else {
-					metricsService.rankStoryUnder(
-						storiesAdapter.getGroup(itemPosition), storiesAdapter.getGroup(targetPosition), stories,
-						getSUccessListener(context), getErrorListener(context));
-				}
-			}
-		});
+		if (storiesAdapter.isEmpty()) {
+			emptyView.setVisibility(View.VISIBLE);
+			recyclerView.setVisibility(View.GONE);
+		}
 
 		return rootView;
-	}
-
-	private Listener<Story> getSUccessListener(final FragmentActivity context) {
-		return new Listener<Story>() {
-
-			@Override
-			public void onResponse(final Story arg0) {
-				Toast.makeText(context, R.string.feedback_success_update_story_rank, Toast.LENGTH_SHORT).show();
-			}
-		};
-	}
-
-	private ErrorListener getErrorListener(final FragmentActivity context) {
-		return new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(final VolleyError arg0) {
-				storiesAdapter.setItems(stories);
-
-				Toast.makeText(context, R.string.feedback_failed_update_story_rank, Toast.LENGTH_SHORT).show();
-			}
-		};
 	}
 
 	@Override

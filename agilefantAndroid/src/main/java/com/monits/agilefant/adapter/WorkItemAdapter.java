@@ -1,6 +1,5 @@
 package com.monits.agilefant.adapter;
 
-import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.model.WorkItemType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,12 +32,10 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	/**
 	 * Constructor
 	 * @param context The context
-	 * @param workItems The items
 	 */
-	public WorkItemAdapter(final FragmentActivity context, final List<WorkItem> workItems) {
+	public WorkItemAdapter(final FragmentActivity context) {
 		this.context = context;
-		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.workItems = workItems;
+		this.inflater = context.getLayoutInflater();
 	}
 
 	@Override
@@ -93,8 +91,12 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		}
 	}
 
-	public void setWorkItems(final List<WorkItem> workItems) {
-		this.workItems = workItems;
+	/**
+	 * @param workItems A work item list to set
+	 */
+	public void setWorkItems(final List<? extends WorkItem> workItems) {
+		this.workItems = new ArrayList<>(workItems);
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 
 		final List<Task> children = workItem.getTasks();
 		int i = 0;
-		for (final Task item : children) {
+		for (final WorkItem item : children) {
 			workItems.add(position + i, item);
 			i++;
 		}
@@ -120,6 +122,37 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		workItems.removeAll(children);
 		workItem.setExpanded(false);
 		notifyItemRangeRemoved(position, children.size());
+	}
 
+	/**
+	 * If it's present, update the given task
+	 * @param updatedTask The updated task
+	 */
+	public void updateTask(final Task updatedTask) {
+		final int storyIndex = workItems.indexOf(updatedTask.getStory());
+		if (storyIndex != -1) {
+			final Story story = (Story) workItems.get(storyIndex);
+
+			final List<Task> tasks = story.getTasks();
+			final int indexOf = tasks.indexOf(updatedTask);
+
+			if (indexOf != -1) {
+				tasks.get(indexOf).updateValues(updatedTask);
+				notifyItemChanged(indexOf);
+			}
+		}
+	}
+
+	/**
+	 * Add a story
+	 * @param newStory The new story
+	 */
+	public void addStory(final Story newStory) {
+		workItems.add(newStory);
+		notifyItemInserted(workItems.size() - 1);
+	}
+
+	public boolean isEmpty() {
+		return workItems.isEmpty();
 	}
 }

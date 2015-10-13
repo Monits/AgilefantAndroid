@@ -21,7 +21,7 @@
             android:layout_marginBottom="@dimen/divider_stories_task"
             layout="@layout/task_stories_header" />
 
-        <com.monits.agilefant.view.DynamicExpandableListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/stories"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
