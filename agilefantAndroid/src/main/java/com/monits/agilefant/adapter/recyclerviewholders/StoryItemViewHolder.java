@@ -1,7 +1,9 @@
 package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -11,7 +13,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
+import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.User;
@@ -22,6 +26,7 @@ import com.monits.agilefant.util.IterationUtils;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -31,28 +36,35 @@ import butterknife.OnClick;
 public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 
 	@Bind(R.id.column_name)
-	TextView name;
+	/* default */ TextView name;
 
 	@Bind(R.id.column_state)
-	TextView state;
+	/* default */ TextView state;
 
 	@Bind(R.id.column_responsibles)
-	TextView responsibles;
+	/* default */ TextView responsibles;
 
+	@Nullable
+	@Bind(R.id.column_context)
+	/* default */ TextView columnContext;
+
+	@Nullable
 	@Bind(R.id.column_effort_left)
-	TextView effortLeft;
+	/* default */ TextView effortLeft;
 
+	@Nullable
 	@Bind(R.id.column_original_estimate)
-	TextView originalEstimate;
+	/* default */ TextView originalEstimate;
 
+	@Nullable
 	@Bind(R.id.column_spent_effort)
-	TextView spendEffort;
+	/* default */ TextView spendEffort;
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
 
 	@Inject
-	IterationService iterationService;
+	/* default */ IterationService iterationService;
 
 	private final FragmentActivity context;
 	private Story story;
@@ -81,13 +93,68 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		state.setBackgroundResource(IterationUtils.getStateBackground(item.getState()));
 
 		responsibles.setText(IterationUtils.getResposiblesDisplay(item.getResponsibles()));
-		effortLeft.setText(HoursUtils.convertMinutesToHours(item.getEffortLeft()));
-		originalEstimate.setText(HoursUtils.convertMinutesToHours(item.getOriginalEstimate()));
-		spendEffort.setText(HoursUtils.convertMinutesToHours(item.getEffortSpent()));
+		if (effortLeft != null) {
+			effortLeft.setText(HoursUtils.convertMinutesToHours(item.getEffortLeft()));
+		}
+
+		if (originalEstimate != null) {
+			originalEstimate.setText(HoursUtils.convertMinutesToHours(item.getOriginalEstimate()));
+		}
+
+		if (spendEffort != null) {
+			spendEffort.setText(HoursUtils.convertMinutesToHours(item.getEffortSpent()));
+		}
+
+		if (columnContext != null) {
+			columnContext.setText(item.getIteration().getName());
+		}
 	}
 
+	/**
+	 * Uses Iteration services for getting Iteration details.
+	 */
+	@Nullable
+	@OnClick(R.id.column_context)
+	/* default */ void getIterationDetails() {
+		final Iteration iteration = story.getIteration();
+
+		final ProgressDialog progressDialog = new ProgressDialog(context);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setCancelable(false);
+		progressDialog.setMessage(context.getString(R.string.loading));
+		progressDialog.show();
+
+		iterationService.getIteration(
+				iteration.getId(),
+				new Response.Listener<Iteration>() {
+					@Override
+					public void onResponse(final Iteration response) {
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+
+						final Intent intent = new Intent(context, IterationActivity.class);
+						intent.putExtra(IterationActivity.ITERATION, response);
+						context.startActivity(intent);
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+
+						Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
+					}
+				});
+	}
+
+	/**
+	 * Changes Story state
+	 */
 	@OnClick(R.id.column_state)
-	void changeState() {
+	/* default */ void changeState() {
 		final DialogInterface.OnClickListener onStoryStateSelectedListener = getOnDialogClickListener(story);
 
 		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -97,8 +164,11 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		builder.show();
 	}
 
+	/**
+	 * Changes story responsibles
+	 */
 	@OnClick(R.id.column_responsibles)
-	void changeResponsible() {
+	/* default */ void changeResponsible() {
 		context.getSupportFragmentManager().beginTransaction()
 			.add(android.R.id.content, getUserChooserFragment(story))
 			.addToBackStack(null)
@@ -152,7 +222,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	 * @param story the story
 	 * @param allTasksToDone all task done flag
 	 */
-	void executeUpdateStoryTask(final StateKey state, final Story story, final boolean allTasksToDone) {
+	private void executeUpdateStoryTask(final StateKey state, final Story story, final boolean allTasksToDone) {
 		metricsService.changeStoryState(
 			state, story, allTasksToDone,
 			new Response.Listener<Story>() {

@@ -4,6 +4,7 @@ import com.monits.agilefant.activity.BaseActivity;
 import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
 import com.monits.agilefant.activity.SplashActivity;
+import com.monits.agilefant.adapter.ProjectLeafStoriesRecyclerAdapter;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
@@ -19,7 +20,6 @@ import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
 import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
-import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
@@ -149,10 +149,15 @@ public interface Graph {
 	/**
 	 * @param storyItemViewHolder Injects story views
 	 */
-	 void inject(final StoryItemViewHolder storyItemViewHolder);
+	void inject(final StoryItemViewHolder storyItemViewHolder);
 
 	/**
 	 * @param tasksRecyclerAdapter Injects TaskRecyclerAdapter
 	 */
 	void inject(final TasksRecyclerAdapter tasksRecyclerAdapter);
+
+	/**
+	 * @param projectLeafStoriesRecyclerAdapter Injects ProjectLeafStoriesRecyclerAdapter
+	 */
+	void inject(final ProjectLeafStoriesRecyclerAdapter projectLeafStoriesRecyclerAdapter);
 }

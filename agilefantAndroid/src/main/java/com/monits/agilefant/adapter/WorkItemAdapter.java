@@ -25,9 +25,9 @@ import java.util.List;
 public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<WorkItem>>
 		implements TaskItemViewHolderUpdateTracker {
 
-	private final FragmentActivity context;
-	private final LayoutInflater inflater;
-	private List<WorkItem> workItems;
+	protected final FragmentActivity context;
+	protected final LayoutInflater inflater;
+	protected List<WorkItem> workItems;
 
 	/**
 	 * Constructor
