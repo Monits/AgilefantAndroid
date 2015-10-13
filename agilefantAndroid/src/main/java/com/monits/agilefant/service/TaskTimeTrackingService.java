@@ -1,6 +1,5 @@
 package com.monits.agilefant.service;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +29,7 @@ public class TaskTimeTrackingService extends Service {
 
 	public static final String ACTION_START_TRACKING = "com.monits.agilefant.intent.action.START_TRACKING";
 	public static final String ACTION_PAUSE_TRACKING = "com.monits.agilefant.intent.action.PAUSE_TRACKING";
-	public static final String ACTION_STOP_TRACKING  = "com.monits.agilefant.intent.action.STOP_TRACKING";
+	public static final String ACTION_STOP_TRACKING = "com.monits.agilefant.intent.action.STOP_TRACKING";
 	public static final String ACTION_QUIT_TRACKING_TASK = "com.monits.agilefant.intent.action.QUIT_TRACKING_TASK";
 
 	public static final String EXTRA_NOTIFICATION_ID = "com.monits.agilefant.intent.extra.NOTIFICATION_ID";
@@ -69,8 +68,7 @@ public class TaskTimeTrackingService extends Service {
 			final long id = taskToTrack.getId();
 			if (notificationMap.containsKey(id)) {
 				Toast.makeText(
-					TaskTimeTrackingService.this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
-
+					this, R.string.already_tracking_task_error, Toast.LENGTH_SHORT).show();
 			} else {
 				final NotificationHolder notificationHolder = new NotificationHolder(this, taskToTrack);
 				notificationMap.put(id, notificationHolder);
@@ -108,7 +106,7 @@ public class TaskTimeTrackingService extends Service {
 	private void displayNotification(final NotificationHolder notificationHolder) {
 
 		final Task trackedTask = notificationHolder.getTrackedTask();
-		final long extraNotifId = trackedTask.getId();		// Make sure it's a long
+		final long extraNotifId = trackedTask.getId(); // Make sure it's a long
 
 		final int notifId = notificationHolder.getNotificationId();
 		final boolean isChronometerRunning = notificationHolder.isChronometerRunning();
@@ -135,13 +133,13 @@ public class TaskTimeTrackingService extends Service {
 			final Intent pauseTrackingIntent = new Intent(ACTION_PAUSE_TRACKING);
 			pauseTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 			changeStateIntent = PendingIntent.getBroadcast(
-					TaskTimeTrackingService.this, notifId, pauseTrackingIntent,
+					this, notifId, pauseTrackingIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 		} else {
 			final Intent resumeTrackingIntent = new Intent(ACTION_START_TRACKING);
 			resumeTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 			changeStateIntent = PendingIntent.getBroadcast(
-					TaskTimeTrackingService.this, notifId, resumeTrackingIntent,
+					this, notifId, resumeTrackingIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 		}
 
@@ -149,7 +147,7 @@ public class TaskTimeTrackingService extends Service {
 		stopTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
 		final PendingIntent stopIntent =
 				PendingIntent.getBroadcast(
-						TaskTimeTrackingService.this, notifId, stopTrackingIntent,
+						this, notifId, stopTrackingIntent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
 
 		contentView.setOnClickPendingIntent(R.id.chronometer_status, changeStateIntent);
@@ -223,23 +221,11 @@ public class TaskTimeTrackingService extends Service {
 		}
 	}
 
-	// FIXME : We need to find a better fix
+
 	@SuppressWarnings("ResourceType")
 	private void collapseStatusBar() {
-		final Object sbservice = getSystemService("statusbar");
-
-		try {
-			final Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
-			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-				final Method collapse = statusbarManager.getMethod("collapse");
-				collapse.invoke(sbservice);
-			} else {
-				final Method collapse2 = statusbarManager.getMethod("collapsePanels");
-				collapse2.invoke(sbservice);
-			}
-		} catch (final Exception e) {
-			Log.e(getClass().getName(), "Failed to close status bar", e);
-		}
+		final Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+		getApplicationContext().sendBroadcast(it);
 	}
 
 	private class TaskTimeTrackingServiceBroadcastReceiver extends BroadcastReceiver {
