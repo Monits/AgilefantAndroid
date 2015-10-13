@@ -3,6 +3,7 @@ package com.monits.agilefant.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -179,7 +180,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 * @return the tasks
 	 */
 	public List<Task> getTasks() {
-		return tasks;
+		return tasks == null ? Collections.EMPTY_LIST : tasks;
 	}
 
 	/**
@@ -283,17 +284,17 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 
 	@Override
 	public long getEffortLeft() {
-		return metrics.getEffortLeft();
+		return getMetrics().getEffortLeft();
 	}
 
 	@Override
 	public long getEffortSpent() {
-		return metrics.getEffortSpent();
+		return getMetrics().getEffortSpent();
 	}
 
 	@Override
 	public long getOriginalEstimate() {
-		return metrics.getOriginalEstimate();
+		return getMetrics().getOriginalEstimate();
 	}
 
 	@Override
