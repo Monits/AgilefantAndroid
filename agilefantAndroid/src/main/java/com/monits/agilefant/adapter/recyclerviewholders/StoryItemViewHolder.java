@@ -41,12 +41,9 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	@Bind(R.id.column_state)
 	/* default */ TextView state;
 
+	@Nullable
 	@Bind(R.id.column_responsibles)
 	/* default */ TextView responsibles;
-
-	@Nullable
-	@Bind(R.id.column_context)
-	/* default */ TextView columnContext;
 
 	@Nullable
 	@Bind(R.id.column_effort_left)
@@ -59,6 +56,10 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	@Nullable
 	@Bind(R.id.column_spent_effort)
 	/* default */ TextView spendEffort;
+
+	@Nullable
+	@Bind(R.id.column_context)
+	/* default */ TextView columnContext;
 
 	@Inject
 	/* default */ MetricsService metricsService;
@@ -92,7 +93,10 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		state.setText(IterationUtils.getStateName(item.getState()));
 		state.setBackgroundResource(IterationUtils.getStateBackground(item.getState()));
 
-		responsibles.setText(IterationUtils.getResposiblesDisplay(item.getResponsibles()));
+		if (responsibles != null) {
+			responsibles.setText(IterationUtils.getResposiblesDisplay(item.getResponsibles()));
+		}
+
 		if (effortLeft != null) {
 			effortLeft.setText(HoursUtils.convertMinutesToHours(item.getEffortLeft()));
 		}
@@ -167,6 +171,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	/**
 	 * Changes story responsibles
 	 */
+	@Nullable
 	@OnClick(R.id.column_responsibles)
 	/* default */ void changeResponsible() {
 		context.getSupportFragmentManager().beginTransaction()
