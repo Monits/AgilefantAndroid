@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import com.monits.agilefant.adapter.WorkItemAdapter;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
+import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 import com.monits.agilefant.service.MetricsService;
 
 import java.util.ArrayList;
@@ -107,9 +110,16 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_stories, container, false);
 
 		ButterKnife.bind(this, rootView);
+		final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.stories);
 
 		recyclerView.setAdapter(storiesAdapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+		recyclerView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
+
+		final WorkItemTouchHelperCallback workItemTouchHelperCallback =
+				new WorkItemTouchHelperCallback(storiesAdapter);
+		final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
+		itemTouchHelper.attachToRecyclerView(recyclerView);
 
 		if (storiesAdapter.isEmpty()) {
 			emptyView.setVisibility(View.VISIBLE);

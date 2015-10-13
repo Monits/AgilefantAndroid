@@ -3,6 +3,10 @@ package com.monits.agilefant.recycler;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.WorkItem;
+import com.monits.agilefant.model.WorkItemType;
+
 /**
  * Callback for RecyclerView tasks without Story
  * Created by Raul Morales on 9/30/15.
@@ -30,9 +34,27 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 	@Override
 	public boolean onMove(final RecyclerView recyclerView, final RecyclerView.ViewHolder viewHolder,
 		final RecyclerView.ViewHolder target) {
+
+		final WorkItem originalWorkItem = dragAndDropListener.getItem(viewHolder.getAdapterPosition());
+		final WorkItem targetWorkItem = dragAndDropListener.getItem(target.getAdapterPosition());
+
+		//Validate that the items that are moving are the same type.
+		if (originalWorkItem.getType() != targetWorkItem.getType()) {
+			return false;
+		}
+
+		//if both are type task, check if are from the same story.
+		if (originalWorkItem.getType() == WorkItemType.TASK) {
+			final Task taskOrigin = (Task) originalWorkItem;
+			final Task taskTarget = (Task) targetWorkItem;
+			if (taskOrigin.getStory() != taskTarget.getStory()) {
+				return false;
+			}
+		}
 		originalPosition = viewHolder.getAdapterPosition();
 		newPosition = target.getAdapterPosition();
 		dragAndDropListener.onMove(originalPosition, newPosition);
+
 		return true;
 	}
 

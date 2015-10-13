@@ -1,11 +1,17 @@
 package com.monits.agilefant.adapter;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
@@ -15,19 +21,27 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.model.WorkItemType;
+import com.monits.agilefant.recycler.DragAndDropListener;
+import com.monits.agilefant.service.MetricsService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by iloredom on 10/6/15.
  */
 public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<WorkItem>>
-		implements TaskItemViewHolderUpdateTracker {
+		implements TaskItemViewHolderUpdateTracker, DragAndDropListener {
 
 	protected final FragmentActivity context;
 	protected final LayoutInflater inflater;
 	protected List<WorkItem> workItems;
+
+	@Inject
+	/* default */ MetricsService metricsService;
 
 	/**
 	 * Constructor
@@ -36,6 +50,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	public WorkItemAdapter(final FragmentActivity context) {
 		this.context = context;
 		this.inflater = context.getLayoutInflater();
+		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	@Override
@@ -154,5 +169,80 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 
 	public boolean isEmpty() {
 		return workItems.isEmpty();
+	}
+
+	@Override
+	public void onMove(final int fromPosition, final int toPosition) {
+		notifyItemMoved(fromPosition, toPosition);
+		Collections.swap(workItems, fromPosition, toPosition);
+	}
+
+	@Override
+	public void onChangePosition(final int fromPosition, final int toPosition) {
+		final WorkItem fromItem = workItems.get(fromPosition);
+		final WorkItem toItem = workItems.get(toPosition);
+
+		if (fromItem.getType() == WorkItemType.STORY) {
+			final Story story = (Story) fromItem;
+			final Story storyTarget = (Story) toItem;
+
+			final Response.Listener<Story> successListener =
+					getSuccessListener(R.string.feedback_success_update_story_rank);
+			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_story_rank);
+
+			if (fromPosition < toPosition) {
+				metricsService.rankStoryOver(
+						story, storyTarget, getStoryList(), successListener, errorListener);
+			} else {
+				metricsService.rankStoryUnder(
+						story, storyTarget, getStoryList(), successListener, errorListener);
+			}
+		} else {
+
+			final Task currentTask = (Task) fromItem;
+			final Task targetTask = (Task) toItem;
+
+			final Response.Listener<Task> successListener =
+					getSuccessListener(R.string.feedback_success_updated_task_rank);
+			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_tasks_rank);
+
+			metricsService.rankTaskUnder(currentTask, targetTask, currentTask.getStory().getTasks(),
+					successListener, errorListener);
+		}
+	}
+
+	@NonNull
+	private Response.ErrorListener getErrorListener(@StringRes final int idMessage) {
+		return new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(final VolleyError arg0) {
+				Toast.makeText(context, idMessage, Toast.LENGTH_SHORT).show();
+			}
+		};
+	}
+
+	@NonNull
+	private <T extends WorkItem> Response.Listener<T> getSuccessListener(@StringRes final int idMessage) {
+		return new Response.Listener<T>() {
+			@Override
+			public void onResponse(final T arg0) {
+				Toast.makeText(context, idMessage, Toast.LENGTH_SHORT).show();
+			}
+		};
+	}
+
+	private List<Story> getStoryList() {
+		final List<Story> storyList = new ArrayList<>();
+		for (final WorkItem item : workItems) {
+			if (item.getType() == WorkItemType.STORY) {
+				storyList.add((Story) item);
+			}
+		}
+		return storyList;
+	}
+
+	@Override
+	public WorkItem getItem(final int position) {
+		return workItems.get(position);
 	}
 }

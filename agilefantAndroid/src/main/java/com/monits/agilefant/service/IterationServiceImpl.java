@@ -7,6 +7,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.FilterableIteration;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Story;
 import com.monits.agilefant.util.RankComparator;
 import com.monits.agilefant.model.Task;
 
@@ -33,11 +34,19 @@ public class IterationServiceImpl implements IterationService {
 			public void onResponse(final Iteration iteration) {
 				// Sort tasks by rank before returning
 				Collections.sort(iteration.getTasksWithoutStory(), RankComparator.INSTANCE);
+
 				// Add iteration to all tasks before returning
 				for (final Task task : iteration.getTasksWithoutStory()) {
 					task.setIteration(iteration);
 				}
-				listener.onResponse(iteration);
+				//Add story to all tasks before returning
+				for (final Story story : iteration.getStories()) {
+					for (final Task task : story.getTasks()) {
+						task.setStory(story);
+					}
+				}
+
+					listener.onResponse(iteration);
 			}
 		}, error);
 	}

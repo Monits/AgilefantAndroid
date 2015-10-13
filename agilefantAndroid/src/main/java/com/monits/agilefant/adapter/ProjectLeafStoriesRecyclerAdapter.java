@@ -16,6 +16,7 @@ import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
 import com.monits.agilefant.service.MetricsService;
 
@@ -116,6 +117,11 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 					getStory(fromPosition), getStory(toPosition), project.getId(),
 					stories, successListener, errorListener);
 		}
+	}
+
+	@Override
+	public WorkItem getItem(final int position) {
+		return stories.get(position);
 	}
 
 	@Override

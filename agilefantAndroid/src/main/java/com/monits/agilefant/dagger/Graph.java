@@ -6,6 +6,7 @@ import com.monits.agilefant.activity.HomeActivity;
 import com.monits.agilefant.activity.SplashActivity;
 import com.monits.agilefant.adapter.ProjectLeafStoriesRecyclerAdapter;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
+import com.monits.agilefant.adapter.WorkItemAdapter;
 import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
@@ -160,4 +161,9 @@ public interface Graph {
 	 * @param projectLeafStoriesRecyclerAdapter Injects ProjectLeafStoriesRecyclerAdapter
 	 */
 	void inject(final ProjectLeafStoriesRecyclerAdapter projectLeafStoriesRecyclerAdapter);
+
+	/**
+	 * @param workItemAdapter Injects WorkItemAdapter
+	 */
+	void inject(final WorkItemAdapter workItemAdapter);
 }
