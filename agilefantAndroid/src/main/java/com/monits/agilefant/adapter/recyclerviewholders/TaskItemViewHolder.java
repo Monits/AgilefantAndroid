@@ -47,36 +47,36 @@ import butterknife.OnClick;
 public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
 	@Bind(R.id.column_name)
-	TextView columnName;
+	/* default */ TextView columnName;
 
 	@Bind(R.id.column_state)
-	TextView columnState;
+	/* default */ TextView columnState;
 
 	@Nullable
 	@Bind(R.id.column_context)
-	TextView columnContext;
+	/* default */ TextView columnContext;
 
 	@Nullable
 	@Bind(R.id.column_responsibles)
-	TextView columnResponsibles;
+	/* default */ TextView columnResponsibles;
 
 	@Nullable
 	@Bind(R.id.column_original_estimate)
-	TextView columnOriginalEstimate;
+	/* default */ TextView columnOriginalEstimate;
 
 	@Nullable
 	@Bind(R.id.column_spent_effort)
-	TextView columnSpentEffort;
+	/* default */ TextView columnSpentEffort;
 
 	@Nullable
 	@Bind(R.id.column_effort_left)
-	TextView columnEffortLeft;
+	/* default */ TextView columnEffortLeft;
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
 
 	@Inject
-	IterationService iterationService;
+	/* default */ IterationService iterationService;
 
 	private Task task;
 	private final TaskItemViewHolderUpdateTracker updater;
@@ -144,7 +144,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	 * Click listener for state column
 	 */
 	@OnClick(R.id.column_state)
-	void createChangeStateDialog() {
+	/* default */ void createChangeStateDialog() {
 		final DialogInterface.OnClickListener onChoiceSelectedListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
@@ -179,7 +179,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	 * Click listener for name column
 	 */
 	@OnClick(R.id.column_name)
-	void createTrackingDialog() {
+	/* default */ void createTrackingDialog() {
 		final AlertDialog.Builder confirmStartTrackingBuilder = new AlertDialog.Builder(context);
 		confirmStartTrackingBuilder.setMessage(R.string.start_tracking_task_time);
 		confirmStartTrackingBuilder.setPositiveButton(
@@ -210,7 +210,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	 */
 	@Nullable
 	@OnClick(R.id.column_context)
-	void getIterationDetails() {
+	/* default */ void getIterationDetails() {
 		final Iteration iteration = task.getIteration();
 
 		final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -247,16 +247,16 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
 	@Nullable
 	@OnClick(R.id.column_spent_effort)
-	void spentEffort() {
+	/* default */ void spentEffort() {
 		final FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
-		transaction.add(R.id.container, SpentEffortFragment.newInstance(task));
+		transaction.add(android.R.id.content, SpentEffortFragment.newInstance(task));
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
 	@Nullable
 	@OnClick(R.id.column_effort_left)
-	void createPromptDialogFragment() {
+	/* default */ void createPromptDialogFragment() {
 		// Agilefant's tasks that are already done, can't have it's EL changed.
 		if (task.getState() != StateKey.DONE) {
 
@@ -295,7 +295,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
 	@Nullable
 	@OnClick(R.id.column_responsibles)
-	void createUserChooser() {
+	/* default */ void createUserChooser() {
 		final Fragment fragment = UserChooserFragment.newInstance(
 				task.getResponsibles(),
 				new UserChooserFragment.OnUsersSubmittedListener() {

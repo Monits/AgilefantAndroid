@@ -19,7 +19,7 @@ public class ProjectActivity extends BaseToolbaredActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_iteration);
+		setContentView(R.layout.activity_project);
 
 		final Backlog backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
 

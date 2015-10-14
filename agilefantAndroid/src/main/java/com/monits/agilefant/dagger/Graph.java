@@ -25,8 +25,6 @@ import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
-import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
-import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
 
 /**
  * Created by edipasquale on 27/08/15.
@@ -66,16 +64,6 @@ public interface Graph {
 	 * @param myTasksFragment Injects MyTaskFragment
 	 */
 	void inject(final MyTasksFragment myTasksFragment);
-
-	/**
-	 * @param taskAdapterViewActionListener Injects TaskAdapterViewActionListener
-	 */
-	void inject(final TaskAdapterViewActionListener taskAdapterViewActionListener);
-
-	/**
-	 * @param storyAdapterViewActionListener Injects StoryAdapterViewActionListener
-	 */
-	void inject(final StoryAdapterViewActionListener storyAdapterViewActionListener);
 
 	/**
 	 * @param iterationBurndownFragment Injects IterationBurndownFragment

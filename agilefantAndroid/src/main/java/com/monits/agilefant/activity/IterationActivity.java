@@ -2,8 +2,9 @@ package com.monits.agilefant.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -12,10 +13,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
-import com.monits.agilefant.fragment.iteration.IterationFragment;
+import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
+import com.monits.agilefant.fragment.iteration.IterationDetailsFragment;
+import com.monits.agilefant.fragment.iteration.StoriesFragment;
+import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.Task;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class IterationActivity extends BaseToolbaredActivity {
 
@@ -32,32 +45,44 @@ public class IterationActivity extends BaseToolbaredActivity {
 	private TextView taskFABLabel;
 	private final static long DELAY = 90;
 
-	private IterationFragment iterationFragment;
+	@Bind(R.id.pager)
+	/* default */ ViewPager viewPager;
+
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_iteration);
 
-		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		ButterKnife.bind(this);
+
 
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);
 
-		if (savedInstanceState == null) {
-			iterationFragment = IterationFragment.newInstance(iteration);
-		} else {
-			iterationFragment = (IterationFragment) getSupportFragmentManager().getFragment(savedInstanceState,
-					IterationFragment.class.getName());
-		}
+		final List<Fragment> fragments = new ArrayList<>();
 
-		transaction.replace(R.id.container, iterationFragment);
-		transaction.commit();
+		final ArrayList<Story> storiesArray = new ArrayList<>();
+		storiesArray.addAll(iteration.getStories());
+
+		final ArrayList<Task> tasksWithoutStory = new ArrayList<>();
+		tasksWithoutStory.addAll(iteration.getTasksWithoutStory());
+
+		fragments.add(IterationDetailsFragment.newInstance(iteration));
+		fragments.add(StoriesFragment.newInstance(storiesArray, iteration));
+		fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
+		fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
+
+		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
+
+		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
+		tabLayout.setupWithViewPager(viewPager);
+		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 	}
 
 	@Override
 	protected void onStart() {
-		super.onStart();	// Let the toolbar be configured...
+		super.onStart(); //Let the toolbar be configured...
 
 		// And do our magic on top
 		if (!fabInited) {
@@ -162,14 +187,8 @@ public class IterationActivity extends BaseToolbaredActivity {
 	}
 
 	@Override
-	protected void onSaveInstanceState(final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		getSupportFragmentManager().putFragment(outState, iterationFragment.getClass().getName(), iterationFragment);
-	}
-
-	@Override
 	public String toString() {
-		return "IterationActivity{" + "iteration=" + iteration + ", iterationFragment=" + iterationFragment
+		return "IterationActivity{" + "iteration=" + iteration
 				+ "fabInited=" + fabInited + '}';
 	}
 }
