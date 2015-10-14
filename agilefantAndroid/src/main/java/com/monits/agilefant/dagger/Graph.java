@@ -3,6 +3,7 @@ package com.monits.agilefant.dagger;
 import com.monits.agilefant.activity.BaseActivity;
 import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
+import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.activity.SplashActivity;
 import com.monits.agilefant.adapter.ProjectLeafStoriesRecyclerAdapter;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
@@ -22,7 +23,6 @@ import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
 import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
-import com.monits.agilefant.fragment.project.ProjectFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 
@@ -91,11 +91,6 @@ public interface Graph {
 	void inject(final ProjectDetailsFragment projectDetailsFragment);
 
 	/**
-	 * @param projectFragment Injects ProjectFragment
-	 */
-	void inject(final ProjectFragment projectFragment);
-
-	/**
 	 * @param projectLeafStoriesFragment Injects ProjectLeafStoriesFragment
 	 */
 	void inject(final ProjectLeafStoriesFragment projectLeafStoriesFragment);
@@ -154,4 +149,9 @@ public interface Graph {
 	 * @param workItemAdapter Injects WorkItemAdapter
 	 */
 	void inject(final WorkItemAdapter workItemAdapter);
+
+	/**
+	 * @param projectActivity Injects ProjectActivity
+	 */
+	void inject(final ProjectActivity projectActivity);
 }

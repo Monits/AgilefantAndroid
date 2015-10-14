@@ -2,24 +2,56 @@ package com.monits.agilefant.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentTransaction;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
-import com.monits.agilefant.fragment.project.ProjectFragment;
+import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
+import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.model.Backlog;
+import com.monits.agilefant.model.Project;
+import com.monits.agilefant.service.ProjectService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class ProjectActivity extends BaseToolbaredActivity {
 
 	public static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.PROJECT";
-	private ProjectFragment fragment;
+	public static final String PROJECT = "project";
+
+	@Inject
+	/* default */ ProjectService projectService;
+
+	@Bind(R.id.pager)
+	/* default */ ViewPager viewPager;
+
+	@Bind(R.id.pager_header)
+	/* default */ TabLayout tabLayout;
+
+	private Project project;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_project);
+		setContentView(R.layout.activity_iteration);
+
+		ButterKnife.bind(this);
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		final Backlog backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
 
@@ -27,18 +59,43 @@ public class ProjectActivity extends BaseToolbaredActivity {
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
 		initFABs(fabContainer, backlog.getId());
 
-		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
 		if (savedInstanceState == null) {
-			fragment = ProjectFragment.newInstance(backlog);
-		} else {
-			fragment = (ProjectFragment) getSupportFragmentManager().getFragment(savedInstanceState,
-					ProjectFragment.class.getName());
-		}
+			projectService.getProjectData(
+				backlog.getId(),
+				new Response.Listener<Project>() {
 
-		transaction.replace(R.id.container, fragment);
-		transaction.commit();
+					@Override
+					public void onResponse(final Project project) {
+
+						ProjectActivity.this.project = project;
+						populatePager(project);
+					}
+				},
+				new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						Toast.makeText(ProjectActivity.this, R.string.failed_to_retrieve_project_details,
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+		} else {
+			project = (Project) savedInstanceState.get(PROJECT);
+
+			populatePager(project);
+		}
 	}
+
+	private void populatePager(final Project project) {
+		final List<Fragment> fragments = new ArrayList<>();
+		fragments.add(ProjectDetailsFragment.newInstance(project));
+		fragments.add(ProjectLeafStoriesFragment.newInstance(project));
+
+		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
+
+		tabLayout.setupWithViewPager(viewPager);
+	}
+
 
 	private void initFABs(final View fabContainer, final Long projectId) {
 		final FloatingActionButton addFAB = (FloatingActionButton) fabContainer.findViewById(R.id.iteration_add_fab);
@@ -56,12 +113,14 @@ public class ProjectActivity extends BaseToolbaredActivity {
 
 	@Override
 	public String toString() {
-		return "ProjectActivity{" + "fragment=" + fragment + '}';
+		return "ProjectActivity{"
+				+ ", project=" + project
+				+ '}';
 	}
 
 	@Override
 	protected void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
-		getSupportFragmentManager().putFragment(outState, ProjectFragment.class.getName(), fragment);
+		outState.putSerializable(PROJECT, project);
 	}
 }
