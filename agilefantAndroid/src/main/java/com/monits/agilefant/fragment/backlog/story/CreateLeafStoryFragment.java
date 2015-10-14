@@ -3,15 +3,11 @@ package com.monits.agilefant.fragment.backlog.story;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
@@ -19,10 +15,12 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.MetricsService;
 
+import javax.inject.Inject;
+
 public class CreateLeafStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
 	/**
 	 * Return a new CreateLeafStoryFragment with the given backlog id
@@ -35,10 +33,9 @@ public class CreateLeafStoryFragment extends AbstractCreateBacklogElementFragmen
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-			final Bundle savedInstanceState) {
-
-		return super.onCreateView(inflater, container, savedInstanceState);
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	@Override

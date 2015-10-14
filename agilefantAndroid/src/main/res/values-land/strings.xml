@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="state_not_started">Not Started</string>
+	<string name="state_started">In Progress</string>
+	<string name="state_pending">Pending</string>
+	<string name="state_blocked">Blocked</string>
+	<string name="state_implemented">Ready</string>
+	<string name="state_done">Done</string>
+	<string name="state_deferred">Deferred</string>
+
+</resources>

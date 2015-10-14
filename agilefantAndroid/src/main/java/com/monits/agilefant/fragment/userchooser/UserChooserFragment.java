@@ -3,8 +3,10 @@ package com.monits.agilefant.fragment.userchooser;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.fragment.RoboFragment;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,7 +18,7 @@ import android.widget.ViewSwitcher;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter;
@@ -26,18 +28,22 @@ import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 
-public class UserChooserFragment extends RoboFragment {
+import javax.inject.Inject;
+
+public class UserChooserFragment extends Fragment {
 
 	private static final String CURRENT_RESPONSIBLES = "CURRENT_RESPONSIBLES";
 
 	@Inject
-	private UserService userService;
+	UserService userService;
 
-	private ViewSwitcher viewSwitcher;
+	@Bind(R.id.view_switcher)
+	ViewSwitcher viewSwitcher;
 
 	private SelectedUsersAdapter selectedUsersAdapter;
 
-	private AutoCompleteUserChooserTextView userInput;
+	@Bind(R.id.user_input)
+	AutoCompleteUserChooserTextView userInput;
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 
 	private OnUsersSubmittedListener onUsersSubmittedListener;
@@ -61,6 +67,12 @@ public class UserChooserFragment extends RoboFragment {
 	}
 
 	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		AgilefantApplication.getObjectGraph().inject(this);
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_user_chooser, container, false);
@@ -68,8 +80,7 @@ public class UserChooserFragment extends RoboFragment {
 
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
-
+		ButterKnife.bind(this, view);
 		final ListView selectedUsersList = (ListView) view.findViewById(R.id.users_list);
 		selectedUsersAdapter = new SelectedUsersAdapter(getActivity());
 		selectedUsersAdapter.setOnRemoveUserListener(new OnRemoveUserListener() {
@@ -81,8 +92,6 @@ public class UserChooserFragment extends RoboFragment {
 		});
 
 		selectedUsersList.setAdapter(selectedUsersAdapter);
-
-		userInput = (AutoCompleteUserChooserTextView) view.findViewById(R.id.user_input);
 
 		@SuppressWarnings("unchecked")
 		final List<User> currentUsers = (List<User>) getArguments().getSerializable(CURRENT_RESPONSIBLES);

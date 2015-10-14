@@ -12,11 +12,9 @@ target/
 *.dex
 
 build/
-config/checkstyle/
+config/
 
 .gradle
-gradlew*
-gradle/
 
 local.properties
 

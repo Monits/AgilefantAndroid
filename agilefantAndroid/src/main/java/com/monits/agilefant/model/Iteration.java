@@ -1,31 +1,26 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
+import com.monits.agilefant.model.backlog.BacklogType;
 
 /**
  * Model of iteration
  * @author Ivan Corbalan
  *
  */
-public class Iteration implements Serializable {
+public class Iteration extends Backlog implements Serializable {
 
 	private static final long serialVersionUID = 4014161739613202291L;
 
 	private static final int PRIME = 31;
 	private static final int SHIFT = 32;
-    private static final int HUNDRED_PERCENT = 100;
-
-	@SerializedName("id")
-	private long id;
+	private static final int HUNDRED_PERCENT = 100;
 
 	@SerializedName("title")
 	private String title;
-
-	@SerializedName("name")
-	private String name;
 
 	@SerializedName("rankedStories")
 	private List<Story> stories;
@@ -58,41 +53,11 @@ public class Iteration implements Serializable {
 	 * @param title The iteration title
 	 */
 	public Iteration(final long id, final String title) {
-		this.id = id;
+		super(id, title);
 		this.title = title;
 	}
 
-	/**
-	 * @return The iteration id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id The iteration id to set
-	 */
-	public void setId(final long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return The iteration name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @param name The iteration name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return The iteration title
-	 */
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -127,24 +92,10 @@ public class Iteration implements Serializable {
 	}
 
 	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(final long startDate) {
-		this.startDate = startDate;
-	}
-
-	/**
 	 * @return the endDate
 	 */
 	public long getEndDate() {
 		return endDate;
-	}
-
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(final long endDate) {
-		this.endDate = endDate;
 	}
 
 	/**
@@ -155,13 +106,6 @@ public class Iteration implements Serializable {
 	}
 
 	/**
-	 * @param tasksWithoutStory the tasksWithoutStory to set
-	 */
-	public void setTasksWithoutStory(final List<Task> tasksWithoutStory) {
-		this.tasksWithoutStory = tasksWithoutStory;
-	}
-
-	/**
 	 * @return the rootIteration
 	 */
 	public RootIteration getRootIteration() {
@@ -169,17 +113,15 @@ public class Iteration implements Serializable {
 	}
 
 	/**
-	 * @param rootIteration the rootIteration to set
-	 */
-	public void setRootIteration(final RootIteration rootIteration) {
-		this.rootIteration = rootIteration;
-	}
-
-	/**
 	 * @return The parent backlog
 	 */
 	public Backlog getParent() {
 		return parent;
+	}
+
+	@Override
+	public List<Backlog> getChildren() {
+		return Collections.emptyList();
 	}
 
 	/**
@@ -285,7 +227,7 @@ public class Iteration implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return PRIME + (int) (id ^ (id >>> SHIFT));
+		return PRIME + (int) (getId() ^ (getId() >>> SHIFT));
 	}
 
 	@Override
@@ -303,7 +245,13 @@ public class Iteration implements Serializable {
 		}
 
 		final Iteration other = (Iteration) obj;
-		return id == other.id;
+		return getId() == other.getId();
+
+	}
+
+	@Override
+	public BacklogType getType() {
+		return BacklogType.ITERATION;
 	}
 
 	@Override
@@ -316,16 +264,14 @@ public class Iteration implements Serializable {
 		}
 		storiesToStringBuilder.append(']');
 
-		return new StringBuilder("Iteration [id: ").append(id)
-			.append(", title: ").append(title)
-			.append(", name: ").append(name)
+		return new StringBuilder("Iteration [title: ").append(title)
 			.append(", stories: ").append(storiesToStringBuilder.toString())
 			.append(", startDate: ").append(startDate)
 			.append(", endDate: ").append(endDate)
 			.append(", tasksWithoutStory: ").append(tasksWithoutStory)
 			.append(", rootIteration: ").append(rootIteration)
 			.append(", parent: ").append(parent)
-			.append(']')
+			.append("] ").append(super.toString())
 			.toString();
 	}
 

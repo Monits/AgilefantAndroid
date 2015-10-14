@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    android:paddingTop="5dp" >
+    android:paddingTop="5dp">
 
     <include layout="@layout/daily_work_header" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/tasks_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/divider_stories_task"
         android:divider="@android:color/transparent"
         android:dividerHeight="3dp"
-        android:paddingBottom="3dp" />
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/padding_fab_scroll"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <TextView
         android:id="@+id/queue_empty_view"
@@ -25,5 +29,4 @@
         android:gravity="center"
         android:text="@string/empty_queued_tasks"
         android:visibility="gone" />
-
 </LinearLayout>

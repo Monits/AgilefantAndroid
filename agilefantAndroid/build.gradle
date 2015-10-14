@@ -1,18 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.monits.staticCodeAnalysis'
-
+apply plugin: 'android-apt'
 version = "2.1.0-SNAPSHOT"
 group = "com.monits"
 
 android {
-    compileSdkVersion 22
+
+    compileSdkVersion 23
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.monits.agilefant"
         versionName project.version
-        minSdkVersion 11
-        targetSdkVersion 22
+        minSdkVersion 12
+        targetSdkVersion 23
     }
 
     buildTypes {
@@ -24,18 +25,28 @@ android {
 
     lintOptions {
         abortOnError false
+        disable 'RtlHardcoded', 'RtlSymmetry'
     }
+
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.monits:volley-requests:1.0.1'
     compile files('libs/flurryAnalytics_3.4.0.jar')
-    compile files('libs/guice-4.0-no_aop.jar')
-    compile files('libs/javax.inject-1.jar')
-    compile files('libs/roboguice-2.0.jar')
+
+    // ButterKNife dependency
+    compile 'com.jakewharton:butterknife:7.0.1'
+    // dagger dependencies
+    compile 'com.google.dagger:dagger:2.0'
+    apt "com.google.dagger:dagger-compiler:2.0"
+    provided 'javax.annotation:jsr250-api:1.0'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 }
 
 

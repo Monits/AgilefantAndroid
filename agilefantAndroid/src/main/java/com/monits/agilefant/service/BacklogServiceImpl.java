@@ -4,14 +4,25 @@ import java.util.List;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.google.inject.Inject;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
 
+import javax.inject.Inject;
+
+
 public class BacklogServiceImpl implements BacklogService {
 
+
+	private final AgilefantService agilefantService;
+
+	/**
+	 * @param agilefantService Injected via Constructor by Dagger
+	 */
+
 	@Inject
-	private AgilefantService agilefantService;
+	public BacklogServiceImpl(final AgilefantService agilefantService) {
+		this.agilefantService = agilefantService;
+	}
 
 	@Override
 	public void getAllBacklogs(final Listener<List<Product>> listener, final ErrorListener error) {

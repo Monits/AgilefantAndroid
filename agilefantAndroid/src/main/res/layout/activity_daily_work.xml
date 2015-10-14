@@ -1,25 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar_container">
+        <include layout="@layout/tab_layout"/>
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" >
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <android.support.v4.view.PagerTabStrip
-            android:id="@+id/pager_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/all_backlogs_title_background_color"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:textColor="@color/cyan"
-            android:textStyle="bold" />
-    </android.support.v4.view.ViewPager>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/daily_work_add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_new"
+        android:layout_margin="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|right"
+        tools:ignore="RtlHardcoded"/>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

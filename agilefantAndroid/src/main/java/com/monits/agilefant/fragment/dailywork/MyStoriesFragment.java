@@ -1,31 +1,36 @@
 package com.monits.agilefant.fragment.dailywork;
 
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkWorkItemsAdapter;
+import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.WorkItem;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import roboguice.fragment.RoboFragment;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ExpandableListView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
-import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.MyStoriesAdapter;
-import com.monits.agilefant.listeners.implementations.StoryAdapterViewActionListener;
-import com.monits.agilefant.listeners.implementations.TaskAdapterViewActionListener;
-import com.monits.agilefant.model.Story;
-
-public class MyStoriesFragment extends RoboFragment implements Observer {
+public class MyStoriesFragment extends Fragment implements Observer {
 
 	private static final String STORIES_KEY = "STORIES";
 
-	private MyStoriesAdapter storiesAdapter;
+	private DailyWorkWorkItemsAdapter adapter;
 
-	private List<Story> mStories;
+	@Bind(R.id.my_stories_empty_view)
+	/* default */ TextView emptyView;
 
 	/**
 	 * Return a new MyQueueWorkFragment with the given stories
@@ -36,7 +41,7 @@ public class MyStoriesFragment extends RoboFragment implements Observer {
 		final MyStoriesFragment storiesFragment = new MyStoriesFragment();
 		final Bundle arguments = new Bundle();
 
-		final ArrayList<Story> myStories = new ArrayList<Story>();
+		final ArrayList<Story> myStories = new ArrayList<>();
 		myStories.addAll(stories);
 		arguments.putSerializable(STORIES_KEY, myStories);
 
@@ -50,36 +55,52 @@ public class MyStoriesFragment extends RoboFragment implements Observer {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mStories = (List<Story>) getArguments().getSerializable(STORIES_KEY);
+		final List<Story> stories;
+		if (savedInstanceState == null) {
+			stories = (List<Story>) getArguments().getSerializable(STORIES_KEY);
+		} else {
+			stories = (List<Story>) savedInstanceState.getSerializable(STORIES_KEY);
+		}
+
+		adapter = new DailyWorkWorkItemsAdapter(getActivity(), new ArrayList<WorkItem>(stories));
 	}
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_my_stories, container, false);
+		final View view = inflater.inflate(R.layout.fragment_my_stories, container, false);
+		ButterKnife.bind(this, view);
+
+		if (adapter.isEmpty()) {
+			emptyView.setVisibility(View.VISIBLE);
+
+			final RecyclerView recyclerViewStories = (RecyclerView) view.findViewById(R.id.my_stories_expandable);
+			recyclerViewStories.setVisibility(View.GONE);
+		}
+
+		return view;
 	}
 
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		final ExpandableListView expandableStories = (ExpandableListView) view.findViewById(R.id.my_stories_expandable);
-		final View emptyView = view.findViewById(R.id.my_stories_empty_view);
-
-		final FragmentActivity activity = getActivity();
-		storiesAdapter = new MyStoriesAdapter(activity, mStories);
-		storiesAdapter.setOnGroupActionListener(new StoryAdapterViewActionListener(activity, MyStoriesFragment.this));
-		storiesAdapter.setOnChildActionListener(new TaskAdapterViewActionListener(activity, MyStoriesFragment.this));
-		expandableStories.setAdapter(storiesAdapter);
-		expandableStories.setEmptyView(emptyView);
+		final RecyclerView recyclerViewStories = (RecyclerView) view.findViewById(R.id.my_stories_expandable);
+		recyclerViewStories.setAdapter(adapter);
+		recyclerViewStories.setLayoutManager(new LinearLayoutManager(getActivity()));
 	}
 
 	@Override
 	public void update(final Observable observable, final Object data) {
-
 		if (isVisible()) {
-			storiesAdapter.notifyDataSetChanged();
+			adapter.notifyDataSetChanged();
 			observable.deleteObserver(this);
 		}
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(STORIES_KEY, (Serializable) adapter.getWorkItems());
 	}
 }

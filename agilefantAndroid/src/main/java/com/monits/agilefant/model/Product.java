@@ -1,16 +1,15 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.monits.agilefant.model.backlog.BacklogType;
 
-public class Product implements Serializable {
+public class Product extends Backlog implements Serializable {
 
 	private static final long serialVersionUID = 2998260609210275811L;
-
-	@SerializedName("id")
-	private long id;
 
 	@SerializedName("title")
 	private String title;
@@ -25,28 +24,12 @@ public class Product implements Serializable {
 	 * @param projectList Project List
 	 */
 	public Product(final long id, final String title, final List<Project> projectList) {
-		this.id = id;
+		super(id, title);
 		this.title = title;
 		this.projectList = projectList;
 	}
 
-	/**
-	 * @return The product id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id The product id to set
-	 */
-	public void setId(final long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return The product title
-	 */
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -73,6 +56,21 @@ public class Product implements Serializable {
 	}
 
 	@Override
+	public BacklogType getType() {
+		return BacklogType.PRODUCT;
+	}
+
+	@Override
+	public Backlog getParent() {
+		return null;
+	}
+
+	@Override
+	public List<Backlog> getChildren() {
+		return new ArrayList<Backlog>(projectList);
+	}
+
+	@Override
 	public String toString() {
 		final StringBuilder projectListToStringBuilder = new StringBuilder("[");
 		for (final Project project : projectList) {
@@ -80,9 +78,9 @@ public class Product implements Serializable {
 		}
 		projectListToStringBuilder.append(']');
 
-		return new StringBuilder("Product [id: ").append(id)
-				.append(", title: ").append(title)
+		return new StringBuilder("Product [title: ").append(title)
 				.append(", projectList: ").append(projectListToStringBuilder.toString())
+				.append(' ').append(super.toString())
 				.toString();
 	}
 }

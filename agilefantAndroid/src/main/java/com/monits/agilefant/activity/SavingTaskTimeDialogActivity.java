@@ -1,8 +1,8 @@
 package com.monits.agilefant.activity;
 
-import roboguice.activity.RoboFragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -13,7 +13,7 @@ import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.service.TaskTimeTrackingService;
 
-public class SavingTaskTimeDialogActivity extends RoboFragmentActivity {
+public class SavingTaskTimeDialogActivity extends FragmentActivity {
 
 	private static final long AGILEFANT_MIN_SPENT_EFFORT = 6;
 	public static final String EXTRA_TASK = "com.monits.agilefant.intent.extra.TASK";

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 import java.util.Locale;
 
-public class UserChooser {
+public abstract class UserChooser {
 
 	private long id;
 

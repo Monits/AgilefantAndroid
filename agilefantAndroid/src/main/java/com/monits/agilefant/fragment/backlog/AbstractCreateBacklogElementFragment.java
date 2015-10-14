@@ -2,13 +2,15 @@ package com.monits.agilefant.fragment.backlog;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import roboguice.fragment.RoboFragment;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +25,7 @@ import android.widget.ViewSwitcher;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteUsersAdapter;
 import com.monits.agilefant.adapter.SelectedUsersAdapter;
@@ -36,22 +38,28 @@ import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 import com.monits.agilefant.util.IterationUtils;
 
-public abstract class AbstractCreateBacklogElementFragment extends RoboFragment {
+import javax.inject.Inject;
+
+public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
 	private static final String ARGUMENT_BACKLOG_ID = "backlog_id";
 	private static final String ARGUMENT_ITERATION_ID = "iteration_id";
 
 	@Inject
-	private UserService userService;
+	UserService userService;
 
-	private EditText storyName;
-	private AutoCompleteUserChooserTextView mResponsiblesInput;
+	@Bind(R.id.story_name)
+	EditText storyName;
+	@Bind(R.id.responsibles)
+	AutoCompleteUserChooserTextView mResponsiblesInput;
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 	private SelectedUsersAdapter selectedUsersAdapter;
 
-	private TextView storyState;
+	@Bind(R.id.state)
+	TextView storyState;
 
-	private ViewSwitcher viewSwitcher;
+	@Bind(R.id.view_switcher)
+	ViewSwitcher viewSwitcher;
 
 	private StateKey stateKey;
 
@@ -84,7 +92,7 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	public void onCreate(final Bundle savedInstanceState) {
 		final Bundle arguments = getArguments();
 		final boolean hasArguments = arguments != null;
-
+		AgilefantApplication.getObjectGraph().inject(this);
 		if (hasArguments && arguments.containsKey(ARGUMENT_BACKLOG_ID)) {
 			backlogId = arguments.getLong(ARGUMENT_BACKLOG_ID);
 		}
@@ -99,8 +107,9 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
-
-		return inflater.inflate(R.layout.fragment_create_abstract, container, false);
+		final View view = inflater.inflate(R.layout.fragment_create_abstract, container, false);
+		ButterKnife.bind(this, view);
+		return view;
 	}
 
 	@Override
@@ -108,32 +117,31 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 		super.onViewCreated(view, savedInstanceState);
 		final Context context = AbstractCreateBacklogElementFragment.this.getActivity();
 
-		final TextView title = (TextView) view.findViewById(R.id.title);
+		final TextView title = (TextView) view.findViewById(R.id.dialog_title);
 		title.setText(getTitleResourceId());
-		storyName = (EditText) view.findViewById(R.id.story_name);
-		viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
+
 		stateKey = StateKey.NOT_STARTED;
-		mResponsiblesInput = (AutoCompleteUserChooserTextView) view.findViewById(R.id.responsibles);
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(context);
 		mResponsiblesInput.setAdapter(autoCompleteUsersAdapter);
 
 		userService.getFilterableUsers(
-			new Listener<List<UserChooser>>() {
-				@Override
-				public void onResponse(final List<UserChooser> response) {
-					viewSwitcher.setDisplayedChild(1);
+				new Listener<List<UserChooser>>() {
+					@Override
+					public void onResponse(final List<UserChooser> response) {
+						viewSwitcher.setDisplayedChild(1);
 
-					autoCompleteUsersAdapter.setFilterableUsers(response);
-				}
-			},
-			new ErrorListener() {
-				@Override
-				public void onErrorResponse(final VolleyError arg0) {
-					Toast.makeText(getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT).show();
+						autoCompleteUsersAdapter.setFilterableUsers(response);
+					}
+				},
+				new ErrorListener() {
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						Toast.makeText(getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT)
+								.show();
 
-					getFragmentManager().popBackStackImmediate();
-				}
-			});
+						getFragmentManager().popBackStackImmediate();
+					}
+				});
 
 		mResponsiblesInput.setOnUserChooserActionListener(
 			new AutoCompleteUserChooserTextView.OnUserChooserActionListener() {
@@ -155,7 +163,6 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 
 		usersList.setAdapter(selectedUsersAdapter);
 
-		storyState = (TextView) view.findViewById(R.id.state);
 		storyState.setText(IterationUtils.getStateName(StateKey.NOT_STARTED));
 		storyState.setTextColor(
 			context.getResources().getColor(IterationUtils.getStateTextColor(StateKey.NOT_STARTED)));
@@ -177,6 +184,15 @@ public abstract class AbstractCreateBacklogElementFragment extends RoboFragment 
 				onSubmit(parameters);
 			}
 		});
+	}
+
+	@Override
+	public String toString() {
+		return "AbstractCreateBacklogElementFragment {"
+				+ "stateKey=" + stateKey
+				+ ", backlogId=" + backlogId
+				+ ", iterationId=" + iterationId
+				+ '}';
 	}
 
 	private OnClickListener getOnStateClickListener(final Context context) {

@@ -1,22 +1,18 @@
 package com.monits.agilefant.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.monits.agilefant.model.backlog.BacklogType;
 
-public class Project implements Serializable {
+public class Project extends Backlog implements Serializable {
 
 	private static final long serialVersionUID = 6674750903458874065L;
 
-	@SerializedName("id")
-	private long id;
-
 	@SerializedName("title")
 	private String title;
-
-	@SerializedName("name")
-	private String name;
 
 	@SerializedName("children")
 	private List<Iteration> iterationList;
@@ -47,7 +43,7 @@ public class Project implements Serializable {
 	 * @param iterationList Iteration List
 	 */
 	public Project(final long id, final String title, final List<Iteration> iterationList) {
-		this.id = id;
+		super(id, title);
 		this.title = title;
 		this.iterationList = iterationList;
 	}
@@ -63,8 +59,7 @@ public class Project implements Serializable {
 	 */
 	public Project(final long id, final String title, final List<Iteration> iterationList,
 			final long startDate, final long endDate, final List<User> assignees) {
-		super();
-		this.id = id;
+		super(id, title);
 		this.title = title;
 		this.iterationList = iterationList;
 		this.startDate = startDate;
@@ -72,27 +67,9 @@ public class Project implements Serializable {
 		this.assignees = assignees;
 	}
 
-	/**
-	 * @return The project id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id The project id to set
-	 */
-	public void setId(final long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return The project title
-	 *
-	 */
+	@Override
 	public String getTitle() {
-		//Agilefant gives name in one endpoint and title in another.
-		return name == null ? title : name;
+		return getName() == null ? title : getName();
 	}
 
 	/**
@@ -168,11 +145,21 @@ public class Project implements Serializable {
 		return parent;
 	}
 
+	@Override
+	public List<Backlog> getChildren() {
+		return new ArrayList<Backlog>(iterationList);
+	}
+
 	/**
 	 * @param parent the parent to set
 	 */
 	public void setParent(final Backlog parent) {
 		this.parent = parent;
+	}
+
+	@Override
+	public BacklogType getType() {
+		return BacklogType.PROJECT;
 	}
 
 	@Override
@@ -193,15 +180,13 @@ public class Project implements Serializable {
 		}
 		assigneesToStringBuilder.append(']');
 
-		return new StringBuilder("Project [id: ").append(id)
-				.append(", title: ").append(title)
-				.append(", name: ").append(name)
+		return new StringBuilder("Project [title: ").append(title)
 				.append(", iterationList: ").append(iterationListToStringBuilder.toString())
 				.append(", startDate: ").append(startDate)
 				.append(", endDate: ").append(endDate)
 				.append(", assignees: ").append(assigneesToStringBuilder.toString())
 				.append(", parent: ").append(parent)
-				.append(']')
+				.append("] ").append(super.toString())
 				.toString();
 	}
 }

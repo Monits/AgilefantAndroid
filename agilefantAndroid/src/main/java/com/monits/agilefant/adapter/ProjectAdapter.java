@@ -12,6 +12,9 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Iteration> {
 
 	private final LayoutInflater inflater;
@@ -60,9 +63,8 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		final View ret;
 		final HolderChild holder;
 		if (null == convertView) {
-			holder = new HolderChild();
 			ret = inflater.inflate(childResId, null);
-			holder.title = (TextView) ret.findViewById(R.id.title);
+			holder = new HolderChild(ret);
 
 			ret.setTag(holder);
 		} else {
@@ -84,10 +86,8 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		final View ret;
 		final HolderGroup holder;
 		if (null == convertView) {
-			holder = new HolderGroup();
 			ret = inflater.inflate(groupResId, null);
-			holder.title = (TextView) ret.findViewById(R.id.title);
-			holder.icon = (TextView) ret.findViewById(R.id.icon);
+			holder = new HolderGroup(ret);
 
 			ret.setTag(holder);
 		} else {
@@ -127,12 +127,23 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	}
 
 	static class HolderGroup {
-		public TextView title;
-		public TextView icon;
+		@Bind(R.id.txt_title)
+		TextView title;
+		@Bind(R.id.txt_icon)
+		TextView icon;
+
+		public HolderGroup(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 
 	static class HolderChild {
-		public TextView title;
+		@Bind(R.id.txt_title)
+		TextView title;
+
+		public HolderChild(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 
 	@Override
@@ -145,5 +156,14 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	public long getGroupId(final int groupPosition) {
 		final Project group = getGroup(groupPosition);
 		return group == null ? -1 : group.getId();
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectAdapter{"
+				+ "inflater=" + inflater
+				+ ", groupResId=" + groupResId
+				+ ", childResId=" + childResId
+				+ '}';
 	}
 }

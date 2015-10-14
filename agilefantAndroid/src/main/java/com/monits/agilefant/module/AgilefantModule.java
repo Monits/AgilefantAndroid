@@ -1,23 +1,11 @@
 package com.monits.agilefant.module;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
+import dagger.Module;
+import dagger.Provides;
+import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import roboguice.inject.SharedPreferencesName;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Build;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
-import com.monits.agilefant.cache.BitmapLruCache;
 import com.monits.agilefant.service.AgilefantService;
 import com.monits.agilefant.service.AgilefantServiceImpl;
 import com.monits.agilefant.service.BacklogService;
@@ -32,67 +20,73 @@ import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.service.ProjectServiceImpl;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.service.UserServiceImpl;
-import com.monits.volleyrequests.network.NullSafeImageLoader;
 
-@SuppressLint("NewApi")
-public class AgilefantModule extends AbstractModule {
+import javax.inject.Singleton;
 
-	@Override
-	protected void configure() {
+@Module(includes = {GsonModule.class, VolleyModule.class})
+public class AgilefantModule {
 
-		bindConstant().annotatedWith(SharedPreferencesName.class).to("default");
+	private final Application application;
 
-		// Services
-		bind(AgilefantService.class).to(AgilefantServiceImpl.class).in(Singleton.class);
-		bind(UserService.class).to(UserServiceImpl.class).in(Singleton.class);
-		bind(BacklogService.class).to(BacklogServiceImpl.class).in(Singleton.class);
-		bind(IterationService.class).to(IterationServiceImpl.class).in(Singleton.class);
-		bind(DailyWorkService.class).to(DailyWorkServiceImpl.class).in(Singleton.class);
-		bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
-		bind(UserService.class).to(UserServiceImpl.class).in(Singleton.class);
-		bind(ProjectService.class).to(ProjectServiceImpl.class).in(Singleton.class);
-
-		// Set a default cookie handler to accept and store cookies
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-			HttpURLConnection.setFollowRedirects(false);
-		}
-
-		// network
-		bind(RequestQueue.class).toProvider(RequestQueueProvider.class).in(Singleton.class);
-		bind(ImageLoader.class).toProvider(ImageLoaderProvider.class).in(Singleton.class);
-		bind(BitmapLruCache.class).in(Singleton.class);
+	/**
+	 * @param application used as a context
+	 */
+	public AgilefantModule(final Application application) {
+		this.application = application;
 	}
 
-	private static class RequestQueueProvider implements Provider<RequestQueue> {
-
-		private final Context context;
-
-		@Inject
-		public RequestQueueProvider(final Context context) {
-			this.context = context;
-		}
-
-		@Override
-		public RequestQueue get() {
-			return Volley.newRequestQueue(context);
-		}
+	@Provides
+	@Singleton
+	SharedPreferences provideSharedPreferences(final Application application) {
+		return PreferenceManager.getDefaultSharedPreferences(application);
 	}
 
-	private static class ImageLoaderProvider implements Provider<ImageLoader> {
-
-		private final RequestQueue requestQueue;
-		private final BitmapLruCache bitmapCache;
-
-		@Inject
-		public ImageLoaderProvider(final RequestQueue requestQueue, final BitmapLruCache bitmapCache) {
-			this.requestQueue = requestQueue;
-			this.bitmapCache = bitmapCache;
-		}
-
-		@Override
-		public ImageLoader get() {
-			return new NullSafeImageLoader(requestQueue, bitmapCache);
-		}
+	@Provides
+	@Singleton
+	Application provideApplication() {
+		return this.application;
 	}
+
+	@Provides
+	@Singleton
+	AgilefantService provideAgilefantService(final AgilefantServiceImpl agilefantService) {
+		return agilefantService;
+	}
+
+	@Provides
+	@Singleton
+	BacklogService provideBacklogService(final BacklogServiceImpl backlogService) {
+		return backlogService;
+	}
+
+	@Provides
+	@Singleton
+	DailyWorkService provideDailyWorkService(final DailyWorkServiceImpl dailyWorkService) {
+		return dailyWorkService;
+	}
+
+	@Provides
+	@Singleton
+	IterationService provideIterationService(final IterationServiceImpl iterationService) {
+		return iterationService;
+	}
+
+	@Provides
+	@Singleton
+	MetricsService provideMetricsService(final MetricsServiceImpl metricsService) {
+		return metricsService;
+	}
+
+	@Provides
+	@Singleton
+	ProjectService provideProjectService(final ProjectServiceImpl projectService) {
+		return projectService;
+	}
+
+	@Provides
+	@Singleton
+	UserService provideUserService(final UserServiceImpl userService) {
+		return userService;
+	}
+
 }

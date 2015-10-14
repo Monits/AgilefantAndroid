@@ -6,7 +6,7 @@ import java.util.Observable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Serializable, Rankable<Task> {
+public class Task extends Observable implements Serializable, Rankable<Task>, WorkItem {
 
 	private static final long serialVersionUID = 2576001407807164868L;
 
@@ -41,7 +41,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	private Iteration iteration;
 
 	@SerializedName("story")
-	private Backlog story;
+	private Story story;
 
 	/**
 	 * Default constructor
@@ -100,6 +100,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the effortLeft
 	 */
+	@Override
 	public long getEffortLeft() {
 		return effortLeft;
 	}
@@ -116,6 +117,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the effortSpent
 	 */
+	@Override
 	public long getEffortSpent() {
 		return effortSpent;
 	}
@@ -132,8 +134,14 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the originalEstimate
 	 */
+	@Override
 	public long getOriginalEstimate() {
 		return originalEstimate;
+	}
+
+	@Override
+	public WorkItemType getType() {
+		return WorkItemType.TASK;
 	}
 
 	/**
@@ -146,6 +154,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the name
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -160,6 +169,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the id
 	 */
+	@Override
 	public long getId() {
 		return id;
 	}
@@ -174,6 +184,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the responsibles
 	 */
+	@Override
 	public List<User> getResponsibles() {
 		return responsibles;
 	}
@@ -190,6 +201,7 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the state
 	 */
+	@Override
 	public StateKey getState() {
 		return state;
 	}
@@ -231,14 +243,14 @@ public class Task extends Observable implements Serializable, Rankable<Task> {
 	/**
 	 * @return the story
 	 */
-	public Backlog getStory() {
+	public Story getStory() {
 		return story;
 	}
 
 	/**
 	 * @param story the story to set
 	 */
-	public void setStory(final Backlog story) {
+	public void setStory(final Story story) {
 		this.story = story;
 	}
 

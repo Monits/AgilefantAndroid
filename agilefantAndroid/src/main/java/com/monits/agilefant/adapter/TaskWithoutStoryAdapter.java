@@ -18,6 +18,9 @@ import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.RankComparator;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class TaskWithoutStoryAdapter extends BaseAdapter {
 
 	private final Context context;
@@ -83,14 +86,8 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		Holder holder;
 		if (null == convertView) {
-			holder = new Holder();
 			final View inflate = inflater.inflate(R.layout.task_item, null);
-			holder.name = (TextView) inflate.findViewById(R.id.column_name);
-			holder.state = (TextView) inflate.findViewById(R.id.column_state);
-			holder.responsibles = (TextView) inflate.findViewById(R.id.column_responsibles);
-			holder.effortLeft = (TextView) inflate.findViewById(R.id.column_effort_left);
-			holder.originalEstimate = (TextView) inflate.findViewById(R.id.column_original_estimate);
-			holder.spendEffort = (TextView) inflate.findViewById(R.id.column_spent_effort);
+			holder = new Holder(inflate);
 
 			convertView = inflate;
 			convertView.setTag(holder);
@@ -147,12 +144,22 @@ public class TaskWithoutStoryAdapter extends BaseAdapter {
 	}
 
 	static class Holder {
-		public TextView name;
-		public TextView state;
-		public TextView responsibles;
-		public TextView effortLeft;
-		public TextView originalEstimate;
-		public TextView spendEffort;
+		@Bind(R.id.column_name)
+		TextView name;
+		@Bind(R.id.column_state)
+		TextView state;
+		@Bind(R.id.column_responsibles)
+		TextView responsibles;
+		@Bind(R.id.column_effort_left)
+		TextView effortLeft;
+		@Bind(R.id.column_original_estimate)
+		TextView originalEstimate;
+		@Bind(R.id.column_spent_effort)
+		TextView spendEffort;
+
+		public Holder(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 
 }

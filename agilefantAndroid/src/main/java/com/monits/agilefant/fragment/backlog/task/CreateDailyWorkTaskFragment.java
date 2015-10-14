@@ -21,7 +21,6 @@ import android.widget.ViewSwitcher;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.AutoCompleteIterationsAdapter;
@@ -33,6 +32,11 @@ import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.service.MetricsService;
 
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * @author gmuniz
  *
@@ -40,12 +44,13 @@ import com.monits.agilefant.service.MetricsService;
 public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	private IterationService iterationService;
+	IterationService iterationService;
 
 	@Inject
-	private MetricsService metricsService;
+	MetricsService metricsService;
 
-	private AutoCompleteTextView autocompleteIterations;
+	@Bind(R.id.context)
+	AutoCompleteTextView autocompleteIterations;
 
 	private Iteration iterationSelected;
 
@@ -62,6 +67,12 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 	}
 
 	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		AgilefantApplication.getObjectGraph().inject(this);
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_create_daily_task, container, false);
@@ -70,7 +81,7 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		final ViewSwitcher viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
-		autocompleteIterations = (AutoCompleteTextView) view.findViewById(R.id.context);
+		ButterKnife.bind(this, view);
 
 		final FragmentActivity context = getActivity();
 		final AutoCompleteIterationsAdapter autoCompleteIterationsAdapter =

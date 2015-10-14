@@ -20,6 +20,9 @@ import com.monits.agilefant.util.IterationUtils;
 import com.monits.agilefant.util.RankComparator;
 import com.monits.agilefant.view.DynamicExpandableListView.Swappable;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> implements Swappable {
 
 	private final LayoutInflater inflater;
@@ -72,16 +75,10 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 			final boolean isLastChild, View convertView, final ViewGroup parent) {
 		HolderChild holder;
 		if (null == convertView) {
-			holder = new HolderChild();
 			final View inflate = inflater.inflate(R.layout.task_item, null);
-			holder.name = (TextView) inflate.findViewById(R.id.column_name);
-			holder.state = (TextView) inflate.findViewById(R.id.column_state);
-			holder.responsibles = (TextView) inflate.findViewById(R.id.column_responsibles);
-			holder.effortLeft = (TextView) inflate.findViewById(R.id.column_effort_left);
-			holder.originalEstimate = (TextView) inflate.findViewById(R.id.column_original_estimate);
-			holder.spendEffort = (TextView) inflate.findViewById(R.id.column_spent_effort);
-
 			convertView = inflate;
+			holder = new HolderChild(inflate);
+
 			convertView.setTag(holder);
 		} else {
 			holder = (HolderChild) convertView.getTag();
@@ -129,14 +126,8 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 			View convertView, final ViewGroup parent) {
 		final HolderGroup holder;
 		if (null == convertView) {
-			holder = new HolderGroup();
 			final View inflate = inflater.inflate(R.layout.stories_item, null);
-			holder.name = (TextView) inflate.findViewById(R.id.column_name);
-			holder.state = (TextView) inflate.findViewById(R.id.column_state);
-			holder.responsibles = (TextView) inflate.findViewById(R.id.column_responsibles);
-			holder.effortLeft = (TextView) inflate.findViewById(R.id.column_effort_left);
-			holder.originalEstimate = (TextView) inflate.findViewById(R.id.column_original_estimate);
-			holder.spendEffort = (TextView) inflate.findViewById(R.id.column_spent_effort);
+			holder = new HolderGroup(inflate);
 
 			convertView = inflate;
 			convertView.setTag(holder);
@@ -238,20 +229,40 @@ public class StoriesAdapter extends AbstractExpandableListAdapter<Story, Task> i
 	}
 
 	static class HolderGroup {
+		@Bind(R.id.column_name)
 		public TextView name;
+		@Bind(R.id.column_state)
 		public TextView state;
+		@Bind(R.id.column_responsibles)
 		public TextView responsibles;
+		@Bind(R.id.column_effort_left)
 		public TextView effortLeft;
+		@Bind(R.id.column_original_estimate)
 		public TextView originalEstimate;
+		@Bind(R.id.column_spent_effort)
 		public TextView spendEffort;
+
+		public HolderGroup(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 
 	static class HolderChild {
-		public TextView name;
-		public TextView state;
-		public TextView responsibles;
-		public TextView effortLeft;
-		public TextView originalEstimate;
-		public TextView spendEffort;
+		@Bind(R.id.column_name)
+		TextView name;
+		@Bind(R.id.column_state)
+		TextView state;
+		@Bind(R.id.column_responsibles)
+		TextView responsibles;
+		@Bind(R.id.column_effort_left)
+		TextView effortLeft;
+		@Bind(R.id.column_original_estimate)
+		TextView originalEstimate;
+		@Bind(R.id.column_spent_effort)
+		TextView spendEffort;
+
+		public HolderChild(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 }

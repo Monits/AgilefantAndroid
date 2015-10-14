@@ -10,18 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_weight="0.7"
+        android:layout_weight="@integer/column_name"
         android:text="@string/name"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        />
 
     <TextView
         android:id="@+id/column_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_weight="0.85"
+        android:layout_weight="@integer/task_stories_column_state"
         android:text="@string/state"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        />
 
     <TextView
         android:id="@+id/column_responsibles"
@@ -31,7 +33,9 @@
         android:layout_weight="0.95"
         android:singleLine="true"
         android:text="@string/responsibles"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/column_effort_left"
@@ -40,7 +44,8 @@
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
         android:text="@string/_el_"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        />
 
     <TextView
         android:id="@+id/column_original_estimate"
@@ -49,7 +54,9 @@
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
         android:text="@string/_oe_"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+         />
 
     <TextView
         android:id="@+id/column_spent_effort"
@@ -58,6 +65,8 @@
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
         android:text="@string/es"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+         />
 
 </LinearLayout>

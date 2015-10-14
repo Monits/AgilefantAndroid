@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/traslucent_black"
@@ -7,7 +8,7 @@
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <ViewSwitcher
         android:id="@+id/view_switcher"
@@ -38,7 +39,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/dialog_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
@@ -49,6 +50,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -56,79 +58,85 @@
                 android:paddingRight="5dp"
                 android:paddingTop="5dp" >
 
-                <TableLayout
-                    android:id="@+id/form"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:isScrollContainer="true"
-                    android:stretchColumns="0,1" >
+                    android:orientation="horizontal"
+                    android:weightSum="2" >
 
-                    <TableRow
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical" >
+                        android:text="@string/name"
+                        android:paddingRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="right" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:paddingRight="5dp"
-                            android:text="@string/name" />
-
-                        <EditText
-                            android:id="@+id/story_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/name"
-                            android:singleLine="true"
-                            android:textSize="16sp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
+                    <EditText
+                        android:id="@+id/story_name"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical" >
+                        android:inputType="text"
+                        android:hint="@string/name"
+                        android:singleLine="true"
+                        style="@style/InputTextBigStyle"
+                        android:layout_weight="1" />
+                </LinearLayout>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:paddingRight="5dp"
-                            android:text="@string/state" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2" >
 
-                        <TextView
-                            android:id="@+id/state"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/state"
-                            android:paddingLeft="5dp"
-                            android:singleLine="true"
-                            android:textSize="16sp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical" >
+                        android:text="@string/state"
+                        android:paddingRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        tools:ignoreRtl="true" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:paddingRight="5dp"
-                            android:text="@string/responsibles" />
+                    <TextView
+                        android:id="@+id/state"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/state"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        android:layout_weight="0.18"
+                        android:gravity="center" />
+                </LinearLayout>
 
-                        <com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView
-                            android:id="@+id/responsibles"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:completionThreshold="1"
-                            android:hint="@string/search_user"
-                            android:singleLine="true"
-                            android:textSize="16sp" />
-                    </TableRow>
-                </TableLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:weightSum="2" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="5dp"
+                        android:text="@string/responsibles"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        tools:ignoreRtl="true" />
+
+                    <com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView
+                        android:id="@+id/responsibles"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="1"
+                        android:hint="@string/search_user"
+                        android:singleLine="true"
+                        style="@style/InputTextBigStyle"
+                        android:layout_weight="1"
+                        android:gravity="left" />
+                </LinearLayout>
 
                 <ListView
                     android:id="@+id/users_list"

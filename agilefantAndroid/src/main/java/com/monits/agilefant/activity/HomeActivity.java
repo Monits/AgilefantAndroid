@@ -1,8 +1,9 @@
 package com.monits.agilefant.activity;
 
-import roboguice.activity.RoboActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,41 +14,46 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.flurry.android.FlurryAgent;
-import com.google.inject.Inject;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.util.ValidationUtils;
 
-@ContentView(R.layout.activity_home)
-public class HomeActivity extends RoboActivity {
+import javax.inject.Inject;
 
-	@InjectView(R.id.domain)
-	private EditText domain;
+public class HomeActivity extends Activity {
 
-	@InjectView(R.id.user_name)
-	private EditText userName;
+	@Bind(R.id.domain)
+	EditText domain;
 
-	@InjectView(R.id.password)
-	private EditText password;
+	@Bind(R.id.user_name)
+	EditText userName;
 
-	@InjectView(R.id.login)
-	private Button login;
+	@Bind(R.id.password)
+	EditText password;
 
-	@Inject
-	private UserService userService;
+	@Bind(R.id.login)
+	Button login;
 
 	@Inject
-	private SharedPreferences sharedPreferences;
+	UserService userService;
+
+	@Inject
+	SharedPreferences sharedPreferences;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_home);
+
+		AgilefantApplication.getObjectGraph().inject(this);
+		ButterKnife.bind(this);
 
 		domain.setText(sharedPreferences.getString(UserService.DOMAIN_KEY, ""));
 		userName.setText(sharedPreferences.getString(UserService.USER_NAME_KEY, ""));
@@ -100,8 +106,13 @@ public class HomeActivity extends RoboActivity {
 					progressDialog.dismiss();
 				}
 
+				String error = getResources().getString(R.string.login_error);
+				if (arg0 instanceof NoConnectionError) {
+					error = getResources().getString(R.string.connection_error);
+				}
+
 				Toast.makeText(
-					HomeActivity.this, getResources().getString(R.string.login_error), Toast.LENGTH_LONG).show();
+					HomeActivity.this, error, Toast.LENGTH_LONG).show();
 			}
 		};
 	}
@@ -114,7 +125,7 @@ public class HomeActivity extends RoboActivity {
 
 	@Override
 	protected void onStop() {
-		super.onStop();
 		FlurryAgent.onEndSession(this);
+		super.onStop();
 	}
 }

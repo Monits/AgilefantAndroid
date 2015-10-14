@@ -1,5 +1,7 @@
 package com.monits.agilefant.util;
 
+import android.support.annotation.StringRes;
+
 import java.util.EnumMap;
 import java.util.List;
 
@@ -41,7 +43,8 @@ public final class IterationUtils {
 	 * @param state The state
 	 * @return the name of the given state
 	 */
-	public static String getStateName(final StateKey state) {
+	@StringRes
+	public static int getStateName(final StateKey state) {
 		return states.get(state).getName();
 	}
 

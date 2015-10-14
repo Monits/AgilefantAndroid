@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.monits.agilefant"
-    android:versionCode="11"
-    android:versionName="2.0.4" >
-
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="19" />
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.monits.agilefant" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
@@ -16,7 +11,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" 
-        android:allowBackup="true">
+        android:allowBackup="true"
+        android:fullBackupContent="true">
         
         <activity
             android:name="com.monits.agilefant.activity.SplashActivity"
@@ -25,7 +21,6 @@
             android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,22 +32,37 @@
         <activity
             android:name=".activity.AllBackLogsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/backlogs" />
+            android:label="@string/backlogs"/>
         <activity
             android:name=".activity.IterationActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|screenSize"
             android:label="@string/iteration"
-            android:parentActivityName=".activity.AllBackLogsActivity" />
+            android:parentActivityName=".activity.AllBackLogsActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.AllBackLogsActivity" />
+        </activity>
         <activity
             android:name=".activity.DailyWorkActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|screenSize"
             android:label="@string/daily_work"
-            android:parentActivityName=".activity.AllBackLogsActivity" />
+            android:parentActivityName=".activity.AllBackLogsActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.AllBackLogsActivity" />
+        </activity>
         <activity
             android:name=".activity.ProjectActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|screenSize"
             android:label="@string/project_details"
-            android:parentActivityName=".activity.AllBackLogsActivity" />
+            android:parentActivityName=".activity.AllBackLogsActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.AllBackLogsActivity" />
+        </activity>
         <activity
             android:name=".activity.SavingTaskTimeDialogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />

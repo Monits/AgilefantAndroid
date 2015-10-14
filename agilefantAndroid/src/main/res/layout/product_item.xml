@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dp" >
+    android:padding="5dp">
 
     <RelativeLayout
         android:id="@+id/icon_container"
@@ -16,12 +16,12 @@
         android:background="@drawable/backlogs_indicator" >
 
         <TextView
-            android:id="@+id/icon"
+            android:id="@+id/txt_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="+"
+            android:text="@string/plus_expanded"
             android:textColor="@android:color/black" />
     </RelativeLayout>
 
@@ -35,7 +35,7 @@
         android:background="#e3e3e3" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

@@ -5,4 +5,4 @@
     android:background="@drawable/background_user_view"
     android:drawableRight="@drawable/selector_content_remove"
     android:gravity="center_vertical"
-    android:padding="5dp" />
+    android:padding="5dp"/>

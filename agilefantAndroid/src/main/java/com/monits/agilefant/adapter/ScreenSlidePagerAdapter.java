@@ -1,17 +1,13 @@
 package com.monits.agilefant.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
-import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
-import com.monits.agilefant.fragment.iteration.StoriesFragment;
-import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
+
+import java.util.List;
 
 public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -27,7 +23,7 @@ public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 	public ScreenSlidePagerAdapter(final Context context, final FragmentManager fragmentManager,
 			final List<Fragment> fragments) {
 		super(fragmentManager);
-		this.context  = context;
+		this.context = context;
 		this.fragments = fragments;
 	}
 

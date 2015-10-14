@@ -15,6 +15,9 @@ import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.util.IterationUtils;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MyTasksAdapter extends BaseAdapter {
 
 	private final Context context;
@@ -67,12 +70,8 @@ public class MyTasksAdapter extends BaseAdapter {
 
 		final ViewHolder holder;
 		if (convertView == null) {
-			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.my_tasks_item, null);
-
-			holder.name = (TextView) convertView.findViewById(R.id.column_name);
-			holder.context = (TextView) convertView.findViewById(R.id.column_context);
-			holder.state = (TextView) convertView.findViewById(R.id.column_state);
+			holder = new ViewHolder(convertView);
 
 			convertView.setTag(holder);
 		} else {
@@ -124,9 +123,16 @@ public class MyTasksAdapter extends BaseAdapter {
 		this.actionListener = listener;
 	}
 
-	private static class ViewHolder {
-		public TextView name;
-		public TextView context;
-		public TextView state;
+	static class ViewHolder {
+		@Bind(R.id.column_name)
+		TextView name;
+		@Bind(R.id.column_context)
+		TextView context;
+		@Bind(R.id.column_state)
+		TextView state;
+
+		public ViewHolder(final View view) {
+			ButterKnife.bind(this, view);
+		}
 	}
 }

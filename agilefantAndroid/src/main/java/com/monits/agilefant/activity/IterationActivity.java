@@ -1,73 +1,194 @@
 package com.monits.agilefant.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
-import com.monits.agilefant.fragment.iteration.IterationFragment;
+import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
+import com.monits.agilefant.fragment.iteration.IterationDetailsFragment;
+import com.monits.agilefant.fragment.iteration.StoriesFragment;
+import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.Story;
+import com.monits.agilefant.model.Task;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class IterationActivity extends BaseToolbaredActivity {
 
 	public static final String ITERATION = "ITERATION";
 
 	private Iteration iteration;
+	private LinearLayout optionsContainer;
+	private boolean fabInited;
+	private FloatingActionButton addFAB;
+	private FloatingActionButton addStoryFAB;
+	private FloatingActionButton addTaskFAB;
+
+	private TextView storyFABLabel;
+	private TextView taskFABLabel;
+	private final static long DELAY = 90;
+
+	@Bind(R.id.pager)
+	/* default */ ViewPager viewPager;
+
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_iteration);
 
-		if (savedInstanceState != null) {
-			return;
-		}
+		ButterKnife.bind(this);
+
 
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);
 
-		final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.container, IterationFragment.newInstance(iteration));
-		transaction.commit();
+		final List<Fragment> fragments = new ArrayList<>();
+
+		final ArrayList<Story> storiesArray = new ArrayList<>();
+		storiesArray.addAll(iteration.getStories());
+
+		final ArrayList<Task> tasksWithoutStory = new ArrayList<>();
+		tasksWithoutStory.addAll(iteration.getTasksWithoutStory());
+
+		fragments.add(IterationDetailsFragment.newInstance(iteration));
+		fragments.add(StoriesFragment.newInstance(storiesArray, iteration));
+		fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
+		fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
+
+		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
+
+		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
+		tabLayout.setupWithViewPager(viewPager);
+		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 	}
 
-
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.menu_iteration_new_element, menu);
-		return true;
-	}
+	protected void onStart() {
+		super.onStart(); //Let the toolbar be configured...
 
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_new_story:
-			final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(iteration.getId());
-			getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, createStoryFragment)
-				.addToBackStack(null)
-				.commit();
-
-			return true;
-		case R.id.action_new_task:
-			final CreateTaskWithoutStory createTaskWithoutStory = CreateTaskWithoutStory.newInstance(iteration.getId());
-			getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, createTaskWithoutStory)
-				.addToBackStack(null)
-				.commit();
-			return true;
-
-		default:
-			return super.onOptionsItemSelected(item);
+		// And do our magic on top
+		if (!fabInited) {
+			final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
+			final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
+			initFABs(fabContainer);
+			fabInited = true;
 		}
+	}
+
+	private void initFABs(final View fabContainer) {
+		addFAB = (FloatingActionButton) fabContainer.findViewById(R.id.iteration_add_fab);
+		addStoryFAB =
+				(FloatingActionButton) fabContainer.findViewById(R.id.iteration_fab_new_story);
+		addTaskFAB =
+				(FloatingActionButton) fabContainer.findViewById(R.id.iteration_fab_new_task);
+		optionsContainer = (LinearLayout) fabContainer.findViewById(R.id.fab_buttons_container);
+
+		storyFABLabel = (TextView) fabContainer.findViewById(R.id.story_fab_label);
+		taskFABLabel = (TextView) fabContainer.findViewById(R.id.task_fab_label);
+
+		View.OnClickListener animationClick = new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				animationFABMenu();
+			}
+		};
+
+		optionsContainer.setOnClickListener(animationClick);
+		addFAB.setOnClickListener(animationClick);
+
+		final View.OnClickListener fabMenuStoryItemsClick = new View.OnClickListener() {
+			@Override
+			public void onClick(final View view) {
+				animationFABMenu();
+				replaceFragment(CreateStoryFragment.newInstance(iteration.getId()));
+			}
+		};
+
+		addStoryFAB.setOnClickListener(fabMenuStoryItemsClick);
+		storyFABLabel.setOnClickListener(fabMenuStoryItemsClick);
+
+
+		final View.OnClickListener fabMenuTaskItemsClick = new View.OnClickListener() {
+			@Override
+			public void onClick(final View view) {
+				animationFABMenu();
+				replaceFragment(CreateTaskWithoutStory.newInstance(iteration.getId()));
+			}
+		};
+		addTaskFAB.setOnClickListener(fabMenuTaskItemsClick);
+		taskFABLabel.setOnClickListener(fabMenuTaskItemsClick);
+	}
+
+
+	private void animationFABMenu() { //Open animation
+		if (optionsContainer.getVisibility() == View.INVISIBLE) {
+			final Animation rotateIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_in);
+			addFAB.setAnimation(rotateIn);
+
+			optionsContainer.setVisibility(View.VISIBLE);
+			final Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_in);
+
+			optionsContainer.setAnimation(fadeIn);
+
+			//Clear animation for correct repeat
+			addStoryFAB.clearAnimation();
+			storyFABLabel.clearAnimation();
+			addTaskFAB.clearAnimation();
+			taskFABLabel.clearAnimation();
+
+			setAnimationFabItems(storyFABLabel, 0);
+			setAnimationFabItems(addStoryFAB, 0);
+
+			setAnimationFabItems(taskFABLabel, DELAY);
+			setAnimationFabItems(addTaskFAB, DELAY);
+
+		} else { //Close fab menu animation
+			final Animation rotateOut =
+					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_out);
+			addFAB.setAnimation(rotateOut);
+
+			final Animation fadeOut =
+					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_out) ;
+			optionsContainer.setAnimation(fadeOut);
+			optionsContainer.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	private void replaceFragment(final Fragment fragment) {
+		getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, fragment)
+				.addToBackStack(null)
+				.commit();
+	}
+
+	private void setAnimationFabItems(final View v, final long delay) {
+		final Animation anim =
+				AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_item_scale);
+		anim.setStartOffset(delay);
+		v.setAnimation(anim);
 	}
 
 	@Override
 	public String toString() {
-		return "IterationActivity [iteration_id:" + iteration.getId() + ']';
+		return "IterationActivity{" + "iteration=" + iteration
+				+ "fabInited=" + fabInited + '}';
 	}
 }

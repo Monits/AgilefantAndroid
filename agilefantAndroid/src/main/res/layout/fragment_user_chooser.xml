@@ -7,7 +7,7 @@
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <ViewSwitcher
         android:id="@+id/view_switcher"
@@ -46,7 +46,8 @@
                 android:layout_below="@+id/titlebar"
                 android:completionThreshold="1"
                 android:hint="@string/search_user"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/InputTextBigStyle"/>
 
             <ListView
                 android:id="@+id/users_list"

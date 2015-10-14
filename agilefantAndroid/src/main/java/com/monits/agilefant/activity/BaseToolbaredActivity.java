@@ -1,6 +1,5 @@
 package com.monits.agilefant.activity;
 
-import android.content.res.TypedArray;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,23 +24,26 @@ public class BaseToolbaredActivity extends BaseActivity {
 			return;
 		}
 
-		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
-		final View activityView = content.getChildAt(0);
-		final View toolbarContainer = getLayoutInflater().inflate(R.layout.toolbar, content);
+		final ViewGroup containerView = getToolbarContainer();
+		final View toolbarContainer = getLayoutInflater().inflate(R.layout.toolbar, containerView, false);
 		setSupportActionBar((Toolbar) toolbarContainer.findViewById(R.id.toolbar));
 
-		activityView.setPadding(activityView.getPaddingLeft(), activityView.getPaddingTop() + getActionBarSize(),
-			activityView.getPaddingRight(), activityView.getPaddingBottom());
+		// Make sure it's always the fist child
+		containerView.addView(toolbarContainer, 0);
 
 		toolbarConfigured = true;
 	}
 
-	private int getActionBarSize() {
-		final TypedArray styledAttributes = getTheme().obtainStyledAttributes(new int[] { R.attr.actionBarSize });
-		final int actionBarHeight = (int) styledAttributes.getDimension(0, 0);
-		styledAttributes.recycle();
+	private ViewGroup getToolbarContainer() {
+		// If there is an explicit app bar container, use that
+		final View appBarContainer = findViewById(R.id.app_bar_container);
+		if (appBarContainer != null) {
+			return (ViewGroup) appBarContainer;
+		}
 
-		return actionBarHeight;
+		// Otherwise just default to the activity layout root
+		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
+		return (ViewGroup) content.getChildAt(0);
 	}
 
 	@Override

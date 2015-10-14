@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="task_stories_column_state">1</integer>
+
+    <item name="column_state" type="integer" format="float">0.8</item>
+    <item name="column_name" type="integer" format="float">0.4</item>
+    <item name="column_context" type="integer" format="float">0.65</item>
+</resources>
