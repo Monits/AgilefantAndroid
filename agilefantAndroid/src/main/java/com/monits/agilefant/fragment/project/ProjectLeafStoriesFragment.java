@@ -24,6 +24,7 @@ import com.monits.agilefant.adapter.ProjectLeafStoriesRecyclerAdapter;
 import com.monits.agilefant.fragment.iteration.BaseDetailTabFragment;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
+import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
@@ -137,6 +138,7 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 		}
 		storiesListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		storiesListView.setAdapter(storiesAdapter);
+		storiesListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
 
 		final WorkItemTouchHelperCallback workItemTouchHelperCallback =
 				new WorkItemTouchHelperCallback(storiesAdapter);
