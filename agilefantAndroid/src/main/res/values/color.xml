@@ -2,13 +2,12 @@
 <resources>
 
     <color name="all_backlogs_child_text_color">#1E5EEE</color>
-    <color name="all_backlogs_title_background_color">#d0e6f6</color>
-    <color name="all_backlogs_title_text_color">#e17009</color>
     <color name="traslucent_black">#DD000000</color>
 	<color name="cyan">#2E6E9E</color>
 	<color name="blue_light">#1E5EEE</color>
 	<color name="agilefant_light_blue_text">#2889F9</color>
 	<color name="agilefant_light_blue_selected_row">#87B6D9</color>
+    <color name="white_background">#ffffff</color>
 
     <color name="action_bar_color">#54759E</color>
     <color name="action_bar_color_dark">#4D6685</color>

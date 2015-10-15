@@ -32,13 +32,15 @@
         <activity
             android:name=".activity.AllBackLogsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/backlogs"/>
+            android:label="@string/backlogs"
+            android:theme="@style/AppTheme.WhiteBg"/>
         <activity
             android:name=".activity.IterationActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/iteration"
             android:parentActivityName=".activity.AllBackLogsActivity"
-            tools:ignore="UnusedAttribute">
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/AppTheme.WhiteBg">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.AllBackLogsActivity" />
@@ -48,7 +50,8 @@
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/daily_work"
             android:parentActivityName=".activity.AllBackLogsActivity"
-            tools:ignore="UnusedAttribute">
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/AppTheme.WhiteBg">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.AllBackLogsActivity" />
@@ -58,7 +61,8 @@
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/project_details"
             android:parentActivityName=".activity.AllBackLogsActivity"
-            tools:ignore="UnusedAttribute">
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/AppTheme.WhiteBg">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.AllBackLogsActivity" />

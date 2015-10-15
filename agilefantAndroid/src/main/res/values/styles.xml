@@ -26,6 +26,10 @@
         <item name="tabTextColor">@color/tab_not_selected_text</item>
     </style>
 
+    <style name="AppTheme.WhiteBg" parent="AppTheme">
+        <item name="android:windowBackground">@color/white_background</item>
+    </style>
+
     <style name="Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">@color/action_bar_color</item>
     </style>
