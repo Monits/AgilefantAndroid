@@ -32,7 +32,7 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
 
 	@Bind(R.id.task_without_story)
-	RecyclerView taskWithoutStoryListView;
+	/* default */ RecyclerView taskWithoutStoryListView;
 
 	private TasksWithoutStoryRecyclerAdapter taskWithoutStoryAdapter;
 
