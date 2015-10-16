@@ -51,6 +51,11 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 		});
 	}
 
+	@Override
+	protected CharSequence convertSelectionToString(final Object selectedItem) {
+		return ((FilterableUser) selectedItem).getUser().getFullName();
+	}
+
 	private void sendUserChooserAction() {
 		if (onUserChooserActionListener != null) {
 			onUserChooserActionListener.onUserChooserAction(selectedUsers);
