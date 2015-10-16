@@ -31,7 +31,6 @@
     <string name="iteration_without_task">iteration without task</string>
     <string name="no_title">No title</string>
     <string name="burndown">Burndown</string>
-    <string name="iteration_">Iteration: </string>
     <string name="iteration">Iteration</string>
     <string name="comment">Comment</string>
     <string name="effort_spent">Effort Spent</string>
@@ -77,8 +76,6 @@
 	<string name="ok">OK</string>
 	<string name="feedback_success_updated_project">Successfully updated project!</string>
 	<string name="feedback_failed_update_project">Failed to update project!</string>
-	<string name="feedback_ok_to_move_story">Successfully moved story!</string>
-	<string name="feedback_failed_to_move_story">Failed to move story!</string>
 	<string name="start_tracking_task_time">Do you want to start tracking the task time?</string>
 	<string name="dialog_start_tracking_task_time_negative">Cancel</string>
 	<string name="dialog_start_tracking_task_time_positive">@android:string/ok</string>
@@ -104,19 +101,28 @@
 	<string name="context_hint">Search iteration</string>
 	<string name="feedback_failed_current_iterations_retrieval">Failed to retrieve current iterations!</string>
 	<string name="validation_empty_context">Context can\'t be empty!</string>
-	<string name="new_element">New</string>
 	<string name="iteration_details">Iteration details</string>
 	<string name="original_estimate">Orig. Est.</string>
 	<string name="stories_done">Stories done</string>
 	<string name="task_done">Task done</string>
 
-	<string name="state_not_started">N</string>
-	<string name="state_started">I</string>
-	<string name="state_pending">P</string>
-	<string name="state_blocked">B</string>
-	<string name="state_implemented">R</string>
-	<string name="state_done">D</string>
-	<string name="state_deferred">D</string>
-	<string name="plus_expanded">+</string>
-	<string name="minus_expanded">-</string>
+    <string name="state_not_started">N</string>
+    <string name="state_started">I</string>
+    <string name="state_pending">P</string>
+    <string name="state_blocked">B</string>
+    <string name="state_implemented">R</string>
+    <string name="state_done">D</string>
+    <string name="state_deferred">D</string>
+    <string name="plus_expanded">+</string>
+    <string name="minus_expanded">-</string>
+
+    <string name="state_not_started_full">Not started</string>
+    <string name="state_started_full">In progress</string>
+    <string name="state_pending_full">Pending</string>
+    <string name="state_blocked_full">Blocked</string>
+    <string name="state_implemented_full">Ready</string>
+    <string name="state_done_full">Done</string>
+    <string name="state_deferred_full">Deferred</string>
+
+
 </resources>

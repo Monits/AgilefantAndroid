@@ -164,7 +164,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(R.string.dialog_state_title);
 		builder.setSingleChoiceItems(
-				StateKey.getDisplayStates(), story.getState().ordinal(), onStoryStateSelectedListener);
+				StateKey.getDisplayStates(context), story.getState().ordinal(), onStoryStateSelectedListener);
 		builder.show();
 	}
 

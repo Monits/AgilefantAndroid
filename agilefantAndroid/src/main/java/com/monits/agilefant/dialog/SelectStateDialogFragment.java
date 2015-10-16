@@ -57,10 +57,13 @@ public class SelectStateDialogFragment extends DialogFragment {
 			}
 		};
 
+
+
 		final AlertDialog.Builder builder = new Builder(getActivity());
 		builder.setTitle(R.string.dialog_state_title);
 		builder.setSingleChoiceItems(
-				StateKey.getDisplayStates(), mTask.getState().ordinal(), onChoiceSelectedListener);
+				StateKey.getDisplayStates(getActivity()),
+				mTask.getState().ordinal(), onChoiceSelectedListener);
 
 		return builder.create();
 	}

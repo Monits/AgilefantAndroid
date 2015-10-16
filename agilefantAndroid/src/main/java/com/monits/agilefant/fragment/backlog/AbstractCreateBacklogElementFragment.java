@@ -46,20 +46,21 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 	private static final String ARGUMENT_ITERATION_ID = "iteration_id";
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Bind(R.id.story_name)
-	EditText storyName;
+	/* default */ EditText storyName;
 	@Bind(R.id.responsibles)
-	AutoCompleteUserChooserTextView mResponsiblesInput;
+	/* default */ AutoCompleteUserChooserTextView mResponsiblesInput;
+
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 	private SelectedUsersAdapter selectedUsersAdapter;
 
 	@Bind(R.id.state)
-	TextView storyState;
+	/* default */ TextView storyState;
 
 	@Bind(R.id.view_switcher)
-	ViewSwitcher viewSwitcher;
+	/* default */ ViewSwitcher viewSwitcher;
 
 	private StateKey stateKey;
 
@@ -115,7 +116,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		final Context context = AbstractCreateBacklogElementFragment.this.getActivity();
+		final Context context = getActivity();
 
 		final TextView title = (TextView) view.findViewById(R.id.dialog_title);
 		title.setText(getTitleResourceId());
@@ -217,7 +218,8 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 				final AlertDialog.Builder builder = new Builder(context);
 				builder.setTitle(R.string.dialog_state_title);
 				builder.setSingleChoiceItems(
-						StateKey.getDisplayStates(), StateKey.NOT_STARTED.ordinal(), onClickListener);
+						StateKey.getDisplayStates(getActivity()),
+						StateKey.NOT_STARTED.ordinal(), onClickListener);
 
 				builder.show();
 			}
