@@ -36,7 +36,6 @@ public class IterationActivity extends BaseToolbaredActivity {
 
 	private Iteration iteration;
 	private LinearLayout optionsContainer;
-	private boolean fabInited;
 	private FloatingActionButton addFAB;
 	private FloatingActionButton addStoryFAB;
 	private FloatingActionButton addTaskFAB;
@@ -78,19 +77,10 @@ public class IterationActivity extends BaseToolbaredActivity {
 		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
 		tabLayout.setupWithViewPager(viewPager);
 		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-	}
 
-	@Override
-	protected void onStart() {
-		super.onStart(); //Let the toolbar be configured...
-
-		// And do our magic on top
-		if (!fabInited) {
-			final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
-			final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
-			initFABs(fabContainer);
-			fabInited = true;
-		}
+		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
+		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
+		initFABs(fabContainer);
 	}
 
 	private void initFABs(final View fabContainer) {
@@ -188,7 +178,6 @@ public class IterationActivity extends BaseToolbaredActivity {
 
 	@Override
 	public String toString() {
-		return "IterationActivity{" + "iteration=" + iteration
-				+ "fabInited=" + fabInited + '}';
+		return "IterationActivity{" + "iteration=" + iteration + '}';
 	}
 }
