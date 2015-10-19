@@ -40,7 +40,7 @@ import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
-import com.monits.agilefant.network.request.GsonRequest;
+import com.monits.volleyrequests.network.request.GsonRequest;
 import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
 import javax.inject.Inject;
@@ -195,7 +195,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, GET_ALL_BACKLOGS_URL, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Product>>() { }.getType();
-		final GsonRequest<List<Product>> request = new GsonRequest<>(Method.GET, url, gson, listType, listener, error);
+		final GsonRequest<List<Product>> request = new GsonRequest<>(Method.GET, url,
+				gson, listType, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -205,7 +206,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, GET_ITERATION, getHost(), id);
 
 		final GsonRequest<Iteration> request = new GsonRequest<>(
-				Method.GET, url, gson, Iteration.class, listener, error);
+				Method.GET, url, gson, Iteration.class, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -271,7 +272,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		}
 
 		final GsonRequest<User> request = new GsonRequest<>(
-				Method.GET, url.toString(), gson, User.class, listener, error);
+				Method.GET, url.toString(), gson, User.class, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -281,7 +282,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, GET_MY_BACKLOGS_URL, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Project>>() { }.getType();
-		final GsonRequest<List<Project>> request = new GsonRequest<>(Method.GET, url, gson, listType, listener, error);
+		final GsonRequest<List<Project>> request = new GsonRequest<>(Method.GET, url,
+				gson, listType, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -291,7 +293,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, DAILY_WORK_ACTION, getHost(), id);
 
 		final GsonRequest<DailyWork> request = new GsonRequest<>(
-				Method.GET, url, gson, DailyWork.class, listener, error);
+				Method.GET, url, gson, DailyWork.class, listener, error, null);
 
 		/*
 		 * Default Volley timeout is too low and the request to get the
@@ -310,7 +312,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final String url = String.format(Locale.US, STORE_STORY_ACTION, getHost());
 
-		final GsonRequest<Story> req = new GsonRequest<Story>(Method.POST, url, gson, Story.class, listener, error) {
+		final GsonRequest<Story> req = new GsonRequest<Story>(Method.POST, url,
+				gson, Story.class, listener, error, null) {
 
 			@Override
 			public byte[] getBody() throws AuthFailureError {
@@ -365,7 +368,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void getProjectDetails(final long projectId, final Listener<Project> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, PROJECT_DATA, getHost(), projectId);
 
-		final GsonRequest<Project> request = new GsonRequest<>(Method.GET, url, gson, Project.class, listener, error);
+		final GsonRequest<Project> request = new GsonRequest<>(Method.GET, url,
+				gson, Project.class, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -376,16 +380,28 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, PROJECT_LEAF_STORIES_ACTION, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Story>>() { }.getType();
+
 		final GsonRequest<List<Story>> request = new GsonRequest<List<Story>>(
-				Method.POST, url, gson, listType, listener, error) {
+				Method.POST, url, gson, listType, listener, error, null) {
 
 			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
+			public String getBodyContentType() {
+				return "application/x-www-form-urlencoded; charset=" + this.getParamsEncoding();
+			}
 
-				params.put(OBJECT_ID, String.valueOf(projectId));
+			@Override
+			public byte[] getBody() throws AuthFailureError {
 
-				return params;
+				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
+				final StringBuilder body = new StringBuilder();
+				final String paramsEncoding = getParamsEncoding();
+				try {
+					appendURLEncodedParam(body, OBJECT_ID, String.valueOf(projectId), paramsEncoding);
+				} catch (final UnsupportedEncodingException e) {
+					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
+				}
+
+				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
 
@@ -398,7 +414,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final Type listType = new TypeToken<ArrayList<UserChooser>>() { }.getType();
 		final GsonRequest<List<UserChooser>> request = new GsonRequest<>(
-				Method.POST, url, gson, listType, listener, error);
+				Method.POST, url, gson, listType, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -408,7 +424,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, "%1$s/ajax/storeProject.action", getHost());
 
 		final GsonRequest<Project> request = new GsonRequest<Project>(
-				Method.POST, url, gson, Project.class, listener, error) {
+				Method.POST, url, gson, Project.class, listener, error, null) {
 
 			@Override
 			public byte[] getBody() throws AuthFailureError {
@@ -438,7 +454,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	public void updateTask(final Task task, final Listener<Task> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, STORE_TASK_ACTION, getHost());
 
-		final GsonRequest<Task> request = new GsonRequest<Task>(Method.POST, url, gson, Task.class, listener, error) {
+		final GsonRequest<Task> request = new GsonRequest<Task>(Method.POST, url,
+				gson, Task.class, listener, error, null) {
 
 			@Override
 			public byte[] getBody() throws AuthFailureError {
@@ -482,7 +499,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, getHost());
 
-		final GsonRequest<Task> request = new GsonRequest<Task>(Method.POST, url, gson, Task.class, listener, error) {
+		final GsonRequest<Task> request = new GsonRequest<Task>(Method.POST, url,
+				gson, Task.class, listener, error, null) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -536,7 +554,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private GsonRequest<Story> newGsonRequest(final Story story, final Story targetStory, final Long backlogId,
 		final String url, final Listener<Story> listener, final ErrorListener error) {
 
-		return new GsonRequest<Story>(Method.POST, url, gson, Story.class, listener, error) {
+		return new GsonRequest<Story>(Method.POST, url, gson, Story.class, listener, error, null) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -583,7 +601,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, STORY_MOVE, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
-				Method.POST, url, gson, Story.class, listener, error) {
+				Method.POST, url, gson, Story.class, listener, error, null) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
@@ -607,7 +625,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, STORY_CREATE, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
-				Method.POST, url, gson, Story.class, listener, error) {
+				Method.POST, url, gson, Story.class, listener, error, null) {
 
 			@Override
 			public byte[] getBody() throws AuthFailureError {
@@ -657,7 +675,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 		final String url = String.format(Locale.US, TASK_CREATE, getHost());
 
 		final GsonRequest<Task> request = new GsonRequest<Task>(
-				Method.POST, url, gson, Task.class, listener, errorListener) {
+				Method.POST, url, gson,
+				Task.class, listener, errorListener, null) {
 
 			@Override
 			public byte[] getBody() throws AuthFailureError {
@@ -699,7 +718,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final Type listType = new TypeToken<ArrayList<FilterableIteration>>() { }.getType();
 		final GsonRequest<List<FilterableIteration>> request = new GsonRequest<>(
-				Method.POST, url, gson, listType, listener, error);
+				Method.POST, url, gson, listType, listener, error, null);
 
 		enqueueWithReloginPolicyAttached(request);
 	}
@@ -747,4 +766,5 @@ public class AgilefantServiceImpl implements AgilefantService {
 			);
 		}
 	}
+
 }

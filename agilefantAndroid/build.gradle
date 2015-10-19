@@ -36,7 +36,7 @@ dependencies {
     compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.google.code.gson:gson:2.3'
-    compile 'com.monits:volley-requests:1.0.1'
+    compile 'com.monits:volley-requests:1.3.1'
     compile files('libs/flurryAnalytics_3.4.0.jar')
 
     // ButterKNife dependency
