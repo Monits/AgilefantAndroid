@@ -44,13 +44,17 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 		}
 
 		//if both are type task, check if are from the same story.
-		if (originalWorkItem.getType() == WorkItemType.TASK) {
+		if (originalWorkItem.getType() == WorkItemType.TASK && targetWorkItem.getType() == WorkItemType.TASK) {
 			final Task taskOrigin = (Task) originalWorkItem;
 			final Task taskTarget = (Task) targetWorkItem;
-			if (taskOrigin.getStory() != taskTarget.getStory()) {
+
+			if (!(taskOrigin.getStory() == null && taskTarget.getStory() == null) // for tasks without story
+				&& (taskOrigin.getStory() == null || taskTarget.getStory() == null
+				|| !taskOrigin.getStory().equals(taskTarget.getStory()))) {
 				return false;
 			}
 		}
+
 		originalPosition = viewHolder.getAdapterPosition();
 		newPosition = target.getAdapterPosition();
 		dragAndDropListener.onMove(originalPosition, newPosition);

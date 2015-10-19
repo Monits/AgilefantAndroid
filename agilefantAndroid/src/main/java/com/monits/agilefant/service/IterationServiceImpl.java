@@ -43,6 +43,7 @@ public class IterationServiceImpl implements IterationService {
 				for (final Story story : iteration.getStories()) {
 					for (final Task task : story.getTasks()) {
 						task.setStory(story);
+						task.setIteration(iteration);
 					}
 				}
 

@@ -488,9 +488,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 			protected Map<String, String> getParams() throws AuthFailureError {
 				final Map<String, String> params = new HashMap<>();
 
-				params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
-				params.put(TASK_ID, String.valueOf(task.getId()));
 				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
+				params.put(TASK_ID, String.valueOf(task.getId()));
+				if (task.getStory() == null) {
+					params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
+				} else {
+					params.put(STORY_ID, String.valueOf(task.getStory().getId()));
+				}
 
 				return params;
 			}
