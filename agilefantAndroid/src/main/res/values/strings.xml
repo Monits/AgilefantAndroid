@@ -123,6 +123,7 @@
     <string name="state_implemented_full">Ready</string>
     <string name="state_done_full">Done</string>
     <string name="state_deferred_full">Deferred</string>
+    <string name="no_iteration">None</string>
 
 
 </resources>

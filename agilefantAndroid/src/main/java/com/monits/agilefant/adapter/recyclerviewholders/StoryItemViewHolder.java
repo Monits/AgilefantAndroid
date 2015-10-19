@@ -110,7 +110,13 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		}
 
 		if (columnContext != null) {
-			columnContext.setText(item.getIteration().getName());
+			final Iteration iteration = item.getIteration();
+			// Iteration could be null, there are stories that never belonged to an iteration
+			if (iteration == null) {
+				columnContext.setText(context.getResources().getString(R.string.no_iteration));
+			} else {
+				columnContext.setText(item.getIteration().getName());
+			}
 		}
 	}
 
@@ -121,6 +127,11 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	@OnClick(R.id.column_context)
 	/* default */ void getIterationDetails() {
 		final Iteration iteration = story.getIteration();
+
+		// Iteration could be null, there are stories that never belonged to an iteration
+		if (iteration == null) {
+			return;
+		}
 
 		final ProgressDialog progressDialog = new ProgressDialog(context);
 		progressDialog.setIndeterminate(true);
