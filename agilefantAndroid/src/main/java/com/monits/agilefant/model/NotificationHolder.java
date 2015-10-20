@@ -99,4 +99,16 @@ public class NotificationHolder {
 	public void updateBase() {
 		chronometerBaseTime = SystemClock.elapsedRealtime() + elapsedTime;
 	}
+
+	@Override
+	public String toString() {
+		return "NotificationHolder{"
+				+ "trackedTask=" + trackedTask
+				+ ", notificationId=" + notificationId
+				+ ", isChronometerRunning=" + isChronometerRunning
+				+ ", elapsedTime=" + elapsedTime
+				+ ", chronometerBaseTime=" + chronometerBaseTime
+				+ ", notifBuilder=" + notifBuilder
+				+ '}';
+	}
 }
