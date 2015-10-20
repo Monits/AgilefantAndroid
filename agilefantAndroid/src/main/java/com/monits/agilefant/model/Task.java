@@ -308,7 +308,7 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 	public String toString() {
 		final StringBuilder responsiblesToStringBuilder = new StringBuilder("[");
 		for (final User responsible : responsibles) {
-			responsiblesToStringBuilder.append(responsible).append(", ");
+			responsiblesToStringBuilder.append(responsible.getInitials()).append(", ");
 		}
 		responsiblesToStringBuilder.append(']');
 
@@ -320,9 +320,9 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 			.append(", responsibles: ").append(responsiblesToStringBuilder.toString())
 			.append(", state: ").append(state)
 			.append(", rank: ").append(rank)
-			.append(", iteration: ").append(iteration)
-			.append(", story: ").append(story)
+			.append(", iteration: ").append(iteration == null ? null : iteration.getId())
+			.append(", story: ").append(story == null ? null : story.getId())
 			.append(']')
-			.toString();
+				.toString();
 	}
 }

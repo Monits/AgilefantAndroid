@@ -25,7 +25,6 @@ import com.monits.agilefant.recycler.DragAndDropListener;
 import com.monits.agilefant.service.MetricsService;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -120,7 +119,6 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	private void addWorkItem(final Story workItem, final int position) {
-
 		final List<Task> children = workItem.getTasks();
 		int i = 0;
 		for (final WorkItem item : children) {
@@ -132,7 +130,6 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	private void removeWorkItem(final Story workItem, final int position) {
-
 		final List<Task> children = workItem.getTasks();
 		workItems.removeAll(children);
 		workItem.setExpanded(false);
@@ -173,24 +170,76 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 
 	@Override
 	public void onMove(final int fromPosition, final int toPosition) {
-		notifyItemMoved(fromPosition, toPosition);
-		Collections.swap(workItems, fromPosition, toPosition);
+		final WorkItem fromItem = workItems.get(fromPosition);
+		final WorkItem toItem = workItems.get(toPosition);
+
+		// Moving a Story
+		if (fromItem.getType() == WorkItemType.STORY) {
+			final Story fromStory = (Story) fromItem;
+			final Story toStory = (Story) toItem;
+
+			// Move stories along tasks
+			moveItemRange(fromPosition, visibleElementCount(fromStory), toPosition, visibleElementCount(toStory));
+		} else {
+			// Moving a Task
+			final Task fromTask = (Task) fromItem;
+			final Task toTask = (Task) toItem;
+
+			if (fromTask.getStory() == toTask.getStory()) {
+				moveItemRange(fromPosition, 1, toPosition, 1);
+			}
+		}
+	}
+
+	/**
+	 * @param story The story to analyze
+	 * @return Count of visible elements
+	 */
+	private int visibleElementCount(final Story story) {
+		return story.isExpanded() ? story.getTasks().size() + 1 : 1;
+	}
+
+	private void moveItemRange(final int from, final int length, final int to, final int toElementLength) {
+		// Take them out of the list...
+		final List<WorkItem> movedElements = new ArrayList<>(length);
+		for (int i = 0; i < length; i++) {
+			movedElements.add(workItems.remove(from));
+		}
+
+		// ... and back in their new positions
+		// Account for the range we are moving
+		final int fixedTo = from < to ? to - length + toElementLength : to;
+		for (int i = 0; i < length; i++) {
+			workItems.add(fixedTo + i, movedElements.get(i));
+		}
+
+		// notify movement in reverse of direction we are moving
+		if (from < to) {
+			for (int i = length - 1; i >= 0; i--) {
+				notifyItemMoved(from + i, fixedTo + i);
+			}
+		} else {
+			for (int i = 0; i < length; i++) {
+				notifyItemMoved(from + i, fixedTo + i);
+			}
+		}
 	}
 
 	@Override
 	public void onChangePosition(final int fromPosition, final int toPosition) {
-		final WorkItem fromItem = workItems.get(fromPosition);
-		final WorkItem toItem = workItems.get(toPosition);
+		// Use the one at the top to know what we moved regardless of list mangling
+		final WorkItem referenceElement = workItems.get(toPosition < fromPosition ? toPosition : fromPosition);
 
-		if (fromItem.getType() == WorkItemType.STORY) {
-			final Story story = (Story) fromItem;
-			final Story storyTarget = (Story) toItem;
+		// Are we moving stories or tasks?
+		if (referenceElement.getType() == WorkItemType.STORY) {
+			final Story story = getRelevantStory(toPosition);
+			final Story storyTarget = getRelevantStory(fromPosition);
 
 			final Response.Listener<Story> successListener =
 					getSuccessListener(R.string.feedback_success_update_story_rank);
 			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_story_rank);
 
-			if (fromPosition < toPosition) {
+			if (fromPosition > toPosition) {
 				metricsService.rankStoryOver(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			} else {
@@ -198,9 +247,8 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			}
 		} else {
-
-			final Task currentTask = (Task) fromItem;
-			final Task targetTask = (Task) toItem;
+			final Task currentTask = (Task) workItems.get(toPosition);
+			final Task targetTask = (Task) workItems.get(fromPosition);
 
 			final Response.Listener<Task> successListener =
 					getSuccessListener(R.string.feedback_success_updated_task_rank);
@@ -209,6 +257,22 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 			metricsService.rankTaskUnder(currentTask, targetTask, currentTask.getStory().getTasks(),
 					successListener, errorListener);
 		}
+	}
+
+	/**
+	 * Retrieves the story to which the item at the given pos belongs.
+	 *
+	 * @param pos The position to analyze
+	 * @return The story to which the given position belongs
+	 */
+	private Story getRelevantStory(final int pos) {
+		final WorkItem wi = workItems.get(pos);
+
+		if (wi.getType() == WorkItemType.STORY) {
+			return (Story) wi;
+		}
+
+		return ((Task) wi).getStory();
 	}
 
 	@NonNull
