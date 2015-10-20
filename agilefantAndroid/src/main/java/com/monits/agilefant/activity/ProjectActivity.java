@@ -1,5 +1,6 @@
 package com.monits.agilefant.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -60,6 +61,12 @@ public class ProjectActivity extends BaseToolbaredActivity {
 		initFABs(fabContainer, backlog.getId());
 
 		if (savedInstanceState == null) {
+			final ProgressDialog progressDialog = new ProgressDialog(this);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage(getString(R.string.loading));
+			progressDialog.show();
+
+			// FIXME: Get the project data before launch the activity.
 			projectService.getProjectData(
 				backlog.getId(),
 				new Response.Listener<Project>() {
@@ -69,6 +76,10 @@ public class ProjectActivity extends BaseToolbaredActivity {
 
 						ProjectActivity.this.project = project;
 						populatePager(project);
+
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
 					}
 				},
 				new Response.ErrorListener() {
@@ -93,7 +104,7 @@ public class ProjectActivity extends BaseToolbaredActivity {
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
 
-		tabLayout.setupWithViewPager(viewPager);
+		setUpTabLayout(viewPager);
 	}
 
 
@@ -114,7 +125,7 @@ public class ProjectActivity extends BaseToolbaredActivity {
 	@Override
 	public String toString() {
 		return "ProjectActivity{"
-				+ ", project=" + project
+				+ "project=" + project
 				+ '}';
 	}
 

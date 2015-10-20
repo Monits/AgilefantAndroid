@@ -1,6 +1,9 @@
 package com.monits.agilefant.activity;
 
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -44,6 +47,35 @@ public class BaseToolbaredActivity extends BaseActivity {
 		// Otherwise just default to the activity layout root
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		return (ViewGroup) content.getChildAt(0);
+	}
+
+	protected void setUpTabLayout(final ViewPager viewPager) {
+		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
+		tabLayout.setupWithViewPager(viewPager);
+
+		tabLayout.post(new Runnable() {
+			@Override
+			public void run() {
+				final int tabLayoutWidth = tabLayout.getWidth();
+				final DisplayMetrics metrics = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+				final int deviceWidth = metrics.widthPixels;
+
+				final ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
+				if (tabLayoutWidth < deviceWidth) {
+					layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+					layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+					tabLayout.setTabMode(TabLayout.MODE_FIXED);
+					tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+				} else {
+					layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+					layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+					tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+				}
+			}
+		});
+
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package com.monits.agilefant.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -74,9 +73,7 @@ public class IterationActivity extends BaseToolbaredActivity {
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
 
-		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
-		tabLayout.setupWithViewPager(viewPager);
-		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+		setUpTabLayout(viewPager);
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
