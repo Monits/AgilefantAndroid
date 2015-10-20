@@ -18,7 +18,7 @@ public final class HoursUtils {
 	public static String convertMinutesToHours(final long minutes) {
 		if (minutes == 0) {
 			return "—";
-		} else if (minutes % MINUTES_OF_A_HOUR  == 0) {
+		} else if (minutes % MINUTES_OF_A_HOUR == 0) {
 			return String.valueOf(minutes / MINUTES_OF_A_HOUR) + HOURS;
 		} else {
 			return String.valueOf((float) minutes / MINUTES_OF_A_HOUR) + HOURS;
