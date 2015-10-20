@@ -39,6 +39,11 @@ public abstract class OnDrawableClickListener implements OnTouchListener {
 		return false;
 	}
 
+	/**
+	 * DrawableClick Event
+	 * @param event The event triggered
+	 * @return true if the callback consumed the event, false otherwise.
+	 */
 	public abstract boolean onDrawableClick(MotionEvent event);
 
 	public static enum DrawablePosition {
