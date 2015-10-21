@@ -44,13 +44,13 @@ import butterknife.ButterKnife;
 public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	IterationService iterationService;
+	/* default */ IterationService iterationService;
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
 
 	@Bind(R.id.context)
-	AutoCompleteTextView autocompleteIterations;
+	/* default */ AutoCompleteTextView autocompleteIterations;
 
 	private Iteration iterationSelected;
 
@@ -171,5 +171,12 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 						}
 					});
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "CreateDailyWorkTaskFragment {"
+				+ "iterationSelected=" + iterationSelected
+				+ '}';
 	}
 }
