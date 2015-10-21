@@ -18,8 +18,6 @@ import com.monits.agilefant.model.backlog.BacklogElementParameters;
 
 import javax.inject.Inject;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * Manages metrics in Agilefant
  * @author Ivan Corbalan
@@ -328,6 +326,7 @@ public class MetricsServiceImpl implements MetricsService {
 	/**
 	 * This method clones the source items into the fallback list, and updates the ranks of the source list.
 	 *
+	 * @param <T> the class to rank
 	 * @param source the original list.
 	 * @param copy the list where cloned items will be added.
 	 */
@@ -346,14 +345,13 @@ public class MetricsServiceImpl implements MetricsService {
 	/**
 	 * Updates the ranks of the items in the source list with the ones in the fallbacklist.
 	 *
+	 * @param <T> the class to rank
 	 * @param source the list to be updated.
 	 * @param fallbackList the list containing the values to be updated with.
 	 */
-	@SuppressFBWarnings(value = "LII_LIST_INDEXED_ITERATING", justification = "We are iterating two lists")
 	public <T extends Rankable<T>> void rollbackRanks(final List<T> source, final List<T> fallbackList) {
 
-		for (int i = 0; i < source.size(); i++) {
-			final T currentTaskAt = source.get(i);
+		for (final T currentTaskAt : source) {
 
 			final int indexOfFallbackTask = fallbackList.indexOf(currentTaskAt);
 			final T fallbackTask = fallbackList.get(indexOfFallbackTask);
