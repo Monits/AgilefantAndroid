@@ -17,7 +17,7 @@ import javax.inject.Inject;
 public class BaseActivity extends AppCompatActivity {
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
