@@ -27,10 +27,10 @@ import javax.inject.Inject;
 public class MyBacklogsFragment extends Fragment {
 
 	@Inject
-	BacklogService backlogService;
+	/* default */ BacklogService backlogService;
 
 	@Inject
-	IterationService iterationService;
+	/* default */ IterationService iterationService;
 
 	private AllBacklogsAdapter backlogsAdapter;
 
