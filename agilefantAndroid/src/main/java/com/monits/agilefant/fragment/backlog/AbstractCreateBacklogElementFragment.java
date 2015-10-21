@@ -1,10 +1,5 @@
 package com.monits.agilefant.fragment.backlog;
 
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -38,7 +33,12 @@ import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 import com.monits.agilefant.util.IterationUtils;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
@@ -46,46 +46,40 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 	private static final String ARGUMENT_ITERATION_ID = "iteration_id";
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Bind(R.id.story_name)
-	EditText storyName;
+	/* default */ EditText storyName;
+
 	@Bind(R.id.responsibles)
-	AutoCompleteUserChooserTextView mResponsiblesInput;
-	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
-	private SelectedUsersAdapter selectedUsersAdapter;
+	/* default */ AutoCompleteUserChooserTextView mResponsiblesInput;
 
 	@Bind(R.id.state)
-	TextView storyState;
+	/* default */ TextView storyState;
 
 	@Bind(R.id.view_switcher)
-	ViewSwitcher viewSwitcher;
+	/* default */ ViewSwitcher viewSwitcher;
+
+	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
+	private SelectedUsersAdapter selectedUsersAdapter;
 
 	private StateKey stateKey;
 
 	protected Long backlogId;
 	protected Long iterationId;
 
-	@SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
-			justification = "We're adding necessary params to the fragment")
-	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForBacklog(
+	protected static <T extends AbstractCreateBacklogElementFragment> void prepareFragmentForBacklog(
 			final Long backlogId, final T fragment) {
 		final Bundle args = new Bundle();
 		args.putLong(ARGUMENT_BACKLOG_ID, backlogId);
 		fragment.setArguments(args);
-
-		return fragment;
 	}
 
-	@SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
-			justification = "We're adding necessary params to the fragment")
-	protected static <T extends AbstractCreateBacklogElementFragment> T prepareFragmentForIteration(
+	protected static <T extends AbstractCreateBacklogElementFragment> void prepareFragmentForIteration(
 			final Long iterationId, final T fragment) {
 		final Bundle args = new Bundle();
 		args.putLong(ARGUMENT_ITERATION_ID, iterationId);
 		fragment.setArguments(args);
-
-		return fragment;
 	}
 
 	@Override
@@ -115,7 +109,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		final Context context = AbstractCreateBacklogElementFragment.this.getActivity();
+		final Context context = getActivity();
 
 		final TextView title = (TextView) view.findViewById(R.id.dialog_title);
 		title.setText(getTitleResourceId());

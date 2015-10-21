@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
 
 	/**
 	 * Return a new CreateStoryFragment with the given iteration id.
@@ -32,7 +32,8 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 	 */
 	public static CreateStoryFragment newInstance(final long iterationId) {
 		final CreateStoryFragment fragment = new CreateStoryFragment();
-		return prepareFragmentForIteration(iterationId, fragment);
+		prepareFragmentForIteration(iterationId, fragment);
+		return fragment;
 	}
 
 	@Override

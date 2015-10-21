@@ -20,7 +20,7 @@ import javax.inject.Inject;
 public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
 
 	/**
 	 * Return a new CreateTaskWithoutStory with the given iteration id
@@ -29,7 +29,8 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 	 */
 	public static CreateTaskWithoutStory newInstance(final long iterationId) {
 		final CreateTaskWithoutStory fragment = new CreateTaskWithoutStory();
-		return prepareFragmentForIteration(iterationId, fragment);
+		prepareFragmentForIteration(iterationId, fragment);
+		return fragment;
 	}
 
 	@Override
