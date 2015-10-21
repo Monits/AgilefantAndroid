@@ -42,13 +42,13 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 	@SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
 			justification = "The field is necessary for dependency injection")
 	@Inject
-	DailyWorkService dailyWorkService;
+	/* default */ DailyWorkService dailyWorkService;
 
 	@Bind(R.id.pager)
-	ViewPager viewPager;
+	/* default */ ViewPager viewPager;
 
 	@Bind(R.id.pager_header)
-	TabLayout tabLayout;
+	/* default */ TabLayout tabLayout;
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
@@ -77,8 +77,7 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 
 			dailyWork = (DailyWork) savedInstanceState.getSerializable(DAILYWORK);
 
-			viewPager.setAdapter(
-					new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, DailyWorkActivity.this));
+			viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, this));
 
 			tabLayout.setupWithViewPager(viewPager);
 		}
