@@ -14,7 +14,6 @@ import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.fragment.backlog.AllBacklogsFragment;
 import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
-import com.monits.agilefant.fragment.backlog.story.CreateLeafStoryFragment;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateDailyWorkTaskFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
@@ -104,11 +103,6 @@ public interface Graph {
 	 * @param createStoryFragment Injects CreateStoryFragment
 	 */
 	void inject(final CreateStoryFragment createStoryFragment);
-
-	/**
-	 * @param createLeafStoryFragment Injects CreateLeafStoryFragment
-	 */
-	void inject(final CreateLeafStoryFragment createLeafStoryFragment);
 
 	/**
 	 * @param createDailyWorkTaskFragment Injects CreateDailyWorkTaskFragment
