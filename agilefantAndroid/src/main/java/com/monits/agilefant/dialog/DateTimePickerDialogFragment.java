@@ -136,4 +136,11 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 		 */
 		void onDateSet(Date date);
 	}
+
+	@Override
+	public String toString() {
+		return "DateTimePickerDialogFragment{"
+				+ "mCalendar=" + mCalendar
+				+ '}';
+	}
 }
