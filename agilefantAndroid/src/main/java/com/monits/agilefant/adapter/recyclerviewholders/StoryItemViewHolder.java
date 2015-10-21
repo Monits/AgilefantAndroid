@@ -1,9 +1,7 @@
 package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -13,13 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
-import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.User;
-import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
@@ -63,9 +58,6 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 
 	@Inject
 	/* default */ MetricsService metricsService;
-
-	@Inject
-	/* default */ IterationService iterationService;
 
 	private final FragmentActivity context;
 	private Story story;
@@ -120,38 +112,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	@Nullable
 	@OnClick(R.id.column_context)
 	/* default */ void getIterationDetails() {
-		final Iteration iteration = story.getIteration();
-
-		final ProgressDialog progressDialog = new ProgressDialog(context);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setCancelable(false);
-		progressDialog.setMessage(context.getString(R.string.loading));
-		progressDialog.show();
-
-		iterationService.getIteration(
-				iteration.getId(),
-				new Response.Listener<Iteration>() {
-					@Override
-					public void onResponse(final Iteration response) {
-						if (progressDialog != null && progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						final Intent intent = new Intent(context, IterationActivity.class);
-						intent.putExtra(IterationActivity.ITERATION, response);
-						context.startActivity(intent);
-					}
-				},
-				new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						if (progressDialog != null && progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						Toast.makeText(context, R.string.feedback_failed_retrieve_iteration, Toast.LENGTH_SHORT).show();
-					}
-				});
+		super.getIterationDetails(story.getIteration(), context);
 	}
 
 	/**
