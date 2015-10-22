@@ -41,7 +41,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 	private static final String PROJECTS_KEY = "PROJECTS";
 
 	@Inject
-	BacklogService backlogService;
+	/* default */ BacklogService backlogService;
 
 	private List<Task> mTasks;
 
@@ -193,7 +193,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 
 		if (isVisible()) {
 			tasksAdapter.notifyDataSetChanged();
-			observable.deleteObserver(MyTasksFragment.this);
+			observable.deleteObserver(this);
 		}
 	}
 
