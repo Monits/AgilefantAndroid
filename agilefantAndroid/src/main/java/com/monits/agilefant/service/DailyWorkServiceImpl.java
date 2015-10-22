@@ -3,6 +3,8 @@
  */
 package com.monits.agilefant.service;
 
+import android.support.annotation.NonNull;
+
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.DailyWork;
@@ -59,16 +61,14 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	 *
 	 * @param dailyWork The daily work
 	 */
-	private void populateContext(final DailyWork dailyWork) {
-		if (dailyWork != null) {
-			for (final Task queuedTask : dailyWork.getQueuedTasks()) {
-				if (queuedTask.getIteration() == null && queuedTask.getStory() != null) {
-					final Story story =
-							StoryUtils.findStoryById(dailyWork.getStories(), queuedTask.getStory().getId());
+	private void populateContext(@NonNull final DailyWork dailyWork) {
+		for (final Task queuedTask : dailyWork.getQueuedTasks()) {
+			if (queuedTask.getIteration() == null && queuedTask.getStory() != null) {
+				final Story story =
+						StoryUtils.findStoryById(dailyWork.getStories(), queuedTask.getStory().getId());
 
-					if (story != null) {
-						queuedTask.setIteration(story.getIteration());
-					}
+				if (story != null) {
+					queuedTask.setIteration(story.getIteration());
 				}
 			}
 		}
