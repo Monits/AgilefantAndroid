@@ -26,7 +26,7 @@ public class AgilefantApplication extends Application {
 	private static ObjectGraph objectGraph;
 
 	@Inject
-	BitmapLruCache bitmapCache;
+	/* default */ BitmapLruCache bitmapCache;
 
 	@Override
 	public void onCreate() {
