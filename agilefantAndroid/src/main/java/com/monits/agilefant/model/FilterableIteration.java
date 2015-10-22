@@ -2,21 +2,31 @@ package com.monits.agilefant.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class FilterableIteration {
 
 	@SerializedName("id")
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "The toString is used to display the Auto completions")
 	private long id;
 
 	@SerializedName("enabled")
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "The toString is used to display the Auto completions")
 	private boolean enabled;
 
 	@SerializedName("matchedString")
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "The toString is used to display the Auto completions")
 	private String matchedString;
 
 	@SerializedName("name")
 	private String name;
 
 	@SerializedName("originalObject")
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "The toString is used to display the Auto completions")
 	private Iteration iteration;
 
 	/**
