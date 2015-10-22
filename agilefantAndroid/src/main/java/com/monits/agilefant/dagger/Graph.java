@@ -3,7 +3,6 @@ package com.monits.agilefant.dagger;
 import com.monits.agilefant.activity.BaseActivity;
 import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
-import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.activity.SplashActivity;
 import com.monits.agilefant.adapter.ProjectLeafStoriesRecyclerAdapter;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
@@ -24,6 +23,7 @@ import com.monits.agilefant.fragment.iteration.StoriesFragment;
 import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
+import com.monits.agilefant.helper.ProjectHelper;
 
 /**
  * Created by edipasquale on 27/08/15.
@@ -145,7 +145,7 @@ public interface Graph {
 	void inject(final WorkItemAdapter workItemAdapter);
 
 	/**
-	 * @param projectActivity Injects ProjectActivity
+	 * @param projectHelper Injects ProjectHelper
 	 */
-	void inject(final ProjectActivity projectActivity);
+	void inject(final ProjectHelper projectHelper);
 }
