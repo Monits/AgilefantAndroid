@@ -17,7 +17,7 @@ public class GsonModule {
 
 	@Provides
 	@Singleton
-	Gson provideGson() {
+	/* default */Gson provideGson() {
 		final GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(UserChooser.class, new UserChooserDeserializer());
 		gsonBuilder.registerTypeAdapter(Backlog.class, new BacklogDeserializer());
