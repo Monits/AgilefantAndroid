@@ -1,12 +1,11 @@
 package com.monits.agilefant.model;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Observable;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Task extends Observable implements Serializable, Rankable<Task>, WorkItem {
+import java.io.Serializable;
+import java.util.List;
+
+public class Task implements Serializable, Rankable<Task>, WorkItem {
 
 	private static final long serialVersionUID = 2576001407807164868L;
 
@@ -110,8 +109,6 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 	 */
 	public void setEffortLeft(final long effortLeft) {
 		this.effortLeft = effortLeft;
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -127,8 +124,6 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 	 */
 	public void setEffortSpent(final long effortSpent) {
 		this.effortSpent = effortSpent;
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -194,8 +189,6 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 	 */
 	public void setResponsibles(final List<User> responsibles) {
 		this.responsibles = responsibles;
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -223,9 +216,6 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 		if (state == StateKey.DONE && resetELIfDone) {
 			this.effortLeft = 0;
 		}
-
-		setChanged();
-		notifyObservers();
 	}
 
 	@Override
@@ -236,8 +226,6 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 	@Override
 	public void setRank(final int rank) {
 		this.rank = rank;
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -280,8 +268,8 @@ public class Task extends Observable implements Serializable, Rankable<Task>, Wo
 		this.originalEstimate = task.getOriginalEstimate();
 		this.state = task.getState();
 		this.responsibles = task.getResponsibles();
-		setChanged();
-		notifyObservers();
+		this.name = task.name;
+		this.rank = task.rank;
 	}
 
 	@Override

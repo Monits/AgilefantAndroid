@@ -6,10 +6,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
-public class Story extends Observable implements Serializable, Observer, Rankable<Story>, WorkItem {
+public class Story implements Serializable, Rankable<Story>, WorkItem {
 
 	private static final long serialVersionUID = 5178157997788833446L;
 
@@ -137,9 +135,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setState(final StateKey state) {
 		this.state = state;
-
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -154,9 +149,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setResponsibles(final List<User> responsibles) {
 		this.responsibles = responsibles;
-
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -212,8 +204,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -231,17 +221,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	}
 
 	/**
-	 * Attach Observers story's tasks.
-	 */
-	public void attachTasksObservers() {
-		if (tasks != null) {
-			for (final Task task : tasks) {
-				task.addObserver(this);
-			}
-		}
-	}
-
-	/**
 	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
 	 * views to render multiple times.
 	 *
@@ -256,30 +235,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 		this.metrics = task.getMetrics();
 		this.state = task.getState();
 		this.responsibles = task.getResponsibles();
-
-		setChanged();
-		notifyObservers();
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-		if (observable instanceof Task) {
-			long el = 0;
-			long es = 0;
-			long oe = 0;
-
-			for (final Task task : tasks) {
-				// Agilefant's stories don't consider this states on it's metrics.
-				if (task.getState() != StateKey.DEFERRED) {
-					oe += task.getOriginalEstimate();
-					el += task.getEffortLeft();
-				}
-
-				es += task.getEffortSpent();
-			}
-
-			this.metrics = new Metrics(el, es, oe);
-		}
 	}
 
 	@Override
