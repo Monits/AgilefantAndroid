@@ -2,46 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:paddingLeft="@dimen/margin_stories_task"
     android:paddingRight="@dimen/margin_stories_task" >
 
-    <RelativeLayout
+    <include
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/divider_stories_task"
+        layout="@layout/task_stories_header" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/stories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title"
-        android:layout_marginLeft="@dimen/margin_stories_task"
-        android:layout_marginRight="@dimen/margin_stories_task" >
+        android:layout_below="@id/header"
+        android:cacheColorHint="@android:color/transparent"
+        android:childDivider="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/divider_stories_task"
+        android:groupIndicator="@null"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/padding_fab_scroll" />
 
-        <include
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/divider_stories_task"
-            layout="@layout/task_stories_header" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/stories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/header"
-            android:cacheColorHint="@android:color/transparent"
-            android:childDivider="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="@dimen/divider_stories_task"
-            android:groupIndicator="@null"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/padding_fab_scroll" />
-
-        <TextView
-            android:id="@+id/stories_empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/iteration_without_stories"
-            android:visibility="gone" />
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/stories_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/iteration_without_stories"
+        android:visibility="gone" />
 
 </RelativeLayout>
