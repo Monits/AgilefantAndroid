@@ -32,12 +32,12 @@ public class ProjectDetailsFragment extends BaseDetailTabFragment {
 	private static final String PARAMS_PROJECT = "project";
 
 	@Inject
-	ProjectService projectService;
-
-	private Project project;
+	/* default */ ProjectService projectService;
 
 	@Bind(R.id.assignees)
-	TextView assigneesLabel;
+	/* default */ TextView assigneesLabel;
+
+	private Project project;
 
 	/**
 	 * Return a new instance of ProjectDetailsFragment
