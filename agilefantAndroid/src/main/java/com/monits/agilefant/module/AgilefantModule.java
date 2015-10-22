@@ -37,55 +37,55 @@ public class AgilefantModule {
 
 	@Provides
 	@Singleton
-	SharedPreferences provideSharedPreferences(final Application application) {
+	/* default */ SharedPreferences provideSharedPreferences(final Application application) {
 		return PreferenceManager.getDefaultSharedPreferences(application);
 	}
 
 	@Provides
 	@Singleton
-	Application provideApplication() {
+	/* default */ Application provideApplication() {
 		return this.application;
 	}
 
 	@Provides
 	@Singleton
-	AgilefantService provideAgilefantService(final AgilefantServiceImpl agilefantService) {
+	/* default */ AgilefantService provideAgilefantService(final AgilefantServiceImpl agilefantService) {
 		return agilefantService;
 	}
 
 	@Provides
 	@Singleton
-	BacklogService provideBacklogService(final BacklogServiceImpl backlogService) {
+	/* default */ BacklogService provideBacklogService(final BacklogServiceImpl backlogService) {
 		return backlogService;
 	}
 
 	@Provides
 	@Singleton
-	DailyWorkService provideDailyWorkService(final DailyWorkServiceImpl dailyWorkService) {
+	/* default */ DailyWorkService provideDailyWorkService(final DailyWorkServiceImpl dailyWorkService) {
 		return dailyWorkService;
 	}
 
 	@Provides
 	@Singleton
-	IterationService provideIterationService(final IterationServiceImpl iterationService) {
+	/* default */ IterationService provideIterationService(final IterationServiceImpl iterationService) {
 		return iterationService;
 	}
 
 	@Provides
 	@Singleton
-	MetricsService provideMetricsService(final MetricsServiceImpl metricsService) {
+	/* default */ MetricsService provideMetricsService(final MetricsServiceImpl metricsService) {
 		return metricsService;
 	}
 
 	@Provides
 	@Singleton
-	ProjectService provideProjectService(final ProjectServiceImpl projectService) {
+	/* default */ ProjectService provideProjectService(final ProjectServiceImpl projectService) {
 		return projectService;
 	}
 
 	@Provides
 	@Singleton
-	UserService provideUserService(final UserServiceImpl userService) {
+	/* default */ UserService provideUserService(final UserServiceImpl userService) {
 		return userService;
 	}
 
