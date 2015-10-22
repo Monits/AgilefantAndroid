@@ -195,7 +195,7 @@ public class Iteration extends Backlog implements Serializable {
 		if (!stories.isEmpty()) {
 			for (final Story story : stories) {
 				final List<Task> tasks = story.getTasks();
-				completedTasks += getCompletedTaskAmount(story.getTasks());
+				completedTasks += getCompletedTaskAmount(tasks);
 				totalTasks += tasks.size();
 			}
 		}
