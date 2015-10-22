@@ -1,10 +1,9 @@
 package com.monits.agilefant.adapter;
 
+import android.widget.BaseExpandableListAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.widget.BaseExpandableListAdapter;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -17,8 +16,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandableListAdapter {
 
-	protected Context context;
-
 	@SuppressFBWarnings(value = "DLC_DUBIOUS_LIST_COLLECTION", justification = "We do care about the insertion order")
 	protected List<G> groups;
 
@@ -26,25 +23,20 @@ public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandable
 
 	/**
 	 * Constructor
-	 * @param context Context
 	 */
-	public AbstractExpandableListAdapter(final Context context) {
+	public AbstractExpandableListAdapter() {
 		super();
-		this.context = context;
 		this.groups = new ArrayList<>();
 		this.children = new ArrayList<>();
-
 	}
 
 	/**
 	 * Constructor
-	 * @param context Context
 	 * @param groups Groups
 	 * @param children Children
 	 */
-	public AbstractExpandableListAdapter(final Context context, final List<G> groups, final List<List<C>> children) {
+	public AbstractExpandableListAdapter(final List<G> groups, final List<List<C>> children) {
 		super();
-		this.context = context;
 		this.groups = groups;
 		this.children = children;
 	}
@@ -66,8 +58,10 @@ public abstract class AbstractExpandableListAdapter<G, C> extends BaseExpandable
 	public C getChild(final int groupPosition, final int childPosition) {
 		final List<C> groupChildren = children.get(groupPosition);
 		return groupChildren != null
-				&& groupChildren.size() > 0 && childPosition >= 0 && childPosition < groupChildren.size()
-					? groupChildren.get(childPosition) : null;
+				&& !groupChildren.isEmpty()
+				&& childPosition >= 0
+				&& childPosition < groupChildren.size()
+				? groupChildren.get(childPosition) : null;
 	}
 
 	@Override

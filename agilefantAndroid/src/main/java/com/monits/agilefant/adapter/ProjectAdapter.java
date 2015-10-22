@@ -47,7 +47,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	 */
 	public ProjectAdapter(final Context context, final List<Project> projectList, final int groupResId,
 			final int childResId) {
-		super(context);
+		super();
 
 		setProjects(projectList);
 
