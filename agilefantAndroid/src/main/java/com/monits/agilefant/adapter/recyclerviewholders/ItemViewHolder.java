@@ -17,8 +17,9 @@ public class ItemViewHolder extends BacklogViewHolder {
 	/* default */ TextView title;
 	@Bind(R.id.txt_icon)
 	/* default */ TextView icon;
-	/* default */ Backlog backlog;
-	/* default */ final Context context;
+	private Backlog backlog;
+	private final Context context;
+
 	/**
 	 * Item View Holder
 	 * @param itemView Inflate view
