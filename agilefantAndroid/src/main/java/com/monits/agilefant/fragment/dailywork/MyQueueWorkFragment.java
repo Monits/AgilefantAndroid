@@ -85,7 +85,7 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 
 		if (isVisible()) {
 			tasksAdapter.notifyDataSetChanged();
-			observable.deleteObserver(MyQueueWorkFragment.this);
+			observable.deleteObserver(this);
 		}
 	}
 
