@@ -25,10 +25,10 @@ public class IterationBurndownFragment extends BaseDetailTabFragment {
 	private long id;
 
 	@Inject
-	ImageLoader imageLoader;
+	/* default */ ImageLoader imageLoader;
 
 	@Inject
-	AgilefantService agilefantService;
+	/* default */ AgilefantService agilefantService;
 
 	/**
 	 * Creates a new IterationBurndownFragment for the given iteration id
