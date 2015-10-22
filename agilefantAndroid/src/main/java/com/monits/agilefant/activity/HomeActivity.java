@@ -30,22 +30,22 @@ import javax.inject.Inject;
 public class HomeActivity extends Activity {
 
 	@Bind(R.id.domain)
-	EditText domain;
+	/* default */ EditText domain;
 
 	@Bind(R.id.user_name)
-	EditText userName;
+	/* default */ EditText userName;
 
 	@Bind(R.id.password)
-	EditText password;
+	/* default */ EditText password;
 
 	@Bind(R.id.login)
-	Button login;
+	/* default */ Button login;
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Inject
-	SharedPreferences sharedPreferences;
+	/* default */ SharedPreferences sharedPreferences;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
