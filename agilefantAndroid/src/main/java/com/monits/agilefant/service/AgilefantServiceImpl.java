@@ -3,7 +3,6 @@ package com.monits.agilefant.service;
 import android.content.SharedPreferences;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -19,7 +18,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monits.agilefant.model.Backlog;
-import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
@@ -95,8 +93,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String RETRIEVE_USER_ACTION = "/ajax/retrieveUser.action";
 	private static final String USER_ID = "userId";
 
-	private static final String DAILY_WORK_ACTION = "%1$s/ajax/dailyWorkData.action?userId=%2$d";
-
 	private static final String STORE_STORY_ACTION = "%1$s/ajax/storeStory.action";
 	private static final String STORY_ID = "storyId";
 	private static final String STORY_STATE = "story.state";
@@ -113,10 +109,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String TARGET_STORY_ID = "targetStoryId";
 
 	protected static final String TASK_NAME = "task.name";
-
-	private static final int DAILYWORK_REATTEMPT = 1;
-	private static final float DAILYWORK_TIMEOUT_SECOND_ATTEMPT = 1.5f;
-	private static final int DAILYWORK_TIMEOUT = 30000;
 
 	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
 
@@ -248,24 +240,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		final GsonRequest<User> request = new GsonRequest<>(
 				Method.GET, url.toString(), gson, User.class, listener, error, null);
-
-		addRequest(request);
-	}
-
-	@Override
-	public void getDailyWork(final Long id, final Listener<DailyWork> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, DAILY_WORK_ACTION, getHost(), id);
-
-		final GsonRequest<DailyWork> request = new GsonRequest<>(
-				Method.GET, url, gson, DailyWork.class, listener, error, null);
-
-		/*
-		 * Default Volley timeout is too low and the request to get the
-		 * DailyWork of a user can maybe take a little more time.
-		 * 30 secs timeout, 1 reattempt, 45 secs timeout for the second attempt
-		 */
-		request.setRetryPolicy(
-				new DefaultRetryPolicy(DAILYWORK_TIMEOUT, DAILYWORK_REATTEMPT, DAILYWORK_TIMEOUT_SECOND_ATTEMPT));
 
 		addRequest(request);
 	}

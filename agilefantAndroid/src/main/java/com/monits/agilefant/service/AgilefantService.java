@@ -3,7 +3,6 @@ package com.monits.agilefant.service;
 import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -57,15 +56,6 @@ public interface AgilefantService {
 	 * @param error callback if the request failed
 	 */
 	void retrieveUser(Long id, Listener<User> listener, ErrorListener error) ;
-
-	/**
-	 * Retrieves the daily work.
-	 *
-	 * @param id the logged user's id.
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getDailyWork(Long id, Listener<DailyWork> listener, ErrorListener error);
 
 	/**
 	 * Changes the story state.
