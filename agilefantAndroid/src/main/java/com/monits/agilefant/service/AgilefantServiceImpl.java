@@ -23,7 +23,6 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
-import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.UrlGsonRequest;
 import com.monits.volleyrequests.network.request.GsonRequest;
@@ -58,7 +57,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String ASSIGNEE_IDS = "assigneeIds";
 	private static final String ASSIGNEES_CHANGED = "assigneesChanged";
 	private static final String PROJECT_ID = "projectId";
-	private static final String USER_CHOOSER_DATA_ACTION = "%1$s/ajax/userChooserData.action";
 	private static final String PROJECT_LEAF_STORIES_ACTION = "%1$s/ajax/projectLeafStories.action";
 	private static final String OBJECT_ID = "objectId";
 	private static final String TASK_ORIGINAL_ESTIMATE = "task.originalEstimate";
@@ -89,9 +87,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private static final String ITERATION_ID = "iterationId";
 	private static final String ITERATION = "iteration";
-
-	private static final String RETRIEVE_USER_ACTION = "/ajax/retrieveUser.action";
-	private static final String USER_ID = "userId";
 
 	private static final String STORE_STORY_ACTION = "%1$s/ajax/storeStory.action";
 	private static final String STORY_ID = "storyId";
@@ -232,19 +227,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void retrieveUser(final Long id, final Listener<User> listener, final ErrorListener error) {
-		final StringBuilder url = new StringBuilder().append(getHost()).append(RETRIEVE_USER_ACTION);
-		if (id != null) {
-			url.append('?').append(USER_ID).append('=').append(id);
-		}
-
-		final GsonRequest<User> request = new GsonRequest<>(
-				Method.GET, url.toString(), gson, User.class, listener, error, null);
-
-		addRequest(request);
-	}
-
-	@Override
 	public void updateStory(final Story story, final Boolean tasksToDone, final Listener<Story> listener,
 			final ErrorListener error) {
 
@@ -338,17 +320,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
-
-		addRequest(request);
-	}
-
-	@Override
-	public void getFilterableUsers(final Listener<List<UserChooser>> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, USER_CHOOSER_DATA_ACTION, getHost());
-
-		final Type listType = new TypeToken<ArrayList<UserChooser>>() { }.getType();
-		final GsonRequest<List<UserChooser>> request = new GsonRequest<>(
-				Method.POST, url, gson, listType, listener, error, null);
 
 		addRequest(request);
 	}

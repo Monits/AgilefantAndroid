@@ -6,8 +6,6 @@ import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.model.User;
-import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 
 import java.util.List;
@@ -49,15 +47,6 @@ public interface AgilefantService {
 		Listener<String> listener, ErrorListener error);
 
 	/**
-	 * Retrieves the user with the given id.
-	 *
-	 * @param id <b>(Optional)</b> the user's id.
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void retrieveUser(Long id, Listener<User> listener, ErrorListener error) ;
-
-	/**
 	 * Changes the story state.
 	 *
 	 * @param story the story to update.
@@ -84,14 +73,6 @@ public interface AgilefantService {
 	 * @param error callback if the request failed
 	 */
 	void getProjectLeafStories(long projectId, Listener<List<Story>> listener, ErrorListener error);
-
-	/**
-	 * Retrieves the whole list of users in agilefant.
-	 *
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getFilterableUsers(Listener<List<UserChooser>> listener, ErrorListener error);
 
 	/**
 	 * Updates the projects data.
