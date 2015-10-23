@@ -1,19 +1,19 @@
 package com.monits.agilefant.service;
 
-import java.util.List;
-
+import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.FilterableIteration;
-import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.Iteration;
-import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
+import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
+
+import java.util.List;
 
 public interface AgilefantService {
 
@@ -31,22 +31,6 @@ public interface AgilefantService {
 	 * @param error callback if the request failed
 	 */
 	void login(String userName, String password, Listener<String> listener, ErrorListener error);
-
-	/**
-	 * Requests the API to retrieve the complete list of backlogs.
-	 *
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getAllBacklogs(Listener<List<Product>> listener, ErrorListener error);
-
-	/**
-	 * Request the API to retrieve logged user's backlogs.
-	 *
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getMyBacklogs(Listener<List<Project>> listener, ErrorListener error);
 
 	/**
 	 * Request the API to retrieve the iteration with the given ID
@@ -235,4 +219,10 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void getCurrentFilterableIterations(Listener<List<FilterableIteration>> listener, ErrorListener error);
+
+	/**
+	 * Adds a request to the queue
+	 * @param request The request to add
+	 */
+	void addRequest(Request<?> request);
 }

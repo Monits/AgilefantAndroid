@@ -25,6 +25,8 @@ import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.helper.ProjectHelper;
 
+
+
 /**
  * Created by edipasquale on 27/08/15.
  */
@@ -148,4 +150,5 @@ public interface Graph {
 	 * @param projectHelper Injects ProjectHelper
 	 */
 	void inject(final ProjectHelper projectHelper);
+
 }
