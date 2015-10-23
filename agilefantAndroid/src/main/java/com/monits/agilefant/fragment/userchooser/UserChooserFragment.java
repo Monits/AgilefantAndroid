@@ -1,10 +1,5 @@
 package com.monits.agilefant.fragment.userchooser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,25 +23,30 @@ import com.monits.agilefant.model.UserChooser;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class UserChooserFragment extends Fragment {
 
 	private static final String CURRENT_RESPONSIBLES = "CURRENT_RESPONSIBLES";
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Bind(R.id.view_switcher)
-	ViewSwitcher viewSwitcher;
-
-	private SelectedUsersAdapter selectedUsersAdapter;
+	/* default */ ViewSwitcher viewSwitcher;
 
 	@Bind(R.id.user_input)
-	AutoCompleteUserChooserTextView userInput;
-	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
+	/* default */ AutoCompleteUserChooserTextView userInput;
 
+	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 	private OnUsersSubmittedListener onUsersSubmittedListener;
+	private SelectedUsersAdapter selectedUsersAdapter;
 
 	/**
 	 * Creates a new UserChooserFragment with th given responsibles.
