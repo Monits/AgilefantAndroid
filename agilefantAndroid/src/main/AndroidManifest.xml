@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.monits.agilefant" >
+          package="com.monits.agilefant">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
@@ -10,9 +10,10 @@
         android:name="com.monits.agilefant.AgilefantApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" 
+        android:theme="@style/AppTheme"
         android:allowBackup="true"
-        android:fullBackupContent="true">
+        android:fullBackupContent="true"
+        tools:ignore="UnusedAttribute">
         
         <activity
             android:name="com.monits.agilefant.activity.SplashActivity"
