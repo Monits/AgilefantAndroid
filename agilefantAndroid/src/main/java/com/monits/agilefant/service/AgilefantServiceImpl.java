@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.DailyWork;
-import com.monits.agilefant.model.FilterableIteration;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
@@ -49,7 +48,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
-	private static final String CURRENT_ITERATION_CHOOSER_ACTION = "%1$s/ajax/currentIterationChooserData.action";
 	private static final String STORY_STORY_POINTS = "story.storyPoints";
 	private static final String STORY_STORY_VALUE = "story.storyValue";
 	private static final String STORY_NAME = "story.name";
@@ -91,7 +89,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private static final String LOGIN_OK = "/index.jsp";
 
-	private static final String GET_ITERATION = "%1$s/ajax/iterationData.action?iterationId=%2$d";
 	private static final String ITERATION_ID = "iterationId";
 	private static final String ITERATION = "iteration";
 
@@ -187,16 +184,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 			};
 
 		requestQueue.add(request);
-	}
-
-	@Override
-	public void getIteration(final long id, final Listener<Iteration> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, GET_ITERATION, getHost(), id);
-
-		final GsonRequest<Iteration> request = new GsonRequest<>(
-				Method.GET, url, gson, Iteration.class, listener, error, null);
-
-		addRequest(request);
 	}
 
 	@Override
@@ -679,19 +666,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
 			}
 		};
-
-		addRequest(request);
-	}
-
-	@Override
-	public void getCurrentFilterableIterations(
-			final Listener<List<FilterableIteration>> listener, final ErrorListener error) {
-
-		final String url = String.format(Locale.US, CURRENT_ITERATION_CHOOSER_ACTION, getHost());
-
-		final Type listType = new TypeToken<ArrayList<FilterableIteration>>() { }.getType();
-		final GsonRequest<List<FilterableIteration>> request = new GsonRequest<>(
-				Method.POST, url, gson, listType, listener, error, null);
 
 		addRequest(request);
 	}

@@ -4,8 +4,6 @@ import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.monits.agilefant.model.DailyWork;
-import com.monits.agilefant.model.FilterableIteration;
-import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -31,15 +29,6 @@ public interface AgilefantService {
 	 * @param error callback if the request failed
 	 */
 	void login(String userName, String password, Listener<String> listener, ErrorListener error);
-
-	/**
-	 * Request the API to retrieve the iteration with the given ID
-	 *
-	 * @param id The iteration id
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getIteration(long id, Listener<Iteration> listener, ErrorListener error);
 
 	/**
 	 * @return The host where it is working
@@ -211,14 +200,6 @@ public interface AgilefantService {
 	 * @param errorListener  callback if the request failed.
 	 */
 	void createTask(BacklogElementParameters parameters, Listener<Task> listener, ErrorListener errorListener);
-
-	/**
-	 * Retrieves the list of the ongoing filterable iterations.
-	 *
-	 * @param listener callback if the request was successful.
-	 * @param error callback if the request failed.
-	 */
-	void getCurrentFilterableIterations(Listener<List<FilterableIteration>> listener, ErrorListener error);
 
 	/**
 	 * Adds a request to the queue
