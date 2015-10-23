@@ -11,6 +11,7 @@
         android:layout_marginRight="10dp"
         android:background="#163240"
         android:scaleType="centerInside"
+        android:contentDescription="@null"
         android:src="@drawable/ic_launcher" />
 
     <TextView
@@ -23,7 +24,7 @@
         android:textSize="14sp" />
 
     <Chronometer
-        android:id="@+id/chronometer"
+        android:id="@+id/trackChronometer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chronometer_status"
@@ -47,6 +48,7 @@
         android:paddingTop="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_notification_pause"
+        android:contentDescription="@string/notification_pause"
         android:text="@string/notification_pause" />
 
     <ImageButton
@@ -63,6 +65,7 @@
         android:paddingTop="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_notification_save"
+        android:contentDescription="@string/notification_submit"
         android:text="@string/notification_submit" />
 
 </RelativeLayout>

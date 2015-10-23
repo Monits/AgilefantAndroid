@@ -104,18 +104,15 @@ public class TaskTimeTrackingService extends Service {
 	 */
 	@SuppressLint("NewApi")
 	private void displayNotification(final NotificationHolder notificationHolder) {
-
 		final Task trackedTask = notificationHolder.getTrackedTask();
 		final long extraNotifId = trackedTask.getId(); // Make sure it's a long
-
 		final int notifId = notificationHolder.getNotificationId();
 		final boolean isChronometerRunning = notificationHolder.isChronometerRunning();
-
 		final RemoteViews contentView =
 				new RemoteViews(getPackageName(), R.layout.task_tracking_notification);
 
 		contentView.setTextViewText(R.id.chronometer_description, trackedTask.getName());
-		contentView.setChronometer(R.id.chronometer,
+		contentView.setChronometer(R.id.trackChronometer,
 				notificationHolder.getChronometerBaseTime(),
 				getString(R.string.chronometer_format),
 				isChronometerRunning);
@@ -156,15 +153,24 @@ public class TaskTimeTrackingService extends Service {
 		final Notification notification;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			contentView.setImageViewResource(R.id.chronometer_status,
-				isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
+					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
+
+			contentView.setContentDescription(R.id.chronometer_status,
+					isChronometerRunning ? getString(R.string.notification_pause)
+							: getString(R.string.notification_play));
 
 			mNotificationBuilder.setContent(contentView);
 			notification = mNotificationBuilder.build();
 		} else {
 			contentView.setTextViewCompoundDrawables(R.id.chronometer_status,
 				isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play, 0, 0, 0);
+			contentView.setContentDescription(R.id.chronometer_status,
+					isChronometerRunning ? getString(R.string.notification_pause)
+							: getString(R.string.notification_play));
+
 			contentView.setTextViewText(R.id.chronometer_status,
-				isChronometerRunning ? getString(R.string.notification_pause) : getString(R.string.notification_play));
+				isChronometerRunning ? getString(R.string.notification_pause)
+						: getString(R.string.notification_play));
 
 			notification = mNotificationBuilder.build();
 			notification.bigContentView = contentView;

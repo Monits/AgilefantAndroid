@@ -11,6 +11,7 @@
         android:layout_marginRight="10dp"
         android:background="#163240"
         android:scaleType="centerInside"
+        android:contentDescription="@null"
         android:src="@drawable/ic_launcher" />
 
     <TextView
@@ -24,7 +25,7 @@
         android:textAppearance="@style/Notification.Title" />
 
     <Chronometer
-        android:id="@+id/chronometer"
+        android:id="@+id/trackChronometer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chronometer_description"
@@ -38,6 +39,7 @@
         android:layout_height="1dp"
         android:layout_below="@+id/app_icon"
         android:layout_toRightOf="@+id/app_icon"
+        android:contentDescription="@null"
         android:background="@color/divider" />
 
     <LinearLayout
@@ -60,6 +62,7 @@
             android:paddingRight="10dp"
             android:scaleType="fitCenter"
             android:text="@string/notification_pause"
+            android:contentDescription="@string/notification_pause"
             android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"
              />
 
@@ -74,6 +77,7 @@
             android:paddingRight="10dp"
             android:scaleType="fitCenter"
             android:text="@string/notification_submit"
+            android:contentDescription="@string/notification_submit"
             android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"/>
     </LinearLayout>
 
