@@ -9,6 +9,7 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,6 +84,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
+                            android:contentDescription="@string/cd_open_calendar"
                             android:src="@drawable/ic_calendar" />
                     </TableRow>
 
@@ -102,7 +104,8 @@
                             android:id="@+id/responsibles"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:editable="false"
+                            android:inputType="none"
+                            android:longClickable="false"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:hint="@string/responsibles"
