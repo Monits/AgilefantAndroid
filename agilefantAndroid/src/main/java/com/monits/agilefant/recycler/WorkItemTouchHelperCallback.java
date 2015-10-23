@@ -156,7 +156,13 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 	private void mapToSubitems(@NonNull final RecyclerView.ViewHolder viewHolder,
 							@NonNull final RecyclerView recyclerView,
 							@NonNull final Function<RecyclerView.ViewHolder> func) {
-		final int storyPos = viewHolder.getLayoutPosition();
+		final int storyPos = viewHolder.getAdapterPosition();
+
+		// The viewholder is not yet bound
+		if (storyPos == RecyclerView.NO_POSITION) {
+			return;
+		}
+
 		final WorkItem wi = dragAndDropListener.getItem(storyPos);
 
 		// Only stories have subitems
@@ -165,7 +171,13 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
 			if (story.isExpanded()) {
 				for (int i = 1; i <= story.getTasks().size(); i++) {
-					func.apply(recyclerView.findViewHolderForAdapterPosition(storyPos + i));
+					final RecyclerView.ViewHolder taskHolder =
+							recyclerView.findViewHolderForAdapterPosition(storyPos + i);
+					if (taskHolder == null) {
+						break;
+					}
+
+					func.apply(taskHolder);
 				}
 			}
 		}
