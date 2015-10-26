@@ -3,6 +3,7 @@ package com.monits.agilefant.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,17 +18,19 @@ import javax.inject.Inject;
 public class BaseActivity extends AppCompatActivity {
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_menu, menu);
+
 		return true;
 	}
 
@@ -35,7 +38,20 @@ public class BaseActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			NavUtils.navigateUpTo(this, new Intent(this, AllBackLogsActivity.class));
+			final Intent upIntent = NavUtils.getParentActivityIntent(this);
+
+			// If upIntent is null, is because it doesn't have any parent activity declared
+			// And we don't need to provide up navigation
+			if (upIntent != null) {
+				if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+					TaskStackBuilder.create(this)
+							.addNextIntentWithParentStack(upIntent)
+							.startActivities();
+				} else {
+					NavUtils.navigateUpTo(this, upIntent);
+				}
+			}
+
 			return true;
 		case R.id.actionbar_logout:
 			userService.logout();
