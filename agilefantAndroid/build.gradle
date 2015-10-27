@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.monits.staticCodeAnalysis'
 apply plugin: 'android-apt'
-version = "2.1.0-beta2"
+version = "2.1.0-beta3"
 group = "com.monits"
 
 android {
