@@ -1,14 +1,14 @@
 package com.monits.agilefant.adapter.recyclerviewholders;
 
-import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.WorkItem;
 
 /**
  * Created by edipasquale on 01/10/15.
  */
-public interface TaskItemViewHolderUpdateTracker {
+public interface WorkItemViewHolderUpdateTracker {
 
 	/**
 	 * @param updatedTask Receives the updated Task object
 	 */
-	void onUpdate(Task updatedTask);
+	void onUpdate(WorkItem updatedTask);
 }

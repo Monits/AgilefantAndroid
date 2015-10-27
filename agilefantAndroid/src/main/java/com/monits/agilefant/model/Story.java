@@ -245,17 +245,25 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
 	 * views to render multiple times.
 	 *
-	 * @param task the updated task.
+	 * @param story the updated story.
 	 */
-	public void updateValues(final Story task) {
-		this.name = task.getName();
-		this.rank = task.getRank();
-		this.backlog = task.getBacklog();
-		this.iteration = task.getIteration();
-		this.tasks = task.getTasks();
-		this.metrics = task.getMetrics();
-		this.state = task.getState();
-		this.responsibles = task.getResponsibles();
+	@Override
+	public void updateValues(final WorkItem story) {
+
+		if (!(story instanceof Story)) {
+			throw new IllegalArgumentException("The parameter sent is not a Story!");
+		}
+
+		final Story innerStory = (Story) story;
+
+		this.name = innerStory.getName();
+		this.rank = innerStory.getRank();
+		this.backlog = innerStory.getBacklog();
+		this.iteration = innerStory.getIteration();
+		this.tasks = innerStory.getTasks();
+		this.metrics = innerStory.getMetrics();
+		this.state = innerStory.getState();
+		this.responsibles = innerStory.getResponsibles();
 
 		setChanged();
 		notifyObservers();

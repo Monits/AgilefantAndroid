@@ -12,9 +12,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
 
-import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolderUpdateTracker;
+import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
@@ -30,7 +31,7 @@ import javax.inject.Inject;
  * Created by edipasquale on 25/09/15.
  */
 public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Task>> implements
-		TaskItemViewHolderUpdateTracker, DragAndDropListener {
+		WorkItemViewHolderUpdateTracker, DragAndDropListener {
 
 	@Inject
 	/* default */ MetricsService metricsService;
@@ -38,6 +39,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 	private List<Task> taskList;
 	protected final LayoutInflater inflater;
 	protected final FragmentActivity context;
+
+	private final UpdateAdapterHelper updateAdapterHelper;
 
 	/**
 	 * @param context Current context
@@ -47,6 +50,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 		this.context = context;
 		this.taskList = taskList;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		updateAdapterHelper = new UpdateAdapterHelper(this);
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
@@ -68,14 +72,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 	}
 
 	@Override
-	public void onUpdate(final Task updatedTask) {
-		for (int i = 0; i < taskList.size(); i++) {
-			if (updatedTask.getId() == taskList.get(i).getId()) {
-				taskList.set(i, updatedTask);
-				notifyItemChanged(i);
-				break;
-			}
-		}
+	public void onUpdate(final WorkItem updatedWork) {
+		updateAdapterHelper.updateItem(taskList, updatedWork);
 	}
 
 	public void setTasks(final List<Task> taskList) {

@@ -13,9 +13,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
-import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolderUpdateTracker;
+import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
@@ -33,11 +34,13 @@ import javax.inject.Inject;
  * Created by iloredom on 10/6/15.
  */
 public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<WorkItem>>
-		implements TaskItemViewHolderUpdateTracker, DragAndDropListener {
+		implements WorkItemViewHolderUpdateTracker, DragAndDropListener {
 
 	protected final FragmentActivity context;
 	protected final LayoutInflater inflater;
 	protected List<WorkItem> workItems;
+
+	private final UpdateAdapterHelper updateAdapterHelper;
 
 	@Inject
 	/* default */ MetricsService metricsService;
@@ -49,6 +52,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	public WorkItemAdapter(final FragmentActivity context) {
 		this.context = context;
 		this.inflater = context.getLayoutInflater();
+		updateAdapterHelper = new UpdateAdapterHelper(this);
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
@@ -60,7 +64,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		case R.layout.task_item:
 			return new TaskItemViewHolder(view, context, this);
 		case R.layout.stories_item:
-			return new StoryItemViewHolder(view, context);
+			return new StoryItemViewHolder(view, context, this);
 		default:
 			throw new AssertionError("can not find view type");
 		}
@@ -114,8 +118,8 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	@Override
-	public void onUpdate(final Task updatedTask) {
-		// We don't need to implement this yet...
+	public void onUpdate(final WorkItem updatedWork) {
+		updateAdapterHelper.updateItem(workItems, updatedWork);
 	}
 
 	private void addWorkItem(final Story workItem, final int position) {
