@@ -37,7 +37,7 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void taskChangeSpentEffort(Date date, long minutesSpent, String description, Task task, long userId,
-		Listener<String> listener, ErrorListener error);
+							Listener<String> listener, ErrorListener error);
 
 	/**
 	 * Change state of task
@@ -84,7 +84,7 @@ public interface MetricsService {
 	 * @param error callback if the request failed
 	 */
 	void changeStoryState(StateKey state, Story story, boolean tasksToDone, Listener<Story> listener,
-		ErrorListener error);
+						ErrorListener error);
 
 	/**
 	 * Changes the story's responsibles.
@@ -157,7 +157,7 @@ public interface MetricsService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryUnder(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener,
-		ErrorListener error);
+						ErrorListener error);
 
 	/**
 	 * Updates Story's rank lower than the given target story. Useable when sorting project leaf stories.
@@ -170,7 +170,7 @@ public interface MetricsService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryUnder(Story story, Story targetStory, Long backlogId, List<Story> allStories,
-		Listener<Story> listener, ErrorListener error);
+						Listener<Story> listener, ErrorListener error);
 
 	/**
 	 * Updates Story's rank higher than the given target story.
@@ -182,7 +182,7 @@ public interface MetricsService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryOver(Story story, Story targetStory, List<Story> allStories, Listener<Story> listener,
-		ErrorListener error);
+					ErrorListener error);
 
 	/**
 	 * Updates Story's rank higher than the given target story. Useable when sorting project leaf stories.
@@ -195,7 +195,7 @@ public interface MetricsService {
 	 * @param error callback if the request failed.
 	 */
 	void rankStoryOver(Story story, Story targetStory, Long backlogId, List<Story> allStories, Listener<Story> listener,
-		ErrorListener error);
+					ErrorListener error);
 
 	/**
 	 * Create Story

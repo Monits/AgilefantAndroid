@@ -33,20 +33,6 @@ public interface AgilefantService {
 	String getHost();
 
 	/**
-	 * Change spent Effort of task
-	 *
-	 * @param date Date
-	 * @param minutesSpent Minutes to enter
-	 * @param description Description or comment
-	 * @param taskId Task id
-	 * @param userId User id
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void taskChangeSpentEffort(long date, long minutesSpent, String description, long taskId, long userId,
-		Listener<String> listener, ErrorListener error);
-
-	/**
 	 * Changes the story state.
 	 *
 	 * @param story the story to update.
@@ -82,15 +68,6 @@ public interface AgilefantService {
 	 * @param error callback if the request failed.
 	 */
 	void updateProject(Project project, Listener<Project> listener, ErrorListener error);
-
-	/**
-	 * Updates the task's data.
-	 *
-	 * @param task the task to update.
-	 * @param listener callback if the request was successful.
-	 * @param error callback if the request failed.
-	 */
-	void updateTask(Task task, Listener<Task> listener, ErrorListener error);
 
 	/**
 	 * Updates the Story Iteration.

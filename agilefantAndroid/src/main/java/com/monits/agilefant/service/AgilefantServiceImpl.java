@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
@@ -14,7 +13,6 @@ import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monits.agilefant.model.Backlog;
@@ -61,21 +59,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String OBJECT_ID = "objectId";
 	private static final String TASK_ORIGINAL_ESTIMATE = "task.originalEstimate";
 	private static final String TASK_EFFORT_LEFT = "task.effortLeft";
-	private static final String STORE_TASK_ACTION = "%1$s/ajax/storeTask.action";
 	private static final String TASK_ID = "taskId";
 	private static final String TASK_STATE = "task.state";
 
-	private static final String LOG_TASK_EFFORT_ACTION = "%1$s/ajax/logTaskEffort.action";
 	private static final String USER_IDS = "userIds";
-	private static final String PARENT_OBJECT_ID = "parentObjectId";
-	private static final String HOUR_ENTRY_DESCRIPTION = "hourEntry.description";
-	private static final String HOUR_ENTRY_MINUTES_SPENT = "hourEntry.minutesSpent";
-	private static final String HOUR_ENTRY_DATE = "hourEntry.date";
 
 	private static final String HTTP_REXEG = "^https?://.*$";
 	private static final String HTTP = "http://";
-	public static final String ENCODING_NOT_SUPPORTED = "Encoding not supported: ";
-	public static final int MINUTES = 60;
 
 	private String host;
 
@@ -129,7 +119,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void login(final String userName, final String password, final Listener<String> listener,
-			final ErrorListener error) {
+					final ErrorListener error) {
 		final String url = String.format(Locale.US, LOGIN_URL, getHost());
 
 		final ErrorListener reqError = new ErrorListener() {
@@ -151,24 +141,24 @@ public class AgilefantServiceImpl implements AgilefantService {
 		};
 
 		final RfcCompliantListenableRequest<String> request =
-			new RfcCompliantListenableRequest<String>(Method.POST, url, listener, reqError) {
+				new RfcCompliantListenableRequest<String>(Method.POST, url, listener, reqError) {
 
-				@Override
-				protected Map<String, String> getParams() throws AuthFailureError {
-					final Map<String, String> params = new HashMap<>();
+					@Override
+					protected Map<String, String> getParams() throws AuthFailureError {
+						final Map<String, String> params = new HashMap<>();
 
-					params.put(USERNAME, userName);
-					params.put(PASSWORD, password);
+						params.put(USERNAME, userName);
+						params.put(PASSWORD, password);
 
-					return params;
-				}
+						return params;
+					}
 
-				@Override
-				protected Response<String> parseNetworkResponse(final NetworkResponse response) {
-					// We're looking for a redirect and a header, we don't care about a 2xx response.
-					return null;
-				}
-			};
+					@Override
+					protected Response<String> parseNetworkResponse(final NetworkResponse response) {
+						// We're looking for a redirect and a header, we don't care about a 2xx response.
+						return null;
+					}
+				};
 
 		requestQueue.add(request);
 	}
@@ -191,44 +181,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void taskChangeSpentEffort(final long date, final long minutesSpent, final String description,
-		final long taskId, final long userId, final Listener<String> listener, final ErrorListener error) {
-
-		final String url = String.format(Locale.US, LOG_TASK_EFFORT_ACTION, getHost());
-
-		final RfcCompliantListenableRequest<String> request = new RfcCompliantListenableRequest<String>(
-				Method.POST, url, listener, error) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
-
-				params.put(HOUR_ENTRY_DATE, String.valueOf(date));
-				params.put(HOUR_ENTRY_MINUTES_SPENT, String.valueOf(minutesSpent));
-				params.put(HOUR_ENTRY_DESCRIPTION, description);
-				params.put(PARENT_OBJECT_ID, String.valueOf(taskId));
-				params.put(USER_IDS, String.valueOf(userId));
-
-				return params;
-			}
-
-			@Override
-			protected Response<String> parseNetworkResponse(final NetworkResponse response) {
-				try {
-					final String data = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-					return Response.success(data, HttpHeaderParser.parseCacheHeaders(response));
-				} catch (final UnsupportedEncodingException e) {
-					return Response.error(new ParseError(e));
-				}
-			}
-		};
-
-		addRequest(request);
-	}
-
-	@Override
 	public void updateStory(final Story story, final Boolean tasksToDone, final Listener<Story> listener,
-			final ErrorListener error) {
+							final ErrorListener error) {
 
 		final String url = String.format(Locale.US, STORE_STORY_ACTION, getHost());
 
@@ -275,7 +229,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					}
 
 				} catch (final UnsupportedEncodingException e) {
-					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
+					throw new AssertionError(e);
 				}
 
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
@@ -297,7 +251,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void getProjectLeafStories(final long projectId, final Listener<List<Story>> listener,
-			final ErrorListener error) {
+									final ErrorListener error) {
 		final String url = String.format(Locale.US, PROJECT_LEAF_STORIES_ACTION, getHost());
 
 		final Type listType = new TypeToken<ArrayList<Story>>() { }.getType();
@@ -314,7 +268,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 				try {
 					appendURLEncodedParam(body, OBJECT_ID, String.valueOf(projectId), paramsEncoding);
 				} catch (final UnsupportedEncodingException e) {
-					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
+					throw new AssertionError(e);
 				}
 
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
@@ -345,50 +299,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					appendURLEncodedParam(body, PROJECT_ID, String.valueOf(project.getId()), paramsEncoding);
 
 				} catch (final UnsupportedEncodingException e) {
-					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
-				}
-
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
-			}
-		};
-
-		addRequest(request);
-	}
-
-	@Override
-	public void updateTask(final Task task, final Listener<Task> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, STORE_TASK_ACTION, getHost());
-
-		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(Method.POST, url,
-				gson, Task.class, listener, error, null) {
-
-			@Override
-			public byte[] getBody() throws AuthFailureError {
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-
-				try {
-					for (final User user : task.getResponsibles()) {
-						appendURLEncodedParam(body, NEW_RESPONSIBLES, String.valueOf(user.getId()), paramsEncoding);
-					}
-
-					appendURLEncodedParam(body, RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
-					appendURLEncodedParam(body, TASK_STATE, task.getState().name(), paramsEncoding);
-
-					/*
-					 *  This 2 values, EL and OE, for sending requests it needs # of hours, not in minutes,
-					 *  while in the rest of the application this works under minutes.
-					 */
-					appendURLEncodedParam(body,
-							TASK_EFFORT_LEFT, String.valueOf(task.getEffortLeft() / MINUTES), paramsEncoding);
-					appendURLEncodedParam(body, TASK_ORIGINAL_ESTIMATE,
-							String.valueOf(task.getOriginalEstimate() / MINUTES), paramsEncoding);
-
-					appendURLEncodedParam(body, TASK_ID, String.valueOf(task.getId()), paramsEncoding);
-
-				} catch (final UnsupportedEncodingException e) {
-					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
+					throw new AssertionError(e);
 				}
 
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
@@ -400,7 +311,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void rankTaskUnder(final Task task, final Task targetTask, final Listener<Task> listener,
-			final ErrorListener error) {
+							final ErrorListener error) {
 
 		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, getHost());
 
@@ -424,13 +335,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void rankStoryUnder(final Story story, final Story targetStory, final Listener<Story> listener,
-			final ErrorListener error) {
+							final ErrorListener error) {
 		rankStoryUnder(story, targetStory, null, listener, error);
 	}
 
 	@Override
 	public void rankStoryUnder(final Story story, final Story targetStory, final Long backlogId,
-			final Listener<Story> listener, final ErrorListener error) {
+							final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, getHost());
 
@@ -441,13 +352,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void rankStoryOver(final Story story, final Story targetStory, final Listener<Story> listener,
-			final ErrorListener error) {
+							final ErrorListener error) {
 		rankStoryOver(story, targetStory, null, listener, error);
 	}
 
 	@Override
 	public void rankStoryOver(final Story story, final Story targetStory, final Long backlogId,
-			final Listener<Story> listener, final ErrorListener error) {
+							final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, getHost());
 
@@ -457,7 +368,8 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	private GsonRequest<Story> newGsonRequest(final Story story, final Story targetStory, final Long backlogId,
-		final String url, final Listener<Story> listener, final ErrorListener error) {
+											final String url, final Listener<Story> listener,
+											final ErrorListener error) {
 
 		return new GsonRequest<Story>(Method.POST, url, gson, Story.class, listener, error, null) {
 
@@ -490,7 +402,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	 * @throws UnsupportedEncodingException If the given encoding is not supported
 	 */
 	private StringBuilder appendURLEncodedParam(final StringBuilder sb, final String key, final String value,
-			final String encoding) throws UnsupportedEncodingException {
+												final String encoding) throws UnsupportedEncodingException {
 
 		sb.append(URLEncoder.encode(key, encoding));
 		sb.append('=');
@@ -502,7 +414,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void moveStory(final long backlogId, final Story story, final Listener<Story> listener,
-			final ErrorListener error) {
+						final ErrorListener error) {
 		final String url = String.format(Locale.US, STORY_MOVE, getHost());
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
@@ -525,7 +437,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void createStory(final BacklogElementParameters parameters,
-			final Listener<Story> listener, final ErrorListener error) {
+							final Listener<Story> listener, final ErrorListener error) {
 
 		final String url = String.format(Locale.US, STORY_CREATE, getHost());
 
@@ -563,7 +475,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					appendURLEncodedParam(body, USERS_CHANGED, String.valueOf(true), paramsEncoding);
 
 				} catch (final UnsupportedEncodingException e) {
-					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
+					throw new AssertionError(e);
 				}
 
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
@@ -575,7 +487,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	@Override
 	public void createTask(final BacklogElementParameters parameters, final Listener<Task> listener,
-			final ErrorListener errorListener) {
+						final ErrorListener errorListener) {
 
 		final String url = String.format(Locale.US, TASK_CREATE, getHost());
 
@@ -592,7 +504,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 				try {
 
 					appendURLEncodedParam(
-						body, ITERATION_ID, String.valueOf(parameters.getIterationId()), paramsEncoding);
+							body, ITERATION_ID, String.valueOf(parameters.getIterationId()), paramsEncoding);
 
 					for (final User user : parameters.getSelectedUser()) {
 						appendURLEncodedParam(body, NEW_RESPONSIBLES, String.valueOf(user.getId()), paramsEncoding);
@@ -605,7 +517,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 					appendURLEncodedParam(body, TASK_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
 
 				} catch (final UnsupportedEncodingException e) {
-					throw new RuntimeException(ENCODING_NOT_SUPPORTED + paramsEncoding, e);
+					throw new AssertionError(e);
 				}
 
 				return body.toString().getBytes(Charset.forName(paramsEncoding));
@@ -645,17 +557,17 @@ public class AgilefantServiceImpl implements AgilefantService {
 		public void executeBeforeRequeueing(final Listener<?> successCallback, final ErrorListener errorCallback) {
 
 			login(
-				sharedPreferences.getString(UserService.USER_NAME_KEY, null),
-				sharedPreferences.getString(UserService.PASSWORD_KEY, null),
-				new Listener<String>() {
+					sharedPreferences.getString(UserService.USER_NAME_KEY, null),
+					sharedPreferences.getString(UserService.PASSWORD_KEY, null),
+					new Listener<String>() {
 
-					@Override
-					public void onResponse(final String arg0) {
-						// We don't really care about response, we only need to be notified.
-						successCallback.onResponse(null);
-					}
-				},
-				errorCallback
+						@Override
+						public void onResponse(final String arg0) {
+							// We don't really care about response, we only need to be notified.
+							successCallback.onResponse(null);
+						}
+					},
+					errorCallback
 			);
 		}
 	}
