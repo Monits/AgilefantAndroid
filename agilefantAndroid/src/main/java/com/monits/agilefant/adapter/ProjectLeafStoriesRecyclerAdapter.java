@@ -10,10 +10,13 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
+import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
+import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.WorkItem;
@@ -22,22 +25,24 @@ import com.monits.agilefant.service.MetricsService;
 
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Inject;
 
 /**
  * Created by edipasquale on 09/10/15.
  */
 public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Story>>
-		implements DragAndDropListener {
+		implements DragAndDropListener,
+		WorkItemViewHolderUpdateTracker {
 
 	private final FragmentActivity fragmentActivity;
 	private final LayoutInflater inflater;
 	private List<Story> stories;
 	private final Project project;
 
+	private final UpdateAdapterHelper updateAdapterHelper;
+
 	@Inject
-	/* default */ MetricsService metricsService;
+   /* default */ MetricsService metricsService;
 
 	/**
 	 * @param context The context
@@ -47,14 +52,14 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 		this.fragmentActivity = context;
 		this.project = project;
 		this.inflater = (LayoutInflater) fragmentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		updateAdapterHelper = new UpdateAdapterHelper(this);
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
 	@Override
 	public WorkItemViewHolder<Story> onCreateViewHolder(final ViewGroup parent, final int viewType) {
 		final View view = inflater.inflate(R.layout.item_project_leaf_story, parent, false);
-
-		return new StoryItemViewHolder(view, fragmentActivity);
+		return new StoryItemViewHolder(view, fragmentActivity, this);
 	}
 
 	@Override
@@ -91,8 +96,8 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 
 	@Override
 	public void onChangePosition(final int fromPosition, final int toPosition) {
-
 		final Response.Listener<Story> successListener = new Response.Listener<Story>() {
+
 			@Override
 			public void onResponse(final Story arg0) {
 				Toast.makeText(fragmentActivity,
@@ -101,6 +106,7 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 		};
 
 		final Response.ErrorListener errorListener = new Response.ErrorListener() {
+
 			@Override
 			public void onErrorResponse(final VolleyError arg0) {
 				Toast.makeText(fragmentActivity,
@@ -130,5 +136,10 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 				+ "taskList=" + stories
 				+ "project=" + project
 				+ '}';
+	}
+
+	@Override
+	public void onUpdate(final WorkItem updatedStory) {
+		updateAdapterHelper.updateItem(stories, updatedStory);
 	}
 }

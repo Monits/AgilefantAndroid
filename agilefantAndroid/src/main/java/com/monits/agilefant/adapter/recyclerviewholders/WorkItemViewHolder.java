@@ -76,4 +76,6 @@ public abstract class WorkItemViewHolder<T extends WorkItem> extends RecyclerVie
 				}
 			});
 	}
+
+
 }

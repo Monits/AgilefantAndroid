@@ -61,16 +61,20 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 
 	private final FragmentActivity context;
 	private Story story;
+	private final WorkItemViewHolderUpdateTracker updater;
 
 	/**
 	 * Constructor
 	 *
 	 * @param itemView view's Item
 	 * @param context The context
+	 * @param updater It's an update listener
 	 */
-	public StoryItemViewHolder(final View itemView, final FragmentActivity context) {
+	public StoryItemViewHolder(final View itemView, final FragmentActivity context,
+								final WorkItemViewHolderUpdateTracker updater) {
 		super(itemView);
 		this.context = context;
+		this.updater = updater;
 		ButterKnife.bind(this, itemView);
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
@@ -196,6 +200,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 				@Override
 				public void onResponse(final Story arg0) {
 					Toast.makeText(context, R.string.feedback_successfully_updated_story, Toast.LENGTH_SHORT).show();
+					updater.onUpdate(arg0);
 				}
 			},
 			new Response.ErrorListener() {

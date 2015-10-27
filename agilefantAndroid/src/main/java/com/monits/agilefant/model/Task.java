@@ -139,6 +139,25 @@ public class Task implements Serializable, Rankable<Task>, WorkItem {
 		return WorkItemType.TASK;
 	}
 
+	@Override
+	public void updateValues(final WorkItem task) {
+
+		if (!(task instanceof Task)) {
+			throw new IllegalArgumentException("The parameter sent is not a Task!");
+		}
+
+		final Task innerTask = (Task) task;
+
+		this.effortLeft = innerTask.getEffortLeft();
+		this.effortSpent = innerTask.getEffortSpent();
+		this.originalEstimate = innerTask.getOriginalEstimate();
+		this.state = innerTask.getState();
+		this.responsibles = innerTask.getResponsibles();
+		this.name = innerTask.getName();
+		this.rank = innerTask.getRank();
+
+	}
+
 	/**
 	 * @param originalEstimate the originalEstimate to set
 	 */
@@ -254,22 +273,6 @@ public class Task implements Serializable, Rankable<Task>, WorkItem {
 	 */
 	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
-	}
-
-	/**
-	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
-	 * views to render multiple times.
-	 *
-	 * @param task the updated task.
-	 */
-	public void updateValues(final Task task) {
-		this.effortLeft = task.getEffortLeft();
-		this.effortSpent = task.getEffortSpent();
-		this.originalEstimate = task.getOriginalEstimate();
-		this.state = task.getState();
-		this.responsibles = task.getResponsibles();
-		this.name = task.name;
-		this.rank = task.rank;
 	}
 
 	@Override

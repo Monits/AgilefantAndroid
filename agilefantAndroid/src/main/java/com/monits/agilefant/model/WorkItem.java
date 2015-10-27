@@ -52,4 +52,12 @@ public interface WorkItem {
 	 * @return return the type of the work item
 	 */
 	WorkItemType getType();
+
+	/**
+	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
+	 * views to render multiple times.
+	 *
+	 * @param workItem the updated item.
+	 */
+	void updateValues(final WorkItem workItem);
 }

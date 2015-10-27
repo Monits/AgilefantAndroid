@@ -35,7 +35,7 @@ public class DailyWorkWorkItemsAdapter extends WorkItemAdapter {
 		case R.layout.my_tasks_item_nocontext:
 			return new TaskItemViewHolder(view, context, this);
 		case R.layout.my_story_item:
-			return new StoryItemViewHolder(view, context);
+			return new StoryItemViewHolder(view, context, this);
 		default:
 			throw new AssertionError("can not find view type");
 		}

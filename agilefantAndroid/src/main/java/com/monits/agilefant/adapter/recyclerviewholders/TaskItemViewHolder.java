@@ -73,7 +73,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	/* default */ MetricsService metricsService;
 
 	private Task task;
-	private final TaskItemViewHolderUpdateTracker updater;
+	private final WorkItemViewHolderUpdateTracker updater;
 	private final FragmentActivity context;
 
 	/**
@@ -82,7 +82,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	 * @param updater It's an update listener
 	 */
 	public TaskItemViewHolder(final View itemView, final FragmentActivity context,
-							final TaskItemViewHolderUpdateTracker updater) {
+							final WorkItemViewHolderUpdateTracker updater) {
 		super(itemView);
 		this.updater = updater;
 		this.context = context;
