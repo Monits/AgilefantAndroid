@@ -14,10 +14,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
-import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
@@ -27,13 +25,10 @@ import com.monits.volleyrequests.network.request.GsonRequest;
 import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -52,11 +47,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String RESPONSIBLES_CHANGED = "responsiblesChanged";
 	private static final String NEW_RESPONSIBLES = "newResponsibles";
 	private static final String USERS_CHANGED = "usersChanged";
-	private static final String ASSIGNEE_IDS = "assigneeIds";
-	private static final String ASSIGNEES_CHANGED = "assigneesChanged";
-	private static final String PROJECT_ID = "projectId";
-	private static final String PROJECT_LEAF_STORIES_ACTION = "%1$s/ajax/projectLeafStories.action";
-	private static final String OBJECT_ID = "objectId";
+
 	private static final String TASK_ORIGINAL_ESTIMATE = "task.originalEstimate";
 	private static final String TASK_EFFORT_LEFT = "task.effortLeft";
 	private static final String TASK_ID = "taskId";
@@ -85,7 +76,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String TASKS_TO_DONE = "tasksToDone";
 	private static final String BACKLOG_ID = "backlogId";
 
-	private static final String PROJECT_DATA = "%1$s/ajax/projectData.action?projectId=%2$d";
 	private static final String STORY_CREATE = "%1$s/ajax/createStory.action";
 	private static final String TASK_CREATE = "%1$s/ajax/createTask.action";
 
@@ -240,76 +230,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 	}
 
 	@Override
-	public void getProjectDetails(final long projectId, final Listener<Project> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, PROJECT_DATA, getHost(), projectId);
-
-		final GsonRequest<Project> request = new GsonRequest<>(Method.GET, url,
-				gson, Project.class, listener, error, null);
-
-		addRequest(request);
-	}
-
-	@Override
-	public void getProjectLeafStories(final long projectId, final Listener<List<Story>> listener,
-									final ErrorListener error) {
-		final String url = String.format(Locale.US, PROJECT_LEAF_STORIES_ACTION, getHost());
-
-		final Type listType = new TypeToken<ArrayList<Story>>() { }.getType();
-
-		final UrlGsonRequest<List<Story>> request = new UrlGsonRequest<List<Story>>(
-				Method.POST, url, gson, listType, listener, error, null) {
-
-			@Override
-			public byte[] getBody() throws AuthFailureError {
-
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-				try {
-					appendURLEncodedParam(body, OBJECT_ID, String.valueOf(projectId), paramsEncoding);
-				} catch (final UnsupportedEncodingException e) {
-					throw new AssertionError(e);
-				}
-
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
-			}
-		};
-
-		addRequest(request);
-	}
-
-	@Override
-	public void updateProject(final Project project, final Listener<Project> listener, final ErrorListener error) {
-		final String url = String.format(Locale.US, "%1$s/ajax/storeProject.action", getHost());
-
-		final UrlGsonRequest<Project> request = new UrlGsonRequest<Project>(
-				Method.POST, url, gson, Project.class, listener, error, null) {
-
-			@Override
-			public byte[] getBody() throws AuthFailureError {
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-				try {
-					for (final User user : project.getAssignees()) {
-						appendURLEncodedParam(body, ASSIGNEE_IDS, String.valueOf(user.getId()), paramsEncoding);
-					}
-
-					appendURLEncodedParam(body, ASSIGNEES_CHANGED, String.valueOf(true), paramsEncoding);
-					appendURLEncodedParam(body, PROJECT_ID, String.valueOf(project.getId()), paramsEncoding);
-
-				} catch (final UnsupportedEncodingException e) {
-					throw new AssertionError(e);
-				}
-
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
-			}
-		};
-
-		addRequest(request);
-	}
-
-	@Override
 	public void rankTaskUnder(final Task task, final Task targetTask, final Listener<Task> listener,
 							final ErrorListener error) {
 
@@ -389,6 +309,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 		};
 	}
 
+
 	/**
 	 * An auxiliary method in order to append parameters to the given post body's StringBuilder,
 	 * for some special requests.
@@ -401,6 +322,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	 *
 	 * @throws UnsupportedEncodingException If the given encoding is not supported
 	 */
+
 	private StringBuilder appendURLEncodedParam(final StringBuilder sb, final String key, final String value,
 												final String encoding) throws UnsupportedEncodingException {
 

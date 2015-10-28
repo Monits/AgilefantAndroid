@@ -3,12 +3,9 @@ package com.monits.agilefant.service;
 import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
-
-import java.util.List;
 
 public interface AgilefantService {
 
@@ -42,32 +39,6 @@ public interface AgilefantService {
 	 */
 	void updateStory(Story story, Boolean tasksToDone, Listener<Story> listener, ErrorListener error);
 
-	/**
-	 * Retrieves the details of the project.
-	 *
-	 * @param projectId the id of the project.
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getProjectDetails(long projectId, Listener<Project> listener, ErrorListener error);
-
-	/**
-	 * Retrieves the leaf stories of the given project.
-	 *
-	 * @param projectId The project id
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void getProjectLeafStories(long projectId, Listener<List<Story>> listener, ErrorListener error);
-
-	/**
-	 * Updates the projects data.
-	 *
-	 * @param project the project to update.
-	 * @param listener callback if the request was successful.
-	 * @param error callback if the request failed.
-	 */
-	void updateProject(Project project, Listener<Project> listener, ErrorListener error);
 
 	/**
 	 * Updates the Story Iteration.
