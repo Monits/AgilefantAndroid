@@ -16,6 +16,7 @@ import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.IterationUtils;
 
@@ -58,6 +59,9 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 
 	@Inject
 	/* default */ MetricsService metricsService;
+
+	@Inject
+	/* default */ WorkItemService workItemService;
 
 	private final FragmentActivity context;
 	private Story story;
@@ -219,7 +223,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 
 				@Override
 				public void onSubmitUsers(final List<User> users) {
-					metricsService.changeStoryResponsibles(
+					workItemService.changeStoryResponsibles(
 						users,
 						object,
 						new Response.Listener<Story>() {

@@ -23,7 +23,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.model.WorkItemType;
 import com.monits.agilefant.recycler.DragAndDropListener;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	private final UpdateAdapterHelper updateAdapterHelper;
 
 	@Inject
-	/* default */ MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	/**
 	 * Constructor
@@ -195,10 +195,10 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_story_rank);
 
 			if (fromPosition < toPosition) {
-				metricsService.rankStoryOver(
+				workItemService.rankStoryOver(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			} else {
-				metricsService.rankStoryUnder(
+				workItemService.rankStoryUnder(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			}
 		} else {
@@ -210,7 +210,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 					getSuccessListener(R.string.feedback_success_updated_task_rank);
 			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_tasks_rank);
 
-			metricsService.rankTaskUnder(currentTask, targetTask, currentTask.getStory().getTasks(),
+			workItemService.rankTaskUnder(currentTask, targetTask, currentTask.getStory().getTasks(),
 					successListener, errorListener);
 		}
 	}

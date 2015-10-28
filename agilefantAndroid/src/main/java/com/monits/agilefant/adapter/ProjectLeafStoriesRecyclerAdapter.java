@@ -21,7 +21,7 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,8 +41,7 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 
 	private final UpdateAdapterHelper updateAdapterHelper;
 
-	@Inject
-   /* default */ MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	/**
 	 * @param context The context
@@ -115,11 +114,11 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 		};
 
 		if (fromPosition < toPosition) {
-			metricsService.rankStoryOver(
+			workItemService.rankStoryOver(
 					getStory(fromPosition), getStory(toPosition), project.getId(),
 					stories, successListener, errorListener);
 		} else {
-			metricsService.rankStoryUnder(
+			workItemService.rankStoryUnder(
 					getStory(fromPosition), getStory(toPosition), project.getId(),
 					stories, successListener, errorListener);
 		}

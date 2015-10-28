@@ -25,6 +25,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.TaskTimeTrackingService;
+import com.monits.agilefant.service.WorkItemService;
 import com.monits.agilefant.util.HoursUtils;
 import com.monits.agilefant.util.InputUtils;
 import com.monits.agilefant.util.IterationUtils;
@@ -71,6 +72,9 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
 	@Inject
 	/* default */ MetricsService metricsService;
+
+	@Inject
+	/* default */ WorkItemService workItemService;
 
 	private Task task;
 	private final WorkItemViewHolderUpdateTracker updater;
@@ -265,7 +269,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 
 					@Override
 					public void onSubmitUsers(final List<User> users) {
-						metricsService.changeTaskResponsibles(
+						workItemService.changeTaskResponsibles(
 								users,
 								task,
 								new Response.Listener<Task>() {

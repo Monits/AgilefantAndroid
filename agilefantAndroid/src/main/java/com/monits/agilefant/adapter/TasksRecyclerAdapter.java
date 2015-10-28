@@ -14,13 +14,12 @@ import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
-
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +33,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 		WorkItemViewHolderUpdateTracker, DragAndDropListener {
 
 	@Inject
-	/* default */ MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	private List<Task> taskList;
 	protected final LayoutInflater inflater;
@@ -92,7 +91,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 		final Task currentTask = taskList.get(fromPosition);
 		final Task targetTask = taskList.get(toPosition);
 
-		metricsService.rankTaskUnder(currentTask, targetTask, taskList,
+		workItemService.rankTaskUnder(currentTask, targetTask, taskList,
 				new Response.Listener<Task>() {
 
 					@Override

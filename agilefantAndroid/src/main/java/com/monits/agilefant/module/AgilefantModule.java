@@ -20,6 +20,8 @@ import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.service.ProjectServiceImpl;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.service.UserServiceImpl;
+import com.monits.agilefant.service.WorkItemService;
+import com.monits.agilefant.service.WorkItemServiceImpl;
 
 import javax.inject.Singleton;
 
@@ -87,6 +89,12 @@ public class AgilefantModule {
 	@Singleton
 	/* default */ UserService provideUserService(final UserServiceImpl userService) {
 		return userService;
+	}
+
+	@Provides
+	@Singleton
+	/* default */ WorkItemService provideWorkItemService(final WorkItemServiceImpl workItemService) {
+		return workItemService;
 	}
 
 }
