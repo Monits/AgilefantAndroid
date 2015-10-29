@@ -59,6 +59,8 @@ public abstract class WorkItemViewHolder<T extends WorkItem> extends RecyclerVie
 					if (progressDialog.isShowing()) {
 						progressDialog.dismiss();
 					}
+					// Iteration response doesnt have a parent so we fill it
+					response.setParent(iteration.getParent());
 
 					final Intent intent = new Intent(context, IterationActivity.class);
 					intent.putExtra(IterationActivity.ITERATION, response);

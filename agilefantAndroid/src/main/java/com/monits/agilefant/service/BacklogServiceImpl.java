@@ -5,6 +5,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Product;
 import com.monits.agilefant.model.Project;
 import com.monits.volleyrequests.network.request.GsonRequest;
@@ -57,7 +58,19 @@ public class BacklogServiceImpl implements BacklogService {
 
 		final Type listType = new TypeToken<ArrayList<Project>>() { }.getType();
 		final GsonRequest<List<Project>> request = new GsonRequest<>(Request.Method.GET, url,
-				gson, listType, listener, error, null);
+				gson, listType,
+				new Listener<List<Project>>() {
+					@Override
+					public void onResponse(final List<Project> projects) {
+						// Fill all projects iterations parent.
+						for (final Project project : projects) {
+							for (final Iteration iteration : project.getIterationList()) {
+								iteration.setParent(project);
+							}
+						}
+						listener.onResponse(projects);
+					}
+				}, error, null);
 
 		agilefantService.addRequest(request);
 	}

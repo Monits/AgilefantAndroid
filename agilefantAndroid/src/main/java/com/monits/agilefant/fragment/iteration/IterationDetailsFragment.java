@@ -48,7 +48,7 @@ public class IterationDetailsFragment extends BaseDetailTabFragment {
 			} else {
 				rootView.findViewById(R.id.path_layout).setVisibility(View.VISIBLE);
 				product.setText(iteration.getRootIteration().getName());
-				project.setText(parent.getName());
+				project.setText(parent.getTitle());
 				iterationNameTree.setText(iteration.getName());
 				project.setOnClickListener(new View.OnClickListener() {
 					@Override
