@@ -116,6 +116,7 @@
 	<string name="plus_expanded">+</string>
 	<string name="minus_expanded">-</string>
 	<string name="logging_in">Logging in</string>
+    <string name="action_search">Search</string>
 
     <!-- Content Description-->
     <string name="cd_open_calendar">Date picker</string>

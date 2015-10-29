@@ -16,12 +16,10 @@
         android:title="@string/daily_work"/>
 
     <item android:id="@+id/action_search"
-          android:title="@string/search_user"
+          android:title="@string/action_search"
           android:icon="@android:drawable/ic_menu_search"
           android:orderInCategory="1"
           android:visible="false"
           agilefant:actionViewClass="android.support.v7.widget.SearchView"
           agilefant:showAsAction="ifRoom|collapseActionView"/>
-
-
 </menu>
