@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:agilefant="http://schemas.android.com/apk/res-auto" >
+      xmlns:agilefant="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/actionbar_logout"
@@ -14,5 +14,14 @@
         android:icon="@drawable/ic_dailywork"
         android:orderInCategory="2"
         android:title="@string/daily_work"/>
+
+    <item android:id="@+id/action_search"
+          android:title="@string/search_user"
+          android:icon="@android:drawable/ic_menu_search"
+          android:orderInCategory="1"
+          android:visible="false"
+          agilefant:actionViewClass="android.support.v7.widget.SearchView"
+          agilefant:showAsAction="ifRoom|collapseActionView"/>
+
 
 </menu>

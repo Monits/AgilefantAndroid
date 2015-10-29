@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -30,7 +31,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class IterationActivity extends BaseToolbaredActivity {
+public class IterationActivity extends BaseToolbaredActivity implements ViewPager.OnPageChangeListener {
 
 	public static final String ITERATION = "ITERATION";
 
@@ -74,6 +75,8 @@ public class IterationActivity extends BaseToolbaredActivity {
 		fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
+
+		viewPager.addOnPageChangeListener(this);
 
 		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
 		tabLayout.setupWithViewPager(viewPager);
@@ -190,5 +193,29 @@ public class IterationActivity extends BaseToolbaredActivity {
 	public String toString() {
 		return "IterationActivity{" + "iteration=" + iteration
 				+ "fabInited=" + fabInited + '}';
+	}
+
+
+	@Override
+	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+		//We only need to implement the onPageSelected method
+	}
+
+	@Override
+	public void onPageSelected(final int position) {
+		supportInvalidateOptionsMenu();
+	}
+
+	@Override
+	public void onPageScrollStateChanged(final int state) {
+		//We only need to implement the onPageSelected method
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu) {
+		final int pageNum = viewPager.getCurrentItem();
+		menu.findItem(R.id.action_search).setVisible(pageNum > 0 && pageNum < viewPager.getAdapter().getCount() - 1);
+
+		return true;
 	}
 }

@@ -148,4 +148,5 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 	public int getTitleResourceId() {
 		return R.string.stories;
 	}
+
 }
