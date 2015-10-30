@@ -62,28 +62,20 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 		setContentView(R.layout.activity_daily_work);
 
 		ButterKnife.bind(this);
-
 		AgilefantApplication.getObjectGraph().inject(this);
 
 		viewPager.setVisibility(View.VISIBLE);
-
 		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
 		if (savedInstanceState == null) {
-
 			getDailyWork();
-
 		} else {
-
 			dailyWork = (DailyWork) savedInstanceState.getSerializable(DAILYWORK);
-
 			viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, this));
-
 			tabLayout.setupWithViewPager(viewPager);
 		}
 
 		initializeFab();
-
 	}
 
 	private void getDailyWork() {

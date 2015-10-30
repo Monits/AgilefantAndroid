@@ -79,6 +79,9 @@
 	<string name="start_tracking_task_time">Do you want to start tracking the task time?</string>
 	<string name="dialog_start_tracking_task_time_negative">Cancel</string>
 	<string name="dialog_start_tracking_task_time_positive">@android:string/ok</string>
+	<string name="start_tracking_or_update">Track or update?</string>
+	<string name="dialog_start_tracking_task_time_track">Track Time</string>
+	<string name="dialog_start_tracking_task_effort_spent">Update Effort Spent</string>
 	<string name="already_tracking_task_error">Already tracking a task, finish it before starting a new one!</string>
 	<string name="feedback_success_updated_task_rank">Successfully updated task\'s rank</string>
 	<string name="feedback_failed_update_tasks_rank">Failed to update task\'s rank</string>

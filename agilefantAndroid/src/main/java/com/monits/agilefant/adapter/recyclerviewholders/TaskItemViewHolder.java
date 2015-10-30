@@ -76,9 +76,9 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 	@Inject
 	/* default */ WorkItemService workItemService;
 
-	private Task task;
 	private final WorkItemViewHolderUpdateTracker updater;
-	private final FragmentActivity context;
+	protected final FragmentActivity context;
+	protected Task task;
 
 	/**
 	 * @param itemView view's Item

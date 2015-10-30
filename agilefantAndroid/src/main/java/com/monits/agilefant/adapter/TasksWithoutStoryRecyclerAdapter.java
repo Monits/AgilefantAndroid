@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
+import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkTaskItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
 import com.monits.agilefant.model.Task;
 
@@ -28,6 +28,6 @@ public class TasksWithoutStoryRecyclerAdapter extends TasksRecyclerAdapter {
 	public WorkItemViewHolder<Task> onCreateViewHolder(final ViewGroup parent, final int viewType) {
 		final View view = inflater.inflate(R.layout.task_item, parent, false);
 
-		return new TaskItemViewHolder(view, context, this);
+		return new DailyWorkTaskItemViewHolder(view, context, this);
 	}
 }

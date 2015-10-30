@@ -33,7 +33,7 @@ public class DailyWorkWorkItemsAdapter extends WorkItemAdapter {
 		final View view = inflater.inflate(viewType, parent, false);
 		switch (viewType) {
 		case R.layout.my_tasks_item_nocontext:
-			return new TaskItemViewHolder(view, context, this);
+			return new DailyWorkTaskItemViewHolder(view, context, this);
 		case R.layout.my_story_item:
 			return new StoryItemViewHolder(view, context, this);
 		default:

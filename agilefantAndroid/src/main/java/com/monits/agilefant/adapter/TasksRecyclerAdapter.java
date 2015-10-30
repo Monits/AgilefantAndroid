@@ -13,9 +13,9 @@ import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
-import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
-import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
+import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkTaskItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
+import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
@@ -57,7 +57,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 	public WorkItemViewHolder<Task> onCreateViewHolder(final ViewGroup parent, final int viewType) {
 		final View view = inflater.inflate(R.layout.my_tasks_item, parent, false);
 
-		return new TaskItemViewHolder(view, context, this);
+		return new DailyWorkTaskItemViewHolder(view, context, this);
 	}
 
 	@Override
