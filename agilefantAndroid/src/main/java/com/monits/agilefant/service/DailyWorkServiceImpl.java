@@ -68,7 +68,7 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 
 					@Override
 					public void onResponse(final DailyWork response) {
-						populateContext(response);
+						populateNullData(response);
 						listener.onResponse(response);
 					}
 				}, error, null);
@@ -86,13 +86,15 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	}
 
 	/**
-	 * This method populates queued tasks which hasn't got it's iteration context setted,
-	 * but they do have a story context, with the iteration coming from the story.
-	 *
+	 * This method populates null data from received dailywork,
 	 * @param dailyWork The daily work
 	 */
-	private void populateContext(@NonNull final DailyWork dailyWork) {
+	private void populateNullData(@NonNull final DailyWork dailyWork) {
 
+		/**
+		 * Populates queued tasks which hasn't got it's iteration context setted
+		 * but they do have a story context, with it's  iteration coming from the story
+		 */
 		for (final Task queuedTask : dailyWork.getQueuedTasks()) {
 			if (queuedTask.getIteration() == null && queuedTask.getStory() != null) {
 				final Story story =
@@ -100,6 +102,18 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 
 				if (story != null) {
 					queuedTask.setIteration(story.getIteration());
+				}
+			}
+		}
+
+		/**
+		 * Populates parent story to all those tasks which had came with it's parent setted
+		 * as null
+		 */
+		for (final Story story : dailyWork.getStories()) {
+			for (final Task task : story.getTasks()) {
+				if (task.getStory() == null) {
+					task.setStory(story);
 				}
 			}
 		}

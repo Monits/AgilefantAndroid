@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkWorkItemsAdapter;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.WorkItem;
+import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,6 +88,12 @@ public class MyStoriesFragment extends Fragment implements Observer {
 		super.onViewCreated(view, savedInstanceState);
 
 		final RecyclerView recyclerViewStories = (RecyclerView) view.findViewById(R.id.my_stories_expandable);
+
+		final WorkItemTouchHelperCallback workItemTouchHelperCallback =
+				new WorkItemTouchHelperCallback(adapter);
+		final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
+		itemTouchHelper.attachToRecyclerView(recyclerViewStories);
+
 		recyclerViewStories.setAdapter(adapter);
 		recyclerViewStories.setLayoutManager(new LinearLayoutManager(getActivity()));
 	}

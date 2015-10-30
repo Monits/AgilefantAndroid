@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.WorkItemAdapter;
 import com.monits.agilefant.model.WorkItem;
+import com.monits.agilefant.model.WorkItemType;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +53,15 @@ public class DailyWorkWorkItemsAdapter extends WorkItemAdapter {
 			return R.layout.my_story_item;
 		default:
 			throw new AssertionError("can not find view type");
+		}
+	}
+
+	@Override
+	public void onChangePosition(final int fromPosition, final int toPosition) {
+		if (workItems.get(fromPosition).getType() == WorkItemType.TASK) {
+			super.onChangePosition(fromPosition, toPosition);
+		} else {
+			// TODO : New Story rank service implementation will be implemented on a different diff.
 		}
 	}
 
