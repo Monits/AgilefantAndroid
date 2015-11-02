@@ -112,10 +112,8 @@ public class TaskTimeTrackingService extends Service {
 				new RemoteViews(getPackageName(), R.layout.task_tracking_notification);
 
 		contentView.setTextViewText(R.id.chronometer_description, trackedTask.getName());
-		contentView.setChronometer(R.id.trackChronometer,
-				notificationHolder.getChronometerBaseTime(),
-				getString(R.string.chronometer_format),
-				isChronometerRunning);
+		contentView.setChronometer(R.id.trackChronometer, notificationHolder.getChronometerBaseTime(),
+				getString(R.string.chronometer_format), isChronometerRunning);
 
 		final NotificationCompat.Builder mNotificationBuilder = notificationHolder.getNotificationBuilder()
 			.setSmallIcon(R.drawable.ic_small_icon)
@@ -129,26 +127,29 @@ public class TaskTimeTrackingService extends Service {
 		if (isChronometerRunning) {
 			final Intent pauseTrackingIntent = new Intent(ACTION_PAUSE_TRACKING);
 			pauseTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
-			changeStateIntent = PendingIntent.getBroadcast(
-					this, notifId, pauseTrackingIntent,
+			changeStateIntent = PendingIntent.getBroadcast(this, notifId, pauseTrackingIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 		} else {
 			final Intent resumeTrackingIntent = new Intent(ACTION_START_TRACKING);
 			resumeTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
-			changeStateIntent = PendingIntent.getBroadcast(
-					this, notifId, resumeTrackingIntent,
+			changeStateIntent = PendingIntent.getBroadcast(this, notifId, resumeTrackingIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 		}
 
 		final Intent stopTrackingIntent = new Intent(ACTION_STOP_TRACKING);
 		stopTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
-		final PendingIntent stopIntent =
-				PendingIntent.getBroadcast(
-						this, notifId, stopTrackingIntent,
-						PendingIntent.FLAG_UPDATE_CURRENT);
+		final PendingIntent stopIntent = PendingIntent.getBroadcast(this, notifId,
+				stopTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		final Intent quitTrackingIntent = new Intent(ACTION_QUIT_TRACKING_TASK);
+		quitTrackingIntent.putExtra(EXTRA_NOTIFICATION_ID, extraNotifId);
+		final PendingIntent quitIntent = PendingIntent.getBroadcast(this, notifId, quitTrackingIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		contentView.setOnClickPendingIntent(R.id.chronometer_status, changeStateIntent);
 		contentView.setOnClickPendingIntent(R.id.chronometer_stop, stopIntent);
+		contentView.setOnClickPendingIntent(R.id.chronometer_close, quitIntent);
+
 
 		final Notification notification;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
