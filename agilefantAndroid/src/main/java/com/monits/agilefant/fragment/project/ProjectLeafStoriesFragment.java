@@ -110,7 +110,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(BACKLOG);
 		AgilefantApplication.getObjectGraph().inject(this);
@@ -120,7 +119,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
-
 		final View view =
 				LayoutInflater.from(getActivity()).inflate(R.layout.fragment_project_leaf_stories, container, false);
 
@@ -129,13 +127,13 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 		setHasOptionsMenu(true);
 
 		storiesAdapter = new ProjectLeafStoriesRecyclerAdapter(getActivity(), project);
-
 		storiesListView = (RecyclerView) view.findViewById(R.id.stories_list);
 
 		if (stories == null || stories.isEmpty()) {
 			emptyView.setVisibility(View.VISIBLE);
 			storiesListView.setVisibility(View.GONE);
 		}
+
 		storiesListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		storiesListView.setAdapter(storiesAdapter);
 		storiesListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
