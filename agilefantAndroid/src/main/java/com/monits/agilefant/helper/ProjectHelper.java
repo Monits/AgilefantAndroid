@@ -2,7 +2,6 @@ package com.monits.agilefant.helper;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -57,10 +56,7 @@ public class ProjectHelper {
 						if (progressDialog != null && progressDialog.isShowing()) {
 							progressDialog.dismiss();
 						}
-						final Intent intent = new Intent(context, ProjectActivity.class);
-						intent.putExtra(ProjectActivity.EXTRA_BACKLOG, backlog);
-						intent.putExtra(ProjectActivity.PROJECT, project);
-						context.startActivity(intent);
+						context.startActivity(ProjectActivity.newIntentInstance(context, backlog, project));
 					}
 				},
 				new Response.ErrorListener() {

@@ -1,6 +1,9 @@
 package com.monits.agilefant.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,8 +23,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ProjectActivity extends BaseToolbaredActivity {
-	public static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.PROJECT";
-	public static final String PROJECT = "project";
+
+	private static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.PROJECT";
+	private static final String PROJECT = "project";
 
 	@Bind(R.id.pager)
 	/* default */ ViewPager viewPager;
@@ -29,7 +33,22 @@ public class ProjectActivity extends BaseToolbaredActivity {
 	@Bind(R.id.pager_header)
 	/* default */ TabLayout tabLayout;
 
-	private Project project;
+	/**
+	 * This factory method returns an intent of this class with it's necessary extra values
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @param backlog A Backlog object for being sent to the returned intent
+	 * @param project A Project object for being sent to the returned intent
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent newIntentInstance(@NonNull final Context context, @NonNull final Backlog backlog,
+										@NonNull final Project project) {
+		final Intent intent = new Intent(context, ProjectActivity.class);
+		intent.putExtra(EXTRA_BACKLOG, backlog);
+		intent.putExtra(PROJECT, project);
+
+		return intent;
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -38,11 +57,7 @@ public class ProjectActivity extends BaseToolbaredActivity {
 		ButterKnife.bind(this);
 
 		final Backlog backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
-		if (savedInstanceState == null) {
-			project = (Project) getIntent().getSerializableExtra(PROJECT);
-		} else {
-			project = (Project) savedInstanceState.get(PROJECT);
-		}
+		final Project project = (Project) getIntent().getSerializableExtra(PROJECT);
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
@@ -70,18 +85,5 @@ public class ProjectActivity extends BaseToolbaredActivity {
 						.commit();
 			}
 		});
-	}
-
-	@Override
-	public String toString() {
-		return "ProjectActivity{"
-				+ ", project=" + project
-				+ '}';
-	}
-
-	@Override
-	protected void onSaveInstanceState(final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(PROJECT, project);
 	}
 }
