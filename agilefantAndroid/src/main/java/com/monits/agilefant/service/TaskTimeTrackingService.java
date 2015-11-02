@@ -155,15 +155,16 @@ public class TaskTimeTrackingService extends Service {
 			contentView.setImageViewResource(R.id.chronometer_status,
 					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play);
 
-			contentView.setContentDescription(R.id.chronometer_status,
-					isChronometerRunning ? getString(R.string.notification_pause)
-							: getString(R.string.notification_play));
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) { //Set content description in 15
+				contentView.setContentDescription(R.id.chronometer_status, isChronometerRunning
+						? getString(R.string.notification_pause) : getString(R.string.notification_play));
+			}
 
 			mNotificationBuilder.setContent(contentView);
 			notification = mNotificationBuilder.build();
 		} else {
 			contentView.setTextViewCompoundDrawables(R.id.chronometer_status,
-				isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play, 0, 0, 0);
+					isChronometerRunning ? R.drawable.ic_notification_pause : R.drawable.ic_notification_play, 0, 0, 0);
 			contentView.setContentDescription(R.id.chronometer_status,
 					isChronometerRunning ? getString(R.string.notification_pause)
 							: getString(R.string.notification_play));

@@ -85,9 +85,11 @@
 	<string name="already_tracking_task_error">Already tracking a task, finish it before starting a new one!</string>
 	<string name="feedback_success_updated_task_rank">Successfully updated task\'s rank</string>
 	<string name="feedback_failed_update_tasks_rank">Failed to update task\'s rank</string>
+    <string name="notification_action">Action</string>
 	<string name="notification_pause">Pause</string>
 	<string name="notification_play">Play</string>
 	<string name="notification_submit">Submit</string>
+    <string name="notification_close">Close</string>
 	<string name="notification_content_text">Tracking: %1$s.</string>
 	<string name="chronometer_format">Elapsed Time: %s</string>
 	<string name="feedback_failed_update_story_rank">Failed to update the story\'s rank!</string>

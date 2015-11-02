@@ -18,35 +18,37 @@
         android:id="@+id/chronometer_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/app_icon"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:textSize="14sp"
-        android:textAppearance="@style/Notification.Title" />
+        android:textAppearance="@style/Notification.Title"
+        android:layout_toRightOf="@id/app_icon"
+        android:layout_toLeftOf="@id/chronometer_close"/>
 
     <Chronometer
         android:id="@+id/trackChronometer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/chronometer_description"
-        android:layout_toRightOf="@+id/app_icon"
+        android:layout_below="@id/chronometer_description"
+        android:layout_toRightOf="@id/app_icon"
         android:textSize="12sp"
-        android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info" />
+        android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"
+        android:layout_toLeftOf="@id/chronometer_close"/>
 
     <ImageView
         android:id="@+id/vertical_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/app_icon"
-        android:layout_toRightOf="@+id/app_icon"
+        android:layout_below="@id/app_icon"
+        android:layout_toRightOf="@id/app_icon"
         android:contentDescription="@null"
         android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vertical_divider"
-        android:layout_toRightOf="@+id/app_icon"
+        android:layout_below="@id/vertical_divider"
+        android:layout_toRightOf="@id/app_icon"
         android:divider="@drawable/divider"
         android:orientation="horizontal"
         android:showDividers="middle" >
@@ -58,8 +60,8 @@
             android:layout_weight="1.0"
             android:background="?android:attr/selectableItemBackground"
             android:drawableLeft="@drawable/ic_notification_pause"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingLeft="@dimen/notification_padding_left_right"
+            android:paddingRight="@dimen/notification_padding_left_right"
             android:scaleType="fitCenter"
             android:text="@string/notification_pause"
             android:contentDescription="@string/notification_pause"
@@ -73,12 +75,22 @@
             android:layout_weight="1.0"
             android:background="?android:attr/selectableItemBackground"
             android:drawableLeft="@drawable/ic_notification_save"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingLeft="@dimen/notification_padding_left_right"
+            android:paddingRight="@dimen/notification_padding_left_right"
             android:scaleType="fitCenter"
             android:text="@string/notification_submit"
             android:contentDescription="@string/notification_submit"
             android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"/>
     </LinearLayout>
-
+    <ImageButton
+        android:id="@+id/chronometer_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_window_close"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/notification_close"
+        android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>
