@@ -125,4 +125,6 @@
 
     <!-- Content Description-->
     <string name="cd_open_calendar">Date picker</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

@@ -1,8 +1,10 @@
 package com.monits.agilefant.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,11 +40,19 @@ public class BaseActivity extends AppCompatActivity {
 			NavUtils.navigateUpTo(this, new Intent(this, AllBackLogsActivity.class));
 			return true;
 		case R.id.actionbar_logout:
-			userService.logout();
-			final Intent intent = new Intent(this, HomeActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-			finish();
+			new AlertDialog.Builder(this)
+					.setTitle(getString(R.string.logout))
+					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog, final int id) {
+							userService.logout();
+							final Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(intent);
+							finish();
+						}
+					})
+					.setNegativeButton(getString(R.string.no), null)
+					.show();
 
 			return true;
 
@@ -64,7 +74,7 @@ public class BaseActivity extends AppCompatActivity {
 
 	@Override
 	protected void onStop() {
-		super.onStop();
 		FlurryAgent.onEndSession(this);
+		super.onStop();
 	}
 }
