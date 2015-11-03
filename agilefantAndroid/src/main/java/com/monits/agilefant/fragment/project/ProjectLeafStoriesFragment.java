@@ -157,10 +157,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 				public void onResponse(final List<Story> stories) {
 					ProjectLeafStoriesFragment.this.stories = stories;
 					if (!stories.isEmpty()) {
-						// We fill iterations parent with its story parent
-						for (final Story story : stories) {
-							story.getIteration().setParent(story.getBacklog());
-						}
 						storiesAdapter.setStories(stories);
 						emptyView.setVisibility(View.GONE);
 						storiesListView.setVisibility(View.VISIBLE);
