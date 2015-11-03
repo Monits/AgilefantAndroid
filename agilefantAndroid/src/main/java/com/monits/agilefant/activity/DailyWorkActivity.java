@@ -80,6 +80,7 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 		final ProgressDialog progressDialog = new ProgressDialog(this);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setMessage(getString(R.string.loading));
+		progressDialog.setCancelable(false);
 		progressDialog.show();
 
 		dailyWorkService.getDailyWork(
