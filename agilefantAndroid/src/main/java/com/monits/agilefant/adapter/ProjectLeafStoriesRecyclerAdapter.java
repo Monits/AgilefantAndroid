@@ -41,6 +41,7 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 
 	private final UpdateAdapterHelper updateAdapterHelper;
 
+	@Inject
 	/* default */ WorkItemService workItemService;
 
 	/**
