@@ -2,7 +2,6 @@ package com.monits.agilefant.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -37,7 +36,6 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	private Iteration iteration;
 	private LinearLayout optionsContainer;
-	private boolean fabInited;
 	private FloatingActionButton addFAB;
 	private FloatingActionButton addStoryFAB;
 	private FloatingActionButton addTaskFAB;
@@ -76,24 +74,11 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
 
-		viewPager.addOnPageChangeListener(this);
+		setUpTabLayout(viewPager);
 
-		final TabLayout tabLayout = (TabLayout) findViewById(R.id.pager_header);
-		tabLayout.setupWithViewPager(viewPager);
-		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart(); //Let the toolbar be configured...
-
-		// And do our magic on top
-		if (!fabInited) {
-			final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
-			final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
-			initFABs(fabContainer);
-			fabInited = true;
-		}
+		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
+		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
+		initFABs(fabContainer);
 	}
 
 	private void initFABs(final View fabContainer) {
@@ -191,10 +176,8 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	@Override
 	public String toString() {
-		return "IterationActivity{" + "iteration=" + iteration
-				+ "fabInited=" + fabInited + '}';
+		return "IterationActivity{" + "iteration=" + iteration + '}';
 	}
-
 
 	@Override
 	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
@@ -219,3 +202,4 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 		return true;
 	}
 }
+

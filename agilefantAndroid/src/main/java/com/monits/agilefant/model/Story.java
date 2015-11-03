@@ -299,13 +299,13 @@ public class Story implements Serializable, Rankable<Story>, WorkItem {
 	public String toString() {
 		final StringBuilder responsiblesToStringBuilder = new StringBuilder("[");
 		for (final User responsible : responsibles) {
-			responsiblesToStringBuilder.append(responsible).append(", ");
+			responsiblesToStringBuilder.append(responsible.getInitials()).append(", ");
 		}
 		responsiblesToStringBuilder.append(']');
 
 		final StringBuilder tasksToStringBuilder = new StringBuilder("[");
 		for (final Task task : tasks) {
-			tasksToStringBuilder.append(task).append(", ");
+			tasksToStringBuilder.append(task.getId()).append(", ");
 		}
 		tasksToStringBuilder.append(']');
 

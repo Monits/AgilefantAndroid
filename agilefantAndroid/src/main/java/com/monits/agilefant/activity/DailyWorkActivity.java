@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
@@ -65,14 +64,13 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 		AgilefantApplication.getObjectGraph().inject(this);
 
 		viewPager.setVisibility(View.VISIBLE);
-		tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
 		if (savedInstanceState == null) {
 			getDailyWork();
 		} else {
 			dailyWork = (DailyWork) savedInstanceState.getSerializable(DAILYWORK);
 			viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, this));
-			tabLayout.setupWithViewPager(viewPager);
+			setUpTabLayout(viewPager);
 		}
 
 		initializeFab();
@@ -94,7 +92,7 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 						dailyWork = response;
 						viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), response,
 								DailyWorkActivity.this));
-						tabLayout.setupWithViewPager(viewPager);
+						setUpTabLayout(viewPager);
 
 						if (progressDialog != null && progressDialog.isShowing()) {
 							progressDialog.dismiss();

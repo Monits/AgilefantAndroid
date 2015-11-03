@@ -2,6 +2,7 @@ package com.monits.agilefant.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -70,7 +71,7 @@ public class ProjectActivity extends BaseToolbaredActivity {
 		fragments.add(ProjectDetailsFragment.newInstance(project));
 		fragments.add(ProjectLeafStoriesFragment.newInstance(project));
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
-		tabLayout.setupWithViewPager(viewPager);
+		setUpTabLayout(viewPager);
 	}
 
 	private void initFABs(final View fabContainer, final Long projectId) {

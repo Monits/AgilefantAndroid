@@ -53,7 +53,6 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
 	@Bind(R.id.responsibles)
 	/* default */ AutoCompleteUserChooserTextView mResponsiblesInput;
-
 	@Bind(R.id.state)
 	/* default */ TextView storyState;
 
@@ -62,6 +61,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
 	private AutoCompleteUsersAdapter autoCompleteUsersAdapter;
 	private SelectedUsersAdapter selectedUsersAdapter;
+
 
 	private StateKey stateKey;
 
@@ -211,7 +211,8 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 				final AlertDialog.Builder builder = new Builder(context);
 				builder.setTitle(R.string.dialog_state_title);
 				builder.setSingleChoiceItems(
-						StateKey.getDisplayStates(), StateKey.NOT_STARTED.ordinal(), onClickListener);
+						StateKey.getDisplayStates(getActivity()),
+						StateKey.NOT_STARTED.ordinal(), onClickListener);
 
 				builder.show();
 			}

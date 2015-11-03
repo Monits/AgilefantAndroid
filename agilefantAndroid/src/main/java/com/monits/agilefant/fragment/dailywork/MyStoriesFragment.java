@@ -15,6 +15,7 @@ import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkWorkItemsAdapte
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
+import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -73,10 +74,12 @@ public class MyStoriesFragment extends Fragment implements Observer {
 		final View view = inflater.inflate(R.layout.fragment_my_stories, container, false);
 		ButterKnife.bind(this, view);
 
+		final RecyclerView recyclerViewStories = (RecyclerView) view.findViewById(R.id.my_stories_expandable);
+		recyclerViewStories.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
+
 		if (adapter.isEmpty()) {
 			emptyView.setVisibility(View.VISIBLE);
 
-			final RecyclerView recyclerViewStories = (RecyclerView) view.findViewById(R.id.my_stories_expandable);
 			recyclerViewStories.setVisibility(View.GONE);
 		}
 

@@ -7,6 +7,7 @@
 	<color name="blue_light">#1E5EEE</color>
 	<color name="agilefant_light_blue_text">#2889F9</color>
 	<color name="agilefant_light_blue_selected_row">#87B6D9</color>
+    <color name="white_background">#ffffff</color>
 
     <color name="action_bar_color">#54759E</color>
     <color name="action_bar_color_dark">#4D6685</color>

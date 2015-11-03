@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
+import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.User;
@@ -110,7 +111,13 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		}
 
 		if (columnContext != null) {
-			columnContext.setText(item.getIteration().getName());
+			final Iteration iteration = item.getIteration();
+			// Iteration could be null, there are stories that never belonged to an iteration
+			if (iteration == null) {
+				columnContext.setText(context.getResources().getString(R.string.no_iteration));
+			} else {
+				columnContext.setText(iteration.getName());
+			}
 		}
 	}
 
@@ -120,7 +127,10 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 	@Nullable
 	@OnClick(R.id.column_context)
 	/* default */ void getIterationDetails() {
-		super.getIterationDetails(story.getIteration(), context);
+		final Iteration iteration = story.getIteration();
+		if (iteration != null) {
+			super.getIterationDetails(story.getIteration(), context);
+		}
 	}
 
 	/**
@@ -133,7 +143,7 @@ public class StoryItemViewHolder extends WorkItemViewHolder<Story> {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(R.string.dialog_state_title);
 		builder.setSingleChoiceItems(
-				StateKey.getDisplayStates(), story.getState().ordinal(), onStoryStateSelectedListener);
+				StateKey.getDisplayStates(context), story.getState().ordinal(), onStoryStateSelectedListener);
 		builder.show();
 	}
 

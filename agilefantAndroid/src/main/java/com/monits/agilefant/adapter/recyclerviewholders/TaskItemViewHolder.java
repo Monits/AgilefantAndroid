@@ -169,7 +169,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(R.string.dialog_state_title);
 		builder.setSingleChoiceItems(
-				StateKey.getDisplayStates(), task.getState().ordinal(), onChoiceSelectedListener);
+				StateKey.getDisplayStates(context), task.getState().ordinal(), onChoiceSelectedListener);
 		builder.show();
 	}
 
