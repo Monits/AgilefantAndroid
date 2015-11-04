@@ -2,8 +2,6 @@ package com.monits.agilefant.fragment.iteration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +25,7 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 
-public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements Observer {
+public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
 
@@ -118,15 +116,6 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 		}
 
 		return rootView;
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-		if (isVisible()) {
-			taskWithoutStoryAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-
-		}
 	}
 
 	@Override

@@ -30,8 +30,6 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
 
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
@@ -39,7 +37,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements Observer {
+public class ProjectLeafStoriesFragment extends BaseDetailTabFragment {
 
 	private static final String BACKLOG = "PROJECT_BACKLOG";
 
@@ -173,14 +171,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 			});
 
 		super.onViewCreated(view, savedInstanceState);
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-		if (isVisible()) {
-			storiesAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-		}
 	}
 
 	@Override

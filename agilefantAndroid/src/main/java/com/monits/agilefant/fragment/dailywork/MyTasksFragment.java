@@ -3,8 +3,6 @@ package com.monits.agilefant.fragment.dailywork;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -35,7 +33,7 @@ import com.monits.agilefant.service.BacklogService;
 
 import javax.inject.Inject;
 
-public class MyTasksFragment extends Fragment implements Observer {
+public class MyTasksFragment extends Fragment {
 
 	private static final String TASKS_KEY = "TASKS";
 	private static final String PROJECTS_KEY = "PROJECTS";
@@ -186,15 +184,6 @@ public class MyTasksFragment extends Fragment implements Observer {
 		getActivity().unregisterReceiver(broadcastReceiver);
 
 		super.onDestroy();
-	}
-
-	@Override
-	public void update(final Observable observable, final Object arg1) {
-
-		if (isVisible()) {
-			tasksAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-		}
 	}
 
 	@Override

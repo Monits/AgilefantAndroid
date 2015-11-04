@@ -3,8 +3,6 @@ package com.monits.agilefant.fragment.dailywork;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,13 +17,12 @@ import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 
-public class MyQueueWorkFragment extends Fragment implements Observer {
+public class MyQueueWorkFragment extends Fragment {
 
 	private static final String TASKS_KEY = "TASKS";
 
-	private TasksRecyclerAdapter tasksAdapter;
-
 	private List<Task> mTasks;
+
 
 	/**
 	 * Return a new MyQueueWorkFragment with the given queued tasks
@@ -74,18 +71,9 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 			tasksListView.setVisibility(View.GONE);
 		} else {
 			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			final TasksRecyclerAdapter tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
 			tasksListView.addItemDecoration(new SpacesSeparatorItemDecoration(getActivity()));
 			tasksListView.setAdapter(tasksAdapter);
-		}
-	}
-
-	@Override
-	public void update(final Observable observable, final Object arg1) {
-
-		if (isVisible()) {
-			tasksAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
 		}
 	}
 

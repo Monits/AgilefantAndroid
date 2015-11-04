@@ -25,15 +25,13 @@ import com.monits.agilefant.service.MetricsService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StoriesFragment extends BaseDetailTabFragment implements Observer {
+public class StoriesFragment extends BaseDetailTabFragment {
 
 	@Inject
 	/* default */ MetricsService metricsService;
@@ -127,15 +125,6 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 		}
 
 		return rootView;
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-
-		if (isVisible()) {
-			storiesAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-		}
 	}
 
 	@Override

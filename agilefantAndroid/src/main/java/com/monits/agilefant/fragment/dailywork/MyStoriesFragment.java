@@ -20,13 +20,11 @@ import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MyStoriesFragment extends Fragment implements Observer {
+public class MyStoriesFragment extends Fragment {
 
 	private static final String STORIES_KEY = "STORIES";
 
@@ -99,14 +97,6 @@ public class MyStoriesFragment extends Fragment implements Observer {
 
 		recyclerViewStories.setAdapter(adapter);
 		recyclerViewStories.setLayoutManager(new LinearLayoutManager(getActivity()));
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-		if (isVisible()) {
-			adapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-		}
 	}
 
 	@Override
