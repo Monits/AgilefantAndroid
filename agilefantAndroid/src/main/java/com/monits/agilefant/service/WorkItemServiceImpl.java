@@ -1,5 +1,7 @@
 package com.monits.agilefant.service;
 
+import android.support.annotation.NonNull;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -11,14 +13,10 @@ import com.monits.agilefant.model.Rankable;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
-import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.UrlGsonRequest;
 import com.monits.volleyrequests.network.request.GsonRequest;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +62,9 @@ public class WorkItemServiceImpl implements WorkItemService {
 	private static final String TARGET_STORY_ID = "targetStoryId";
 	private static final String RANK_TASK_UNDER_ACTION = "%1$s/ajax/rankTaskAndMoveUnder.action";
 	private static final String RANK_UNDER_ID = "rankUnderId";
+	private static final String USER_ID = "userId";
+
+	private static final String RANK_DAILY_TASK_UNDER_ACTION = "%1$s/ajax/rankDailyTaskAndMoveUnder.action";
 
 	private final AgilefantService agilefantService;
 
@@ -280,44 +281,43 @@ public class WorkItemServiceImpl implements WorkItemService {
 				Request.Method.POST, url, gson, Story.class, listener, error, null) {
 
 			@Override
-			public byte[] getBody() throws AuthFailureError {
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-				try {
-					final Long iterationId = parameters.getIterationId();
-					Long backlogId = parameters.getBacklogId();
-					if (backlogId == null && iterationId != null) {
-						backlogId = iterationId;
-					}
-
-					appendURLEncodedParam(body, BACKLOG_ID, String.valueOf(backlogId), paramsEncoding);
-
-					if (iterationId != null) {
-						appendURLEncodedParam(body, ITERATION, String.valueOf(iterationId), paramsEncoding);
-					}
-
-					appendURLEncodedParam(body, STORY_DESCRIPTION, "", paramsEncoding);
-					appendURLEncodedParam(body, STORY_NAME, parameters.getName(), paramsEncoding);
-					appendURLEncodedParam(body, STORY_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
-					appendURLEncodedParam(body, STORY_STORY_POINTS, "", paramsEncoding);
-					appendURLEncodedParam(body, STORY_STORY_VALUE, "", paramsEncoding);
-
-					for (final User user : parameters.getSelectedUser()) {
-						appendURLEncodedParam(body, USER_IDS, String.valueOf(user.getId()), paramsEncoding);
-					}
-
-					appendURLEncodedParam(body, USERS_CHANGED, String.valueOf(true), paramsEncoding);
-
-				} catch (final UnsupportedEncodingException e) {
-					throw new AssertionError(e);
-				}
-
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
+			protected Map<String, String> getParams() throws AuthFailureError {
+				return getCreateStoryParams(parameters);
 			}
 		};
 
 		agilefantService.addRequest(request);
+	}
+
+	private Map<String, String> getCreateStoryParams(final BacklogElementParameters parameters) {
+		final Map<String, String> params = new HashMap<>();
+		final Long iterationId = parameters.getIterationId();
+		final Long backlogId;
+		if (parameters.getBacklogId() == null && iterationId != null) {
+			backlogId = iterationId;
+		} else {
+			backlogId = parameters.getBacklogId();
+		}
+
+		params.put(BACKLOG_ID, String.valueOf(backlogId));
+
+		if (iterationId != null) {
+			params.put(ITERATION, String.valueOf(iterationId));
+		}
+
+		params.put(STORY_DESCRIPTION, "");
+		params.put(STORY_NAME, parameters.getName());
+		params.put(STORY_STATE, String.valueOf(parameters.getStateKey()));
+		params.put(STORY_STORY_POINTS, "");
+		params.put(STORY_STORY_VALUE, "");
+
+		for (final User user : parameters.getSelectedUser()) {
+			params.put(USER_IDS, String.valueOf(user.getId()));
+		}
+
+		params.put(USERS_CHANGED, String.valueOf(true));
+
+		return params;
 	}
 
 	@Override
@@ -330,31 +330,21 @@ public class WorkItemServiceImpl implements WorkItemService {
 				Task.class, listener, errorListener, null) {
 
 			@Override
-			public byte[] getBody() throws AuthFailureError {
+			public Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<>();
+				params.put(ITERATION_ID, String.valueOf(parameters.getIterationId()));
 
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-				try {
-
-					appendURLEncodedParam(
-							body, ITERATION_ID, String.valueOf(parameters.getIterationId()), paramsEncoding);
-
-					for (final User user : parameters.getSelectedUser()) {
-						appendURLEncodedParam(body, NEW_RESPONSIBLES, String.valueOf(user.getId()), paramsEncoding);
-					}
-
-					appendURLEncodedParam(body, RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
-					appendURLEncodedParam(body, TASK_EFFORT_LEFT, "", paramsEncoding);
-					appendURLEncodedParam(body, TASK_NAME, parameters.getName(), paramsEncoding);
-					appendURLEncodedParam(body, TASK_ORIGINAL_ESTIMATE, "", paramsEncoding);
-					appendURLEncodedParam(body, TASK_STATE, String.valueOf(parameters.getStateKey()), paramsEncoding);
-
-				} catch (final UnsupportedEncodingException e) {
-					throw new AssertionError(e);
+				for (final User user : parameters.getSelectedUser()) {
+					params.put(NEW_RESPONSIBLES, String.valueOf(user.getId()));
 				}
 
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
+				params.put(RESPONSIBLES_CHANGED, String.valueOf(true));
+				params.put(TASK_EFFORT_LEFT, "");
+				params.put(TASK_NAME, parameters.getName());
+				params.put(TASK_ORIGINAL_ESTIMATE, "");
+				params.put(TASK_STATE, String.valueOf(parameters.getStateKey()));
+
+				return params;
 			}
 		};
 
@@ -371,9 +361,26 @@ public class WorkItemServiceImpl implements WorkItemService {
 				gson, Task.class, listener, error, null) {
 
 			@Override
-			public byte[] getBody() throws AuthFailureError {
+			public Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<>();
 
-				return taskUpdateAppendUrl(task, getParamsEncoding());
+				for (final User user : task.getResponsibles()) {
+					params.put(NEW_RESPONSIBLES, String.valueOf(user.getId()));
+				}
+
+				params.put(RESPONSIBLES_CHANGED, String.valueOf(true));
+				params.put(TASK_STATE, task.getState().name());
+
+				/*
+				 *  This 2 values, EL and OE, for sending requests it needs # of hours, not in minutes,
+				 *  while in the rest of the application this works under minutes.
+				 */
+				params.put(TASK_EFFORT_LEFT, String.valueOf(task.getEffortLeft() / MINUTES));
+				params.put(TASK_ORIGINAL_ESTIMATE, String.valueOf(task.getOriginalEstimate() / MINUTES));
+
+				params.put(TASK_ID, String.valueOf(task.getId()));
+
+				return params;
 			}
 		};
 
@@ -388,106 +395,87 @@ public class WorkItemServiceImpl implements WorkItemService {
 		final UrlGsonRequest<Story> req = new UrlGsonRequest<Story>(Request.Method.POST, url,
 				gson, Story.class, listener, error, null) {
 
-
 			@Override
-			public byte[] getBody() throws AuthFailureError {
-				final Long backlogId;
-				final Long iterationId;
-				final Iteration iteration = story.getIteration();
-				final Backlog backlog = story.getBacklog();
-				if (backlog != null && iteration != null) {
-					backlogId = backlog.getId();
-					iterationId = iteration.getId();
-				} else if (iteration != null) {
-					backlogId = iteration.getId();
-					iterationId = iteration.getId();
-				} else {
-					backlogId = backlog.getId();
-					iterationId = null;
-				}
-
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-				try {
-					for (final User user : story.getResponsibles()) {
-						appendURLEncodedParam(body, USER_IDS, String.valueOf(user.getId()), paramsEncoding);
-					}
-
-					appendURLEncodedParam(body, USERS_CHANGED, String.valueOf(true), paramsEncoding);
-					appendURLEncodedParam(body, STORY_ID, String.valueOf(story.getId()), paramsEncoding);
-					appendURLEncodedParam(body, STORY_STATE, story.getState().name(), paramsEncoding);
-					appendURLEncodedParam(body, BACKLOG_ID, String.valueOf(backlogId), paramsEncoding);
-
-					if (iterationId != null) {
-						appendURLEncodedParam(body, ITERATION_ID, String.valueOf(iterationId), paramsEncoding);
-					}
-
-					if (tasksToDone != null) {
-						appendURLEncodedParam(body, TASKS_TO_DONE, String.valueOf(tasksToDone), paramsEncoding);
-					}
-
-				} catch (final UnsupportedEncodingException e) {
-					throw new AssertionError(e);
-				}
-
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
+			public Map<String, String> getParams() throws AuthFailureError {
+				return getUpdateStoryParams(story, tasksToDone);
 			}
 		};
 
 		agilefantService.addRequest(req);
 	}
 
-	private byte[] taskUpdateAppendUrl(final WorkItem task, final String paramsEncoding) {
-
-		final StringBuilder body = new StringBuilder();
-		try {
-			for (final User user : task.getResponsibles()) {
-				appendURLEncodedParam(body, NEW_RESPONSIBLES, String.valueOf(user.getId()), paramsEncoding);
-			}
-
-			appendURLEncodedParam(body, RESPONSIBLES_CHANGED, String.valueOf(true), paramsEncoding);
-			appendURLEncodedParam(body, TASK_STATE, task.getState().name(), paramsEncoding);
-
-					/*
-					 *  This 2 values, EL and OE, for sending requests it needs # of hours, not in minutes,
-					 *  while in the rest of the application this works under minutes.
-					 */
-			appendURLEncodedParam(body,
-					TASK_EFFORT_LEFT, String.valueOf(task.getEffortLeft() / MINUTES), paramsEncoding);
-			appendURLEncodedParam(body, TASK_ORIGINAL_ESTIMATE,
-					String.valueOf(task.getOriginalEstimate() / MINUTES), paramsEncoding);
-
-			appendURLEncodedParam(body, TASK_ID, String.valueOf(task.getId()), paramsEncoding);
-
-		} catch (final UnsupportedEncodingException e) {
-			throw new AssertionError(e);
+	@NonNull
+	private Map<String, String> getUpdateStoryParams(final Story story, final Boolean tasksToDone) {
+		final Map<String, String> params = new HashMap<>();
+		final Long backlogId;
+		final Long iterationId;
+		final Iteration iteration = story.getIteration();
+		final Backlog backlog = story.getBacklog();
+		if (backlog != null && iteration != null) {
+			backlogId = backlog.getId();
+			iterationId = iteration.getId();
+		} else if (iteration != null) {
+			backlogId = iteration.getId();
+			iterationId = iteration.getId();
+		} else {
+			backlogId = backlog.getId();
+			iterationId = null;
 		}
 
-		return body.toString().getBytes(Charset.forName(paramsEncoding));
+		for (final User user : story.getResponsibles()) {
+			params.put(USER_IDS, String.valueOf(user.getId()));
+		}
+
+		params.put(USERS_CHANGED, String.valueOf(true));
+		params.put(STORY_ID, String.valueOf(story.getId()));
+		params.put(STORY_STATE, story.getState().name());
+		params.put(BACKLOG_ID, String.valueOf(backlogId));
+
+		if (iterationId != null) {
+			params.put(ITERATION_ID, String.valueOf(iterationId));
+		}
+
+		if (tasksToDone != null) {
+			params.put(TASKS_TO_DONE, String.valueOf(tasksToDone));
+		}
+
+		return params;
 	}
 
-	/**
-	 * An auxiliary method in order to append parameters to the given post body's StringBuilder,
-	 * for some special requests.
-	 *
-	 * @param sb the StringBuilder to build post body.
-	 * @param key the key of the param.
-	 * @param value the value for that key.
-	 * @param encoding the encoding.
-	 * @return the same StringBuilder that was given, with the given params appended.
-	 *
-	 * @throws UnsupportedEncodingException If the given encoding is not supported
-	 */
-	private StringBuilder appendURLEncodedParam(final StringBuilder sb, final String key, final String value,
-												final String encoding) throws UnsupportedEncodingException {
+	@Override
+	public void rankDailyTaskUnder(final Task task, final Task targetTask, final User user, final List<Task> allTasks,
+			final Response.Listener<Task> listener, final Response.ErrorListener error) {
 
-		sb.append(URLEncoder.encode(key, encoding));
-		sb.append('=');
-		sb.append(URLEncoder.encode(value, encoding));
-		sb.append('&');
+		final List<Task> fallbackTasksList = new LinkedList<>();
+		copyAndSetRank(allTasks, fallbackTasksList);
 
-		return sb;
+		final String url = String.format(Locale.US, RANK_DAILY_TASK_UNDER_ACTION, agilefantService.getHost());
+
+		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(
+				Request.Method.POST, url, gson, Task.class, listener,
+				new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						rollbackRanks(allTasks, fallbackTasksList);
+
+						error.onErrorResponse(arg0);
+					}
+				}, null) {
+
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<>();
+
+				params.put(USER_ID, String.valueOf(user.getId()));
+				params.put(TASK_ID, String.valueOf(task.getId()));
+				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
+
+				return params;
+			}
+		};
+
+		agilefantService.addRequest(request);
 	}
 
 	/**

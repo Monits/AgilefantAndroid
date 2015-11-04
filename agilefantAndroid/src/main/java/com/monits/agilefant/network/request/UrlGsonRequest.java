@@ -1,16 +1,26 @@
 package com.monits.agilefant.network.request;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Response;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
-import com.monits.volleyrequests.network.request.GsonRequest;
+import com.google.gson.JsonSyntaxException;
+import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Created by lgnanni on 21/10/15.
  */
-public class UrlGsonRequest<T> extends GsonRequest {
+public class UrlGsonRequest<T> extends RfcCompliantListenableRequest {
 
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING", justification = "No need to use in the toString")
+	private final Gson gson;
+	private final Type clazz;
 
 	/**
 	 * Creates a new UrlGsonRequest instance
@@ -22,12 +32,13 @@ public class UrlGsonRequest<T> extends GsonRequest {
 	 * @param listener The listener for success.
 	 * @param errListener The listener for errors.
 	 * @param cancelListener The listener for errors.
-	 * @param jsonBody The contents of the json to be sent in the request's body.
 	 */
 	public UrlGsonRequest(final int method, final String url, final Gson gson, final Type clazz,
 						final Response.Listener listener, final Response.ErrorListener errListener,
-						final CancelListener cancelListener, final String jsonBody) {
-		super(method, url, gson, clazz, listener, errListener, cancelListener, jsonBody);
+						final CancelListener cancelListener) {
+		super(method, url, listener, errListener, cancelListener);
+		this.gson = gson;
+		this.clazz = clazz;
 	}
 
 	/**
@@ -40,16 +51,25 @@ public class UrlGsonRequest<T> extends GsonRequest {
 	 * @param clazz The {@link Type} of the class T
 	 * @param listener The listener for success.
 	 * @param errListener The listener for errors.
-	 * @param jsonBody The contents of the json to be sent in the request's body.
 	 */
 	public UrlGsonRequest(final int method, final String url, final Gson gson, final Type clazz,
-						final Response.Listener listener, final Response.ErrorListener errListener,
-						final String jsonBody) {
-		super(method, url, gson, clazz, listener, errListener, jsonBody);
+						final Response.Listener listener, final Response.ErrorListener errListener) {
+		super(method, url, listener, errListener);
+		this.gson = gson;
+		this.clazz = clazz;
 	}
 
 	@Override
-	public String getBodyContentType() {
-		return "application/x-www-form-urlencoded; charset=" + this.getParamsEncoding();
+	protected Response<T> parseNetworkResponse(final NetworkResponse response) {
+		try {
+			final String json = new String(response.data,
+					HttpHeaderParser.parseCharset(response.headers));
+			return Response.success((T) gson.fromJson(json, clazz),
+					HttpHeaderParser.parseCacheHeaders(response));
+		} catch (final UnsupportedEncodingException e) {
+			return Response.error(new ParseError(e));
+		} catch (final JsonSyntaxException e) {
+			return Response.error(new ParseError(e));
+		}
 	}
 }
