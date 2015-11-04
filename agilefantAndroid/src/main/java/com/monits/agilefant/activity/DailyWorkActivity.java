@@ -111,6 +111,9 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 						Toast.makeText(
 								DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work,
 								Toast.LENGTH_SHORT).show();
+
+						// The state of the activity is all wrong, so we close it!
+						DailyWorkActivity.this.finish();
 					}
 				});
 	}
