@@ -41,6 +41,9 @@ public class Story implements Serializable, Rankable<Story>, WorkItem {
 	@SerializedName("iteration")
 	private Iteration iteration;
 
+	@SerializedName("workQueueRank")
+	private int workQueueRank;
+
 	private transient boolean expanded;
 
 	/**
@@ -274,6 +277,20 @@ public class Story implements Serializable, Rankable<Story>, WorkItem {
 		this.expanded = expanded;
 	}
 
+	/**
+	 * @return rank position at workQueue
+	 */
+	public int getWorkQueueRank() {
+		return workQueueRank;
+	}
+
+	/**
+	 * @param workQueueRank rank position at workQueue
+	 */
+	public void setWorkQueueRank(final int workQueueRank) {
+		this.workQueueRank = workQueueRank;
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -316,6 +333,7 @@ public class Story implements Serializable, Rankable<Story>, WorkItem {
 			.append(", metrics: ").append(metrics)
 			.append(", tasks: ").append(tasksToStringBuilder.toString())
 			.append(", rank: ").append(rank)
+			.append(", workQueueRank: ").append(workQueueRank)
 			.append(", backlog: ").append(backlog)
 			.append(", iteration: ").append(iteration)
 			.append(", expanded: ").append(expanded)

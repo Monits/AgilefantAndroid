@@ -168,22 +168,4 @@ public interface WorkItemService {
 	// TODO : Exists the possibility of bypassing its functionality to Metrics Service and get the same results
 	void updateStory(Story story, Boolean tasksToDone, Response.Listener<Story> listener,
 					Response.ErrorListener error);
-
-	/**
-	 * Updates Task's rank under the given target task.
-	 *
-	 * <blockquote>
-	 *     <b>NOTE:</b> This method will automatically update all task's rank as if the request was successfull.
-	 *     In case request fails, this changes will be rollbacked.
-	 * </blockquote>
-	 *
-	 * @param task the task to be updated in rank.
-	 * @param targetTask the task to be ranked under.
-	 * @param user the user to update the work queue.
-	 * @param allTasks the complete list of tasks, to update it's ranks.
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void rankDailyTaskUnder(Task task, Task targetTask, User user, List<Task> allTasks,
-							Response.Listener<Task> listener, Response.ErrorListener error);
 }

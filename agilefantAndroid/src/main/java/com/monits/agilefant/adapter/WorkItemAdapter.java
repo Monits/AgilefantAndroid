@@ -16,8 +16,8 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
-import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
+import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
@@ -269,7 +269,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	 * @param pos The position to analyze
 	 * @return The story to which the given position belongs
 	 */
-	private Story getRelevantStory(final int pos) {
+	protected Story getRelevantStory(final int pos) {
 		final WorkItem wi = workItems.get(pos);
 
 		if (wi.getType() == WorkItemType.STORY) {
@@ -280,7 +280,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	@NonNull
-	private Response.ErrorListener getErrorListener(@StringRes final int idMessage) {
+	protected Response.ErrorListener getErrorListener(@StringRes final int idMessage) {
 		return new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(final VolleyError arg0) {
@@ -290,7 +290,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	@NonNull
-	private <T extends WorkItem> Response.Listener<T> getSuccessListener(@StringRes final int idMessage) {
+	protected <T extends WorkItem> Response.Listener<T> getSuccessListener(@StringRes final int idMessage) {
 		return new Response.Listener<T>() {
 			@Override
 			public void onResponse(final T arg0) {

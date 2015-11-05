@@ -9,12 +9,12 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
-import com.monits.agilefant.model.Rankable;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.UrlGsonRequest;
+import com.monits.agilefant.util.RankUtils;
 import com.monits.volleyrequests.network.request.GsonRequest;
 
 import java.util.HashMap;
@@ -62,9 +62,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 	private static final String TARGET_STORY_ID = "targetStoryId";
 	private static final String RANK_TASK_UNDER_ACTION = "%1$s/ajax/rankTaskAndMoveUnder.action";
 	private static final String RANK_UNDER_ID = "rankUnderId";
-	private static final String USER_ID = "userId";
-
-	private static final String RANK_DAILY_TASK_UNDER_ACTION = "%1$s/ajax/rankDailyTaskAndMoveUnder.action";
 
 	private final AgilefantService agilefantService;
 
@@ -100,7 +97,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 						error.onErrorResponse(arg0);
 					}
 				});
-
 	}
 
 	@Override
@@ -184,7 +180,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	public void rankTaskUnder(final Task task, final Task targetTask, final List<Task> allTasks,
 							final Response.Listener<Task> listener, final Response.ErrorListener error) {
 		final List<Task> fallbackTasksList = new LinkedList<>();
-		copyAndSetRank(allTasks, fallbackTasksList);
+		RankUtils.copyAndSetRank(allTasks, fallbackTasksList);
 
 		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, agilefantService.getHost());
 
@@ -194,7 +190,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allTasks, fallbackTasksList);
+						RankUtils.rollbackRanks(allTasks, fallbackTasksList);
 
 						error.onErrorResponse(arg0);
 					}
@@ -226,7 +222,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 							final List<Story> allStories, final Response.Listener<Story> listener,
 							final Response.ErrorListener error) {
 		final List<Story> fallbackStoryList = new LinkedList<>();
-		copyAndSetRank(allStories, fallbackStoryList);
+		RankUtils.copyAndSetRank(allStories, fallbackStoryList);
 
 		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, agilefantService.getHost());
 
@@ -235,7 +231,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allStories, fallbackStoryList);
+						RankUtils.rollbackRanks(allStories, fallbackStoryList);
 
 						error.onErrorResponse(arg0);
 					}
@@ -254,7 +250,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	public void rankStoryOver(final Story story, final Story targetStory, final Long backlogId, final List<Story>
 			allStories, final Response.Listener<Story> listener, final Response.ErrorListener error) {
 		final List<Story> fallbackStoryList = new LinkedList<>();
-		copyAndSetRank(allStories, fallbackStoryList);
+		RankUtils.copyAndSetRank(allStories, fallbackStoryList);
 
 		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, agilefantService.getHost());
 
@@ -263,7 +259,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allStories, fallbackStoryList);
+						RankUtils.rollbackRanks(allStories, fallbackStoryList);
 
 						error.onErrorResponse(arg0);
 					}
@@ -440,79 +436,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 		}
 
 		return params;
-	}
-
-	@Override
-	public void rankDailyTaskUnder(final Task task, final Task targetTask, final User user, final List<Task> allTasks,
-			final Response.Listener<Task> listener, final Response.ErrorListener error) {
-
-		final List<Task> fallbackTasksList = new LinkedList<>();
-		copyAndSetRank(allTasks, fallbackTasksList);
-
-		final String url = String.format(Locale.US, RANK_DAILY_TASK_UNDER_ACTION, agilefantService.getHost());
-
-		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(
-				Request.Method.POST, url, gson, Task.class, listener,
-				new Response.ErrorListener() {
-
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						rollbackRanks(allTasks, fallbackTasksList);
-
-						error.onErrorResponse(arg0);
-					}
-				}, null) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
-
-				params.put(USER_ID, String.valueOf(user.getId()));
-				params.put(TASK_ID, String.valueOf(task.getId()));
-				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
-
-				return params;
-			}
-		};
-
-		agilefantService.addRequest(request);
-	}
-
-	/**
-	 * Updates the ranks of the items in the source list with the ones in the fallbacklist.
-	 *
-	 * @param <T> the class to rank
-	 * @param source the list to be updated.
-	 * @param fallbackList the list containing the values to be updated with.
-	 */
-	public <T extends Rankable<T>> void rollbackRanks(final List<T> source, final List<T> fallbackList) {
-
-		for (final T currentTaskAt : source) {
-
-			final int indexOfFallbackTask = fallbackList.indexOf(currentTaskAt);
-			final T fallbackTask = fallbackList.get(indexOfFallbackTask);
-
-			currentTaskAt.setRank(fallbackTask.getRank());
-		}
-	}
-
-	/**
-	 * This method clones the source items into the fallback list, and updates the ranks of the source list.
-	 *
-	 * @param <T> the class to rank
-	 * @param source the original list.
-	 * @param copy the list where cloned items will be added.
-	 */
-	public <T extends Rankable<T>> void copyAndSetRank(final List<T> source, final List<T> copy) {
-
-		for (int i = 0; i < source.size(); i++) {
-			final T itemAt = source.get(i);
-
-			copy.add(itemAt.getCopy());
-
-			// Rank is equal to the index in the list.
-			itemAt.setRank(i);
-		}
 	}
 
 	private GsonRequest<Story> newGsonRequest(final Story story, final Story targetStory, final Long backlogId,
