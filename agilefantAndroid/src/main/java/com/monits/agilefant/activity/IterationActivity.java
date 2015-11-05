@@ -73,7 +73,7 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 		fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
-
+		viewPager.addOnPageChangeListener(this);
 		setUpTabLayout(viewPager);
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
