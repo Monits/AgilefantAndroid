@@ -30,6 +30,15 @@
         <item name="android:windowBackground">@color/white_background</item>
     </style>
 
+    <style name="fragmentBackground" parent="AppTheme">
+        <item name="android:background">@color/translucent_black</item>
+    </style>
+
+    <style name="tabLayoutBackground" parent="AppTheme">
+        <item name="android:background">@color/action_bar_color</item>
+    </style>
+
+
     <style name="Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">@color/action_bar_color</item>
     </style>
