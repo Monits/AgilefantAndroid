@@ -8,6 +8,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkTaskItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.service.TaskRankUpdaterService;
 
 import java.util.List;
 
@@ -19,9 +20,11 @@ public class TasksWithoutStoryRecyclerAdapter extends TasksRecyclerAdapter {
 	/**
 	 * @param context  Current context
 	 * @param taskList List of task objects
+	 * @param rankUpdaterService Service that manages task rank changes.
 	 */
-	public TasksWithoutStoryRecyclerAdapter(final FragmentActivity context, final List<Task> taskList) {
-		super(context, taskList);
+	public TasksWithoutStoryRecyclerAdapter(final FragmentActivity context, final List<Task> taskList,
+			final TaskRankUpdaterService rankUpdaterService) {
+		super(context, taskList, rankUpdaterService);
 	}
 
 	@Override

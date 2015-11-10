@@ -1,11 +1,5 @@
 package com.monits.agilefant.fragment.iteration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +18,15 @@ import com.monits.agilefant.adapter.TasksWithoutStoryRecyclerAdapter;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
+import com.monits.agilefant.service.WorkItemService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 
@@ -35,6 +38,9 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 	private TasksWithoutStoryRecyclerAdapter taskWithoutStoryAdapter;
 
 	private List<Task> taskWithoutStory;
+
+	@Inject
+	/* default */ WorkItemService workItemService;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -84,6 +90,9 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AgilefantApplication.getObjectGraph().inject(this);
+
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
@@ -104,7 +113,8 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 		} else {
 			taskWithoutStoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-			taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(getActivity(), taskWithoutStory);
+			taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(
+					getActivity(), taskWithoutStory, workItemService);
 
 			taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
 			taskWithoutStoryListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));

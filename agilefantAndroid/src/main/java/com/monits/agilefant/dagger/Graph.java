@@ -17,10 +17,12 @@ import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateDailyWorkTaskFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
+import com.monits.agilefant.fragment.dailywork.MyQueueWorkFragment;
 import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
 import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
+import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
@@ -157,4 +159,13 @@ public interface Graph {
 	 */
 	void inject(final DailyWorkWorkItemsAdapter dailyWorkWorkItemsAdapter);
 
+	/**
+	 * @param taskWithoutStoryFragment Injects TaskWithoutStoryFragment
+	 */
+	void inject(final TaskWithoutStoryFragment taskWithoutStoryFragment);
+
+	/**
+	 * @param myQueueWorkFragment Injects MyQueueWorkFragment
+	 */
+	void inject(final MyQueueWorkFragment myQueueWorkFragment);
 }

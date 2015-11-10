@@ -1,9 +1,5 @@
 package com.monits.agilefant.fragment.dailywork;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,6 +26,11 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.service.BacklogService;
+import com.monits.agilefant.service.DailyWorkService;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,9 @@ public class MyTasksFragment extends Fragment {
 	@Inject
 	/* default */ BacklogService backlogService;
 
+	@Inject
+	/* default */ DailyWorkService rankUpdaterService;
+
 	private List<Task> mTasks;
 
 	private List<Project> mProjects;
@@ -48,9 +52,6 @@ public class MyTasksFragment extends Fragment {
 	private TasksRecyclerAdapter tasksAdapter;
 
 	private ProjectAdapter backlogsAdapter;
-
-
-
 
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -89,6 +90,8 @@ public class MyTasksFragment extends Fragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
@@ -172,7 +175,7 @@ public class MyTasksFragment extends Fragment {
 
 		} else {
 
-			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks, rankUpdaterService);
 			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 			tasksListView.addItemDecoration(new SpacesSeparatorItemDecoration(getActivity()));
 			tasksListView.setAdapter(tasksAdapter);

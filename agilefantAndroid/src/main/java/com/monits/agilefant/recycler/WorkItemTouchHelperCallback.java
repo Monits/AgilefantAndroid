@@ -14,6 +14,7 @@ import com.monits.agilefant.model.WorkItemType;
  * Created by Raul Morales on 9/30/15.
  */
 public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
+
 	private final DragAndDropListener dragAndDropListener;
 	private int originalPosition;
 	private int newPosition;
@@ -38,6 +39,24 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 		final WorkItem originalWorkItem = dragAndDropListener.getItem(viewHolder.getAdapterPosition());
 		final WorkItem targetWorkItem = dragAndDropListener.getItem(target.getAdapterPosition());
 
+		if (!canMoveOver(originalWorkItem, targetWorkItem)) {
+			return false;
+		}
+
+		originalPosition = viewHolder.getAdapterPosition();
+		newPosition = target.getAdapterPosition();
+		dragAndDropListener.onMove(originalPosition, newPosition);
+		return true;
+	}
+
+	/**
+	 * Check if the given items satisfy the conditions to be dragged.
+	 *
+	 * @param originalWorkItem The work item that is being dragged by the user.
+	 * @param targetWorkItem The work item over which the currently active item is being dragged.
+	 * @return True if the items meet all the condition, otherwise false.
+	 */
+	protected boolean canMoveOver(final WorkItem originalWorkItem, final WorkItem targetWorkItem) {
 		// Validate that the items that are moving are the same type.
 		if (originalWorkItem.getType() != targetWorkItem.getType()) {
 			return false;
@@ -50,15 +69,12 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 			final Task taskTarget = (Task) targetWorkItem;
 
 			if (!(taskOrigin.getStory() == null && taskTarget.getStory() == null) // for tasks without story
-				&& (taskOrigin.getStory() == null || taskTarget.getStory() == null
-				|| !taskOrigin.getStory().equals(taskTarget.getStory()))) {
+					&& (taskOrigin.getStory() == null || taskTarget.getStory() == null
+					|| !taskOrigin.getStory().equals(taskTarget.getStory()))) {
 				return false;
 			}
 		}
 
-		originalPosition = viewHolder.getAdapterPosition();
-		newPosition = target.getAdapterPosition();
-		dragAndDropListener.onMove(originalPosition, newPosition);
 		return true;
 	}
 

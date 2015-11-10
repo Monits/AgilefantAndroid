@@ -19,12 +19,10 @@ import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdate
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
-import com.monits.agilefant.service.WorkItemService;
+import com.monits.agilefant.service.TaskRankUpdaterService;
 
 import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by edipasquale on 25/09/15.
@@ -32,23 +30,28 @@ import javax.inject.Inject;
 public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Task>> implements
 		WorkItemViewHolderUpdateTracker, DragAndDropListener {
 
-	@Inject
-	/* default */ WorkItemService workItemService;
+	protected List<Task> taskList;
 
-	private List<Task> taskList;
 	protected final LayoutInflater inflater;
 	protected final FragmentActivity context;
 
 	private final UpdateAdapterHelper updateAdapterHelper;
 
+	private final TaskRankUpdaterService rankUpdaterService;
+
 	/**
 	 * @param context Current context
 	 * @param taskList List of task objects
+	 * @param rankUpdaterService Service that manages task rank changes.
 	 */
-	public TasksRecyclerAdapter(final FragmentActivity context, final List<Task> taskList) {
+	public TasksRecyclerAdapter(final FragmentActivity context, final List<Task> taskList,
+			final TaskRankUpdaterService rankUpdaterService) {
 		this.context = context;
 		this.taskList = taskList;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		this.rankUpdaterService = rankUpdaterService;
+
 		updateAdapterHelper = new UpdateAdapterHelper(this);
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
@@ -91,14 +94,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 		final Task currentTask = taskList.get(fromPosition);
 		final Task targetTask = taskList.get(toPosition);
 
-		workItemService.rankTaskUnder(currentTask, targetTask, taskList,
+		rankUpdaterService.rankTaskUnder(currentTask, targetTask, taskList,
 				new Response.Listener<Task>() {
 
 					@Override
 					public void onResponse(final Task arg0) {
 						Toast.makeText(
-								context, R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
-
+							context, R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
 					}
 				},
 				new Response.ErrorListener() {
@@ -106,10 +108,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
 						Toast.makeText(
-								context, R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
+							context, R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
 					}
 				});
-
 	}
 
 	@Override

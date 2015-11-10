@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
-import com.monits.agilefant.model.User;
 import com.monits.agilefant.network.request.UrlGsonRequest;
 import com.monits.agilefant.util.DailyWorkRankComparator;
 import com.monits.agilefant.util.RankUtils;
@@ -136,7 +135,7 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	}
 
 	@Override
-	public void rankDailyTaskUnder(final Task task, final Task targetTask, final User user, final List<Task> allTasks,
+	public void rankTaskUnder(final Task task, final Task targetTask, final List<Task> allTasks,
 								final Response.Listener<Task> listener, final Response.ErrorListener error) {
 
 		final List<Task> fallbackTasksList = new LinkedList<>();
@@ -160,7 +159,7 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 			protected Map<String, String> getParams() throws AuthFailureError {
 				final Map<String, String> params = new HashMap<>();
 
-				params.put(USER_ID, String.valueOf(user.getId()));
+				params.put(USER_ID, String.valueOf(userService.getLoggedUser().getId()));
 				params.put(TASK_ID, String.valueOf(task.getId()));
 				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
 

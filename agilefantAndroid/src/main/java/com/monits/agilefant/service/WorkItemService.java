@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by edipasquale on 27/10/15.
  */
-public interface WorkItemService {
+public interface WorkItemService extends TaskRankUpdaterService {
 
 	/**
 	 * Changes the story's responsibles.
@@ -60,23 +60,6 @@ public interface WorkItemService {
 	 * @param error callback if the request failed
 	 */
 	void moveStory(Story story, Iteration iteration, Response.Listener<Story> listener, Response.ErrorListener error);
-
-	/**
-	 * Updates Task's rank under the given target task.
-	 *
-	 * <blockquote>
-	 *     <b>NOTE:</b> This method will automatically update all task's rank as if the request was successfull.
-	 *     In case request fails, this changes will be rollbacked.
-	 * </blockquote>
-	 *
-	 * @param task the task to be updated in rank.
-	 * @param targetTask the task to be ranked under.
-	 * @param allTasks the complete list of tasks, to update it's ranks.
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void rankTaskUnder(Task task, Task targetTask, List<Task> allTasks, Response.Listener<Task> listener,
-					Response.ErrorListener error);
 
 	/**
 	 * Updates Story's rank lower than the given target story.
