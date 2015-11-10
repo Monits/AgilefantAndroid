@@ -1,13 +1,5 @@
 package com.monits.agilefant.service;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
@@ -18,7 +10,16 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.network.request.UrlGsonRequest;
-import com.monits.volleyrequests.network.request.GsonRequest;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -56,7 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
 		final String url = String.format(Locale.US, PROJECT_DATA,
 				agilefantService.getHost(), projectId);
 
-		final GsonRequest<Project> request = new GsonRequest<>(Request.Method.GET, url,
+		final UrlGsonRequest<Project> request = new UrlGsonRequest<>(Request.Method.GET, url,
 				gson, Project.class, listener, error, null);
 
 		agilefantService.addRequest(request);
@@ -73,24 +74,19 @@ public class ProjectServiceImpl implements ProjectService {
 				Request.Method.POST, url, gson, listType, listener, error, null) {
 
 			@Override
-			public byte[] getBody() throws AuthFailureError {
+			public Map<String, String> getParams() throws AuthFailureError {
+				final Map<String, String> params = new HashMap<>();
 
-				// We have to do this, because Agilefant's API is very ugly. and serializes parameters in a weird way.
-				final StringBuilder body = new StringBuilder();
-				final String paramsEncoding = getParamsEncoding();
-				try {
-					appendURLEncodedParam(body, OBJECT_ID, String.valueOf(projectId), paramsEncoding);
-				} catch (final UnsupportedEncodingException e) {
-					throw new AssertionError(e);
-				}
+				params.put(OBJECT_ID, String.valueOf(projectId));
 
-				return body.toString().getBytes(Charset.forName(paramsEncoding));
+				return params;
 			}
 		};
 
 		agilefantService.addRequest(request);
 	}
 
+	// TODO: Search the way to remove the getBody method implementation
 	@Override
 	public void updateProject(final Project project, final Listener<Project> listener, final ErrorListener error) {
 		final String url = String.format(Locale.US, "%1$s/ajax/storeProject.action", agilefantService.getHost());

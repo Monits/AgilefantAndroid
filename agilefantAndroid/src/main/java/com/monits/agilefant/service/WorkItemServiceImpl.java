@@ -184,14 +184,13 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, agilefantService.getHost());
 
-		final GsonRequest<Task> request = new GsonRequest<Task>(Request.Method.POST, url,
+		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(Request.Method.POST, url,
 				gson, Task.class, listener,
 				new Response.ErrorListener() {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
 						RankUtils.rollbackRanks(allTasks, fallbackTasksList);
-
 						error.onErrorResponse(arg0);
 					}
 				}, null) {
@@ -226,7 +225,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, agilefantService.getHost());
 
-		final GsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener,
+		final UrlGsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener,
 				new Response.ErrorListener() {
 
 					@Override
@@ -254,7 +253,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, agilefantService.getHost());
 
-		final GsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener,
+		final UrlGsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener,
 				new Response.ErrorListener() {
 
 					@Override
@@ -438,11 +437,11 @@ public class WorkItemServiceImpl implements WorkItemService {
 		return params;
 	}
 
-	private GsonRequest<Story> newGsonRequest(final Story story, final Story targetStory, final Long backlogId,
-											final String url, final Response.Listener<Story> listener,
-											final Response.ErrorListener error) {
+	private UrlGsonRequest<Story> newGsonRequest(final Story story, final Story targetStory, final Long backlogId,
+												final String url, final Response.Listener<Story> listener,
+												final Response.ErrorListener error) {
 
-		return new GsonRequest<Story>(Request.Method.POST, url, gson, Story.class, listener, error, null) {
+		return new UrlGsonRequest<Story>(Request.Method.POST, url, gson, Story.class, listener, error, null) {
 
 			@Override
 			protected Map<String, String> getParams() throws AuthFailureError {
