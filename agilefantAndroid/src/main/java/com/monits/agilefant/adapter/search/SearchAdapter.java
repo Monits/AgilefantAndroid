@@ -13,7 +13,7 @@ import com.monits.agilefant.R;
 /**
  * Created by edipasquale on 09/11/15.
  */
-public class BacklogSearchAdapter extends CursorAdapter {
+public class SearchAdapter extends CursorAdapter {
 
 	/**
 	 * Standard Adapter
@@ -21,7 +21,7 @@ public class BacklogSearchAdapter extends CursorAdapter {
 	 * @param c Cursor with data
 	 * @param flags Flag that determinates adapter's behavior
 	 */
-	public BacklogSearchAdapter(final Context context, final Cursor c, final int flags) {
+	public SearchAdapter(final Context context, final Cursor c, final int flags) {
 		super(context, c, flags);
 	}
 

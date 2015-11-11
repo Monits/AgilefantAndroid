@@ -27,7 +27,7 @@ import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
 import com.monits.agilefant.helper.ProjectHelper;
-import com.monits.agilefant.listeners.AllBacklogsSearchListener;
+import com.monits.agilefant.listeners.SearchListener;
 import com.monits.agilefant.listeners.SuggestionListener;
 
 
@@ -171,12 +171,12 @@ public interface Graph {
 	void inject(final MyQueueWorkFragment myQueueWorkFragment);
 
 	/**
-	 * @param allBacklogsSearchListener Injects AllBacklogsSearchListener
+	 * @param searchListener Injects SearchListener
 	 */
-	void inject(final AllBacklogsSearchListener allBacklogsSearchListener);
+	void inject(final SearchListener searchListener);
 
 	/**
-	 * @param suggestionListener Injects BacklogSearchAdapter
+	 * @param suggestionListener Injects SearchAdapter
 	 */
 	void inject(final SuggestionListener suggestionListener);
 }

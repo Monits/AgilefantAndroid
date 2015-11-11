@@ -8,7 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
-import com.monits.agilefant.adapter.search.BacklogSearchAdapter;
+import com.monits.agilefant.adapter.search.SearchAdapter;
 import com.monits.agilefant.adapter.search.SearchCursor;
 import com.monits.agilefant.model.SearchResult;
 import com.monits.agilefant.service.SearchService;
@@ -20,9 +20,9 @@ import javax.inject.Inject;
 /**
  * Created by edipasquale on 09/11/15.
  */
-public class AllBacklogsSearchListener implements SearchView.OnQueryTextListener {
+public class SearchListener implements SearchView.OnQueryTextListener {
 
-	private final BacklogSearchAdapter backlogSearchAdapter;
+	private final SearchAdapter searchAdapter;
 	private final Context context;
 	private final SuggestionListener suggestionListener;
 
@@ -32,12 +32,12 @@ public class AllBacklogsSearchListener implements SearchView.OnQueryTextListener
 	/**
 	 * Standard constructor
 	 * @param context The context
-	 * @param backlogSearchAdapter Searchview's adapter
+	 * @param searchAdapter Searchview's adapter
 	 * @param suggestionListener SearchView's suggestionListener
 	 */
-	public AllBacklogsSearchListener(final Context context, final BacklogSearchAdapter backlogSearchAdapter,
-									final SuggestionListener suggestionListener) {
-		this.backlogSearchAdapter = backlogSearchAdapter;
+	public SearchListener(final Context context, final SearchAdapter searchAdapter,
+						final SuggestionListener suggestionListener) {
+		this.searchAdapter = searchAdapter;
 		this.context = context;
 		this.suggestionListener = suggestionListener;
 		AgilefantApplication.getObjectGraph().inject(this);
@@ -57,7 +57,7 @@ public class AllBacklogsSearchListener implements SearchView.OnQueryTextListener
 					cursor.addSearchResults(results);
 					suggestionListener.setItems(results);
 
-					backlogSearchAdapter.changeCursor(cursor);
+					searchAdapter.changeCursor(cursor);
 				}
 			}, new Response.ErrorListener() {
 				@Override
@@ -76,7 +76,7 @@ public class AllBacklogsSearchListener implements SearchView.OnQueryTextListener
 
 		// On text remove we drop the cursor
 		if (input.isEmpty()) {
-			backlogSearchAdapter.changeCursor(null);
+			searchAdapter.changeCursor(null);
 		}
 
 		return true;

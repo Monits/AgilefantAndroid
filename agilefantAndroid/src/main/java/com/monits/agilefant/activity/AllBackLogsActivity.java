@@ -14,10 +14,10 @@ import android.view.MenuItem;
 
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.BacklogsPagerAdapter;
-import com.monits.agilefant.adapter.search.BacklogSearchAdapter;
+import com.monits.agilefant.adapter.search.SearchAdapter;
 import com.monits.agilefant.fragment.backlog.AllBacklogsFragment;
 import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
-import com.monits.agilefant.listeners.AllBacklogsSearchListener;
+import com.monits.agilefant.listeners.SearchListener;
 import com.monits.agilefant.listeners.SuggestionListener;
 
 import java.util.ArrayList;
@@ -48,8 +48,8 @@ public class AllBackLogsActivity extends BaseToolbaredActivity {
 		super.onCreateOptionsMenu(menu);
 
 		// Adapter
-		final BacklogSearchAdapter backlogSearchAdapter =
-				new BacklogSearchAdapter(this, null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		final SearchAdapter searchAdapter =
+				new SearchAdapter(this, null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
 		// Suggestion listener
 		final SuggestionListener suggestionListener = new SuggestionListener(this);
@@ -66,10 +66,10 @@ public class AllBackLogsActivity extends BaseToolbaredActivity {
 		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
 
 		searchView.setSearchableInfo(searchableInfo);
-		searchView.setSuggestionsAdapter(backlogSearchAdapter);
+		searchView.setSuggestionsAdapter(searchAdapter);
 		searchView.setSubmitButtonEnabled(true);
 
-		searchView.setOnQueryTextListener(new AllBacklogsSearchListener(this, backlogSearchAdapter,
+		searchView.setOnQueryTextListener(new SearchListener(this, searchAdapter,
 				suggestionListener));
 		searchView.setOnSuggestionListener(suggestionListener);
 
