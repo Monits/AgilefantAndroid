@@ -13,19 +13,14 @@ import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class AgilefantServiceImpl implements AgilefantService {
 
@@ -41,20 +36,14 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 	private final SharedPreferences sharedPreferences;
 
-	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING", justification = "We do not want this in the toString")
-	private final Gson gson;
-
 	private final RequestQueue requestQueue;
 
 	/**
 	 * @param sharedPreferences Injected via constructor by Dagger
-	 * @param gson Injected via constructor by Dagger
 	 * @param requestQueue Injected via constructor by Dagger
 	 */
 	@Inject
-	public AgilefantServiceImpl(final SharedPreferences sharedPreferences,
-								final Gson gson, final RequestQueue requestQueue) {
-		this.gson = gson;
+	public AgilefantServiceImpl(final SharedPreferences sharedPreferences, final RequestQueue requestQueue) {
 		this.sharedPreferences = sharedPreferences;
 		this.requestQueue = requestQueue;
 	}
@@ -120,29 +109,6 @@ public class AgilefantServiceImpl implements AgilefantService {
 			setDomain(sharedPreferences.getString(UserService.DOMAIN_KEY, null));
 		}
 		return host;
-	}
-
-	/**
-	 * An auxiliary method in order to append parameters to the given post body's StringBuilder,
-	 * for some special requests.
-	 *
-	 * @param sb the StringBuilder to build post body.
-	 * @param key the key of the param.
-	 * @param value the value for that key.
-	 * @param encoding the encoding.
-	 * @return the same StringBuilder that was given, with the given params appended.
-	 *
-	 * @throws UnsupportedEncodingException If the given encoding is not supported
-	 */
-	private StringBuilder appendURLEncodedParam(final StringBuilder sb, final String key, final String value,
-												final String encoding) throws UnsupportedEncodingException {
-
-		sb.append(URLEncoder.encode(key, encoding));
-		sb.append('=');
-		sb.append(URLEncoder.encode(value, encoding));
-		sb.append('&');
-
-		return sb;
 	}
 
 	@Override
