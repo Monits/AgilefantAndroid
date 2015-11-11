@@ -18,6 +18,8 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.MetricsServiceImpl;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.service.ProjectServiceImpl;
+import com.monits.agilefant.service.SearchService;
+import com.monits.agilefant.service.SearchServiceImpl;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.service.UserServiceImpl;
 import com.monits.agilefant.service.WorkItemService;
@@ -95,6 +97,12 @@ public class AgilefantModule {
 	@Singleton
 	/* default */ WorkItemService provideWorkItemService(final WorkItemServiceImpl workItemService) {
 		return workItemService;
+	}
+
+	@Provides
+	@Singleton
+	/* default */ SearchService provideSearchService(final SearchServiceImpl searchService) {
+		return searchService;
 	}
 
 }

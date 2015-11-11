@@ -7,6 +7,8 @@
 	<string name="login_error">Invalid username or password, please try again.</string>
 	<string name="connection_error">Check your connection and try again.</string>
 	<string name="error_validation_date">Date : Invalid format (yyyy-mm-dd hh:mm)</string>
+    <string name="feedback_search_error">Failed to retrieve search results</string>
+    <string name="feedback_failed_retrieve_project">Failed to retrieve project data</string>
 
     <string name="app_name">Agilefant</string>
     <string name="username">Username</string>
@@ -136,6 +138,10 @@
     <string name="state_done_full">Done</string>
     <string name="state_deferred_full">Deferred</string>
     <string name="no_iteration">None</string>
+
+    <!-- SearchView -->
+    <string name="search_hint_backlog">Search for backlogs</string>
+    <string name="search_description_backlog">Search for a backlog item from the list</string>
 
 
 </resources>

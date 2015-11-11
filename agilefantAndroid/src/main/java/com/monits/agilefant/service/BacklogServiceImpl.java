@@ -74,5 +74,4 @@ public class BacklogServiceImpl implements BacklogService {
 
 		agilefantService.addRequest(request);
 	}
-
 }

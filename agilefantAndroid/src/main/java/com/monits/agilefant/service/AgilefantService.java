@@ -3,7 +3,6 @@ package com.monits.agilefant.service;
 import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.monits.agilefant.model.Story;
 
 public interface AgilefantService {
 

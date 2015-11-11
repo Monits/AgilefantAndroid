@@ -32,6 +32,7 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String USERNAME = "j_username";
 	private static final String LOGIN_OK = "/index.jsp";
 
+
 	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
 
 	private final SharedPreferences sharedPreferences;

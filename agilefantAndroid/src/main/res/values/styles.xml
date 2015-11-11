@@ -24,6 +24,11 @@
         <item name="selectableItemBackground">@color/action_bar_color</item>
         <item name="tabIndicatorColor">@color/action_bar_text</item>
         <item name="tabTextColor">@color/tab_not_selected_text</item>
+        <item name="android:dropDownListViewStyle">@style/dropDownStyle</item>
+    </style>
+
+    <style name="dropDownStyle" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:background">@android:color/white</item>
     </style>
 
     <style name="AppTheme.WhiteBg" parent="AppTheme">
@@ -41,6 +46,7 @@
 
     <style name="Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">@color/action_bar_color</item>
+        <item name="android:textColorHint">@color/tab_not_selected_text</item>
     </style>
 
     <style name="Toolbar_Popup" parent="Base.ThemeOverlay.AppCompat.ActionBar">
@@ -73,4 +79,17 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="SearchItemProduct" parent="dropDownStyle">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@android:color/secondary_text_dark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/search_item_product</item>
+    </style>
+
+    <style name="SearchItemProject" parent="dropDownStyle">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@color/action_bar_color</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/search_item_project</item>
+    </style>
 </resources>
