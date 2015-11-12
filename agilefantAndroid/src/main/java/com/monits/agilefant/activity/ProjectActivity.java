@@ -2,15 +2,16 @@ package com.monits.agilefant.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.ScreenSlidePagerAdapter;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
@@ -18,12 +19,14 @@ import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Project;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectActivity extends BaseToolbaredActivity {
+public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.OnPageChangeListener {
 
 	private static final String EXTRA_BACKLOG = "com.monits.agilefant.intent.extra.PROJECT";
 	private static final String PROJECT = "project";
@@ -86,5 +89,27 @@ public class ProjectActivity extends BaseToolbaredActivity {
 						.commit();
 			}
 		});
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu) {
+		menu.findItem(R.id.action_search).setVisible(false);
+
+		return true;
+	}
+
+	@Override
+	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+		// Nothing to do here
+	}
+
+	@Override
+	public void onPageSelected(final int position) {
+		supportInvalidateOptionsMenu();
+	}
+
+	@Override
+	public void onPageScrollStateChanged(final int state) {
+		// Nothing to do here
 	}
 }
