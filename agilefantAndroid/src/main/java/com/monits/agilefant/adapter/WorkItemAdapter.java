@@ -16,8 +16,8 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
-import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolder;
+import com.monits.agilefant.adapter.recyclerviewholders.WorkItemViewHolderUpdateTracker;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
@@ -115,6 +115,14 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	public void setWorkItems(final List<? extends WorkItem> workItems) {
 		this.workItems = new ArrayList<>(workItems);
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * Returns the WorkItem list attached to this adapter
+	 * @return The workItem list
+	 */
+	public List<WorkItem> getWorkItems() {
+		return this.workItems;
 	}
 
 	@Override

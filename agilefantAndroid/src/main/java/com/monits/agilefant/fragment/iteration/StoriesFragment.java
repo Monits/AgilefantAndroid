@@ -23,6 +23,7 @@ import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 import com.monits.agilefant.service.MetricsService;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -100,8 +101,17 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
 		final Bundle arguments = getArguments();
+
+		final List<Story> stories;
+
+		if (savedInstanceState == null) {
+			stories = (List<Story>) arguments.getSerializable(STORIES);
+		} else {
+			stories = (List<Story>) savedInstanceState.getSerializable(STORIES);
+		}
+
 		storiesAdapter = new WorkItemAdapter(getActivity());
-		storiesAdapter.setWorkItems((List<Story>) arguments.getSerializable(STORIES));
+		storiesAdapter.setWorkItems(stories);
 	}
 
 	@Override
@@ -128,6 +138,13 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 
 		return rootView;
 	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(STORIES, (Serializable) storiesAdapter.getWorkItems());
+	}
+
 
 	@Override
 	public void update(final Observable observable, final Object data) {
