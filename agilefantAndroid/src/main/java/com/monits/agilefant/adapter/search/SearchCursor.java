@@ -3,7 +3,6 @@ package com.monits.agilefant.adapter.search;
 import android.database.MatrixCursor;
 
 import com.monits.agilefant.model.SearchResult;
-import com.monits.agilefant.model.search.SearchResultType;
 
 import java.util.List;
 
@@ -47,17 +46,12 @@ public class SearchCursor extends MatrixCursor {
 	 */
 	public void addSearchResults(final List<SearchResult> searchResultList) {
 
-		// TODO : It has to be possible to show and execute actions if result is not a Project.
-
 		for (final SearchResult searchResult : searchResultList) {
-			// It's only adding projects
-			if (searchResult.getType() == SearchResultType.PROJECT) {
-				final String[] fields = new String[FIELDS.length];
-				fields[ID] = String.valueOf(searchResult.getId());
-				fields[LABEL] = searchResult.getLabel();
-				fields[TYPE] = searchResult.getType().toString();
-				addRow(fields);
-			}
+			final String[] fields = new String[FIELDS.length];
+			fields[ID] = String.valueOf(searchResult.getId());
+			fields[LABEL] = searchResult.getLabel();
+			fields[TYPE] = searchResult.getType().toString();
+			addRow(fields);
 		}
 	}
 }

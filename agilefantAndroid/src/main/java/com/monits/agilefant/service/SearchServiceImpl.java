@@ -5,6 +5,7 @@ import com.android.volley.Response;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monits.agilefant.model.SearchResult;
+import com.monits.agilefant.model.search.SearchResultType;
 import com.monits.volleyrequests.network.request.GsonRequest;
 
 import java.lang.reflect.Type;
@@ -46,7 +47,24 @@ public class SearchServiceImpl implements SearchService {
 
 		final Type listType = new TypeToken<ArrayList<SearchResult>>() { }.getType();
 		final GsonRequest<List<SearchResult>> request = new GsonRequest<>(Request.Method.GET, url,
-				gson, listType, listener, error, null);
+				gson, listType,
+				new Response.Listener<List<SearchResult>>() {
+					@Override
+					public void onResponse(final List<SearchResult> searchResultList) {
+						// TODO : It has to be possible to show and execute actions if result is not a Project.
+
+						final List<SearchResult> filteredList = new ArrayList<>();
+
+						// We only show projects
+						for (final SearchResult item : searchResultList) {
+							if (item.getType() == SearchResultType.PROJECT) {
+								filteredList.add(item);
+							}
+						}
+
+						listener.onResponse(filteredList);
+					}
+				}, error, null);
 
 		agilefantService.addRequest(request);
 	}
