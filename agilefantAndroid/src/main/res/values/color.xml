@@ -17,4 +17,5 @@
     <color name="fab_label_primary_color">#95000000</color>
 
     <color name="tab_not_selected_text">#CCd4d4d4</color>
+    <color name="active_search_item">#E6E6E6</color>
 </resources>

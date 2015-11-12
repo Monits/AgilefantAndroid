@@ -4,7 +4,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/search_result_selector"
     android:padding="@dimen/list_padding_top">
 
     <TextView
