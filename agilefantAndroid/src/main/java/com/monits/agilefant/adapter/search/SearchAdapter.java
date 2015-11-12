@@ -30,7 +30,7 @@ public class SearchAdapter extends CursorAdapter {
 
 		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		return inflater.inflate(R.layout.item_backlog_search, parent, false);
+		return inflater.inflate(R.layout.item_search_result, parent, false);
 	}
 
 	@Override
