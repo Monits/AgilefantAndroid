@@ -59,6 +59,8 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	@Bind(R.id.stories_empty_view)
 	/* default */ TextView emptyView;
 
+	private ItemTouchHelper itemTouchHelper;
+
 	@SuppressFBWarnings(
 		value = "MISSING_FIELD_IN_TO_STRING", justification = "It's a view, we don't need this in toString")
 	private RecyclerView storiesListView;
@@ -142,7 +144,7 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 		final WorkItemTouchHelperCallback workItemTouchHelperCallback =
 				new WorkItemTouchHelperCallback(storiesAdapter);
-		final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
+		itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
 		itemTouchHelper.attachToRecyclerView(storiesListView);
 
 		return view;
@@ -204,7 +206,17 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 	@Override
 	public boolean onQueryTextChange(final String newText) {
+		if (newText.isEmpty()) {
+			// Attach callback
+			itemTouchHelper.attachToRecyclerView(storiesListView);
+
+		} else {
+			// dettach callback
+			itemTouchHelper.attachToRecyclerView(null);
+		}
+		// Apply filter
 		storiesAdapter.filter(newText);
+
 		return true;
 	}
 }
