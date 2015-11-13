@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,7 +41,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class ProjectLeafStoriesFragment extends BaseDetailTabFragment {
+public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements SearchView.OnQueryTextListener {
 
 	private static final String BACKLOG = "PROJECT_BACKLOG";
 
@@ -125,13 +128,13 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment {
 
 		setHasOptionsMenu(true);
 
-		storiesAdapter = new ProjectLeafStoriesRecyclerAdapter(getActivity(), project);
 		storiesListView = (RecyclerView) view.findViewById(R.id.stories_list);
 
 		if (stories == null || stories.isEmpty()) {
 			emptyView.setVisibility(View.VISIBLE);
 			storiesListView.setVisibility(View.GONE);
 		}
+		storiesAdapter = new ProjectLeafStoriesRecyclerAdapter(getActivity(), project);
 
 		storiesListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		storiesListView.setAdapter(storiesAdapter);
@@ -177,7 +180,10 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment {
 	@Override
 	public void onPrepareOptionsMenu(final Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		menu.findItem(R.id.action_search).setVisible(true);
+		final MenuItem item = menu.findItem(R.id.action_search);
+		item.setVisible(true);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
 	}
 
 	@Override
@@ -189,5 +195,16 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment {
 	public String toString() {
 		return "ProjectLeafStoriesFragment [project: " + project
 				+ ", adapter: " + storiesAdapter + ']';
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(final String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(final String newText) {
+		storiesAdapter.filter(newText);
+		return true;
 	}
 }
