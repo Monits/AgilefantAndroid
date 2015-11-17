@@ -143,7 +143,11 @@ public class MetricsServiceImpl implements MetricsService {
 
 					@Override
 					public void onResponse(final Task response) {
-						task.updateValues(response);
+
+						// It might be null
+						if (response != null) {
+							task.updateValues(response);
+						}
 
 						listener.onResponse(response);
 					}
