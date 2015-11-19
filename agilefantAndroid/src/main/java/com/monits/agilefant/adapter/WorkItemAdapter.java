@@ -236,17 +236,21 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 
 		// Are we moving stories or tasks?
 		if (referenceElement.getType() == WorkItemType.STORY) {
-			final Story story = getRelevantStory(toPosition);
-			final Story storyTarget = getRelevantStory(fromPosition);
 
 			final Response.Listener<Story> successListener =
 					getSuccessListener(R.string.feedback_success_update_story_rank);
 			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_story_rank);
 
-			if (fromPosition < toPosition) {
+			if (fromPosition > toPosition) {
+				final Story story = (Story) referenceElement;
+				final Story storyTarget = getRelevantStory(toPosition + visibleElementCount(story));
+
 				workItemService.rankStoryOver(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			} else {
+				final Story storyTarget = (Story) referenceElement;
+				final Story story = getRelevantStory(toPosition + visibleElementCount(storyTarget) - 1);
+
 				workItemService.rankStoryUnder(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			}
