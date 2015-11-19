@@ -56,7 +56,7 @@ public class StoriesFragment extends BaseDetailTabFragment {
 					&& !StoriesFragment.this.isDetached()) {
 
 				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
-				storiesAdapter.updateTask(updatedTask);
+				storiesAdapter.onUpdate(updatedTask);
 			}
 
 			if (AgilefantApplication.ACTION_NEW_STORY.equals(intent.getAction())) {

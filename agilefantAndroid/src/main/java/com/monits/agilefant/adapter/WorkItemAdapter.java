@@ -141,25 +141,6 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	/**
-	 * If it's present, update the given task
-	 * @param updatedTask The updated task
-	 */
-	public void updateTask(final Task updatedTask) {
-		final int storyIndex = workItems.indexOf(updatedTask.getStory());
-		if (storyIndex != -1) {
-			final Story story = (Story) workItems.get(storyIndex);
-
-			final List<Task> tasks = story.getTasks();
-			final int indexOf = tasks.indexOf(updatedTask);
-
-			if (indexOf != -1) {
-				tasks.get(indexOf).updateValues(updatedTask);
-				notifyItemChanged(indexOf);
-			}
-		}
-	}
-
-	/**
 	 * Add a story
 	 * @param newStory The new story
 	 */
