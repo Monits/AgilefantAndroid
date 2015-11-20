@@ -90,6 +90,7 @@ public class TaskTimeTrackingService extends Service {
 		}
 
 		return START_STICKY_COMPATIBILITY;
+
 	}
 
 	@Override
@@ -108,8 +109,7 @@ public class TaskTimeTrackingService extends Service {
 		final long extraNotifId = trackedTask.getId(); // Make sure it's a long
 		final int notifId = notificationHolder.getNotificationId();
 		final boolean isChronometerRunning = notificationHolder.isChronometerRunning();
-		final RemoteViews contentView =
-				new RemoteViews(getPackageName(), R.layout.task_tracking_notification);
+		final RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.task_tracking_notification);
 
 		contentView.setTextViewText(R.id.chronometer_description, trackedTask.getName());
 		contentView.setChronometer(R.id.trackChronometer, notificationHolder.getChronometerBaseTime(),
@@ -189,8 +189,6 @@ public class TaskTimeTrackingService extends Service {
 	 * Resumes chronometer, updates elapsed millis and updates notification state.
 	 */
 	private void startChronometer(final NotificationHolder notificationHolder) {
-		stopForeground(false);
-
 		notificationHolder.resume();
 
 		/*
@@ -268,8 +266,8 @@ public class TaskTimeTrackingService extends Service {
 
 					final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
 					dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-						| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+							| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+							| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 					dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_TASK,
 							notificationHolder.getTrackedTask());
 					dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS,
