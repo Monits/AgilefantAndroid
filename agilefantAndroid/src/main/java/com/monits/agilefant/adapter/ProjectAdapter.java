@@ -132,7 +132,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		@Bind(R.id.txt_icon)
 		/* default */ TextView icon;
 
-		public HolderGroup(final View view) {
+		HolderGroup(final View view) {
 			ButterKnife.bind(this, view);
 		}
 	}
@@ -141,7 +141,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		@Bind(R.id.txt_title)
 		/* default */ TextView title;
 
-		public HolderChild(final View view) {
+		HolderChild(final View view) {
 			ButterKnife.bind(this, view);
 		}
 	}

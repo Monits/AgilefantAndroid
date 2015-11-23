@@ -46,7 +46,7 @@ public abstract class OnDrawableClickListener implements OnTouchListener {
 	 */
 	public abstract boolean onDrawableClick(MotionEvent event);
 
-	public static enum DrawablePosition {
+	public enum DrawablePosition {
 		LEFT, TOP, RIGHT, BOTTOM
 	}
 }
