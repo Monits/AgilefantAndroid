@@ -19,7 +19,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class UserChooserDeserializer implements JsonDeserializer<UserChooser> {
 
-	private final static String USER_BASE_CLASS_NAME = "fi.hut.soberit.agilefant.model.User";
+	private static final String USER_BASE_CLASS_NAME = "fi.hut.soberit.agilefant.model.User";
 
 	@SuppressFBWarnings(value = "WOC_WRITE_ONLY_COLLECTION_LOCAL",
 			justification = "The object is used to build the response")

@@ -34,7 +34,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class DailyWorkActivity extends BaseToolbaredActivity {
 
-	private final static String DAILYWORK = "dailywork";
+	private static final String DAILYWORK = "dailywork";
 
 	private DailyWork dailyWork;
 

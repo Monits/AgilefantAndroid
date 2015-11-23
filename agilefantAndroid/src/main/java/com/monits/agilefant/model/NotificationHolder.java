@@ -9,7 +9,7 @@ import android.support.v4.app.NotificationCompat;
 
 public class NotificationHolder {
 
-	private final static AtomicInteger GENERATED_ID = new AtomicInteger(0);
+	private static final AtomicInteger GENERATED_ID = new AtomicInteger(0);
 
 	private final Task trackedTask;
 

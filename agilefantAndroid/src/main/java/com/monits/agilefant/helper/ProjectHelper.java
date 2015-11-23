@@ -20,8 +20,8 @@ import javax.inject.Inject;
  */
 public class ProjectHelper {
 
-	final private Context context;
-	final private Backlog backlog;
+	private final Context context;
+	private final Backlog backlog;
 
 
 	@Inject

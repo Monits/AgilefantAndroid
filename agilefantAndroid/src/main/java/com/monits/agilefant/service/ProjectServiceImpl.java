@@ -39,7 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
 	private static final String PROJECT_DATA = "%1$s/ajax/projectData.action?projectId=%2$d";
 
 	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING", justification = "We do not want this in the toString")
-	final private Gson gson;
+	private final Gson gson;
 
 	/**
 	 * @param agilefantService Injected via constructor by Dagger
