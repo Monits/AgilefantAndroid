@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings(value = "CD_CIRCULAR_DEPENDENCY", justification = "Data models are coupled")
 public class Task implements Serializable, Rankable<Task>, WorkItem {
 
 	private static final long serialVersionUID = 2576001407807164868L;
