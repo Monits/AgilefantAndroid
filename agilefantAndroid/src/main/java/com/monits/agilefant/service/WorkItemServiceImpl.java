@@ -139,7 +139,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 			backlogId = iteration.getId();
 		}
 
-		final String url = String.format(Locale.US, STORY_MOVE, agilefantService.getHost());
+		final String url = urlFormat(STORY_MOVE);
 
 		final GsonRequest<Story> request = new GsonRequest<Story>(
 				Request.Method.POST, url, gson, Story.class,
@@ -182,7 +182,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 		final List<Task> fallbackTasksList = new LinkedList<>();
 		RankUtils.copyAndSetRank(allTasks, fallbackTasksList);
 
-		final String url = String.format(Locale.US, RANK_TASK_UNDER_ACTION, agilefantService.getHost());
+		final String url = urlFormat(RANK_TASK_UNDER_ACTION);
 
 		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(Request.Method.POST, url,
 				gson, Task.class, listener,
@@ -223,7 +223,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 		final List<Story> fallbackStoryList = new LinkedList<>();
 		RankUtils.copyAndSetRank(allStories, fallbackStoryList);
 
-		final String url = String.format(Locale.US, RANK_STORY_UNDER_ACTION, agilefantService.getHost());
+		final String url = urlFormat(RANK_STORY_UNDER_ACTION);
 
 		final UrlGsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener,
 				new Response.ErrorListener() {
@@ -251,7 +251,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 		final List<Story> fallbackStoryList = new LinkedList<>();
 		RankUtils.copyAndSetRank(allStories, fallbackStoryList);
 
-		final String url = String.format(Locale.US, RANK_STORY_OVER_ACTION, agilefantService.getHost());
+		final String url = urlFormat(RANK_STORY_OVER_ACTION);
 
 		final UrlGsonRequest<Story> request = newGsonRequest(story, targetStory, backlogId, url, listener,
 				new Response.ErrorListener() {
@@ -270,7 +270,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	@Override
 	public void createStory(final BacklogElementParameters parameters, final Response.Listener<Story> listener,
 							final Response.ErrorListener error) {
-		final String url = String.format(Locale.US, STORY_CREATE, agilefantService.getHost());
+		final String url = urlFormat(STORY_CREATE);
 
 		final UrlGsonRequest<Story> request = new UrlGsonRequest<Story>(
 				Request.Method.POST, url, gson, Story.class, listener, error, null) {
@@ -282,6 +282,10 @@ public class WorkItemServiceImpl implements WorkItemService {
 		};
 
 		agilefantService.addRequest(request);
+	}
+
+	private String urlFormat(final String url) {
+		return String.format(Locale.getDefault(), url, agilefantService.getHost());
 	}
 
 	private Map<String, String> getCreateStoryParams(final BacklogElementParameters parameters) {
@@ -318,7 +322,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	@Override
 	public void createTask(final BacklogElementParameters parameters, final Response.Listener<Task> listener,
 						final Response.ErrorListener errorListener) {
-		final String url = String.format(Locale.US, TASK_CREATE, agilefantService.getHost());
+		final String url = urlFormat(TASK_CREATE);
 
 		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(
 				Request.Method.POST, url, gson,
@@ -350,7 +354,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	public void updateTask(final Task task, final Response.Listener<Task> listener,
 							final Response.ErrorListener error) {
 
-		final String url = String.format(Locale.US, STORE_TASK_ACTION, agilefantService.getHost());
+		final String url = urlFormat(STORE_TASK_ACTION);
 
 		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(Request.Method.POST, url,
 				gson, Task.class, listener, error, null) {
@@ -385,7 +389,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	@Override
 	public void updateStory(final Story story, final Boolean tasksToDone, final Response.Listener<Story> listener,
 							final Response.ErrorListener error) {
-		final String url = String.format(Locale.US, STORE_STORY_ACTION, agilefantService.getHost());
+		final String url = urlFormat(STORE_STORY_ACTION);
 
 		final UrlGsonRequest<Story> req = new UrlGsonRequest<Story>(Request.Method.POST, url,
 				gson, Story.class, listener, error, null) {

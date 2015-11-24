@@ -77,8 +77,8 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	@Override
 	public void getDailyWork(final Listener<DailyWork> listener, final ErrorListener error) {
 
-		final String url = String.format(Locale.US, DAILY_WORK_ACTION, agilefantService.getHost(),
-				userService.getLoggedUser().getId());
+		final String url = String.format(Locale.getDefault(), DAILY_WORK_ACTION,
+				agilefantService.getHost(), userService.getLoggedUser().getId());
 
 		final GsonRequest<DailyWork> request = new GsonRequest<>(
 				Request.Method.GET, url, gson, DailyWork.class,
@@ -111,9 +111,8 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	public void rankMyStoryUnder(final Story story, final Story rankStoryUnder, final Long userId, final Response
 			.Listener<Story> listener, final Response.ErrorListener error) {
 
-		final String url = String.format(Locale.US, RANK_MY_STORIES_UNDER, agilefantService.getHost());
-
-		final UrlGsonRequest<Story> request = new UrlGsonRequest<Story>(Request.Method.POST, url, gson, Story.class,
+		final UrlGsonRequest<Story> request = new UrlGsonRequest<Story>(Request.Method.POST,
+				urlFormat(RANK_MY_STORIES_UNDER), gson, Story.class,
 				listener, error, null) {
 
 			@Override
@@ -141,10 +140,9 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 		final List<Task> fallbackTasksList = new LinkedList<>();
 		RankUtils.copyAndSetRank(allTasks, fallbackTasksList);
 
-		final String url = String.format(Locale.US, RANK_DAILY_TASK_UNDER_ACTION, agilefantService.getHost());
-
 		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(
-				Request.Method.POST, url, gson, Task.class, listener,
+				Request.Method.POST,
+				urlFormat(RANK_DAILY_TASK_UNDER_ACTION), gson, Task.class, listener,
 				new Response.ErrorListener() {
 
 					@Override
@@ -168,6 +166,10 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 		};
 
 		agilefantService.addRequest(request);
+	}
+
+	private String urlFormat(final String url) {
+		return String.format(Locale.getDefault(), url, agilefantService.getHost());
 	}
 
 	/**
