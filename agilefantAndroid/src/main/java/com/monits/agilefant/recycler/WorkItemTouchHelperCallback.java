@@ -65,12 +65,12 @@ public class WorkItemTouchHelperCallback extends ItemTouchHelper.Callback {
 		// if both are type task, check if are from the same story.
 		if (originalWorkItem.getType() == WorkItemType.TASK && targetWorkItem.getType() == WorkItemType.TASK) {
 
-			final Task taskOrigin = (Task) originalWorkItem;
-			final Task taskTarget = (Task) targetWorkItem;
+			final Story originParent = ((Task) originalWorkItem).getStory();
+			final Story targetParent = ((Task) targetWorkItem).getStory();
 
-			if (!(taskOrigin.getStory() == null && taskTarget.getStory() == null) // for tasks without story
-					&& (taskOrigin.getStory() == null || taskTarget.getStory() == null
-					|| !taskOrigin.getStory().equals(taskTarget.getStory()))) {
+			if (!(originParent == null && targetParent == null) // for tasks without story
+					&& (originParent == null || targetParent == null
+					|| !originParent.equals(targetParent))) {
 				return false;
 			}
 		}
