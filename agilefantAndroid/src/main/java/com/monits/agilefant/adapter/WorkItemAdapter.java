@@ -25,8 +25,10 @@ import com.monits.agilefant.model.WorkItemType;
 import com.monits.agilefant.recycler.DragAndDropListener;
 import com.monits.agilefant.service.WorkItemService;
 
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -39,8 +41,11 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	protected final FragmentActivity context;
 	protected final LayoutInflater inflater;
 	protected List<WorkItem> workItems;
+	protected List<WorkItem> originalWorkItems;
 
 	private final UpdateAdapterHelper updateAdapterHelper;
+
+	private String queryText = "";
 
 	@Inject
 	/* default */ WorkItemService workItemService;
@@ -73,17 +78,20 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	@Override
 	public void onBindViewHolder(final WorkItemViewHolder holder, final int position) {
 		final WorkItem workItem = workItems.get(position);
+		final int originalPosition = originalWorkItems.indexOf(workItem);
+		final WorkItem originalWorkItem = originalWorkItems.get(originalPosition);
 		holder.onBindView(workItem);
 		holder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {
 				if (workItem.getType() == WorkItemType.STORY) {
 					final Story story = (Story) workItem;
-
 					if (story.isExpanded()) {
 						removeWorkItem(story, holder.getAdapterPosition() + 1);
+						removeWorkItemFromOriginalList((Story) originalWorkItem);
 					} else {
 						addWorkItem(story, holder.getAdapterPosition() + 1);
+						addWorkItemFromOriginalList((Story) originalWorkItem, originalPosition + 1);
 					}
 				}
 			}
@@ -113,7 +121,8 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	 * @param workItems A work item list to set
 	 */
 	public void setWorkItems(final List<? extends WorkItem> workItems) {
-		this.workItems = new ArrayList<>(workItems);
+		this.originalWorkItems = new ArrayList<>(workItems);
+		this.workItems = new ArrayList<>(originalWorkItems);
 		notifyDataSetChanged();
 	}
 
@@ -126,18 +135,40 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		final List<Task> children = workItem.getTasks();
 		int i = 0;
 		for (final WorkItem item : children) {
-			workItems.add(position + i, item);
-			i++;
+			if (matchesFilterQuery(item.getName()) || matchesFilterQuery(workItem.getName())) {
+				workItems.add(position + i, item);
+				i++;
+			}
 		}
 		workItem.setExpanded(true);
-		notifyItemRangeInserted(position, children.size());
+		notifyItemRangeInserted(position, i);
 	}
 
 	private void removeWorkItem(final Story workItem, final int position) {
 		final List<Task> children = workItem.getTasks();
-		workItems.removeAll(children);
+		int i = 0;
+		for (final WorkItem item : children) {
+			if (matchesFilterQuery(item.getName()) || matchesFilterQuery(workItem.getName())) {
+				workItems.remove(item);
+				i++;
+			}
+		}
 		workItem.setExpanded(false);
-		notifyItemRangeRemoved(position, children.size());
+		notifyItemRangeRemoved(position, i);
+	}
+
+	private void addWorkItemFromOriginalList(final Story workItem, final int position) {
+		final List<Task> children = workItem.getTasks();
+		int i = 0;
+		for (final WorkItem item : children) {
+			originalWorkItems.add(position + i, item);
+			i++;
+		}
+	}
+
+	private void removeWorkItemFromOriginalList(final Story workItem) {
+		final List<Task> children = workItem.getTasks();
+		originalWorkItems.removeAll(children);
 	}
 
 	/**
@@ -298,4 +329,50 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	public WorkItem getItem(final int position) {
 		return workItems.get(position);
 	}
+
+
+
+	/**
+	 * Filter the list leaving only those that match the text sent.
+	 * @param query the text used to filter
+	 */
+	public void filter(final String query) {
+		queryText = query.toLowerCase(Locale.getDefault());
+		workItems = new ArrayList<>(originalWorkItems);
+
+		for (final WorkItem w : originalWorkItems) {
+			if (w.getType() == WorkItemType.STORY && !matchesFilterQuery(w.getName())) {
+				int i = 0;
+				for (final Task t : ((Story) w).getTasks()) {
+					if (matchesFilterQuery(t.getName())) {
+						i++;
+					} else {
+						workItems.remove(t);
+					}
+				}
+				if (i == 0) {
+					workItems.remove(w);
+				}
+			} else if (((Task) w).getStory() == null && !matchesFilterQuery(w.getName())) { //For TWOS
+				workItems.remove(w);
+
+			}
+		}
+		notifyDataSetChanged();
+	}
+
+	@Override
+	public String toString() {
+		return "WorkItemAdapter{"
+				+ "workItems=" + workItems
+				+ ", originalWorkItems=" + originalWorkItems
+				+ ", updateAdapterHelper=" + updateAdapterHelper
+				+ ", queryText='" + queryText
+				+ '}';
+	}
+
+	private boolean matchesFilterQuery(final String text) {
+		return text.toLowerCase(Locale.getDefault()).contains(queryText);
+	}
+
 }

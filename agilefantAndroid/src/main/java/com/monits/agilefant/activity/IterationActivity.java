@@ -42,7 +42,7 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	private TextView storyFABLabel;
 	private TextView taskFABLabel;
-	private final static long DELAY = 90;
+	private static final long DELAY = 90;
 
 	@Bind(R.id.pager)
 	/* default */ ViewPager viewPager;
@@ -196,9 +196,7 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
-		final int pageNum = viewPager.getCurrentItem();
-		menu.findItem(R.id.action_search).setVisible(pageNum > 0 && pageNum < viewPager.getAdapter().getCount() - 1);
-
+		menu.findItem(R.id.action_search).setVisible(false);
 		return true;
 	}
 }

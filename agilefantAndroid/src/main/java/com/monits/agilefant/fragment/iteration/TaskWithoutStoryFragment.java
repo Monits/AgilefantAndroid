@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,7 +32,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
+public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements SearchView.OnQueryTextListener {
 
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
 
@@ -98,6 +102,8 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
+		setHasOptionsMenu(true);
+
 		final Bundle arguments = getArguments();
 		this.taskWithoutStory = (List<Task>) arguments.getSerializable(EXTRA_TASKS);
 
@@ -146,4 +152,26 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment {
 				+ "taskWithoutStoryAdapter=" + taskWithoutStoryAdapter
 				+ '}';
 	}
+
+	@Override
+	public boolean onQueryTextSubmit(final String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(final String query) {
+		taskWithoutStoryAdapter.filter(query);
+		return true;
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(final Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		final MenuItem item = menu.findItem(R.id.action_search);
+		item.setVisible(true);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
+	}
+
+
 }

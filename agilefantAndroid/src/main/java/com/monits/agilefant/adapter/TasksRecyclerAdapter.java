@@ -21,8 +21,10 @@ import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
 import com.monits.agilefant.service.TaskRankUpdaterService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by edipasquale on 25/09/15.
@@ -31,7 +33,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 		WorkItemViewHolderUpdateTracker, DragAndDropListener {
 
 	protected List<Task> taskList;
-
+	private final List<Task> originalTaskList;
 	protected final LayoutInflater inflater;
 	protected final FragmentActivity context;
 
@@ -48,6 +50,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 			final TaskRankUpdaterService rankUpdaterService) {
 		this.context = context;
 		this.taskList = taskList;
+		this.originalTaskList = this.taskList;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		this.rankUpdaterService = rankUpdaterService;
@@ -116,6 +119,21 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 	@Override
 	public WorkItem getItem(final int position) {
 		return taskList.get(position);
+	}
+
+	/**
+	 * Filter the list leaving only those that match the text sent.
+	 * @param query the text used to filter
+	 */
+	public void filter(final String query) {
+		final String queryText = query.toLowerCase(Locale.getDefault());
+		taskList = new ArrayList<>(); //Clean List
+		for (final Task t : originalTaskList) {
+			if (t.getName().toLowerCase(Locale.getDefault()).contains(queryText)) {
+				taskList.add(t);
+			}
+			notifyDataSetChanged();
+		}
 	}
 
 	@Override

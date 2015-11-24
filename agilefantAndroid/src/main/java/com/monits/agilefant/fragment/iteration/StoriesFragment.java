@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -31,7 +35,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StoriesFragment extends BaseDetailTabFragment {
+public class StoriesFragment extends BaseDetailTabFragment implements SearchView.OnQueryTextListener {
 
 	@Inject
 	/* default */ MetricsService metricsService;
@@ -97,6 +101,8 @@ public class StoriesFragment extends BaseDetailTabFragment {
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 
+		setHasOptionsMenu(true);
+
 		final Bundle arguments = getArguments();
 		storiesAdapter = new WorkItemAdapter(getActivity());
 		storiesAdapter.setWorkItems((List<Story>) arguments.getSerializable(STORIES));
@@ -138,4 +144,31 @@ public class StoriesFragment extends BaseDetailTabFragment {
 		return R.string.stories;
 	}
 
+	@Override
+	public boolean onQueryTextSubmit(final String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(final String query) {
+		storiesAdapter.filter(query);
+		return true;
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(final Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		final MenuItem item = menu.findItem(R.id.action_search);
+		item.setVisible(true);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
+	}
+
+	@Override
+	public String toString() {
+		return "StoriesFragment{"
+				+ "broadcastReceiver=" + broadcastReceiver
+				+ ", storiesAdapter=" + storiesAdapter
+				+ '}';
+	}
 }
