@@ -3,6 +3,7 @@ package com.monits.agilefant.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
@@ -42,6 +43,9 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	private TextView storyFABLabel;
 	private TextView taskFABLabel;
+
+	private static final int DURATION = 100;
+	private static final float DEGREE = 135;
 	private static final long DELAY = 90;
 
 	@Bind(R.id.pager)
@@ -127,9 +131,10 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 
 	private void animationFABMenu() { //Open animation
+
 		if (optionsContainer.getVisibility() == View.INVISIBLE) {
-			final Animation rotateIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_in);
-			addFAB.setAnimation(rotateIn);
+			ViewCompat.animate(addFAB).rotation(DEGREE)
+					.setDuration(DURATION).start();
 
 			optionsContainer.setVisibility(View.VISIBLE);
 			final Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_in);
@@ -149,9 +154,8 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 			setAnimationFabItems(addTaskFAB, DELAY);
 
 		} else { //Close fab menu animation
-			final Animation rotateOut =
-					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_out);
-			addFAB.setAnimation(rotateOut);
+			ViewCompat.animate(addFAB).rotation(0f)
+					.setDuration(DURATION).start();
 
 			final Animation fadeOut =
 					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_out) ;
