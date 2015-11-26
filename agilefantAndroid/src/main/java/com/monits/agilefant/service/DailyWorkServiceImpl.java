@@ -11,20 +11,19 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.monits.agilefant.model.DailyWork;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.TaskTypeRank;
 import com.monits.agilefant.network.request.UrlGsonRequest;
+import com.monits.agilefant.service.rank.RankService;
 import com.monits.agilefant.util.DailyWorkRankComparator;
-import com.monits.agilefant.util.RankUtils;
 import com.monits.agilefant.util.StoryUtils;
 import com.monits.volleyrequests.network.request.GsonRequest;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +37,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author gmuniz
  *
  */
-public class DailyWorkServiceImpl implements DailyWorkService {
+public class DailyWorkServiceImpl extends RankService implements DailyWorkService {
 
 
 	private static final int DAILYWORK_REATTEMPT = 1;
@@ -49,9 +48,6 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	private static final String STORY_RANK_UNDER_ID = "storyRankUnderId";
 	private static final String USER_ID = "userId";
 	private static final String STORY_ID = "storyId";
-	private static final String TASK_ID = "taskId";
-	private static final String RANK_UNDER_ID = "rankUnderId";
-	private static final String RANK_DAILY_TASK_UNDER_ACTION = "%1$s/ajax/rankDailyTaskAndMoveUnder.action";
 
 	private final UserService userService;
 
@@ -67,8 +63,10 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	 */
 
 	@Inject
-	public DailyWorkServiceImpl(final AgilefantService agilefantService,
-								final UserService userService, final Gson gson) {
+	public DailyWorkServiceImpl(final AgilefantService agilefantService, final UserService userService,
+								final Gson gson) {
+		super(agilefantService, gson);
+
 		this.agilefantService = agilefantService;
 		this.userService = userService;
 		this.gson = gson;
@@ -137,39 +135,11 @@ public class DailyWorkServiceImpl implements DailyWorkService {
 	public void rankTaskUnder(final Task task, final Task targetTask, final List<Task> allTasks,
 								final Response.Listener<Task> listener, final Response.ErrorListener error) {
 
-		final List<Task> fallbackTasksList = new LinkedList<>();
-		RankUtils.copyAndSetRank(allTasks, fallbackTasksList);
+		final Map<String, String> params = new HashMap<>();
 
-		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(
-				Request.Method.POST,
-				urlFormat(RANK_DAILY_TASK_UNDER_ACTION), gson, Task.class, listener,
-				new Response.ErrorListener() {
+		params.put(USER_ID, String.valueOf(userService.getLoggedUser().getId()));
 
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						RankUtils.rollbackRanks(allTasks, fallbackTasksList);
-
-						error.onErrorResponse(arg0);
-					}
-				}, null) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
-
-				params.put(USER_ID, String.valueOf(userService.getLoggedUser().getId()));
-				params.put(TASK_ID, String.valueOf(task.getId()));
-				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
-
-				return params;
-			}
-		};
-
-		agilefantService.addRequest(request);
-	}
-
-	private String urlFormat(final String url) {
-		return String.format(Locale.getDefault(), url, agilefantService.getHost());
+		rankTaskUnder(TaskTypeRank.DAILY_TASK, params, allTasks, task, targetTask, listener, error);
 	}
 
 	/**

@@ -11,15 +11,15 @@ import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.TaskTypeRank;
 import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.UrlGsonRequest;
-import com.monits.agilefant.util.RankUtils;
+import com.monits.agilefant.service.rank.RankService;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -29,10 +29,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * Created by edipasquale on 27/10/15.
  */
-public class WorkItemServiceImpl implements WorkItemService {
+public class WorkItemServiceImpl extends RankService implements WorkItemService {
 
 	private static final String STORE_TASK_ACTION = "%1$s/ajax/storeTask.action";
-	private static final String TASK_ID = "taskId";
 	private static final int MINUTES = 60;
 	private static final String TASKS_TO_DONE = "tasksToDone";
 	private static final String STORE_STORY_ACTION = "%1$s/ajax/storeStory.action";
@@ -58,8 +57,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 	private static final String RANK_STORY_UNDER_ACTION = "%1$s/ajax/rankStoryUnder.action";
 	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
 	private static final String TARGET_STORY_ID = "targetStoryId";
-	private static final String RANK_TASK_UNDER_ACTION = "%1$s/ajax/rankTaskAndMoveUnder.action";
-	private static final String RANK_UNDER_ID = "rankUnderId";
 
 	private final AgilefantService agilefantService;
 
@@ -72,6 +69,8 @@ public class WorkItemServiceImpl implements WorkItemService {
 	 */
 	@Inject
 	public WorkItemServiceImpl(final AgilefantService agilefantService, final Gson gson) {
+		super(agilefantService, gson);
+
 		this.gson = gson;
 		this.agilefantService = agilefantService;
 	}
@@ -124,38 +123,15 @@ public class WorkItemServiceImpl implements WorkItemService {
 				});
 	}
 
+	// TODO : Remove this unused method
 	@Override
 	public void rankTaskUnder(final Task task, final Task targetTask, final List<Task> allTasks,
 							final Response.Listener<Task> listener, final Response.ErrorListener error) {
-		final List<Task> fallbackTasksList = new LinkedList<>();
-		RankUtils.copyAndSetRank(allTasks, fallbackTasksList);
+		final Map<String, String> params = new HashMap<>();
 
-		final String url = urlFormat(RANK_TASK_UNDER_ACTION);
+		params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
 
-		final UrlGsonRequest<Task> request = new UrlGsonRequest<Task>(Request.Method.POST, url,
-				gson, Task.class, listener,
-				new Response.ErrorListener() {
-
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						RankUtils.rollbackRanks(allTasks, fallbackTasksList);
-						error.onErrorResponse(arg0);
-					}
-				}, null) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
-
-				params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
-				params.put(TASK_ID, String.valueOf(task.getId()));
-				params.put(RANK_UNDER_ID, String.valueOf(targetTask == null ? -1 : targetTask.getId()));
-
-				return params;
-			}
-		};
-
-		agilefantService.addRequest(request);
+		rankTaskUnder(TaskTypeRank.TASK_WITHOUT_STORY, params, allTasks, task, targetTask, listener, error);
 	}
 
 	@Override
@@ -169,7 +145,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 							final List<Story> allStories, final Response.Listener<Story> listener,
 							final Response.ErrorListener error) {
 		final List<Story> fallbackStoryList = new LinkedList<>();
-		RankUtils.copyAndSetRank(allStories, fallbackStoryList);
+		copyAndSetRank(allStories, fallbackStoryList);
 
 		final String url = urlFormat(RANK_STORY_UNDER_ACTION);
 
@@ -178,7 +154,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						RankUtils.rollbackRanks(allStories, fallbackStoryList);
+						rollbackRanks(allStories, fallbackStoryList);
 
 						error.onErrorResponse(arg0);
 					}
@@ -197,7 +173,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 	public void rankStoryOver(final Story story, final Story targetStory, final Long backlogId, final List<Story>
 			allStories, final Response.Listener<Story> listener, final Response.ErrorListener error) {
 		final List<Story> fallbackStoryList = new LinkedList<>();
-		RankUtils.copyAndSetRank(allStories, fallbackStoryList);
+		copyAndSetRank(allStories, fallbackStoryList);
 
 		final String url = urlFormat(RANK_STORY_OVER_ACTION);
 
@@ -206,7 +182,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
-						RankUtils.rollbackRanks(allStories, fallbackStoryList);
+						rollbackRanks(allStories, fallbackStoryList);
 
 						error.onErrorResponse(arg0);
 					}
@@ -230,10 +206,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 		};
 
 		agilefantService.addRequest(request);
-	}
-
-	private String urlFormat(final String url) {
-		return String.format(Locale.getDefault(), url, agilefantService.getHost());
 	}
 
 	private Map<String, String> getCreateStoryParams(final BacklogElementParameters parameters) {
@@ -349,6 +321,7 @@ public class WorkItemServiceImpl implements WorkItemService {
 		};
 
 		agilefantService.addRequest(req);
+
 	}
 
 	@NonNull

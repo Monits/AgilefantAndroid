@@ -26,4 +26,5 @@ public interface TaskRankUpdaterService {
 	 */
 	void rankTaskUnder(Task task, Task targetTask, List<Task> allTasks, Response.Listener<Task> listener,
 						Response.ErrorListener error);
+
 }
