@@ -1,7 +1,6 @@
 package com.monits.agilefant.service;
 
 import com.android.volley.Response;
-import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.User;
@@ -45,21 +44,6 @@ public interface WorkItemService extends TaskRankUpdaterService {
 	 */
 	void changeTaskResponsibles(List<User> responsibles, Task task, Response.Listener<Task> listener,
 								Response.ErrorListener error);
-
-	/**
-	 * Change story's iteration
-	 *
-	 * <blockquote>
-	 *     <b>NOTE:</b> This method will automatically update the current story as if the request was successfull.
-	 *     In case request fails, this changes will be rollbacked.
-	 * </blockquote>
-	 *
-	 * @param story the Story to be modified
-	 * @param iteration the Iteration to modify the Story
-	 * @param listener callback if the request was successful
-	 * @param error callback if the request failed
-	 */
-	void moveStory(Story story, Iteration iteration, Response.Listener<Story> listener, Response.ErrorListener error);
 
 	/**
 	 * Updates Story's rank lower than the given target story.

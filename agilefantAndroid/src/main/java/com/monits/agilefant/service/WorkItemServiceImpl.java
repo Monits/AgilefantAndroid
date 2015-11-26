@@ -15,7 +15,6 @@ import com.monits.agilefant.model.User;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.network.request.UrlGsonRequest;
 import com.monits.agilefant.util.RankUtils;
-import com.monits.volleyrequests.network.request.GsonRequest;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,7 +55,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 	private static final String STORY_STORY_VALUE = "story.storyValue";
 	private static final String STORY_NAME = "story.name";
 	private static final String STORY_DESCRIPTION = "story.description";
-	private static final String STORY_MOVE = "%1$s/ajax/moveStory.action";
 	private static final String RANK_STORY_UNDER_ACTION = "%1$s/ajax/rankStoryUnder.action";
 	private static final String RANK_STORY_OVER_ACTION = "%1$s/ajax/rankStoryOver.action";
 	private static final String TARGET_STORY_ID = "targetStoryId";
@@ -124,56 +122,6 @@ public class WorkItemServiceImpl implements WorkItemService {
 						error.onErrorResponse(arg0);
 					}
 				});
-	}
-
-	@Override
-	public void moveStory(final Story story, final Iteration iteration, final Response.Listener<Story> listener,
-						final Response.ErrorListener error) {
-		final Story fallbackStory = story.getCopy();
-		story.setIteration(iteration);
-
-		final long backlogId;
-		if (iteration == null) {
-			backlogId = story.getBacklog().getId();
-		} else {
-			backlogId = iteration.getId();
-		}
-
-		final String url = urlFormat(STORY_MOVE);
-
-		final GsonRequest<Story> request = new GsonRequest<Story>(
-				Request.Method.POST, url, gson, Story.class,
-				new Response.Listener<Story>() {
-
-					@Override
-					public void onResponse(final Story storyOk) {
-						// The story from the response is incomplete, sending the one we have updated.
-						listener.onResponse(story);
-					}
-				},
-				new Response.ErrorListener() {
-
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						story.setIteration(fallbackStory.getIteration());
-
-						error.onErrorResponse(arg0);
-					}
-				}, null) {
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				final Map<String, String> params = new HashMap<>();
-
-				params.put("backlogId", String.valueOf(backlogId));
-				params.put("moveParents", "false"); //This parameter is always false
-				params.put("storyId", String.valueOf(story.getId()));
-
-				return params;
-			}
-
-		};
-		agilefantService.addRequest(request);
 	}
 
 	@Override
