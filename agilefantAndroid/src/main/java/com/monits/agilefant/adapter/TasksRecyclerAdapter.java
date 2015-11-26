@@ -94,8 +94,19 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 
 	@Override
 	public void onChangePosition(final int fromPosition, final int toPosition) {
-		final Task currentTask = taskList.get(fromPosition);
-		final Task targetTask = taskList.get(toPosition);
+
+		final Task currentTask;
+		final Task targetTask;
+
+		if (fromPosition < toPosition) {
+			// Moves down
+			currentTask = taskList.get(toPosition);
+			targetTask = taskList.get(fromPosition);
+		} else {
+			// Moves up
+			currentTask = taskList.get(toPosition);
+			targetTask = toPosition == 0 ? null : taskList.get(fromPosition);
+		}
 
 		rankUpdaterService.rankTaskUnder(currentTask, targetTask, taskList,
 				new Response.Listener<Task>() {
@@ -103,7 +114,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 					@Override
 					public void onResponse(final Task arg0) {
 						Toast.makeText(
-							context, R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
+								context, R.string.feedback_success_updated_task_rank, Toast.LENGTH_SHORT).show();
 					}
 				},
 				new Response.ErrorListener() {
@@ -111,7 +122,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolde
 					@Override
 					public void onErrorResponse(final VolleyError arg0) {
 						Toast.makeText(
-							context, R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
+								context, R.string.feedback_failed_update_tasks_rank, Toast.LENGTH_SHORT).show();
 					}
 				});
 	}
