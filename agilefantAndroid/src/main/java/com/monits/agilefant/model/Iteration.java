@@ -6,11 +6,14 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 import com.monits.agilefant.model.backlog.BacklogType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Model of iteration
  * @author Ivan Corbalan
  *
  */
+@SuppressFBWarnings(value = "CD_CIRCULAR_DEPENDENCY", justification = "Data models are coupled")
 public class Iteration extends Backlog implements Serializable {
 
 	private static final long serialVersionUID = 4014161739613202291L;
