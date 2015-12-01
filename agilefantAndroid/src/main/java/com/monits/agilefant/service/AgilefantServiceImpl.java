@@ -16,6 +16,8 @@ import com.android.volley.VolleyError;
 import com.monits.volleyrequests.network.request.RfcCompliantListenableRequest;
 
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -60,8 +62,12 @@ public class AgilefantServiceImpl implements AgilefantService {
 			public void onErrorResponse(final VolleyError volleyError) {
 				final NetworkResponse response = volleyError.networkResponse;
 				if (response != null && response.statusCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+
+					// Get location from headers
 					final String location = response.headers.get("Location");
-					if (location != null && location.split(";")[0].equals(getHost() + LOGIN_OK)) {
+
+					// Response validation
+					if (responseValidation(location)) {
 						listener.onResponse(location);
 					} else {
 						error.onErrorResponse(volleyError);
@@ -93,6 +99,24 @@ public class AgilefantServiceImpl implements AgilefantService {
 				};
 
 		requestQueue.add(request);
+	}
+
+	private boolean responseValidation(final String location) {
+		if (location != null) {
+			try {
+
+				// Get received location as URL
+				final URL receivedLocation = new URL(location);
+
+				if (LOGIN_OK.equals(receivedLocation.getPath())) {
+
+					return true;
+				}
+			} catch (final MalformedURLException e) {
+				throw new AssertionError(e);
+			}
+		}
+		return false;
 	}
 
 	@Override
