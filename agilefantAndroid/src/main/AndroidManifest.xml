@@ -48,12 +48,12 @@
             android:name=".activity.IterationActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/iteration"
-            android:parentActivityName=".activity.AllBackLogsActivity"
+            android:parentActivityName=".activity.ProjectActivity"
             tools:ignore="UnusedAttribute"
             android:theme="@style/AppTheme.WhiteBg">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.AllBackLogsActivity" />
+                android:value=".activity.ProjectActivity" />
         </activity>
         <activity
             android:name=".activity.DailyWorkActivity"
@@ -68,6 +68,7 @@
         </activity>
         <activity
             android:name=".activity.ProjectActivity"
+            android:launchMode="singleTop"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/project_details"
             android:parentActivityName=".activity.AllBackLogsActivity"

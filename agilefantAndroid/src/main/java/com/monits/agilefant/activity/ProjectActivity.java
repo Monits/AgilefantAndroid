@@ -63,6 +63,13 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 		final Backlog backlog = (Backlog) getIntent().getSerializableExtra(EXTRA_BACKLOG);
 		final Project project = (Project) getIntent().getSerializableExtra(PROJECT);
 
+		if (backlog == null || project == null) {
+			// We didn't come through a proper intent, probably an old-version up navigation when this
+			// intent did not exist in the backstack
+			finish();
+			return;
+		}
+
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
 		initFABs(fabContainer, backlog.getId());
