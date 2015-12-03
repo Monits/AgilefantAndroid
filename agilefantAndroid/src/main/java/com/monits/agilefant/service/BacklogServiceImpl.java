@@ -62,10 +62,12 @@ public class BacklogServiceImpl implements BacklogService {
 				new Listener<List<Project>>() {
 					@Override
 					public void onResponse(final List<Project> projects) {
-						// Fill all projects iterations parent.
-						for (final Project project : projects) {
-							for (final Iteration iteration : project.getIterationList()) {
-								iteration.setParent(project);
+						if (projects != null) {
+							// Fill all projects iterations parent.
+							for (final Project project : projects) {
+								for (final Iteration iteration : project.getIterationList()) {
+									iteration.setParent(project);
+								}
 							}
 						}
 						listener.onResponse(projects);
