@@ -61,9 +61,13 @@ public class IterationServiceImpl implements IterationService {
 						for (final Task task : iteration.getTasksWithoutStory()) {
 							task.setIteration(iteration);
 						}
+
 						//Add story to all tasks before returning
 						for (final Story story : iteration.getStories()) {
-							for (final Task task : story.getTasks()) {
+
+							final List<Task> taskList = story.getTasks();
+							Collections.sort(taskList, RankComparator.INSTANCE);
+							for (final Task task : taskList) {
 								task.setStory(story);
 							}
 						}

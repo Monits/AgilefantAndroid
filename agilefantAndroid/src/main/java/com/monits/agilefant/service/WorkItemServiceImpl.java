@@ -129,7 +129,13 @@ public class WorkItemServiceImpl extends RankService implements WorkItemService 
 							final Response.Listener<Task> listener, final Response.ErrorListener error) {
 		final Map<String, String> params = new HashMap<>();
 
-		params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
+		if (task.getStory() == null) {
+			// If its a task without story ...
+			params.put(ITERATION_ID, String.valueOf(task.getIteration().getId()));
+		} else {
+			// ... If not
+			params.put(STORY_ID, String.valueOf(task.getStory().getId()));
+		}
 
 		rankTaskUnder(TaskTypeRank.TASK_WITHOUT_STORY, params, allTasks, task, targetTask, listener, error);
 	}
