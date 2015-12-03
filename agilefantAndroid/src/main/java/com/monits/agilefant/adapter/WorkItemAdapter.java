@@ -341,7 +341,8 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		workItems = new ArrayList<>(originalWorkItems);
 
 		for (final WorkItem w : originalWorkItems) {
-			if (w.getType() == WorkItemType.STORY && !matchesFilterQuery(w.getName())) {
+			final boolean isStory = w.getType() == WorkItemType.STORY;
+			if (isStory && !matchesFilterQuery(w.getName())) {
 				int i = 0;
 				for (final Task t : ((Story) w).getTasks()) {
 					if (matchesFilterQuery(t.getName())) {
@@ -353,7 +354,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 				if (i == 0) {
 					workItems.remove(w);
 				}
-			} else if (((Task) w).getStory() == null && !matchesFilterQuery(w.getName())) { //For TWOS
+			} else if (!isStory && ((Task) w).getStory() == null && !matchesFilterQuery(w.getName())) { //For TWOS
 				workItems.remove(w);
 
 			}
