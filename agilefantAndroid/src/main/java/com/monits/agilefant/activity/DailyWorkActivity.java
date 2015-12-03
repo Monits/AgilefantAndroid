@@ -34,7 +34,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class DailyWorkActivity extends BaseToolbaredActivity {
 
-	private final static String DAILYWORK = "dailywork";
+	private static final String DAILYWORK = "dailywork";
 
 	private DailyWork dailyWork;
 
@@ -61,32 +61,26 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 		setContentView(R.layout.activity_daily_work);
 
 		ButterKnife.bind(this);
-
 		AgilefantApplication.getObjectGraph().inject(this);
 
 		viewPager.setVisibility(View.VISIBLE);
 
 		if (savedInstanceState == null) {
-
 			getDailyWork();
-
 		} else {
-
 			dailyWork = (DailyWork) savedInstanceState.getSerializable(DAILYWORK);
-
 			viewPager.setAdapter(new DailyWorkPagerAdapter(getSupportFragmentManager(), dailyWork, this));
-
 			setUpTabLayout(viewPager);
 		}
 
 		initializeFab();
-
 	}
 
 	private void getDailyWork() {
 		final ProgressDialog progressDialog = new ProgressDialog(this);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setMessage(getString(R.string.loading));
+		progressDialog.setCancelable(false);
 		progressDialog.show();
 
 		dailyWorkService.getDailyWork(
@@ -117,6 +111,9 @@ public class DailyWorkActivity extends BaseToolbaredActivity {
 						Toast.makeText(
 								DailyWorkActivity.this, R.string.feedback_failed_to_retrieve_daily_work,
 								Toast.LENGTH_SHORT).show();
+
+						// The state of the activity is all wrong, so we close it!
+						DailyWorkActivity.this.finish();
 					}
 				});
 	}

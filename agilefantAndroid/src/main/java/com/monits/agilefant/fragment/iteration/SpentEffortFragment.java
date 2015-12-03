@@ -49,19 +49,22 @@ public class SpentEffortFragment extends Fragment {
 	public static final int MINUTES = 60;
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ MetricsService metricsService;
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Bind(R.id.date)
-	TextView mDateInput;
+	/* default */ TextView mDateInput;
+
 	@Bind(R.id.effort_spent)
-	EditText mHoursInput;
+	/* default */ EditText mHoursInput;
+
 	@Bind(R.id.comment)
-	EditText mCommentInput;
+	/* default */ EditText mCommentInput;
+
 	@Bind(R.id.effort_left)
-	EditText mEffortLeftInput;
+	/* default */ EditText mEffortLeftInput;
 
 
 	private SimpleDateFormat dateFormatter;
@@ -118,7 +121,7 @@ public class SpentEffortFragment extends Fragment {
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
-		final View view = inflater.inflate(R.layout.fragment_spent_effort, null);
+		final View view = inflater.inflate(R.layout.fragment_spent_effort, container, false);
 		ButterKnife.bind(this, view);
 		final Date time = Calendar.getInstance().getTime();
 		final String formattedDate = dateFormatter.format(time);
@@ -236,7 +239,7 @@ public class SpentEffortFragment extends Fragment {
 	}
 
 	private void saveEffortLeft() {
-		final Context context = SpentEffortFragment.this.getActivity();
+		final Context context = getActivity();
 		final long minutes = HoursUtils.convertHoursStringToMinutes(mHoursInput.getText().toString().trim());
 
 		metricsService.taskChangeSpentEffort(
@@ -314,5 +317,13 @@ public class SpentEffortFragment extends Fragment {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "SpentEffortFragment {"
+				+ "minutesSpent=" + minutesSpent
+				+ ", task=" + task
+				+ '}';
 	}
 }

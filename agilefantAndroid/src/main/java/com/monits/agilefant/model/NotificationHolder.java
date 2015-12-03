@@ -9,7 +9,7 @@ import android.support.v4.app.NotificationCompat;
 
 public class NotificationHolder {
 
-	private final static AtomicInteger GENERATED_ID = new AtomicInteger(0);
+	private static final AtomicInteger GENERATED_ID = new AtomicInteger(0);
 
 	private final Task trackedTask;
 
@@ -98,5 +98,17 @@ public class NotificationHolder {
 	 */
 	public void updateBase() {
 		chronometerBaseTime = SystemClock.elapsedRealtime() + elapsedTime;
+	}
+
+	@Override
+	public String toString() {
+		return "NotificationHolder{"
+				+ "trackedTask=" + trackedTask
+				+ ", notificationId=" + notificationId
+				+ ", isChronometerRunning=" + isChronometerRunning
+				+ ", elapsedTime=" + elapsedTime
+				+ ", chronometerBaseTime=" + chronometerBaseTime
+				+ ", notifBuilder=" + notifBuilder
+				+ '}';
 	}
 }

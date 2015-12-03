@@ -12,10 +12,8 @@ public final class StoryUtils {
 
 	/**
 	 * Searches the story in the given list that matches the given id.
-	 * 
 	 * @param stories the stories to look after.
 	 * @param id the id from the story.
-	 * 
 	 * @return the story, null otherwise.
 	 */
 	public static Story findStoryById(final List<Story> stories, final long id) {

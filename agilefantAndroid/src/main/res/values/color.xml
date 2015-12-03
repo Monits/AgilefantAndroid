@@ -2,11 +2,9 @@
 <resources>
 
     <color name="all_backlogs_child_text_color">#1E5EEE</color>
-    <color name="traslucent_black">#DD000000</color>
-	<color name="cyan">#2E6E9E</color>
-	<color name="blue_light">#1E5EEE</color>
-	<color name="agilefant_light_blue_text">#2889F9</color>
-	<color name="agilefant_light_blue_selected_row">#87B6D9</color>
+    <color name="translucent_black">#DD000000</color>
+    <color name="cyan">#2E6E9E</color>
+    <color name="blue_light">#1E5EEE</color>
     <color name="white_background">#ffffff</color>
 
     <color name="action_bar_color">#54759E</color>
@@ -19,4 +17,5 @@
     <color name="fab_label_primary_color">#95000000</color>
 
     <color name="tab_not_selected_text">#CCd4d4d4</color>
+    <color name="active_search_item">#E6E6E6</color>
 </resources>

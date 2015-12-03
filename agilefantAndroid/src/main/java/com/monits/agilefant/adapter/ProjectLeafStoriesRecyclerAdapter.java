@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
 import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.helper.UpdateAdapterHelper;
@@ -21,28 +20,34 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.recycler.DragAndDropListener;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 /**
  * Created by edipasquale on 09/10/15.
  */
 public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Story>>
-		implements DragAndDropListener,
-		WorkItemViewHolderUpdateTracker {
+		implements DragAndDropListener, WorkItemViewHolderUpdateTracker {
 
 	private final FragmentActivity fragmentActivity;
 	private final LayoutInflater inflater;
-	private List<Story> stories;
-	private final Project project;
 
+	// All stories
+	private List<Story> originalStories;
+	// Stories to show
+	private List<Story> stories;
+
+	private final Project project;
 	private final UpdateAdapterHelper updateAdapterHelper;
 
 	@Inject
-   /* default */ MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	/**
 	 * @param context The context
@@ -77,6 +82,7 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 	 */
 	public void setStories(final List<Story> stories) {
 		this.stories = stories;
+		originalStories = stories;
 		notifyDataSetChanged();
 	}
 
@@ -115,14 +121,34 @@ public class ProjectLeafStoriesRecyclerAdapter extends RecyclerView.Adapter<Work
 		};
 
 		if (fromPosition < toPosition) {
-			metricsService.rankStoryOver(
+			workItemService.rankStoryOver(
 					getStory(fromPosition), getStory(toPosition), project.getId(),
 					stories, successListener, errorListener);
 		} else {
-			metricsService.rankStoryUnder(
+			workItemService.rankStoryUnder(
 					getStory(fromPosition), getStory(toPosition), project.getId(),
 					stories, successListener, errorListener);
 		}
+	}
+
+	/**
+	 * This method filters the result by a received string
+	 * @param input The string used for filtering
+	 */
+	public void filter(final String input) {
+		final String lowerInput = input.toLowerCase(Locale.getDefault());
+
+		// Result list
+		final List<Story> result = new ArrayList<>();
+
+		for (final Story story : originalStories) {
+			if (story.getName().toLowerCase(Locale.getDefault()).contains(lowerInput)) {
+				result.add(story);
+			}
+		}
+
+		stories = result;
+		notifyDataSetChanged();
 	}
 
 	@Override

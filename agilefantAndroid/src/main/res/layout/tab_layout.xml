@@ -5,7 +5,7 @@
     android:id="@+id/pager_header"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    style="@style/tabLayoutBackground"
     android:layout_gravity="center_horizontal"
-    android:background="@color/action_bar_color"
     app:tabMode="scrollable"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" />

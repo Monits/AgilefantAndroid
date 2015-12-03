@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
+        android:contentDescription="@null"
         android:background="@drawable/agilefant_logo_home" />
 
     <ProgressBar
@@ -22,6 +23,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logging in" />
+        android:text="@string/logging_in" />
 
 </LinearLayout>

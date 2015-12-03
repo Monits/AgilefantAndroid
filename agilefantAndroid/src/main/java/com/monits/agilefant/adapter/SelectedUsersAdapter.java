@@ -50,11 +50,11 @@ public class SelectedUsersAdapter extends BaseAdapter {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 
 		final TextView view;
-		if (convertView == null) {
+		if (convertView instanceof TextView) {
+			view = (TextView) convertView;
+		} else {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			view = (TextView) inflater.inflate(R.layout.item_selected_user, parent, false);
-		} else {
-			view = (TextView) convertView;
 		}
 
 		final User user = getItem(position);
@@ -99,7 +99,7 @@ public class SelectedUsersAdapter extends BaseAdapter {
 	 * Interface for changes in the users list
 	 */
 	public interface OnRemoveUserListener {
-		
+
 		/**
 		 * Called after a user removal
 		 * @param view The view

@@ -16,14 +16,14 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 
 import javax.inject.Inject;
 
 public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	/**
 	 * Return a new CreateStoryFragment with the given iteration id.
@@ -32,7 +32,8 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 	 */
 	public static CreateStoryFragment newInstance(final long iterationId) {
 		final CreateStoryFragment fragment = new CreateStoryFragment();
-		return prepareFragmentForIteration(iterationId, fragment);
+		prepareFragmentForIteration(iterationId, fragment);
+		return fragment;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 	@Override
 	protected void onSubmit(final BacklogElementParameters parameters) {
 		final FragmentActivity context = getActivity();
-		metricsService.createStory(
+		workItemService.createStory(
 				parameters,
 				new Listener<Story>() {
 					@Override

@@ -18,8 +18,12 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.MetricsServiceImpl;
 import com.monits.agilefant.service.ProjectService;
 import com.monits.agilefant.service.ProjectServiceImpl;
+import com.monits.agilefant.service.SearchService;
+import com.monits.agilefant.service.SearchServiceImpl;
 import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.service.UserServiceImpl;
+import com.monits.agilefant.service.WorkItemService;
+import com.monits.agilefant.service.WorkItemServiceImpl;
 
 import javax.inject.Singleton;
 
@@ -37,56 +41,68 @@ public class AgilefantModule {
 
 	@Provides
 	@Singleton
-	SharedPreferences provideSharedPreferences(final Application application) {
+	/* default */ SharedPreferences provideSharedPreferences(final Application application) {
 		return PreferenceManager.getDefaultSharedPreferences(application);
 	}
 
 	@Provides
 	@Singleton
-	Application provideApplication() {
+	/* default */ Application provideApplication() {
 		return this.application;
 	}
 
 	@Provides
 	@Singleton
-	AgilefantService provideAgilefantService(final AgilefantServiceImpl agilefantService) {
+	/* default */ AgilefantService provideAgilefantService(final AgilefantServiceImpl agilefantService) {
 		return agilefantService;
 	}
 
 	@Provides
 	@Singleton
-	BacklogService provideBacklogService(final BacklogServiceImpl backlogService) {
+	/* default */ BacklogService provideBacklogService(final BacklogServiceImpl backlogService) {
 		return backlogService;
 	}
 
 	@Provides
 	@Singleton
-	DailyWorkService provideDailyWorkService(final DailyWorkServiceImpl dailyWorkService) {
+	/* default */ DailyWorkService provideDailyWorkService(final DailyWorkServiceImpl dailyWorkService) {
 		return dailyWorkService;
 	}
 
 	@Provides
 	@Singleton
-	IterationService provideIterationService(final IterationServiceImpl iterationService) {
+	/* default */ IterationService provideIterationService(final IterationServiceImpl iterationService) {
 		return iterationService;
 	}
 
 	@Provides
 	@Singleton
-	MetricsService provideMetricsService(final MetricsServiceImpl metricsService) {
+	/* default */ MetricsService provideMetricsService(final MetricsServiceImpl metricsService) {
 		return metricsService;
 	}
 
 	@Provides
 	@Singleton
-	ProjectService provideProjectService(final ProjectServiceImpl projectService) {
+	/* default */ ProjectService provideProjectService(final ProjectServiceImpl projectService) {
 		return projectService;
 	}
 
 	@Provides
 	@Singleton
-	UserService provideUserService(final UserServiceImpl userService) {
+	/* default */ UserService provideUserService(final UserServiceImpl userService) {
 		return userService;
+	}
+
+	@Provides
+	@Singleton
+	/* default */ WorkItemService provideWorkItemService(final WorkItemServiceImpl workItemService) {
+		return workItemService;
+	}
+
+	@Provides
+	@Singleton
+	/* default */ SearchService provideSearchService(final SearchServiceImpl searchService) {
+		return searchService;
 	}
 
 }

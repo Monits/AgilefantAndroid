@@ -19,10 +19,10 @@ import javax.inject.Inject;
 public class SplashActivity extends Activity {
 
 	@Inject
-	UserService userService;
+	/* default */ UserService userService;
 
 	@Inject
-	SharedPreferences sharedPreferences;
+	/* default */ SharedPreferences sharedPreferences;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -69,6 +69,6 @@ public class SplashActivity extends Activity {
 	}
 
 	private void startHomeActivity() {
-		startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+		startActivity(new Intent(this, HomeActivity.class));
 	}
 }

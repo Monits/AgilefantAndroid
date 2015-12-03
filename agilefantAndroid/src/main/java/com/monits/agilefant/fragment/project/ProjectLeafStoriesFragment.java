@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,8 +34,6 @@ import com.monits.agilefant.service.MetricsService;
 import com.monits.agilefant.service.ProjectService;
 
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
@@ -39,7 +41,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements Observer {
+public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements SearchView.OnQueryTextListener {
 
 	private static final String BACKLOG = "PROJECT_BACKLOG";
 
@@ -56,6 +58,8 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 	@Bind(R.id.stories_empty_view)
 	/* default */ TextView emptyView;
+
+	private ItemTouchHelper itemTouchHelper;
 
 	@SuppressFBWarnings(
 		value = "MISSING_FIELD_IN_TO_STRING", justification = "It's a view, we don't need this in toString")
@@ -110,7 +114,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-
 		final Bundle arguments = getArguments();
 		project = (Project) arguments.getSerializable(BACKLOG);
 		AgilefantApplication.getObjectGraph().inject(this);
@@ -120,7 +123,6 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 			final Bundle savedInstanceState) {
-
 		final View view =
 				LayoutInflater.from(getActivity()).inflate(R.layout.fragment_project_leaf_stories, container, false);
 
@@ -128,21 +130,21 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 		setHasOptionsMenu(true);
 
-		storiesAdapter = new ProjectLeafStoriesRecyclerAdapter(getActivity(), project);
-
 		storiesListView = (RecyclerView) view.findViewById(R.id.stories_list);
 
 		if (stories == null || stories.isEmpty()) {
 			emptyView.setVisibility(View.VISIBLE);
 			storiesListView.setVisibility(View.GONE);
 		}
+		storiesAdapter = new ProjectLeafStoriesRecyclerAdapter(getActivity(), project);
+
 		storiesListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		storiesListView.setAdapter(storiesAdapter);
 		storiesListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
 
 		final WorkItemTouchHelperCallback workItemTouchHelperCallback =
 				new WorkItemTouchHelperCallback(storiesAdapter);
-		final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
+		itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
 		itemTouchHelper.attachToRecyclerView(storiesListView);
 
 		return view;
@@ -178,11 +180,12 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	}
 
 	@Override
-	public void update(final Observable observable, final Object data) {
-		if (isVisible()) {
-			storiesAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-		}
+	public void onPrepareOptionsMenu(final Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		final MenuItem item = menu.findItem(R.id.action_search);
+		item.setVisible(true);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
 	}
 
 	@Override
@@ -194,5 +197,26 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 	public String toString() {
 		return "ProjectLeafStoriesFragment [project: " + project
 				+ ", adapter: " + storiesAdapter + ']';
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(final String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(final String newText) {
+		if (newText.isEmpty()) {
+			// Attach callback
+			itemTouchHelper.attachToRecyclerView(storiesListView);
+
+		} else {
+			// dettach callback
+			itemTouchHelper.attachToRecyclerView(null);
+		}
+		// Apply filter
+		storiesAdapter.filter(newText);
+
+		return true;
 	}
 }

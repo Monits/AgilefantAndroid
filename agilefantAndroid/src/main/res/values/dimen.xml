@@ -13,6 +13,13 @@
     <dimen name="margin_fab_menu_button">75dp</dimen>
     <dimen name="margin_fab_label_Right">26dp</dimen>
 
+    <dimen name="header_padding">5dp</dimen>
+
+    <dimen name="notification_padding_bottom_top">5dp</dimen>
+    <dimen name="notification_padding_left_right">10dp</dimen>
+
     <dimen name="list_padding_top">5dp</dimen>
+    <dimen name="search_item_product">12dp</dimen>
+    <dimen name="search_item_project">14dp</dimen>
 
 </resources>

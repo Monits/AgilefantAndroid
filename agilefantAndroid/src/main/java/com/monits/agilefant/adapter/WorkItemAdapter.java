@@ -23,10 +23,12 @@ import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.WorkItem;
 import com.monits.agilefant.model.WorkItemType;
 import com.monits.agilefant.recycler.DragAndDropListener;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -39,11 +41,14 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	protected final FragmentActivity context;
 	protected final LayoutInflater inflater;
 	protected List<WorkItem> workItems;
+	protected List<WorkItem> originalWorkItems;
 
 	private final UpdateAdapterHelper updateAdapterHelper;
 
+	private String queryText = "";
+
 	@Inject
-	/* default */ MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	/**
 	 * Constructor
@@ -73,17 +78,20 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	@Override
 	public void onBindViewHolder(final WorkItemViewHolder holder, final int position) {
 		final WorkItem workItem = workItems.get(position);
+		final int originalPosition = originalWorkItems.indexOf(workItem);
+		final WorkItem originalWorkItem = originalWorkItems.get(originalPosition);
 		holder.onBindView(workItem);
 		holder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {
 				if (workItem.getType() == WorkItemType.STORY) {
 					final Story story = (Story) workItem;
-
 					if (story.isExpanded()) {
 						removeWorkItem(story, holder.getAdapterPosition() + 1);
+						removeWorkItemFromOriginalList((Story) originalWorkItem);
 					} else {
 						addWorkItem(story, holder.getAdapterPosition() + 1);
+						addWorkItemFromOriginalList((Story) originalWorkItem, originalPosition + 1);
 					}
 				}
 			}
@@ -113,7 +121,8 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	 * @param workItems A work item list to set
 	 */
 	public void setWorkItems(final List<? extends WorkItem> workItems) {
-		this.workItems = new ArrayList<>(workItems);
+		this.originalWorkItems = new ArrayList<>(workItems);
+		this.workItems = new ArrayList<>(originalWorkItems);
 		notifyDataSetChanged();
 	}
 
@@ -134,37 +143,40 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		final List<Task> children = workItem.getTasks();
 		int i = 0;
 		for (final WorkItem item : children) {
-			workItems.add(position + i, item);
-			i++;
+			if (matchesFilterQuery(item.getName()) || matchesFilterQuery(workItem.getName())) {
+				workItems.add(position + i, item);
+				i++;
+			}
 		}
 		workItem.setExpanded(true);
-		notifyItemRangeInserted(position, children.size());
+		notifyItemRangeInserted(position, i);
 	}
 
 	private void removeWorkItem(final Story workItem, final int position) {
 		final List<Task> children = workItem.getTasks();
-		workItems.removeAll(children);
-		workItem.setExpanded(false);
-		notifyItemRangeRemoved(position, children.size());
-	}
-
-	/**
-	 * If it's present, update the given task
-	 * @param updatedTask The updated task
-	 */
-	public void updateTask(final Task updatedTask) {
-		final int storyIndex = workItems.indexOf(updatedTask.getStory());
-		if (storyIndex != -1) {
-			final Story story = (Story) workItems.get(storyIndex);
-
-			final List<Task> tasks = story.getTasks();
-			final int indexOf = tasks.indexOf(updatedTask);
-
-			if (indexOf != -1) {
-				tasks.get(indexOf).updateValues(updatedTask);
-				notifyItemChanged(indexOf);
+		int i = 0;
+		for (final WorkItem item : children) {
+			if (matchesFilterQuery(item.getName()) || matchesFilterQuery(workItem.getName())) {
+				workItems.remove(item);
+				i++;
 			}
 		}
+		workItem.setExpanded(false);
+		notifyItemRangeRemoved(position, i);
+	}
+
+	private void addWorkItemFromOriginalList(final Story workItem, final int position) {
+		final List<Task> children = workItem.getTasks();
+		int i = 0;
+		for (final WorkItem item : children) {
+			originalWorkItems.add(position + i, item);
+			i++;
+		}
+	}
+
+	private void removeWorkItemFromOriginalList(final Story workItem) {
+		final List<Task> children = workItem.getTasks();
+		originalWorkItems.removeAll(children);
 	}
 
 	/**
@@ -244,18 +256,22 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 
 		// Are we moving stories or tasks?
 		if (referenceElement.getType() == WorkItemType.STORY) {
-			final Story story = getRelevantStory(toPosition);
-			final Story storyTarget = getRelevantStory(fromPosition);
 
 			final Response.Listener<Story> successListener =
 					getSuccessListener(R.string.feedback_success_update_story_rank);
 			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_story_rank);
 
 			if (fromPosition > toPosition) {
-				metricsService.rankStoryOver(
+				final Story story = (Story) referenceElement;
+				final Story storyTarget = getRelevantStory(toPosition + visibleElementCount(story));
+
+				workItemService.rankStoryOver(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			} else {
-				metricsService.rankStoryUnder(
+				final Story storyTarget = (Story) referenceElement;
+				final Story story = getRelevantStory(toPosition + visibleElementCount(storyTarget) - 1);
+
+				workItemService.rankStoryUnder(
 						story, storyTarget, getStoryList(), successListener, errorListener);
 			}
 		} else {
@@ -266,7 +282,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 					getSuccessListener(R.string.feedback_success_updated_task_rank);
 			final Response.ErrorListener errorListener = getErrorListener(R.string.feedback_failed_update_tasks_rank);
 
-			metricsService.rankTaskUnder(currentTask, targetTask, currentTask.getStory().getTasks(),
+			workItemService.rankTaskUnder(currentTask, targetTask, currentTask.getStory().getTasks(),
 					successListener, errorListener);
 		}
 	}
@@ -277,7 +293,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	 * @param pos The position to analyze
 	 * @return The story to which the given position belongs
 	 */
-	private Story getRelevantStory(final int pos) {
+	protected Story getRelevantStory(final int pos) {
 		final WorkItem wi = workItems.get(pos);
 
 		if (wi.getType() == WorkItemType.STORY) {
@@ -288,7 +304,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	@NonNull
-	private Response.ErrorListener getErrorListener(@StringRes final int idMessage) {
+	protected Response.ErrorListener getErrorListener(@StringRes final int idMessage) {
 		return new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(final VolleyError arg0) {
@@ -298,7 +314,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	}
 
 	@NonNull
-	private <T extends WorkItem> Response.Listener<T> getSuccessListener(@StringRes final int idMessage) {
+	protected <T extends WorkItem> Response.Listener<T> getSuccessListener(@StringRes final int idMessage) {
 		return new Response.Listener<T>() {
 			@Override
 			public void onResponse(final T arg0) {
@@ -321,4 +337,51 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	public WorkItem getItem(final int position) {
 		return workItems.get(position);
 	}
+
+
+
+	/**
+	 * Filter the list leaving only those that match the text sent.
+	 * @param query the text used to filter
+	 */
+	public void filter(final String query) {
+		queryText = query.toLowerCase(Locale.getDefault());
+		workItems = new ArrayList<>(originalWorkItems);
+
+		for (final WorkItem w : originalWorkItems) {
+			final boolean isStory = w.getType() == WorkItemType.STORY;
+			if (isStory && !matchesFilterQuery(w.getName())) {
+				int i = 0;
+				for (final Task t : ((Story) w).getTasks()) {
+					if (matchesFilterQuery(t.getName())) {
+						i++;
+					} else {
+						workItems.remove(t);
+					}
+				}
+				if (i == 0) {
+					workItems.remove(w);
+				}
+			} else if (!isStory && ((Task) w).getStory() == null && !matchesFilterQuery(w.getName())) { //For TWOS
+				workItems.remove(w);
+
+			}
+		}
+		notifyDataSetChanged();
+	}
+
+	@Override
+	public String toString() {
+		return "WorkItemAdapter{"
+				+ "workItems=" + workItems
+				+ ", originalWorkItems=" + originalWorkItems
+				+ ", updateAdapterHelper=" + updateAdapterHelper
+				+ ", queryText='" + queryText
+				+ '}';
+	}
+
+	private boolean matchesFilterQuery(final String text) {
+		return text.toLowerCase(Locale.getDefault()).contains(queryText);
+	}
+
 }

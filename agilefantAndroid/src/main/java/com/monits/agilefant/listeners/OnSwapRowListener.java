@@ -14,7 +14,7 @@ public interface OnSwapRowListener {
 	void onSwapPositions(int itemPosition, int targetPosition, SwapDirection swapDirection, long aboveItemId,
 		long belowItemId);
 
-	public static enum SwapDirection {
+	enum SwapDirection {
 		ABOVE_TARGET, BELOW_TARGET
 	}
 }

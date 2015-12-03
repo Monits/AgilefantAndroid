@@ -8,7 +8,7 @@ public final class InputUtils {
 
 	/**
 	 * Parses given string into double.
-	 * 
+	 *
 	 * @param string The string to be parsed
 	 * @return the parsed double.
 	 */

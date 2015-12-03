@@ -13,14 +13,14 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
 
 import javax.inject.Inject;
 
 public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	/**
 	 * Return a new CreateTaskWithoutStory with the given iteration id
@@ -29,7 +29,8 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 	 */
 	public static CreateTaskWithoutStory newInstance(final long iterationId) {
 		final CreateTaskWithoutStory fragment = new CreateTaskWithoutStory();
-		return prepareFragmentForIteration(iterationId, fragment);
+		prepareFragmentForIteration(iterationId, fragment);
+		return fragment;
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 	@Override
 	protected void onSubmit(final BacklogElementParameters parameters) {
 		final FragmentActivity context = getActivity();
-		metricsService.createTask(
+		workItemService.createTask(
 				parameters,
 				new Listener<Task>() {
 					@Override

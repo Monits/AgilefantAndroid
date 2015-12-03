@@ -5,7 +5,7 @@
     android:background="@drawable/storie_header_title"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="5dp" >
+    android:padding="@dimen/header_padding" >
 
     <TextView
         android:id="@+id/column_name"

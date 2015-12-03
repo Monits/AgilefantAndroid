@@ -27,7 +27,7 @@ public class VolleyModule {
 
 	@Provides
 	@Singleton
-	RequestQueue provideRequestQueue(final Application application) {
+	/* default */ RequestQueue provideRequestQueue(final Application application) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 			CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 			HttpURLConnection.setFollowRedirects(false);
@@ -38,14 +38,14 @@ public class VolleyModule {
 
 	@Provides
 	@Singleton
-	ImageLoader provideImageLoader(final RequestQueue requestQueue,
+	/* default */ ImageLoader provideImageLoader(final RequestQueue requestQueue,
 								final ImageLoader.ImageCache imageCache) {
 		return new ImageLoader(requestQueue, imageCache);
 	}
 
 	@Provides
 	@Singleton
-	ImageLoader.ImageCache provideImageCache() {
+	/* default */ ImageLoader.ImageCache provideImageCache() {
 		return new BitmapLruCache();
 	}
 

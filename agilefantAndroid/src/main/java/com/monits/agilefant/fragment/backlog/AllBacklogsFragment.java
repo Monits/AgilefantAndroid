@@ -26,7 +26,7 @@ import javax.inject.Inject;
 public class AllBacklogsFragment extends Fragment {
 
 	@Inject
-	BacklogService backlogService;
+	/* default */BacklogService backlogService;
 
 	private AllBacklogsAdapter allBacklogsAdapter;
 

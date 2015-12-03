@@ -1,28 +1,24 @@
 package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
-
 import com.monits.agilefant.R;
-import com.monits.agilefant.activity.ProjectActivity;
+import com.monits.agilefant.helper.ProjectHelper;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.backlog.BacklogType;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
 /**
  * Created by sdeira on 18/09/15.
  */
 public class ItemViewHolder extends BacklogViewHolder {
 	@Bind(R.id.txt_title)
-	TextView title;
+	/* default */ TextView title;
 	@Bind(R.id.txt_icon)
-	TextView icon;
-	Backlog backlog;
-	final Context context;
+	/* default */ TextView icon;
+	private Backlog backlog;
+	private final Context context;
 
 	/**
 	 * Item View Holder
@@ -37,24 +33,19 @@ public class ItemViewHolder extends BacklogViewHolder {
 			@Override
 			public boolean onLongClick(final View v) {
 				if (backlog.getType() == BacklogType.PROJECT) {
-					final Intent intent = new Intent(context, ProjectActivity.class);
-					intent.putExtra(ProjectActivity.EXTRA_BACKLOG, backlog);
-					context.startActivity(intent);
+					new ProjectHelper(context, backlog).openProject();
 					return true;
 				}
 				return false;
 			}
 		});
-
 	}
-
 	@Override
 	public void onBindViewHolder(final Backlog backlog) {
 		this.backlog = backlog;
 		title.setText(backlog.getTitle());
 		setIconExpanded();
 	}
-
 	/**
 	 * Set Icon Expanded or not
 	 */
@@ -66,12 +57,12 @@ public class ItemViewHolder extends BacklogViewHolder {
 		}
 	}
 
+
 	@Override
 	public void onItemClick() {
 		backlog.setExpanded(!backlog.isExpanded());
 		setIconExpanded();
 	}
-
 	@Override
 	public String toString() {
 		return new StringBuilder("Item View Holder id: ").append(backlog.getId()).append(", title: ")

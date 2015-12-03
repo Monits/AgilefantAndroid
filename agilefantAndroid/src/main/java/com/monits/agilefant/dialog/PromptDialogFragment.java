@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.monits.agilefant.dialog;
 
 import android.app.AlertDialog;
@@ -25,10 +22,6 @@ public class PromptDialogFragment extends DialogFragment {
 	private static final String INPUT_TYPE_KEY = "inputType_key";
 	private static final String DEF_VALUE_KEY = "def_value_key";
 	private static final String TITLE_KEY = "title_key";
-
-	private int mTitle;
-	private String mDefaultValue;
-	private int mInputType;
 
 	private EditText mDialogInput;
 	private PromptDialogListener mDialogListener;
@@ -55,18 +48,13 @@ public class PromptDialogFragment extends DialogFragment {
 	}
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		final Bundle arguments = getArguments();
-		mTitle = arguments.getInt(TITLE_KEY);
-		mDefaultValue = arguments.getString(DEF_VALUE_KEY);
-		mInputType = arguments.getInt(INPUT_TYPE_KEY, InputType.TYPE_CLASS_TEXT);
-	}
-
-	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
 		final View view = View.inflate(getActivity(), R.layout.dialog_prompt, null);
+
+		final Bundle arguments = getArguments();
+		final int mTitle = arguments.getInt(TITLE_KEY);
+		final String mDefaultValue = arguments.getString(DEF_VALUE_KEY);
+		final int mInputType = arguments.getInt(INPUT_TYPE_KEY, InputType.TYPE_CLASS_TEXT);
 
 		mDialogInput = (EditText) view.findViewById(R.id.dialog_prompt_input);
 		mDialogInput.setInputType(mInputType);
@@ -99,7 +87,7 @@ public class PromptDialogFragment extends DialogFragment {
 
 	/**
 	 * Setter for the listener to handle dialog callbacks.
-	 * 
+	 *
 	 * @param listener the listener.
 	 */
 	public void setPromptDialogListener(final PromptDialogListener listener) {
@@ -110,7 +98,7 @@ public class PromptDialogFragment extends DialogFragment {
 
 		/**
 		 * Called when the dialog is accepted.
-		 * 
+		 *
 		 * @param inputValue the value from dialog's input.
 		 */
 		void onAccept(String inputValue);

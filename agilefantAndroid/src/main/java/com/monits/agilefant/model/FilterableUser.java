@@ -50,7 +50,7 @@ public class FilterableUser extends UserChooser {
 	@SuppressLint("DefaultLocale")
 	public boolean match(final String filterString) {
 		final String initials = getUser().getInitials();
-		return super.match(filterString) || (initials != null && initials.equalsIgnoreCase(filterString));
+		return super.match(filterString) || initials != null && initials.equalsIgnoreCase(filterString);
 	}
 
 	@Override

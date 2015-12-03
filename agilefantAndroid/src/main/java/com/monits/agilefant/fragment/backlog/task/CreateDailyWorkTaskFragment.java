@@ -3,8 +3,6 @@
  */
 package com.monits.agilefant.fragment.backlog.task;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -30,7 +28,9 @@ import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
 import com.monits.agilefant.service.IterationService;
-import com.monits.agilefant.service.MetricsService;
+import com.monits.agilefant.service.WorkItemService;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,13 +44,13 @@ import butterknife.ButterKnife;
 public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFragment {
 
 	@Inject
-	IterationService iterationService;
+	/* default */ IterationService iterationService;
 
 	@Inject
-	MetricsService metricsService;
+	/* default */ WorkItemService workItemService;
 
 	@Bind(R.id.context)
-	AutoCompleteTextView autocompleteIterations;
+	/* default */ AutoCompleteTextView autocompleteIterations;
 
 	private Iteration iterationSelected;
 
@@ -140,7 +140,7 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 					.show();
 		} else {
 
-			metricsService.createTask(
+			workItemService.createTask(
 					parameters,
 					new Listener<Task>() {
 
@@ -171,5 +171,12 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 						}
 					});
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "CreateDailyWorkTaskFragment {"
+				+ "iterationSelected=" + iterationSelected
+				+ '}';
 	}
 }

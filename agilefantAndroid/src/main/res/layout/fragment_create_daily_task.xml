@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UselessParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/traslucent_black"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    style="@style/fragmentBackground">
 
     <ViewSwitcher
         android:id="@+id/view_switcher"

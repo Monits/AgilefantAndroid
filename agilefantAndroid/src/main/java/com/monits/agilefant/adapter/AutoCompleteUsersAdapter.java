@@ -54,11 +54,11 @@ public class AutoCompleteUsersAdapter extends BaseAdapter implements Filterable 
 	@Override
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final TextView ret;
-		if (convertView == null) {
+		if (convertView instanceof TextView) {
+			ret = (TextView) convertView;
+		} else {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			ret = (TextView) inflater.inflate(R.layout.item_autocomplete_text, parent, false);
-		} else {
-			ret = (TextView) convertView;
 		}
 
 		final UserChooser user = getItem(position);

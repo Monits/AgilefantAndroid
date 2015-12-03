@@ -6,10 +6,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
-public class Story extends Observable implements Serializable, Observer, Rankable<Story>, WorkItem {
+public class Story implements Serializable, Rankable<Story>, WorkItem {
 
 	private static final long serialVersionUID = 5178157997788833446L;
 
@@ -42,6 +40,9 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 
 	@SerializedName("iteration")
 	private Iteration iteration;
+
+	@SerializedName("workQueueRank")
+	private int workQueueRank;
 
 	private transient boolean expanded;
 
@@ -137,9 +138,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setState(final StateKey state) {
 		this.state = state;
-
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -154,9 +152,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setResponsibles(final List<User> responsibles) {
 		this.responsibles = responsibles;
-
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -212,8 +207,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setIteration(final Iteration iteration) {
 		this.iteration = iteration;
-		setChanged();
-		notifyObservers();
 	}
 
 	/**
@@ -230,23 +223,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 		this.backlog = backlog;
 	}
 
-	/**
-	 * Attach Observers story's tasks.
-	 */
-	public void attachTasksObservers() {
-		if (tasks != null) {
-			for (final Task task : tasks) {
-				task.addObserver(this);
-			}
-		}
-	}
-
-	/**
-	 * This is a convenience to update multiple values at once and to notify changes only once, to avoid
-	 * views to render multiple times.
-	 *
-	 * @param story the updated story.
-	 */
 	@Override
 	public void updateValues(final WorkItem story) {
 
@@ -265,29 +241,6 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 		this.state = innerStory.getState();
 		this.responsibles = innerStory.getResponsibles();
 
-		setChanged();
-		notifyObservers();
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-		if (observable instanceof Task) {
-			long el = 0;
-			long es = 0;
-			long oe = 0;
-
-			for (final Task task : tasks) {
-				// Agilefant's stories don't consider this states on it's metrics.
-				if (task.getState() != StateKey.DEFERRED) {
-					oe += task.getOriginalEstimate();
-					el += task.getEffortLeft();
-				}
-
-				es += task.getEffortSpent();
-			}
-
-			this.metrics = new Metrics(el, es, oe);
-		}
 	}
 
 	@Override
@@ -322,6 +275,20 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 	 */
 	public void setExpanded(final boolean expanded) {
 		this.expanded = expanded;
+	}
+
+	/**
+	 * @return rank position at workQueue
+	 */
+	public int getWorkQueueRank() {
+		return workQueueRank;
+	}
+
+	/**
+	 * @param workQueueRank rank position at workQueue
+	 */
+	public void setWorkQueueRank(final int workQueueRank) {
+		this.workQueueRank = workQueueRank;
 	}
 
 
@@ -366,6 +333,7 @@ public class Story extends Observable implements Serializable, Observer, Rankabl
 			.append(", metrics: ").append(metrics)
 			.append(", tasks: ").append(tasksToStringBuilder.toString())
 			.append(", rank: ").append(rank)
+			.append(", workQueueRank: ").append(workQueueRank)
 			.append(", backlog: ").append(backlog)
 			.append(", iteration: ").append(iteration)
 			.append(", expanded: ").append(expanded)

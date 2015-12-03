@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,15 +30,13 @@ import com.monits.agilefant.service.MetricsService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StoriesFragment extends BaseDetailTabFragment implements Observer {
+public class StoriesFragment extends BaseDetailTabFragment implements SearchView.OnQueryTextListener {
 
 	@Inject
 	/* default */ MetricsService metricsService;
@@ -59,7 +61,7 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 					&& !StoriesFragment.this.isDetached()) {
 
 				final Task updatedTask = (Task) intent.getSerializableExtra(AgilefantApplication.EXTRA_TASK_UPDATED);
-				storiesAdapter.updateTask(updatedTask);
+				storiesAdapter.onUpdate(updatedTask);
 			}
 
 			if (AgilefantApplication.ACTION_NEW_STORY.equals(intent.getAction())) {
@@ -99,6 +101,8 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+
+		setHasOptionsMenu(true);
 
 		final Bundle arguments = getArguments();
 
@@ -140,22 +144,6 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 	}
 
 	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(STORIES, (Serializable) storiesAdapter.getWorkItems());
-	}
-
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-
-		if (isVisible()) {
-			storiesAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-		}
-	}
-
-	@Override
 	public void onDestroy() {
 		getActivity().unregisterReceiver(broadcastReceiver);
 		super.onDestroy();
@@ -164,5 +152,33 @@ public class StoriesFragment extends BaseDetailTabFragment implements Observer {
 	@Override
 	public int getTitleResourceId() {
 		return R.string.stories;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(final String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(final String query) {
+		storiesAdapter.filter(query);
+		return true;
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(final Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		final MenuItem item = menu.findItem(R.id.action_search);
+		item.setVisible(true);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
+	}
+
+	@Override
+	public String toString() {
+		return "StoriesFragment{"
+				+ "broadcastReceiver=" + broadcastReceiver
+				+ ", storiesAdapter=" + storiesAdapter
+				+ '}';
 	}
 }

@@ -1,31 +1,38 @@
 package com.monits.agilefant.fragment.dailywork;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.monits.agilefant.AgilefantApplication;
 import com.monits.agilefant.R;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.recycler.DailyTaskItemTouchHelperCallback;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
+import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
+import com.monits.agilefant.service.DailyWorkService;
 
-public class MyQueueWorkFragment extends Fragment implements Observer {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+public class MyQueueWorkFragment extends Fragment {
 
 	private static final String TASKS_KEY = "TASKS";
 
-	private TasksRecyclerAdapter tasksAdapter;
-
 	private List<Task> mTasks;
+
+	@Inject
+	/* default */ DailyWorkService rankUpdaterService;
+
 
 	/**
 	 * Return a new MyQueueWorkFragment with the given queued tasks
@@ -50,6 +57,8 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		AgilefantApplication.getObjectGraph().inject(this);
+
 		if (savedInstanceState == null) {
 			mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
 		} else {
@@ -67,25 +76,22 @@ public class MyQueueWorkFragment extends Fragment implements Observer {
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		final RecyclerView tasksListView = (RecyclerView) view.findViewById(R.id.tasks_list);
-		final View emptyView = view.findViewById(R.id.queue_empty_view);
 
+		final View emptyView = view.findViewById(R.id.queue_empty_view);
 		if (mTasks.isEmpty()) {
 			emptyView.setVisibility(View.VISIBLE);
 			tasksListView.setVisibility(View.GONE);
 		} else {
 			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			final TasksRecyclerAdapter tasksAdapter = new TasksRecyclerAdapter(
+					getActivity(), mTasks, rankUpdaterService);
 			tasksListView.addItemDecoration(new SpacesSeparatorItemDecoration(getActivity()));
 			tasksListView.setAdapter(tasksAdapter);
-		}
-	}
 
-	@Override
-	public void update(final Observable observable, final Object arg1) {
-
-		if (isVisible()) {
-			tasksAdapter.notifyDataSetChanged();
-			observable.deleteObserver(MyQueueWorkFragment.this);
+			final WorkItemTouchHelperCallback workItemTouchHelperCallback =
+					new DailyTaskItemTouchHelperCallback(tasksAdapter);
+			final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
+			itemTouchHelper.attachToRecyclerView(tasksListView);
 		}
 	}
 

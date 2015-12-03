@@ -8,15 +8,6 @@
     android:clickable="false"
     android:background="@android:color/transparent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/iteration_add_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_new"
-        android:gravity="bottom|right"
-        android:layout_margin="@dimen/margin_main_fab"
-        android:layout_gravity="right|bottom"/>
-
     <LinearLayout
         android:id="@+id/fab_buttons_container"
         android:layout_width="match_parent"
@@ -78,4 +69,14 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/iteration_add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_new"
+        android:gravity="bottom|right"
+        android:layout_margin="@dimen/margin_main_fab"
+        android:layout_gravity="right|bottom"/>
+
 </FrameLayout>

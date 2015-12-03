@@ -3,28 +3,33 @@ package com.monits.agilefant.dagger;
 import com.monits.agilefant.activity.BaseActivity;
 import com.monits.agilefant.activity.DailyWorkActivity;
 import com.monits.agilefant.activity.HomeActivity;
-import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.activity.SplashActivity;
 import com.monits.agilefant.adapter.ProjectLeafStoriesRecyclerAdapter;
 import com.monits.agilefant.adapter.TasksRecyclerAdapter;
 import com.monits.agilefant.adapter.WorkItemAdapter;
+import com.monits.agilefant.adapter.recyclerviewholders.DailyWorkWorkItemsAdapter;
 import com.monits.agilefant.adapter.recyclerviewholders.IterationViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.StoryItemViewHolder;
 import com.monits.agilefant.adapter.recyclerviewholders.TaskItemViewHolder;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.fragment.backlog.AllBacklogsFragment;
 import com.monits.agilefant.fragment.backlog.MyBacklogsFragment;
-import com.monits.agilefant.fragment.backlog.story.CreateLeafStoryFragment;
 import com.monits.agilefant.fragment.backlog.story.CreateStoryFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateDailyWorkTaskFragment;
 import com.monits.agilefant.fragment.backlog.task.CreateTaskWithoutStory;
+import com.monits.agilefant.fragment.dailywork.MyQueueWorkFragment;
 import com.monits.agilefant.fragment.dailywork.MyTasksFragment;
 import com.monits.agilefant.fragment.iteration.IterationBurndownFragment;
 import com.monits.agilefant.fragment.iteration.SpentEffortFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
+import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.fragment.userchooser.UserChooserFragment;
+import com.monits.agilefant.helper.ProjectHelper;
+import com.monits.agilefant.listeners.SearchListener;
+import com.monits.agilefant.listeners.SuggestionListener;
+
 
 /**
  * Created by edipasquale on 27/08/15.
@@ -106,11 +111,6 @@ public interface Graph {
 	void inject(final CreateStoryFragment createStoryFragment);
 
 	/**
-	 * @param createLeafStoryFragment Injects CreateLeafStoryFragment
-	 */
-	void inject(final CreateLeafStoryFragment createLeafStoryFragment);
-
-	/**
 	 * @param createDailyWorkTaskFragment Injects CreateDailyWorkTaskFragment
 	 */
 	void inject(final CreateDailyWorkTaskFragment createDailyWorkTaskFragment);
@@ -151,7 +151,32 @@ public interface Graph {
 	void inject(final WorkItemAdapter workItemAdapter);
 
 	/**
-	 * @param projectActivity Injects ProjectActivity
+	 * @param projectHelper Injects ProjectHelper
 	 */
-	void inject(final ProjectActivity projectActivity);
+	void inject(final ProjectHelper projectHelper);
+
+	/**
+	 * @param dailyWorkWorkItemsAdapter Injects DailyWorkWorkItemsAdapter
+	 */
+	void inject(final DailyWorkWorkItemsAdapter dailyWorkWorkItemsAdapter);
+
+	/**
+	 * @param taskWithoutStoryFragment Injects TaskWithoutStoryFragment
+	 */
+	void inject(final TaskWithoutStoryFragment taskWithoutStoryFragment);
+
+	/**
+	 * @param myQueueWorkFragment Injects MyQueueWorkFragment
+	 */
+	void inject(final MyQueueWorkFragment myQueueWorkFragment);
+
+	/**
+	 * @param searchListener Injects SearchListener
+	 */
+	void inject(final SearchListener searchListener);
+
+	/**
+	 * @param suggestionListener Injects SearchAdapter
+	 */
+	void inject(final SuggestionListener suggestionListener);
 }

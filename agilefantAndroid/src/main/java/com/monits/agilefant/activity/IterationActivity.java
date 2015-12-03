@@ -3,7 +3,9 @@ package com.monits.agilefant.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -29,7 +31,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class IterationActivity extends BaseToolbaredActivity {
+public class IterationActivity extends BaseToolbaredActivity implements ViewPager.OnPageChangeListener {
 
 	public static final String ITERATION = "ITERATION";
 
@@ -41,7 +43,10 @@ public class IterationActivity extends BaseToolbaredActivity {
 
 	private TextView storyFABLabel;
 	private TextView taskFABLabel;
-	private final static long DELAY = 90;
+
+	private static final int DURATION = 100;
+	private static final float DEGREE = 135;
+	private static final long DELAY = 90;
 
 	@Bind(R.id.pager)
 	/* default */ ViewPager viewPager;
@@ -72,7 +77,7 @@ public class IterationActivity extends BaseToolbaredActivity {
 		fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
-
+		viewPager.addOnPageChangeListener(this);
 		setUpTabLayout(viewPager);
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
@@ -126,9 +131,10 @@ public class IterationActivity extends BaseToolbaredActivity {
 
 
 	private void animationFABMenu() { //Open animation
+
 		if (optionsContainer.getVisibility() == View.INVISIBLE) {
-			final Animation rotateIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_in);
-			addFAB.setAnimation(rotateIn);
+			ViewCompat.animate(addFAB).rotation(DEGREE)
+					.setDuration(DURATION).start();
 
 			optionsContainer.setVisibility(View.VISIBLE);
 			final Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_in);
@@ -148,9 +154,8 @@ public class IterationActivity extends BaseToolbaredActivity {
 			setAnimationFabItems(addTaskFAB, DELAY);
 
 		} else { //Close fab menu animation
-			final Animation rotateOut =
-					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_main_rotate_out);
-			addFAB.setAnimation(rotateOut);
+			ViewCompat.animate(addFAB).rotation(0f)
+					.setDuration(DURATION).start();
 
 			final Animation fadeOut =
 					AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_menu_fade_out) ;
@@ -177,4 +182,26 @@ public class IterationActivity extends BaseToolbaredActivity {
 	public String toString() {
 		return "IterationActivity{" + "iteration=" + iteration + '}';
 	}
+
+	@Override
+	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+		//We only need to implement the onPageSelected method
+	}
+
+	@Override
+	public void onPageSelected(final int position) {
+		supportInvalidateOptionsMenu();
+	}
+
+	@Override
+	public void onPageScrollStateChanged(final int state) {
+		//We only need to implement the onPageSelected method
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu) {
+		menu.findItem(R.id.action_search).setVisible(false);
+		return true;
+	}
 }
+

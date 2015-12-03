@@ -1,11 +1,5 @@
 package com.monits.agilefant.fragment.dailywork;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,16 +26,24 @@ import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.service.BacklogService;
+import com.monits.agilefant.service.DailyWorkService;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
-public class MyTasksFragment extends Fragment implements Observer {
+public class MyTasksFragment extends Fragment {
 
 	private static final String TASKS_KEY = "TASKS";
 	private static final String PROJECTS_KEY = "PROJECTS";
 
 	@Inject
-	BacklogService backlogService;
+	/* default */ BacklogService backlogService;
+
+	@Inject
+	/* default */ DailyWorkService rankUpdaterService;
 
 	private List<Task> mTasks;
 
@@ -50,9 +52,6 @@ public class MyTasksFragment extends Fragment implements Observer {
 	private TasksRecyclerAdapter tasksAdapter;
 
 	private ProjectAdapter backlogsAdapter;
-
-
-
 
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -91,6 +90,8 @@ public class MyTasksFragment extends Fragment implements Observer {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AgilefantApplication.getObjectGraph().inject(this);
 
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
@@ -174,7 +175,7 @@ public class MyTasksFragment extends Fragment implements Observer {
 
 		} else {
 
-			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks);
+			tasksAdapter = new TasksRecyclerAdapter(getActivity(), mTasks, rankUpdaterService);
 			tasksListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 			tasksListView.addItemDecoration(new SpacesSeparatorItemDecoration(getActivity()));
 			tasksListView.setAdapter(tasksAdapter);
@@ -186,15 +187,6 @@ public class MyTasksFragment extends Fragment implements Observer {
 		getActivity().unregisterReceiver(broadcastReceiver);
 
 		super.onDestroy();
-	}
-
-	@Override
-	public void update(final Observable observable, final Object arg1) {
-
-		if (isVisible()) {
-			tasksAdapter.notifyDataSetChanged();
-			observable.deleteObserver(MyTasksFragment.this);
-		}
 	}
 
 	@Override

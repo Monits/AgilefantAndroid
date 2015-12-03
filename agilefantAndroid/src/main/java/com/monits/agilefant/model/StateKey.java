@@ -20,7 +20,7 @@ public enum StateKey {
 	 * Constructor.
 	 * @param state The state
 	 */
-	private StateKey(@StringRes final int state, @StringRes final int fullname) {
+	StateKey(@StringRes final int state, @StringRes final int fullname) {
 		this.state = state;
 		this.fullname = fullname;
 	}

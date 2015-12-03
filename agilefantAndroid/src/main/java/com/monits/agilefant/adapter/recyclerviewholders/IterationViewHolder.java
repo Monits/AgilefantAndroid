@@ -27,12 +27,13 @@ import butterknife.ButterKnife;
 public class IterationViewHolder extends BacklogViewHolder {
 
 	@Bind(R.id.txt_title)
-	TextView title;
-	final Context context;
-	Backlog backlog;
+	/* default */ TextView title;
 
 	@Inject
-	IterationService iterationService;
+	/* default */ IterationService iterationService;
+
+	private final Context context;
+	private Backlog backlog;
 
 	/**
 	 * Iteration View Holder

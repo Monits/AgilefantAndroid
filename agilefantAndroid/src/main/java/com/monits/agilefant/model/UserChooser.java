@@ -4,12 +4,20 @@ import android.annotation.SuppressLint;
 
 import java.util.Locale;
 
-public abstract class UserChooser {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+public class UserChooser {
+
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "We need to ignore this field due to native method calling")
 	private long id;
 
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "We need to ignore this field due to native method calling")
 	private boolean enabled;
 
+	@SuppressFBWarnings(value = "MISSING_FIELD_IN_TO_STRING",
+			justification = "We need to ignore this field due to native method calling")
 	private String matchedString;
 
 	private String name;

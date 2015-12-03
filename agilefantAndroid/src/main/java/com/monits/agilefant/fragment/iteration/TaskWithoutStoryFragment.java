@@ -1,22 +1,18 @@
 package com.monits.agilefant.fragment.iteration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,17 +22,29 @@ import com.monits.agilefant.adapter.TasksWithoutStoryRecyclerAdapter;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
+import com.monits.agilefant.service.WorkItemService;
 
-public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements Observer {
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements SearchView.OnQueryTextListener {
 
 	private static final String EXTRA_TASKS = "com.monits.agilefant.extra.TASK_WITHOUT_STORIES";
 
 	@Bind(R.id.task_without_story)
-	RecyclerView taskWithoutStoryListView;
+	/* default */ RecyclerView taskWithoutStoryListView;
 
 	private TasksWithoutStoryRecyclerAdapter taskWithoutStoryAdapter;
 
 	private List<Task> taskWithoutStory;
+
+	@Inject
+	/* default */ WorkItemService workItemService;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -86,10 +94,15 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AgilefantApplication.getObjectGraph().inject(this);
+
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
 		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
 		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+
+		setHasOptionsMenu(true);
 
 		final Bundle arguments = getArguments();
 		this.taskWithoutStory = (List<Task>) arguments.getSerializable(EXTRA_TASKS);
@@ -106,7 +119,8 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 		} else {
 			taskWithoutStoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-			taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(getActivity(), taskWithoutStory);
+			taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(
+					getActivity(), taskWithoutStory, workItemService);
 
 			taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
 			taskWithoutStoryListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
@@ -118,15 +132,6 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 		}
 
 		return rootView;
-	}
-
-	@Override
-	public void update(final Observable observable, final Object data) {
-		if (isVisible()) {
-			taskWithoutStoryAdapter.notifyDataSetChanged();
-			observable.deleteObserver(this);
-
-		}
 	}
 
 	@Override
@@ -147,4 +152,26 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements O
 				+ "taskWithoutStoryAdapter=" + taskWithoutStoryAdapter
 				+ '}';
 	}
+
+	@Override
+	public boolean onQueryTextSubmit(final String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(final String query) {
+		taskWithoutStoryAdapter.filter(query);
+		return true;
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(final Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		final MenuItem item = menu.findItem(R.id.action_search);
+		item.setVisible(true);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
+	}
+
+
 }

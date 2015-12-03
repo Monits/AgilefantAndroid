@@ -5,6 +5,7 @@ import java.util.List;
 import com.monits.agilefant.model.StateKey;
 import com.monits.agilefant.model.User;
 
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 public final class BacklogElementParameters {
 	private final Long backlogId;
 	private final StateKey stateKey;
@@ -107,7 +108,6 @@ public final class BacklogElementParameters {
 				.append(", stateKey: ").append(stateKey)
 				.append(", name: ").append(name)
 				.append(", selectedUsers: ").append(selectedUsersStringBuilder.toString())
-				.append(", name: ").append(name)
 				.append(", iterationId: ").append(iterationId)
 				.append(']')
 				.toString();

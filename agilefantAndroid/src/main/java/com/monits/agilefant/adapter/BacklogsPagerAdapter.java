@@ -25,7 +25,7 @@ public class BacklogsPagerAdapter extends FragmentStatePagerAdapter {
 	public BacklogsPagerAdapter(final Context context, final FragmentManager fragmentManager,
 			final List<Fragment> fragments) {
 		super(fragmentManager);
-		this.context  = context;
+		this.context = context;
 		this.fragments = fragments;
 	}
 

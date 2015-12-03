@@ -15,7 +15,7 @@ public class DailyWorkPagerAdapter extends FragmentStatePagerAdapter {
 
 	private final Context context;
 	private final DailyWork dailyWork;
-	private final static int SIZE = 3;
+	private static final int SIZE = 3;
 
 	/**
 	 * Constructor

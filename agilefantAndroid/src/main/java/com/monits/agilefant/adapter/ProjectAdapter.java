@@ -47,7 +47,7 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 	 */
 	public ProjectAdapter(final Context context, final List<Project> projectList, final int groupResId,
 			final int childResId) {
-		super(context);
+		super();
 
 		setProjects(projectList);
 
@@ -126,22 +126,22 @@ public class ProjectAdapter extends AbstractExpandableListAdapter<Project, Itera
 		notifyDataSetChanged();
 	}
 
-	static class HolderGroup {
+	/* default */ static class HolderGroup {
 		@Bind(R.id.txt_title)
-		TextView title;
+		/* default */ TextView title;
 		@Bind(R.id.txt_icon)
-		TextView icon;
+		/* default */ TextView icon;
 
-		public HolderGroup(final View view) {
+		HolderGroup(final View view) {
 			ButterKnife.bind(this, view);
 		}
 	}
 
-	static class HolderChild {
+	/* default */ static class HolderChild {
 		@Bind(R.id.txt_title)
-		TextView title;
+		/* default */ TextView title;
 
-		public HolderChild(final View view) {
+		HolderChild(final View view) {
 			ButterKnife.bind(this, view);
 		}
 	}
