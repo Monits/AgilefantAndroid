@@ -27,7 +27,6 @@ import com.monits.agilefant.recycler.SpacesSeparatorItemDecoration;
 import com.monits.agilefant.recycler.WorkItemTouchHelperCallback;
 import com.monits.agilefant.service.MetricsService;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,6 +162,12 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 	public boolean onQueryTextChange(final String query) {
 		storiesAdapter.filter(query);
 		return true;
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(STORIES, new ArrayList<>(storiesAdapter.getWorkItems()));
 	}
 
 	@Override
