@@ -5,7 +5,7 @@
     <item
         android:id="@+id/actionbar_logout"
         agilefant:showAsAction="ifRoom"
-        android:icon="@drawable/ic_logout"
+        android:icon="@drawable/ic_exit_to_app_white"
         android:orderInCategory="2"
         android:title="@string/logout"/>
 
