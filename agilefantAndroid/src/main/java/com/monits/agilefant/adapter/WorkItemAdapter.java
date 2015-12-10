@@ -185,6 +185,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	 */
 	public void addStory(final Story newStory) {
 		workItems.add(newStory);
+		originalWorkItems.add(newStory);
 		notifyItemInserted(workItems.size() - 1);
 	}
 
