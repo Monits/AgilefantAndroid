@@ -65,6 +65,8 @@ public class AllBackLogsActivity extends BaseToolbaredActivity {
 		final SearchableInfo searchableInfo = searchManager.getSearchableInfo(getComponentName());
 		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
 
+
+
 		searchView.setSearchableInfo(searchableInfo);
 		searchView.setSuggestionsAdapter(searchAdapter);
 		searchView.setSubmitButtonEnabled(true);
@@ -72,6 +74,10 @@ public class AllBackLogsActivity extends BaseToolbaredActivity {
 		searchView.setOnQueryTextListener(new SearchListener(this, searchAdapter,
 				suggestionListener));
 		searchView.setOnSuggestionListener(suggestionListener);
+
+
+
+		searchView.setMaxWidth(getMaxWidthScreen());
 
 		return true;
 	}

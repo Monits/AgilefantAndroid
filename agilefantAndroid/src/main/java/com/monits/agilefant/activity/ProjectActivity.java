@@ -7,8 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -100,7 +103,10 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
-		menu.findItem(R.id.action_search).setVisible(false);
+		final MenuItem menuItem = menu.findItem(R.id.action_search);
+		menuItem.setVisible(false);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+		searchView.setMaxWidth(getMaxWidthScreen());
 
 		return true;
 	}

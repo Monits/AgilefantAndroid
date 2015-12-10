@@ -1,11 +1,15 @@
 package com.monits.agilefant.activity;
 
 import android.content.Intent;
+import android.graphics.Point;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -88,5 +92,27 @@ public class BaseToolbaredActivity extends BaseActivity {
 	@Override
 	public String toString() {
 		return "BaseToolbaredActivity [toolbarConfigured:" + toolbarConfigured + ']';
+	}
+
+	protected int getMaxWidthScreen() {
+		int measuredWidth;
+		int measuredHeight;
+
+		final Display display = getWindowManager().getDefaultDisplay();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			final Point size = new Point();
+			display.getSize(size);
+			measuredWidth = size.x;
+			measuredHeight = size.y;
+		} else {
+			measuredWidth = display.getWidth();
+			measuredHeight = display.getHeight();
+		}
+
+		if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180) {
+			return measuredHeight;
+		}
+
+		return measuredWidth;
 	}
 }

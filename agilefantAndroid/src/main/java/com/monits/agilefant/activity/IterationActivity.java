@@ -3,9 +3,12 @@ package com.monits.agilefant.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -200,7 +203,10 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
-		menu.findItem(R.id.action_search).setVisible(false);
+		final MenuItem menuItem = menu.findItem(R.id.action_search);
+		menuItem.setVisible(false);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+		searchView.setMaxWidth(getMaxWidthScreen());
 		return true;
 	}
 }
