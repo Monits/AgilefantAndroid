@@ -22,6 +22,7 @@ import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Project;
+import com.monits.agilefant.model.backlog.BacklogType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
-		initFABs(fabContainer, backlog.getId());
+		initFABs(fabContainer, project.getId());
 		populatePager(project);
 	}
 
@@ -92,7 +93,9 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 		addFAB.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View view) {
-				final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(projectId);
+				final CreateStoryFragment createStoryFragment = CreateStoryFragment
+						.newInstance(BacklogType.PROJECT, projectId);
+
 				getSupportFragmentManager().beginTransaction()
 						.replace(android.R.id.content, createStoryFragment)
 						.addToBackStack(null)

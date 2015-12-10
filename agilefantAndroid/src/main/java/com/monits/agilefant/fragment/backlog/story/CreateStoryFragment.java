@@ -16,6 +16,7 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.fragment.backlog.AbstractCreateBacklogElementFragment;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.backlog.BacklogElementParameters;
+import com.monits.agilefant.model.backlog.BacklogType;
 import com.monits.agilefant.service.WorkItemService;
 
 import javax.inject.Inject;
@@ -27,12 +28,19 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	/**
 	 * Return a new CreateStoryFragment with the given iteration id.
-	 * @param iterationId The iteration id.
+	 *
+	 * @param backlogType The backlog type
+	 * @param backlogId The backlog id.
 	 * @return a new CreateStoryFragment with the given iteration id.
 	 */
-	public static CreateStoryFragment newInstance(final long iterationId) {
+	public static CreateStoryFragment newInstance(final BacklogType backlogType, final long backlogId) {
 		final CreateStoryFragment fragment = new CreateStoryFragment();
-		prepareFragmentForIteration(iterationId, fragment);
+
+		if (backlogType == BacklogType.ITERATION) {
+			prepareFragmentForIteration(backlogId, fragment);
+		} else {
+			prepareFragmentForBacklog(backlogId, fragment);
+		}
 		return fragment;
 	}
 
@@ -44,7 +52,7 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-			final Bundle savedInstanceState) {
+							final Bundle savedInstanceState) {
 
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}

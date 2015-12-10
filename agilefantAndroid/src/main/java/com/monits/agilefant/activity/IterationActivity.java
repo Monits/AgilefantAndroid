@@ -27,6 +27,7 @@ import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.backlog.BacklogType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +114,7 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 			@Override
 			public void onClick(final View view) {
 				animationFABMenu();
-				replaceFragment(CreateStoryFragment.newInstance(iteration.getId()));
+				replaceFragment(CreateStoryFragment.newInstance(BacklogType.ITERATION, iteration.getId()));
 			}
 		};
 
