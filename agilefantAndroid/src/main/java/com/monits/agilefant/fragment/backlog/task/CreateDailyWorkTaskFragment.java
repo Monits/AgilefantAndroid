@@ -132,7 +132,11 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 		final FragmentActivity activity = getActivity();
 
 		final String iterationName = autocompleteIterations.getText().toString().trim();
-		if (TextUtils.isEmpty(iterationName)) {
+
+		if (TextUtils.isEmpty(parameters.getName())) {
+			Toast.makeText(activity, R.string.validation_empty_name, Toast.LENGTH_LONG)
+					.show();
+		} else if (TextUtils.isEmpty(iterationName)) {
 			iterationId = null;
 
 			Toast.makeText(

@@ -53,6 +53,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
 	@Bind(R.id.responsibles)
 	/* default */ AutoCompleteUserChooserTextView mResponsiblesInput;
+
 	@Bind(R.id.state)
 	/* default */ TextView storyState;
 
