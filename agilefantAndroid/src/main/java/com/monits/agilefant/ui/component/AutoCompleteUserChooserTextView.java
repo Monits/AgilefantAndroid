@@ -7,6 +7,7 @@ import java.util.List;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.inputmethod.CompletionInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
@@ -32,23 +33,41 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 
 		setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
-				setText(null);
-				final UserChooser userChooser = (UserChooser) getAdapter().getItem(position);
-				if (userChooser instanceof FilterableUser) {
-					final User filterableUser = ((FilterableUser) userChooser).getUser();
-					if (!selectedUsers.contains(filterableUser)) {
-						selectedUsers.add(filterableUser);
-					}
-				} else {
-					final List<Long> usersId = ((FilterableTeam) userChooser).getUsersId();
-					final List<UserChooser> filterableUsers =
-							((AutoCompleteUsersAdapter) getAdapter()).getFilterableUsers();
-					addUsersFromTeam(usersId, filterableUsers);
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+				if (position < 0) { //if position is less than zero, it's invalid.
+					return;
 				}
-				sendUserChooserAction();
+				addSelectUser(position);
+
 			}
+
 		});
+
+
+	}
+
+	@Override
+	public void onCommitCompletion(final CompletionInfo completion) {
+		super.onCommitCompletion(completion);
+		// An user has been selected from keyboard suggestions
+		addSelectUser(completion.getPosition());
+	}
+
+	private void addSelectUser(final int position) {
+		setText(null);
+		final UserChooser userChooser = (UserChooser) getAdapter().getItem(position);
+		if (userChooser instanceof FilterableUser) {
+			final User filterableUser = ((FilterableUser) userChooser).getUser();
+			if (!selectedUsers.contains(filterableUser)) {
+				selectedUsers.add(filterableUser);
+			}
+		} else {
+			final List<Long> usersId = ((FilterableTeam) userChooser).getUsersId();
+			final List<UserChooser> filterableUsers =
+					((AutoCompleteUsersAdapter) getAdapter()).getFilterableUsers();
+			addUsersFromTeam(usersId, filterableUsers);
+		}
+		sendUserChooserAction();
 	}
 
 	@Override
@@ -132,4 +151,5 @@ public class AutoCompleteUserChooserTextView extends AutoCompleteTextView {
 	public List<User> getSelectedUsers() {
 		return Collections.unmodifiableList(selectedUsers);
 	}
+
 }
