@@ -48,10 +48,8 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 	@Override
 	protected void onSubmit(final BacklogElementParameters parameters) {
 		final FragmentActivity context = getActivity();
-
 		if (TextUtils.isEmpty(parameters.getName())) {
-			Toast.makeText(getActivity(), R.string.validation_empty_name, Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(getActivity(), R.string.validation_empty_name, Toast.LENGTH_LONG).show();
 		} else {
 			workItemService.createTask(
 					parameters,
@@ -62,7 +60,6 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 							newTaskIntent.setAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
 							newTaskIntent.putExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY, newTask);
 							context.sendBroadcast(newTaskIntent);
-
 							getFragmentManager().popBackStack();
 							Toast.makeText(context, R.string.saved_task, Toast.LENGTH_SHORT).show();
 						}

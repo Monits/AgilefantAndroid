@@ -3,6 +3,7 @@ package com.monits.agilefant.fragment.backlog.story;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,28 +60,32 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 
 	@Override
 	protected void onSubmit(final BacklogElementParameters parameters) {
-		final FragmentActivity context = getActivity();
-		workItemService.createStory(
-				parameters,
-				new Listener<Story>() {
-					@Override
-					public void onResponse(final Story newStory) {
+		if (TextUtils.isEmpty(parameters.getName())) {
+			Toast.makeText(getActivity(), R.string.validation_empty_name, Toast.LENGTH_LONG).show();
+		} else {
+			final FragmentActivity context = getActivity();
+			workItemService.createStory(
+					parameters,
+					new Listener<Story>() {
+						@Override
+						public void onResponse(final Story newStory) {
 
-						final Intent newStoryIntent = new Intent();
-						newStoryIntent.setAction(AgilefantApplication.ACTION_NEW_STORY);
-						newStoryIntent.putExtra(AgilefantApplication.EXTRA_NEW_STORY, newStory);
-						context.sendBroadcast(newStoryIntent);
+							final Intent newStoryIntent = new Intent();
+							newStoryIntent.setAction(AgilefantApplication.ACTION_NEW_STORY);
+							newStoryIntent.putExtra(AgilefantApplication.EXTRA_NEW_STORY, newStory);
+							context.sendBroadcast(newStoryIntent);
 
-						getFragmentManager().popBackStack();
-						Toast.makeText(context, R.string.saved_story, Toast.LENGTH_SHORT).show();
-					}
-				},
-				new ErrorListener() {
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						Toast.makeText(context, R.string.error_saving_story, Toast.LENGTH_SHORT).show();
-					}
-				});
+							getFragmentManager().popBackStack();
+							Toast.makeText(context, R.string.saved_story, Toast.LENGTH_SHORT).show();
+						}
+					},
+					new ErrorListener() {
+						@Override
+						public void onErrorResponse(final VolleyError arg0) {
+							Toast.makeText(context, R.string.error_saving_story, Toast.LENGTH_SHORT).show();
+						}
+					});
+		}
 	}
 
 	@Override
