@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 public class UserChooserFragment extends Fragment {
 
 	private static final String CURRENT_RESPONSIBLES = "CURRENT_RESPONSIBLES";
+	private static final String INPUT_USERS = "INPUT_USERS";
 
 	@Inject
 	/* default */ UserService userService;
@@ -59,7 +60,7 @@ public class UserChooserFragment extends Fragment {
 		final UserChooserFragment fragment = new UserChooserFragment();
 
 		final Bundle arguments = new Bundle();
-		arguments.putSerializable(CURRENT_RESPONSIBLES, new ArrayList<User>(currentResponsibles));
+		arguments.putSerializable(CURRENT_RESPONSIBLES, new ArrayList<>(currentResponsibles));
 		fragment.setArguments(arguments);
 		fragment.setOnUsersSubmittedListener(listener);
 
@@ -90,13 +91,20 @@ public class UserChooserFragment extends Fragment {
 				userInput.removeUser(user);
 			}
 		});
-
 		selectedUsersList.setAdapter(selectedUsersAdapter);
 
-		@SuppressWarnings("unchecked")
-		final List<User> currentUsers = (List<User>) getArguments().getSerializable(CURRENT_RESPONSIBLES);
-		if (currentUsers != null) {
-			userInput.setUsers(currentUsers);
+		if (savedInstanceState == null) {
+			@SuppressWarnings("unchecked")
+			final List<User> currentUsers = (List<User>) getArguments().getSerializable(CURRENT_RESPONSIBLES);
+			if (currentUsers != null) {
+				userInput.setUsers(currentUsers);
+			}
+		} else {
+			@SuppressWarnings("unchecked")
+			final List<User> userInputs = (List<User>) savedInstanceState.getSerializable(INPUT_USERS);
+			if (userInputs != null) {
+				userInput.setUsers(userInputs);
+			}
 		}
 
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(getActivity());
@@ -165,5 +173,11 @@ public class UserChooserFragment extends Fragment {
 		 * @param users the selected users.
 		 */
 		void onSubmitUsers(List<User> users);
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(INPUT_USERS, new ArrayList<>(userInput.getSelectedUsers()));
 	}
 }
