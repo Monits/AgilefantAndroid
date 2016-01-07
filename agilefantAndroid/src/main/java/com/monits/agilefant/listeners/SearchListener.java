@@ -1,6 +1,7 @@
 package com.monits.agilefant.listeners;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
@@ -22,17 +23,21 @@ import javax.inject.Inject;
  */
 public class SearchListener implements SearchView.OnQueryTextListener {
 
+	private static final long SEARCH_TIMEOUT = 300;
+
 	private final SearchAdapter searchAdapter;
 	private final Context context;
 	private final SuggestionListener suggestionListener;
+	private TimerOut timerOut;
 
 	@Inject
 	/* default */ SearchService searchService;
 
 	/**
 	 * Standard constructor
-	 * @param context The context
-	 * @param searchAdapter Searchview's adapter
+	 *
+	 * @param context            The context
+	 * @param searchAdapter      Searchview's adapter
 	 * @param suggestionListener SearchView's suggestionListener
 	 */
 	public SearchListener(final Context context, final SearchAdapter searchAdapter,
@@ -40,6 +45,7 @@ public class SearchListener implements SearchView.OnQueryTextListener {
 		this.searchAdapter = searchAdapter;
 		this.context = context;
 		this.suggestionListener = suggestionListener;
+		this.timerOut = new TimerOut();
 		AgilefantApplication.getObjectGraph().inject(this);
 	}
 
@@ -74,11 +80,35 @@ public class SearchListener implements SearchView.OnQueryTextListener {
 	@Override
 	public boolean onQueryTextChange(final String input) {
 
+		// We cancel previous execution
+		timerOut.cancel(true);
+
 		// On text remove we drop the cursor
 		if (input.isEmpty()) {
 			searchAdapter.changeCursor(null);
+		} else {
+			/**
+			 * Created a new instance of AsyncTask for avoiding multiple executions
+			 */
+			timerOut = new TimerOut();
+			timerOut.execute(input);
 		}
 
 		return true;
+	}
+
+	private final class TimerOut extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(final String... params) {
+
+			try {
+				Thread.sleep(SEARCH_TIMEOUT);
+				onQueryTextSubmit(params[0]);
+			} catch (final InterruptedException e) {
+				throw new AssertionError(e);
+			}
+			return null;
+		}
 	}
 }

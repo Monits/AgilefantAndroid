@@ -104,8 +104,17 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 		setHasOptionsMenu(true);
 
 		final Bundle arguments = getArguments();
+
+		final List<Story> stories;
+
+		if (savedInstanceState == null) {
+			stories = (List<Story>) arguments.getSerializable(STORIES);
+		} else {
+			stories = (List<Story>) savedInstanceState.getSerializable(STORIES);
+		}
+
 		storiesAdapter = new WorkItemAdapter(getActivity());
-		storiesAdapter.setWorkItems((List<Story>) arguments.getSerializable(STORIES));
+		storiesAdapter.setWorkItems(stories);
 	}
 
 	@Override
@@ -153,6 +162,12 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 	public boolean onQueryTextChange(final String query) {
 		storiesAdapter.filter(query);
 		return true;
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(STORIES, new ArrayList<>(storiesAdapter.getWorkItems()));
 	}
 
 	@Override

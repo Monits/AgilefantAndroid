@@ -7,8 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +22,7 @@ import com.monits.agilefant.fragment.project.ProjectDetailsFragment;
 import com.monits.agilefant.fragment.project.ProjectLeafStoriesFragment;
 import com.monits.agilefant.model.Backlog;
 import com.monits.agilefant.model.Project;
+import com.monits.agilefant.model.backlog.BacklogType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +76,7 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
-		initFABs(fabContainer, backlog.getId());
+		initFABs(fabContainer, project.getId());
 		populatePager(project);
 	}
 
@@ -89,7 +93,9 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 		addFAB.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View view) {
-				final CreateStoryFragment createStoryFragment = CreateStoryFragment.newInstance(projectId);
+				final CreateStoryFragment createStoryFragment = CreateStoryFragment
+						.newInstance(BacklogType.PROJECT, projectId);
+
 				getSupportFragmentManager().beginTransaction()
 						.replace(android.R.id.content, createStoryFragment)
 						.addToBackStack(null)
@@ -100,7 +106,10 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
-		menu.findItem(R.id.action_search).setVisible(false);
+		final MenuItem menuItem = menu.findItem(R.id.action_search);
+		menuItem.setVisible(false);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+		searchView.setMaxWidth(getMaxWidthScreen());
 
 		return true;
 	}

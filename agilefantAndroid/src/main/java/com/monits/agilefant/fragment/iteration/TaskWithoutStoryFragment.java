@@ -114,13 +114,14 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements S
 		final Bundle savedInstanceState) {
 		final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_task_without_story, container, false);
 		ButterKnife.bind(this, rootView);
+
+		taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(
+				getActivity(), taskWithoutStory, workItemService);
+
 		if (taskWithoutStory.isEmpty()) {
 			rootView.findViewById(R.id.stories_empty_view).setVisibility(View.VISIBLE);
 		} else {
 			taskWithoutStoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-			taskWithoutStoryAdapter = new TasksWithoutStoryRecyclerAdapter(
-					getActivity(), taskWithoutStory, workItemService);
 
 			taskWithoutStoryListView.setAdapter(taskWithoutStoryAdapter);
 			taskWithoutStoryListView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));

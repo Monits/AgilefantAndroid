@@ -59,7 +59,7 @@ public class UserChooserFragment extends Fragment {
 		final UserChooserFragment fragment = new UserChooserFragment();
 
 		final Bundle arguments = new Bundle();
-		arguments.putSerializable(CURRENT_RESPONSIBLES, new ArrayList<User>(currentResponsibles));
+		arguments.putSerializable(CURRENT_RESPONSIBLES, new ArrayList<>(currentResponsibles));
 		fragment.setArguments(arguments);
 		fragment.setOnUsersSubmittedListener(listener);
 
@@ -90,7 +90,6 @@ public class UserChooserFragment extends Fragment {
 				userInput.removeUser(user);
 			}
 		});
-
 		selectedUsersList.setAdapter(selectedUsersAdapter);
 
 		@SuppressWarnings("unchecked")
@@ -165,5 +164,16 @@ public class UserChooserFragment extends Fragment {
 		 * @param users the selected users.
 		 */
 		void onSubmitUsers(List<User> users);
+	}
+
+	@Override
+	public void onViewStateRestored(final Bundle savedInstanceState) {
+		super.onViewStateRestored(savedInstanceState);
+		//TODO: fix loss onUsersSubmittedListener
+		//The fragment closes partial correction of the issue onUsersSubmittedListener loss
+		// and prevent the fragment remains on the screen
+		if (savedInstanceState != null) {
+			getFragmentManager().popBackStack();
+		}
 	}
 }

@@ -33,6 +33,7 @@ import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.ui.component.AutoCompleteUserChooserTextView;
 import com.monits.agilefant.util.IterationUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,6 +45,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
 	private static final String ARGUMENT_BACKLOG_ID = "backlog_id";
 	private static final String ARGUMENT_ITERATION_ID = "iteration_id";
+	private static final String RESPONSIBLES_INPUT = "RESPONSIBLES_INPUT";
 
 	@Inject
 	/* default */ UserService userService;
@@ -53,6 +55,7 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 
 	@Bind(R.id.responsibles)
 	/* default */ AutoCompleteUserChooserTextView mResponsiblesInput;
+
 	@Bind(R.id.state)
 	/* default */ TextView storyState;
 
@@ -94,7 +97,6 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 		if (hasArguments && arguments.containsKey(ARGUMENT_ITERATION_ID)) {
 			iterationId = arguments.getLong(ARGUMENT_ITERATION_ID);
 		}
-
 		super.onCreate(savedInstanceState);
 	}
 
@@ -114,6 +116,12 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 		final TextView title = (TextView) view.findViewById(R.id.dialog_title);
 		title.setText(getTitleResourceId());
 
+		if (savedInstanceState != null) {
+			final List<User> userInputs = (List<User>) savedInstanceState.getSerializable(RESPONSIBLES_INPUT);
+			if (userInputs != null) {
+				mResponsiblesInput.setUsers(userInputs);
+			}
+		}
 		stateKey = StateKey.NOT_STARTED;
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(context);
 		mResponsiblesInput.setAdapter(autoCompleteUsersAdapter);
@@ -123,7 +131,6 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 					@Override
 					public void onResponse(final List<UserChooser> response) {
 						viewSwitcher.setDisplayedChild(1);
-
 						autoCompleteUsersAdapter.setFilterableUsers(response);
 					}
 				},
@@ -132,7 +139,6 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 					public void onErrorResponse(final VolleyError arg0) {
 						Toast.makeText(getActivity(), R.string.feedback_failed_retrieve_users, Toast.LENGTH_SHORT)
 								.show();
-
 						getFragmentManager().popBackStackImmediate();
 					}
 				});
@@ -154,12 +160,15 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 				mResponsiblesInput.removeUser(user);
 			}
 		});
+		//Assign selected users to display correctly when rotating the screen
+		selectedUsersAdapter.setUsers(mResponsiblesInput.getSelectedUsers());
+		selectedUsersAdapter.notifyDataSetChanged();
 
 		usersList.setAdapter(selectedUsersAdapter);
 
 		storyState.setText(IterationUtils.getStateName(StateKey.NOT_STARTED));
 		storyState.setTextColor(
-			context.getResources().getColor(IterationUtils.getStateTextColor(StateKey.NOT_STARTED)));
+				context.getResources().getColor(IterationUtils.getStateTextColor(StateKey.NOT_STARTED)));
 		storyState.setBackgroundResource(IterationUtils.getStateBackground(StateKey.NOT_STARTED));
 		storyState.setOnClickListener(getOnStateClickListener(context));
 
@@ -230,4 +239,12 @@ public abstract class AbstractCreateBacklogElementFragment extends Fragment {
 	 * @param parameters Parameters to submit new tasks or stories
 	 */
 	protected abstract void onSubmit(BacklogElementParameters parameters);
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(RESPONSIBLES_INPUT, new ArrayList<>(mResponsiblesInput.getSelectedUsers()));
+
+
+	}
 }

@@ -3,9 +3,12 @@ package com.monits.agilefant.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -24,6 +27,7 @@ import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
+import com.monits.agilefant.model.backlog.BacklogType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +114,7 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 			@Override
 			public void onClick(final View view) {
 				animationFABMenu();
-				replaceFragment(CreateStoryFragment.newInstance(iteration.getId()));
+				replaceFragment(CreateStoryFragment.newInstance(BacklogType.ITERATION, iteration.getId()));
 			}
 		};
 
@@ -200,7 +204,10 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
-		menu.findItem(R.id.action_search).setVisible(false);
+		final MenuItem menuItem = menu.findItem(R.id.action_search);
+		menuItem.setVisible(false);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+		searchView.setMaxWidth(getMaxWidthScreen());
 		return true;
 	}
 }

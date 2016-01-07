@@ -126,6 +126,14 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 		notifyDataSetChanged();
 	}
 
+	/**
+	 * Returns the WorkItem list attached to this adapter
+	 * @return The workItem list
+	 */
+	public List<WorkItem> getWorkItems() {
+		return this.workItems;
+	}
+
 	@Override
 	public void onUpdate(final WorkItem updatedWork) {
 		updateAdapterHelper.updateItem(workItems, updatedWork);
@@ -177,6 +185,7 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 	 */
 	public void addStory(final Story newStory) {
 		workItems.add(newStory);
+		originalWorkItems.add(newStory);
 		notifyItemInserted(workItems.size() - 1);
 	}
 
@@ -268,7 +277,18 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemViewHolder<Wor
 			}
 		} else {
 			final Task currentTask = (Task) workItems.get(toPosition);
-			final Task targetTask = (Task) workItems.get(fromPosition);
+
+			final Task targetTask;
+			if (fromPosition > toPosition) {
+				/*
+				 when we are moving up, targetTask should be null if target position is equals to
+				 its story position + 1
+				 */
+				targetTask = (toPosition == workItems.indexOf(((Task) workItems.get(fromPosition))
+						.getStory()) + 1) ? null : (Task) workItems.get(fromPosition);
+			} else {
+				targetTask = (Task) workItems.get(fromPosition);
+			}
 
 			final Response.Listener<Task> successListener =
 					getSuccessListener(R.string.feedback_success_updated_task_rank);
