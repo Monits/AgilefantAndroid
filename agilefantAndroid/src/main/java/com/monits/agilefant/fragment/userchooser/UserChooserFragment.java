@@ -34,7 +34,6 @@ import butterknife.ButterKnife;
 public class UserChooserFragment extends Fragment {
 
 	private static final String CURRENT_RESPONSIBLES = "CURRENT_RESPONSIBLES";
-	private static final String INPUT_USERS = "INPUT_USERS";
 
 	@Inject
 	/* default */ UserService userService;
@@ -93,18 +92,10 @@ public class UserChooserFragment extends Fragment {
 		});
 		selectedUsersList.setAdapter(selectedUsersAdapter);
 
-		if (savedInstanceState == null) {
-			@SuppressWarnings("unchecked")
-			final List<User> currentUsers = (List<User>) getArguments().getSerializable(CURRENT_RESPONSIBLES);
-			if (currentUsers != null) {
-				userInput.setUsers(currentUsers);
-			}
-		} else {
-			@SuppressWarnings("unchecked")
-			final List<User> userInputs = (List<User>) savedInstanceState.getSerializable(INPUT_USERS);
-			if (userInputs != null) {
-				userInput.setUsers(userInputs);
-			}
+		@SuppressWarnings("unchecked")
+		final List<User> currentUsers = (List<User>) getArguments().getSerializable(CURRENT_RESPONSIBLES);
+		if (currentUsers != null) {
+			userInput.setUsers(currentUsers);
 		}
 
 		autoCompleteUsersAdapter = new AutoCompleteUsersAdapter(getActivity());
@@ -176,8 +167,13 @@ public class UserChooserFragment extends Fragment {
 	}
 
 	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(INPUT_USERS, new ArrayList<>(userInput.getSelectedUsers()));
+	public void onViewStateRestored(final Bundle savedInstanceState) {
+		super.onViewStateRestored(savedInstanceState);
+		//TODO: fix loss onUsersSubmittedListener
+		//The fragment closes partial correction of the issue onUsersSubmittedListener loss
+		// and prevent the fragment remains on the screen
+		if (savedInstanceState != null) {
+			getFragmentManager().popBackStack();
+		}
 	}
 }
