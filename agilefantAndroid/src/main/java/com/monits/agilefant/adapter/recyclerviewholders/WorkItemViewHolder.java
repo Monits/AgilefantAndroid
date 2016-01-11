@@ -2,7 +2,6 @@ package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
@@ -61,10 +60,7 @@ public abstract class WorkItemViewHolder<T extends WorkItem> extends RecyclerVie
 					}
 					// Iteration response doesnt have a parent so we fill it
 					response.setParent(iteration.getParent());
-
-					final Intent intent = new Intent(context, IterationActivity.class);
-					intent.putExtra(IterationActivity.ITERATION, response);
-					context.startActivity(intent);
+					context.startActivity(IterationActivity.getIntent(context, response));
 				}
 			},
 			new Response.ErrorListener() {

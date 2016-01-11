@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 
 public class IterationActivity extends BaseToolbaredActivity implements ViewPager.OnPageChangeListener {
 
-	public static final String ITERATION = "ITERATION";
+	private static final String ITERATION = "ITERATION";
 
 	private Iteration iteration;
 	private LinearLayout optionsContainer;

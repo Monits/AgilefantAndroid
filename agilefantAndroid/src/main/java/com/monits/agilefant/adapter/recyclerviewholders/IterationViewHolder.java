@@ -2,7 +2,6 @@ package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,15 +57,11 @@ public class IterationViewHolder extends BacklogViewHolder {
 					progressDialog.dismiss();
 				}
 
-				final Intent intent = new Intent(context, IterationActivity.class);
 
 				// Workaround that may be patchy,
 				// but it depends on the request whether it comes or not, and how to get it.
 				response.setParent(backlog);
-
-				intent.putExtra(IterationActivity.ITERATION, response);
-
-				context.startActivity(intent);
+				context.startActivity(IterationActivity.getIntent(context, response));
 			}
 		};
 	}
