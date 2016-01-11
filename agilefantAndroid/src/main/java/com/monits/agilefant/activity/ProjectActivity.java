@@ -49,8 +49,8 @@ public class ProjectActivity extends BaseToolbaredActivity implements ViewPager.
 	 * @param project A Project object for being sent to the returned intent
 	 * @return An intent that contains sent data as extra values
 	 */
-	public static Intent newIntentInstance(@NonNull final Context context, @NonNull final Backlog backlog,
-										@NonNull final Project project) {
+	public static Intent getIntent(@NonNull final Context context, @NonNull final Backlog backlog,
+								@NonNull final Project project) {
 		final Intent intent = new Intent(context, ProjectActivity.class);
 		intent.putExtra(EXTRA_BACKLOG, backlog);
 		intent.putExtra(PROJECT, project);

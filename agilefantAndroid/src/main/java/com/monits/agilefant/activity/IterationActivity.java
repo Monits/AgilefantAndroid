@@ -1,6 +1,9 @@
 package com.monits.agilefant.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -54,6 +57,21 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	@Bind(R.id.pager)
 	/* default */ ViewPager viewPager;
+
+	/**
+	 *
+	 * This factory method returns an intent of this class with it's necessary extra values
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @param iteration A Iteration object for being sent to the returned intent
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent getIntent(@NonNull final Context context, @NonNull final Iteration iteration) {
+		final Intent intent = new Intent(context, IterationActivity.class);
+		intent.putExtra(ITERATION, iteration);
+		return intent;
+	}
+
 
 
 	@Override

@@ -56,7 +56,7 @@ public class ProjectHelper {
 						if (progressDialog != null && progressDialog.isShowing()) {
 							progressDialog.dismiss();
 						}
-						context.startActivity(ProjectActivity.newIntentInstance(context, backlog, project));
+						context.startActivity(ProjectActivity.getIntent(context, backlog, project));
 					}
 				},
 				new Response.ErrorListener() {

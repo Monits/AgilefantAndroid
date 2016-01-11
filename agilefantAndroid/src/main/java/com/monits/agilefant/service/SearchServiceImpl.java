@@ -55,9 +55,10 @@ public class SearchServiceImpl implements SearchService {
 
 						final List<SearchResult> filteredList = new ArrayList<>();
 
-						// We only show projects
+						// We only show projects and Iteration
 						for (final SearchResult item : searchResultList) {
-							if (item.getType() == SearchResultType.PROJECT) {
+							if (item.getType() == SearchResultType.PROJECT
+									|| item.getType() == SearchResultType.ITERATION) {
 								filteredList.add(item);
 							}
 						}
