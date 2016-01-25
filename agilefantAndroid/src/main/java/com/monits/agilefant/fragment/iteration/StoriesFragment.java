@@ -48,8 +48,12 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 
 	private static final String STORIES = "STORIES";
 	private static final String ITERATION = "ITERATION";
+	private static final String STORIES_ID = "STORIES_ID";
+
 
 	private WorkItemAdapter storiesAdapter;
+
+	private int storyPosition;
 
 	@SuppressWarnings("checkstyle:anoninnerlength")
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -80,13 +84,25 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 	 * @return a new StoriesFragment with the given stories and iteration
 	 */
 	public static StoriesFragment newInstance(final ArrayList<Story> stories, final Iteration mIteration) {
+		return newInstance(stories, mIteration, 0);
+	}
+
+	/**
+	 * Return a new StoriesFragment with the given stories and iteration
+	 * @param stories The stories
+	 * @param mIteration The iteration
+	 * @param storyFocus The specific story id for focus
+	 * @return a new StoriesFragment with the given stories and iteration
+	 */
+	public static StoriesFragment newInstance(final ArrayList<Story> stories, final Iteration mIteration,
+											final int storyFocus) {
 		final Bundle bundle = new Bundle();
 		bundle.putSerializable(STORIES, stories);
 		bundle.putSerializable(ITERATION, mIteration);
+		bundle.putSerializable(STORIES_ID, storyFocus);
 
 		final StoriesFragment storiesFragment = new StoriesFragment();
 		storiesFragment.setArguments(bundle);
-
 		return storiesFragment;
 	}
 
@@ -107,11 +123,27 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 
 		final List<Story> stories;
 
+		int storyFocusID;
 		if (savedInstanceState == null) {
 			stories = (List<Story>) arguments.getSerializable(STORIES);
+			storyFocusID = arguments.getInt(STORIES_ID, 0);
 		} else {
 			stories = (List<Story>) savedInstanceState.getSerializable(STORIES);
+			storyFocusID = 0;
 		}
+
+		if (storyFocusID != 0) {
+			int position = 0; //Obtain Story position
+			for (final Story story : stories) {
+				if (story.getId() == storyFocusID) {
+					storyPosition = position;
+					break;
+				}
+				position++;
+			}
+		}
+
+
 
 		storiesAdapter = new WorkItemAdapter(getActivity());
 		storiesAdapter.setWorkItems(stories);
@@ -129,6 +161,7 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recyclerView.addItemDecoration(new SpacesSeparatorItemDecoration(getContext()));
 
+
 		final WorkItemTouchHelperCallback workItemTouchHelperCallback =
 				new WorkItemTouchHelperCallback(storiesAdapter);
 		final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(workItemTouchHelperCallback);
@@ -138,6 +171,8 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 			emptyView.setVisibility(View.VISIBLE);
 			recyclerView.setVisibility(View.GONE);
 		}
+
+		recyclerView.scrollToPosition(storyPosition);
 
 		return rootView;
 	}
@@ -184,6 +219,7 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 		return "StoriesFragment{"
 				+ "broadcastReceiver=" + broadcastReceiver
 				+ ", storiesAdapter=" + storiesAdapter
+				+ ", storyPosition=" + storyPosition
 				+ '}';
 	}
 }

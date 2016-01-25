@@ -13,10 +13,13 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.activity.IterationActivity;
 import com.monits.agilefant.activity.ProjectActivity;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.PageSelect;
 import com.monits.agilefant.model.Project;
 import com.monits.agilefant.model.SearchResult;
+import com.monits.agilefant.model.StorySearchResult;
 import com.monits.agilefant.service.IterationService;
 import com.monits.agilefant.service.ProjectService;
+import com.monits.agilefant.service.SearchService;
 
 import java.util.List;
 
@@ -35,6 +38,9 @@ public class SuggestionListener implements SearchView.OnSuggestionListener {
 	/* default */ ProjectService projectService;
 	@Inject
 	/* default */ IterationService iterationService;
+
+	@Inject
+	/* default */ SearchService searchService;
 
 	/**
 	 * Standard Constructor
@@ -62,23 +68,59 @@ public class SuggestionListener implements SearchView.OnSuggestionListener {
 
 		switch (item.getType()) {
 		case PROJECT:
-			callStory(item);
+			callProject(item);
 			break;
 
 		case ITERATION:
 			callIteration(item);
 			break;
 
+		case STORY:
+			callStory(item);
+			break;
+
 		default:
 			break;
 
 		}
-		// TODO : Should be contemplated actions if clicked item was a Product, Story or a Task.
+		// TODO : Should be contemplated actions if clicked item was a Product and Task.
 
 		return true;
 	}
 
 	private void callStory(final SearchResult item) {
+
+		searchService.searchStory(item.getId(), new Response.Listener<StorySearchResult>() {
+			@Override
+			public void onResponse(final StorySearchResult storySearchResult) {
+				if (storySearchResult == null) {
+					if (progressDialog.isShowing()) {
+						progressDialog.dismiss();
+					}
+
+					Toast.makeText(context, R.string.feedback_failed_retrieve_story,
+							Toast.LENGTH_SHORT).show();
+				} else {
+					getIteration(storySearchResult.getIterationId(), storySearchResult.getStoryId(),
+							PageSelect.STORIES);
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(final VolleyError volleyError) {
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				Toast.makeText(context, R.string.feedback_failed_retrieve_story,
+						Toast.LENGTH_SHORT).show();
+
+			}
+		});
+
+	}
+
+	private void callProject(final SearchResult item) {
 		// Request project and go to ProjectActivity
 		projectService.getProjectData(item.getId(),
 				new Response.Listener<Project>() {
@@ -107,8 +149,38 @@ public class SuggestionListener implements SearchView.OnSuggestionListener {
 
 	private void callIteration(final SearchResult item) {
 		// Request Iteration and go to IterationActivity
+		getIteration(item.getId());
+	}
+
+	private void getIteration(final int iterationId) {
 		iterationService.getIteration(
-				item.getId(),
+				iterationId,
+				new Response.Listener<Iteration>() {
+					@Override
+					public void onResponse(final Iteration response) {
+						if (progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+						context.startActivity(IterationActivity.getIntent(context, response));
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(final VolleyError arg0) {
+						if (progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
+
+						Toast.makeText(context, R.string.feedback_failed_retrieve_iteration,
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+	}
+
+	private void getIteration(final int iterationId, final Integer storyId, final PageSelect focusPage) {
+		// Request Story and go to IterationActivity, and focus in Story list
+		iterationService.getIteration(
+				iterationId,
 				new Response.Listener<Iteration>() {
 					@Override
 					public void onResponse(final Iteration response) {
@@ -116,7 +188,8 @@ public class SuggestionListener implements SearchView.OnSuggestionListener {
 							progressDialog.dismiss();
 						}
 
-						context.startActivity(IterationActivity.getIntent(context, response));
+						context.startActivity(IterationActivity.getIntent(context, response, focusPage, storyId));
+
 					}
 				},
 				new Response.ErrorListener() {

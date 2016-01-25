@@ -29,10 +29,13 @@ public class AgilefantServiceImpl implements AgilefantService {
 	private static final String HTTP_REXEG = "^https?://.*$";
 	private static final String HTTP = "http://";
 	private String host;
-	private static final String LOGIN_URL = "%1$s/j_spring_security_check";
+	private static final String LOGIN_PATH = "/j_spring_security_check";
+	private static final String LOGIN_URL = "%1$s" + LOGIN_PATH;
 	private static final String PASSWORD = "j_password";
 	private static final String USERNAME = "j_username";
 	private static final String LOGIN_OK = "/index.jsp";
+
+	private static final String LOCATION_HEADER = "Location";
 
 
 	private final ReloginRequeuePolicy reloginRequeuePolicy = new ReloginRequeuePolicy();
@@ -159,7 +162,9 @@ public class AgilefantServiceImpl implements AgilefantService {
 
 		@Override
 		public boolean shouldRequeue(final NetworkResponse networkResponse) {
-			return networkResponse != null && networkResponse.statusCode == HttpURLConnection.HTTP_MOVED_TEMP;
+			// Is it a redirect to the login page?
+			return networkResponse != null && networkResponse.statusCode == HttpURLConnection.HTTP_MOVED_TEMP
+					&& networkResponse.headers.get(LOCATION_HEADER).contains(LOGIN_PATH);
 		}
 
 		@Override

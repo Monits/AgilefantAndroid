@@ -60,6 +60,7 @@
     <string name="dialog_tasks_to_done_msg">Do you want to mark all tasks as done as well?</string>
     <string name="feedback_failed_to_retrieve_daily_work">Failed to retrieve daily work!</string>
     <string name="feedback_failed_retrieve_iteration">Failed to retrieve the iteration!</string>
+    <string name="feedback_failed_retrieve_story">Failed to retrieve the story!</string>
     <string name="feedback_succesfully_updated_spent_effort">Successfully updated spent effort!</string>
     <string name="feedback_failed_update_spent_effort">Failed to update spent effort!</string>
     <string name="feedback_succesfully_updated_effort_left">Successfully updated effort left!</string>

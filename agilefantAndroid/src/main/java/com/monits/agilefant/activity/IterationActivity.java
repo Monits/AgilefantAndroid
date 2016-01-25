@@ -28,6 +28,7 @@ import com.monits.agilefant.fragment.iteration.IterationDetailsFragment;
 import com.monits.agilefant.fragment.iteration.StoriesFragment;
 import com.monits.agilefant.fragment.iteration.TaskWithoutStoryFragment;
 import com.monits.agilefant.model.Iteration;
+import com.monits.agilefant.model.PageSelect;
 import com.monits.agilefant.model.Story;
 import com.monits.agilefant.model.Task;
 import com.monits.agilefant.model.backlog.BacklogType;
@@ -41,6 +42,8 @@ import butterknife.ButterKnife;
 public class IterationActivity extends BaseToolbaredActivity implements ViewPager.OnPageChangeListener {
 
 	private static final String ITERATION = "ITERATION";
+	private static final String FOCUS_PAGE = "FOCUS_PAGE";
+	private static final String FOCUS_STORY = "FOCUS_STORY";
 
 	private Iteration iteration;
 	private LinearLayout optionsContainer;
@@ -57,6 +60,36 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 
 	@Bind(R.id.pager)
 	/* default */ ViewPager viewPager;
+
+	/**
+	 *
+	 * This factory method returns an intent of this class with it's necessary extra values
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @param iteration A Iteration object for being sent to the returned intent
+	 * @param focusPage A number of page want to focus
+	 * @param storyFocusId A id of story want to focus
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent getIntent(@NonNull final Context context, @NonNull final Iteration iteration,
+								@NonNull final PageSelect focusPage, @NonNull final int storyFocusId) {
+		final Intent intent = new Intent(context, IterationActivity.class);
+		intent.putExtra(ITERATION, iteration);
+		intent.putExtra(FOCUS_PAGE, getPageNumber(focusPage));
+		intent.putExtra(FOCUS_STORY, storyFocusId);
+		return intent;
+	}
+
+	private static int getPageNumber(final PageSelect focusPage) {
+		switch (focusPage) {
+		case STORIES:
+			return 1;
+		case TASKWITHOUTSTORY:
+			return 2;
+		default:
+			return 0;
+		}
+	}
 
 	/**
 	 *
@@ -85,6 +118,8 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 		final Bundle bundle = getIntent().getExtras();
 		iteration = (Iteration) bundle.getSerializable(ITERATION);
 
+		final int focusPage = bundle.getInt(FOCUS_PAGE, 0);
+
 		final List<Fragment> fragments = new ArrayList<>();
 
 		final ArrayList<Story> storiesArray = new ArrayList<>();
@@ -94,13 +129,22 @@ public class IterationActivity extends BaseToolbaredActivity implements ViewPage
 		tasksWithoutStory.addAll(iteration.getTasksWithoutStory());
 
 		fragments.add(IterationDetailsFragment.newInstance(iteration));
-		fragments.add(StoriesFragment.newInstance(storiesArray, iteration));
+
+		final int focusStory = bundle.getInt(FOCUS_STORY, 0);
+		if (focusStory == 0) {
+			fragments.add(StoriesFragment.newInstance(storiesArray, iteration));
+		} else {
+			fragments.add(StoriesFragment.newInstance(storiesArray, iteration, focusStory));
+		}
+
 		fragments.add(TaskWithoutStoryFragment.newInstance(tasksWithoutStory));
 		fragments.add(IterationBurndownFragment.newInstance(iteration.getId()));
 
 		viewPager.setAdapter(new ScreenSlidePagerAdapter(this, getSupportFragmentManager(), fragments));
 		viewPager.addOnPageChangeListener(this);
 		setUpTabLayout(viewPager);
+
+		viewPager.setCurrentItem(focusPage); //Change page focus
 
 		final ViewGroup content = (ViewGroup) findViewById(android.R.id.content);
 		final View fabContainer = getLayoutInflater().inflate(R.layout.fab_iteration_menu_layout, content);
