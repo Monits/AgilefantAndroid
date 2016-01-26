@@ -2,7 +2,9 @@ package com.monits.agilefant.listeners;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
@@ -93,58 +95,23 @@ public class SuggestionListener implements SearchView.OnSuggestionListener {
 		searchService.searchStory(item.getId(), new Response.Listener<StorySearchResult>() {
 			@Override
 			public void onResponse(final StorySearchResult storySearchResult) {
-				if (storySearchResult == null) {
-					if (progressDialog.isShowing()) {
-						progressDialog.dismiss();
-					}
-
-					Toast.makeText(context, R.string.feedback_failed_retrieve_story,
-							Toast.LENGTH_SHORT).show();
-				} else {
-					getIteration(storySearchResult.getIterationId(), storySearchResult.getStoryId(),
-							PageSelect.STORIES);
-				}
+				getIteration(storySearchResult.getIterationId(), storySearchResult.getStoryId(), PageSelect.STORIES);
 			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(final VolleyError volleyError) {
-				if (progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
-
-				Toast.makeText(context, R.string.feedback_failed_retrieve_story,
-						Toast.LENGTH_SHORT).show();
-
-			}
-		});
+		}, getErrorListener(R.string.feedback_failed_retrieve_story));
 
 	}
 
 	private void callProject(final SearchResult item) {
 		// Request project and go to ProjectActivity
+		final IntentFactory<Project> intentFactory = new IntentFactory<Project>() {
+			@Override
+			public Intent newIntent(@NonNull final Project response) {
+				return ProjectActivity.getIntent(context, response.getParent(), response);
+			}
+		};
 		projectService.getProjectData(item.getId(),
-				new Response.Listener<Project>() {
-					@Override
-					public void onResponse(final Project project) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						context.startActivity(ProjectActivity
-								.getIntent(context, project.getParent(), project));
-					}
-				}, new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(final VolleyError volleyError) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						Toast.makeText(context, context.getResources()
-								.getString(R.string.feedback_failed_retrieve_project), Toast.LENGTH_LONG)
-								.show();
-					}
-				});
+				newListener(intentFactory, R.string.feedback_failed_retrieve_project),
+				getErrorListener(R.string.feedback_failed_retrieve_project));
 	}
 
 	private void callIteration(final SearchResult item) {
@@ -153,59 +120,69 @@ public class SuggestionListener implements SearchView.OnSuggestionListener {
 	}
 
 	private void getIteration(final int iterationId) {
-		iterationService.getIteration(
-				iterationId,
-				new Response.Listener<Iteration>() {
-					@Override
-					public void onResponse(final Iteration response) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-						context.startActivity(IterationActivity.getIntent(context, response));
-					}
-				},
-				new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						Toast.makeText(context, R.string.feedback_failed_retrieve_iteration,
-								Toast.LENGTH_SHORT).show();
-					}
-				});
+		final IntentFactory<Iteration> intentFactory = new IntentFactory<Iteration>() {
+			@Override
+			public Intent newIntent(@NonNull final Iteration response) {
+				return IterationActivity.getIntent(context, response);
+			}
+		};
+		iterationService.getIteration(iterationId,
+				newListener(intentFactory, R.string.feedback_failed_retrieve_iteration),
+				getErrorListener(R.string.feedback_failed_retrieve_iteration));
 	}
 
 	private void getIteration(final int iterationId, final Integer storyId, final PageSelect focusPage) {
 		// Request Story and go to IterationActivity, and focus in Story list
-		iterationService.getIteration(
-				iterationId,
-				new Response.Listener<Iteration>() {
-					@Override
-					public void onResponse(final Iteration response) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
+		final IntentFactory<Iteration> intentFactory = new IntentFactory<Iteration>() {
+			@Override
+			public Intent newIntent(@NonNull final Iteration response) {
+				return IterationActivity.getIntent(context, response, focusPage, storyId);
+			}
+		};
 
-						context.startActivity(IterationActivity.getIntent(context, response, focusPage, storyId));
-
-					}
-				},
-				new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(final VolleyError arg0) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						Toast.makeText(context, R.string.feedback_failed_retrieve_iteration,
-								Toast.LENGTH_SHORT).show();
-					}
-				});
+		iterationService.getIteration(iterationId,
+				newListener(intentFactory, R.string.feedback_failed_retrieve_iteration),
+				getErrorListener(R.string.feedback_failed_retrieve_iteration));
 	}
 
 	public void setItems(@NonNull final List<SearchResult> searchResultList) {
 		this.searchResultList = searchResultList;
+	}
+
+	@NonNull
+	private Response.ErrorListener getErrorListener(@StringRes final int errorMessage) {
+		return new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(final VolleyError arg0) {
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+			}
+		};
+	}
+
+	@NonNull
+	private <T> Response.Listener<T> newListener(@NonNull final IntentFactory<T> intentFactory,
+												@StringRes final int errorMessage) {
+		return new Response.Listener<T>() {
+			@Override
+			public void onResponse(final T t) {
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+				if (t == null) {
+					Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+				} else {
+					context.startActivity(intentFactory.newIntent(t));
+				}
+			}
+		};
+	}
+
+	private interface IntentFactory<T> {
+		/* default */ Intent newIntent(@NonNull T response);
 	}
 }
