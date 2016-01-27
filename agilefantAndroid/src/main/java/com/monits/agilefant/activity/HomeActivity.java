@@ -1,11 +1,7 @@
 package com.monits.agilefant.activity;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +22,9 @@ import com.monits.agilefant.service.UserService;
 import com.monits.agilefant.util.ValidationUtils;
 
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class HomeActivity extends Activity {
 
@@ -91,8 +90,9 @@ public class HomeActivity extends Activity {
 					progressDialog.dismiss();
 				}
 
-				final Intent intent = new Intent(HomeActivity.this, AllBackLogsActivity.class);
-				HomeActivity.this.startActivity(intent);
+				startActivity(AllBackLogsActivity.getIntent(HomeActivity.this));
+
+
 			}
 		};
 	}

@@ -3,7 +3,9 @@ package com.monits.agilefant.activity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -24,6 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllBackLogsActivity extends BaseToolbaredActivity {
+
+	/**
+	 * This factory method returns an intent of this class with it's necessary extra values
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent getIntent(@NonNull final Context context) {
+		return new Intent(context, AllBackLogsActivity.class);
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
