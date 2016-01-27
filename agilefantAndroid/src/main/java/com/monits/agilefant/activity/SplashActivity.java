@@ -1,7 +1,6 @@
 package com.monits.agilefant.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -39,8 +38,7 @@ public class SplashActivity extends Activity {
 
 					@Override
 					public void onResponse(final User arg0) {
-						final Intent intent = new Intent(SplashActivity.this, AllBackLogsActivity.class);
-						SplashActivity.this.startActivity(intent);
+						startActivity(AllBackLogsActivity.getIntent(SplashActivity.this));
 					}
 				},
 				new ErrorListener() {
@@ -69,6 +67,6 @@ public class SplashActivity extends Activity {
 	}
 
 	private void startHomeActivity() {
-		startActivity(new Intent(this, HomeActivity.class));
+		startActivity(HomeActivity.getIntent(this));
 	}
 }

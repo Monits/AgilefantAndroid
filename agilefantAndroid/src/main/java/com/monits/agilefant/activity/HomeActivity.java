@@ -2,8 +2,11 @@ package com.monits.agilefant.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,6 +48,16 @@ public class HomeActivity extends Activity {
 
 	@Inject
 	/* default */ SharedPreferences sharedPreferences;
+
+	/**
+	 * This factory method returns an intent of this class with it's necessary extra values
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent getIntent(@NonNull final Context context) {
+		return new Intent(context, HomeActivity.class);
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {

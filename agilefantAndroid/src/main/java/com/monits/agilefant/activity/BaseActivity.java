@@ -61,9 +61,8 @@ public class BaseActivity extends AppCompatActivity {
 					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 						public void onClick(final DialogInterface dialog, final int id) {
 							userService.logout();
-							final Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-							intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							startActivity(intent);
+							startActivity(HomeActivity.getIntent(getApplicationContext())
+								.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP));
 							finish();
 						}
 					})
