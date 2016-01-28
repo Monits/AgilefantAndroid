@@ -2,7 +2,6 @@ package com.monits.agilefant.adapter.recyclerviewholders;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -185,9 +184,7 @@ public class TaskItemViewHolder extends WorkItemViewHolder<Task> {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(final DialogInterface dialog, final int which) {
-						final Intent intent = new Intent(context, TaskTimeTrackingService.class);
-						intent.putExtra(TaskTimeTrackingService.EXTRA_TASK, task);
-						context.startService(intent);
+						context.startService(TaskTimeTrackingService.getIntent(context, task));
 					}
 				});
 

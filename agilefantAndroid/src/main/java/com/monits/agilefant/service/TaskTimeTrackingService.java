@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -40,6 +41,31 @@ public class TaskTimeTrackingService extends Service {
 	private final BroadcastReceiver broadcastReceiver = new TaskTimeTrackingServiceBroadcastReceiver();
 
 	private NotificationManager mNotificationManager;
+
+	/**
+	* This factory method returns an intent of this class with it's necessary extra values
+	*
+	* @param context A Context of the application package implementing this class
+	* @param task A Task Object for being sent to the returned intent
+	* @return An intent that contains sent Task as extra values
+	*/
+	public static Intent getIntent(@NonNull final Context context, @NonNull final Task task) {
+		final Intent intent = new Intent(context, TaskTimeTrackingService.class);
+		intent.putExtra(EXTRA_TASK, task);
+		return intent;
+	}
+
+	/**
+	* This factory method returns an intent of this class with it's necessary extra values
+	*
+	* @param task A Task Object for being sent to the returned intent
+	* @return An intent that contains sent data as extra values
+	*/
+	public static Intent getIntent(@NonNull final Task task) {
+		final Intent intent = new Intent(ACTION_QUIT_TRACKING_TASK);
+		intent.putExtra(EXTRA_NOTIFICATION_ID, task.getId());
+		return intent;
+	}
 
 	@Override
 	public IBinder onBind(final Intent intent) {

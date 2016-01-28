@@ -71,9 +71,7 @@ public class DailyWorkTaskItemViewHolder extends TaskItemViewHolder {
 	}
 
 	private void startTrackingService() {
-		final Intent intent = new Intent(context, TaskTimeTrackingService.class);
-		intent.putExtra(TaskTimeTrackingService.EXTRA_TASK, task);
-		context.startService(intent);
+		context.startService(TaskTimeTrackingService.getIntent(context, task));
 	}
 
 	private void startIntentSavingTaskTime() {

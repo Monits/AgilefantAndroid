@@ -78,9 +78,7 @@ public class SavingTaskTimeDialogActivity extends FragmentActivity {
 
 				@Override
 				public void onResponse(final String arg0) {
-					final Intent quitTrackingIntent = new Intent(TaskTimeTrackingService.ACTION_QUIT_TRACKING_TASK);
-					quitTrackingIntent.putExtra(TaskTimeTrackingService.EXTRA_NOTIFICATION_ID, task.getId());
-					sendBroadcast(quitTrackingIntent);
+					sendBroadcast(TaskTimeTrackingService.getIntent(task));
 
 					final Intent taskUpdatedIntent = new Intent(AgilefantApplication.ACTION_TASK_UPDATED);
 					taskUpdatedIntent.putExtra(AgilefantApplication.EXTRA_TASK_UPDATED, task);
