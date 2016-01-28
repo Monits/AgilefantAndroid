@@ -77,11 +77,6 @@ public class DailyWorkTaskItemViewHolder extends TaskItemViewHolder {
 	}
 
 	private void startIntentSavingTaskTime() {
-		final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
-		dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-				| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-				| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_TASK, task);
-		context.startActivity(dialogActivityIntent);
+		context.startActivity(SavingTaskTimeDialogActivity.getIntent(context, task));
 	}
 }

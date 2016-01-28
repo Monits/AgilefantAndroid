@@ -1,9 +1,5 @@
 package com.monits.agilefant.service;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,6 +20,10 @@ import com.monits.agilefant.R;
 import com.monits.agilefant.activity.SavingTaskTimeDialogActivity;
 import com.monits.agilefant.model.NotificationHolder;
 import com.monits.agilefant.model.Task;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskTimeTrackingService extends Service {
 
@@ -264,16 +264,8 @@ public class TaskTimeTrackingService extends Service {
 
 					collapseStatusBar();
 
-					final Intent dialogActivityIntent = new Intent(context, SavingTaskTimeDialogActivity.class);
-					dialogActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-							| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-							| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-					dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_TASK,
-							notificationHolder.getTrackedTask());
-					dialogActivityIntent.putExtra(SavingTaskTimeDialogActivity.EXTRA_ELAPSED_MILLIS,
-							Math.abs(notificationHolder.getElapsedTime()));
-
-					startActivity(dialogActivityIntent);
+					startActivity(SavingTaskTimeDialogActivity.getIntent(context, notificationHolder.getTrackedTask(),
+									Math.abs(notificationHolder.getElapsedTime())));
 				}
 			}
 		}

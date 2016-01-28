@@ -1,7 +1,9 @@
 package com.monits.agilefant.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
 import com.android.volley.Response.ErrorListener;
@@ -21,6 +23,39 @@ public class SavingTaskTimeDialogActivity extends FragmentActivity {
 	public static final int MILLIS_IN_SECOND = 1000;
 	public static final int SECONDS_IN_MINUTE = 60;
 
+	/**
+	 * This factory method returns an intent of this class with it's necessary extra values and flags
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @param task A Task object for being sent to the returned intent
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent getIntent(@NonNull final Context context, @NonNull final Task task) {
+		//We have to use -1 to avoid getting Effort Left in the UI initialized
+		//with the minimum value instead of being empty
+		return getIntent(context, task, -1);
+	}
+
+	/**
+	 * This factory method returns an intent of this class with it's necessary extra values and flags
+	 *
+	 * @param context A Context of the application package implementing this class
+	 * @param task A Task object for being sent to the returned intent
+	 * @param elapsedTime a number representing time in millis
+	 * @return An intent that contains sent data as extra values
+	 */
+	public static Intent getIntent(@NonNull final Context context, @NonNull final Task task,
+								final long elapsedTime) {
+		final Intent intent = new Intent(context, SavingTaskTimeDialogActivity.class);
+		intent.putExtra(EXTRA_TASK, task);
+		intent.putExtra(EXTRA_ELAPSED_MILLIS, elapsedTime);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+				| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+
+		return intent;
+	}
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,8 +64,14 @@ public class SavingTaskTimeDialogActivity extends FragmentActivity {
 		final Bundle extras = intent.getExtras();
 		final Task task = (Task) extras.getSerializable(EXTRA_TASK);
 		final long millis = extras.getLong(EXTRA_ELAPSED_MILLIS);
-		final long minutes = getSpentEffort(millisToMinutes(millis));
-
+		final long minutes;
+		//IF clause is necessary because getSpentEffort will return the minimum value constant if millis
+		//is smaller than it. If millis equals -1 we need to avoid getSpentEffort
+		if (millis == -1) {
+			minutes = millis;
+		} else {
+			minutes = getSpentEffort(millisToMinutes(millis));
+		}
 		final SpentEffortFragment spentEffortFragment = SpentEffortFragment.newInstance(task, minutes);
 		spentEffortFragment.setEffortSpentCallbacks(
 			new Listener<String>() {
