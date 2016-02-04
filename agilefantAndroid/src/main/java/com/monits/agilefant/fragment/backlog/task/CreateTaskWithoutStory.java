@@ -1,6 +1,5 @@
 package com.monits.agilefant.fragment.backlog.task;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -56,10 +55,8 @@ public class CreateTaskWithoutStory extends AbstractCreateBacklogElementFragment
 					new Listener<Task>() {
 						@Override
 						public void onResponse(final Task newTask) {
-							final Intent newTaskIntent = new Intent();
-							newTaskIntent.setAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
-							newTaskIntent.putExtra(AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY, newTask);
-							context.sendBroadcast(newTaskIntent);
+							context.sendBroadcast(AgilefantApplication.updateTaskTimeBroadcastIntent(
+									newTask, AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY));
 							getFragmentManager().popBackStack();
 							Toast.makeText(context, R.string.saved_task, Toast.LENGTH_SHORT).show();
 						}
