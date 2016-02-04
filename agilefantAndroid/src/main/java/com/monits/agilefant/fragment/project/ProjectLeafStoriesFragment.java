@@ -3,7 +3,6 @@ package com.monits.agilefant.fragment.project;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -105,9 +104,8 @@ public class ProjectLeafStoriesFragment extends BaseDetailTabFragment implements
 
 	@Override
 	public void onResume() {
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
-		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+		getActivity().registerReceiver(broadcastReceiver, AgilefantApplication.registerReceiverIntentFilter(
+				AgilefantApplication.ACTION_NEW_STORY));
 
 		super.onResume();
 	}

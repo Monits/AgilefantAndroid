@@ -3,7 +3,6 @@
  */
 package com.monits.agilefant.fragment.backlog.task;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -151,12 +150,8 @@ public class CreateDailyWorkTaskFragment extends AbstractCreateBacklogElementFra
 						@Override
 						public void onResponse(final Task newTask) {
 							newTask.setIteration(iterationSelected);
-							final Intent newTaskIntent = new Intent();
-							newTaskIntent.setAction(
-									AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
-							newTaskIntent.putExtra(
-									AgilefantApplication.EXTRA_NEW_TASK_WITHOUT_STORY, newTask);
-							activity.sendBroadcast(newTaskIntent);
+							activity.sendBroadcast(AgilefantApplication.updateTaskTimeBroadcastIntent(
+									newTask, AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY));
 
 							Toast.makeText(
 									activity, R.string.saved_task, Toast.LENGTH_SHORT)

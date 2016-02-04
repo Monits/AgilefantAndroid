@@ -1,6 +1,5 @@
 package com.monits.agilefant.fragment.backlog.story;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -69,11 +68,7 @@ public class CreateStoryFragment extends AbstractCreateBacklogElementFragment {
 					new Listener<Story>() {
 						@Override
 						public void onResponse(final Story newStory) {
-
-							final Intent newStoryIntent = new Intent();
-							newStoryIntent.setAction(AgilefantApplication.ACTION_NEW_STORY);
-							newStoryIntent.putExtra(AgilefantApplication.EXTRA_NEW_STORY, newStory);
-							context.sendBroadcast(newStoryIntent);
+							context.sendBroadcast(AgilefantApplication.createNewStoryBroadcastIntent(newStory));
 
 							getFragmentManager().popBackStack();
 							Toast.makeText(context, R.string.saved_story, Toast.LENGTH_SHORT).show();

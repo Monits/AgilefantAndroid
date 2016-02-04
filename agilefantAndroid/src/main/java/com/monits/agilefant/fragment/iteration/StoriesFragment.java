@@ -3,7 +3,6 @@ package com.monits.agilefant.fragment.iteration;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -112,10 +111,8 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 		super.onCreate(savedInstanceState);
 
 		AgilefantApplication.getObjectGraph().inject(this);
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
-		intentFilter.addAction(AgilefantApplication.ACTION_NEW_STORY);
-		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+		getActivity().registerReceiver(broadcastReceiver,
+				AgilefantApplication.registerReceiverIntentFilter(AgilefantApplication.ACTION_NEW_STORY));
 
 		setHasOptionsMenu(true);
 
@@ -123,7 +120,7 @@ public class StoriesFragment extends BaseDetailTabFragment implements SearchView
 
 		final List<Story> stories;
 
-		int storyFocusID;
+		final int storyFocusID;
 		if (savedInstanceState == null) {
 			stories = (List<Story>) arguments.getSerializable(STORIES);
 			storyFocusID = arguments.getInt(STORIES_ID, 0);

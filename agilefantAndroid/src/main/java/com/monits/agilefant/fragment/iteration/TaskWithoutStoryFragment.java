@@ -3,7 +3,6 @@ package com.monits.agilefant.fragment.iteration;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -96,11 +95,8 @@ public class TaskWithoutStoryFragment extends BaseDetailTabFragment implements S
 		super.onCreate(savedInstanceState);
 
 		AgilefantApplication.getObjectGraph().inject(this);
-
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(AgilefantApplication.ACTION_TASK_UPDATED);
-		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
-		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+		getActivity().registerReceiver(broadcastReceiver,
+				AgilefantApplication.registerReceiverIntentFilter(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY));
 
 		setHasOptionsMenu(true);
 

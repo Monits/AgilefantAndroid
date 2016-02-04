@@ -80,9 +80,8 @@ public class SavingTaskTimeDialogActivity extends FragmentActivity {
 				public void onResponse(final String arg0) {
 					sendBroadcast(TaskTimeTrackingService.getIntent(task));
 
-					final Intent taskUpdatedIntent = new Intent(AgilefantApplication.ACTION_TASK_UPDATED);
-					taskUpdatedIntent.putExtra(AgilefantApplication.EXTRA_TASK_UPDATED, task);
-					sendBroadcast(taskUpdatedIntent);
+					sendBroadcast(AgilefantApplication.updateTaskTimeBroadcastIntent(task,
+							AgilefantApplication.ACTION_TASK_UPDATED));
 
 					SavingTaskTimeDialogActivity.this.finish();
 				}

@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -93,9 +92,8 @@ public class MyTasksFragment extends Fragment {
 
 		AgilefantApplication.getObjectGraph().inject(this);
 
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY);
-		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+		getActivity().registerReceiver(broadcastReceiver, AgilefantApplication.registerReceiverIntentFilter(
+				AgilefantApplication.ACTION_NEW_TASK_WITHOUT_STORY));
 
 		if (savedInstanceState == null) {
 			mTasks = (List<Task>) getArguments().getSerializable(TASKS_KEY);
